@@ -1,0 +1,16 @@
+.home{
+    width: 100%;
+    border-top: 1px solid #ddd;
+    -webkit-box-shadow: inset 0px 6px 10px -4px rgba(0,0,0,0.59); 
+    box-shadow: inset 0px 6px 10px -4px rgba(0,0,0,0.59);
+}
+.home_back{
+    background-color: white;
+    height: calc(100vh - 68px);
+    border-radius: 2px;
+}
+.home_title{
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 15px 0 0 15px;
+}
