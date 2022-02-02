@@ -4,8 +4,9 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import Home from './general/Home';
-import Navbar from './general/Navbar';
+import Home from './general/Home'
+import Navbar from './general/Navbar'
+import Servicos from './servicos/Servicos'
 import './app.css'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <BrowserRouter>
         <Navbar/>
         <Routes>
+            <Route exact path="/servicos/:id" element={<Servicos/>}/>
             <Route path="/" element={<Home/>} />
         </Routes>
       </BrowserRouter>

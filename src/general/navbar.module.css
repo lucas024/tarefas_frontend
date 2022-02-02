@@ -8,7 +8,7 @@
     justify-content: space-between;
     height: 100%;
     margin: auto;
-    width: 100%;
+    width: 98%;
 }
 .title{
     font-size: 3rem;
@@ -47,3 +47,28 @@
     font-weight: 600;
     font-size: 1.5rem;
 }
+.user_login{
+    font-weight: 500;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    position: relative;
+}
+
+.user_login:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out;
+}
+
+.user_login:hover:before {
+    visibility: visible;
+  transform: scaleX(1);
+  }
