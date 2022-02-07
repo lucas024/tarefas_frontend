@@ -2,14 +2,17 @@ import React, { useEffect } from 'react'
 import styles from './navbar.module.css'
 import FaceIcon from '@mui/icons-material/Face';
 import { grey } from '@mui/material/colors';
-
+import { useNavigate } from 'react-router-dom';
 const Navbar = () => {
+
+    const navigate = useNavigate()
 
     return (
         <div className={styles.navbar}>
             <div className={styles.flex}>
                 <div className={styles.flex_end}>
-                    <p className={styles.title}>Logo</p>
+                    <p className={styles.title} 
+                        onClick={() => navigate('/')}>Logo</p>
                 </div>
                     <div className={styles.flex_end}>
                         <div className={styles.flex_right}>

@@ -2,40 +2,21 @@
     width: 100%;
     border-top: 1px solid #ddd;
     position: relative;
+    overflow: hidden;
 }
 .flex{
     display: flex;
     height: calc(100vh - 68px);
     background-color: white;
 }
-
-.flex_left{
-    flex: 1 0 0;
-}
 .flex_right{
     flex: 6 0 0;
     background-color: #ddd;
     height: 100%;
 }
-.left_eletricistas{
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(0deg, rgba(22,31,40,0.8122332859174964) 0%, rgba(22,31,40,1) 100%);
-}
-.left_canalizadores{
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(0deg, rgba(239,104,72,0.7965860597439545) 0%, rgba(239,104,72,1) 100%);
-}
-.left_carpinteiros{
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(0deg, rgba(255,156,81,0.8008534850640114) 0%, rgba(255,156,81,1) 100%);
-}
 .top{
     width: 100%;
     height: 40px;
-    border-left: 1px solid #fafafa;
 }
 .top_eletricistas{
     width: 100%;
@@ -60,9 +41,7 @@
     background-color: #fafafa;
     -webkit-box-shadow: inset 18px 18px 8px -17px rgba(0,0,0,0.46); 
     box-shadow: inset 18px 18px 8px -17px rgba(0,0,0,0.46);
-    overflow: hidden;
     position: relative;
-
 }
 .grid{
     display: grid;
@@ -94,14 +73,165 @@
 }
 .num{
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
     width: 100%;
-    margin-top: 10px;   
 }
 .num_flex{
     display: flex;
     justify-content: center;
 }
+.num_flex_content{
+    display: flex;
+    width: 150px;
+    padding: 5px 10px;
+    background-color: white;
+    border: 2px solid rgb(22,31,40);
+    border-radius: 40px;
+    justify-content: space-around;
+}
+.num_style{
+    margin-top: 2px;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+.num_style_side{
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 8px;
+    cursor: pointer;
+}
+.arrow{
+    cursor: pointer;
+}
+.arrow_num{
+    display: flex;
+}
+
+
+/* LEFT */
+
+.flex_left{
+    flex: 1 0 0;
+    max-width: 250px;
+}
+
+.left_eletricistas{
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(0deg, rgba(22,31,40,0.8122332859174964) 0%, rgba(22,31,40,1) 100%);
+}
+.left_canalizadores{
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(0deg, rgba(239,104,72,0.7965860597439545) 0%, rgba(239,104,72,1) 100%);
+}
+.left_carpinteiros{
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(0deg, rgba(255,156,81,0.8008534850640114) 0%, rgba(255,156,81,1) 100%);
+}
+.left_spacing{
+    height: 40px;
+    width: 100%;
+    border-bottom: 1px solid #fafafa;
+}
+
+.left_title{
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #fafafa;
+    text-align: center;
+}
+
+.select{
+    font-size: 1rem;
+    color: white;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.left_area_calendar{
+    height: 200px;
+    margin-top: 150px;
+    position: relative;
+}
+
+.calendar_title{
+    color: #fafafa;
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-left: 2.5%;
+    margin-bottom: 5px;
+}
+.calendar_div{
+    width: 100%;
+}
+
+.calendar_input{
+    cursor: pointer;
+    width: 95%;
+    padding: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    background-color: white;
+    margin: auto;
+    text-align: center;
+    padding: 5px 0;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+.calendar_input_hora_start{
+    cursor: pointer;
+    width: 95%;
+    padding: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    background-color: white;
+    margin: auto;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 5px;
+    margin-top: 5px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 1px dashed rgb(134, 134, 134);
+}
+.calendar_input_hora_end{
+    cursor: pointer;
+    width: 95%;
+    padding: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    background-color: white;
+    margin: auto;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 5px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.date_selected{
+    color: #ef6c00;
+    font-weight: 600;
+}
+.date_not_selected{
+    color: rgb(163, 163, 163);
+}
+
+.calendar_new{
+    width: 95% !important;
+    background-color: white;
+    margin: auto;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border: 0;
+}
+
 
 @media (max-width: 764px){
     .grid{
