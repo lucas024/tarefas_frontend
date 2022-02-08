@@ -21,12 +21,12 @@ const TopSelect = (props) => {
             borderRadius: 0,
             border: state.isSelected? "1px solid white": 0,
             boxShadow: "white",
+            height: "40px",
             "&:hover": {
                 backgroundColor: "rgba(255,255,255,0.2)",
                 cursor: "pointer",
                 transition: "0.5s all ease-in-out",
             }
-          
         }),
         option: (base, state) => ({
             ...base,
@@ -34,8 +34,7 @@ const TopSelect = (props) => {
             cursor: "pointer",
             color: "black",
             fontWeight: state.isSelected? 600: 400,
-            backgroundColor: state.isSelected? "rgba(255,255,255,1) ": state.isFocused? 'rgba(255,255,255,0.7)': "transparent",
-
+            backgroundColor: state.isSelected? "rgba(0,0,0,0.5) ": state.isFocused? 'rgba(0,0,0,0.2)': "transparent",
         }),
         menu: base => ({
             ...base,
@@ -43,10 +42,11 @@ const TopSelect = (props) => {
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
-            backgroundColor: "rgba(255,255,255,0.5)",
+            backgroundColor: "rgba(255,255,255,1)",
             border: "3px solid white",
             borderTop: 0,
-            borderLeft: 0
+            borderLeft: 0,
+            padding: "0"
         }),
         dropdownIndicator : base => ({
             ...base,
@@ -68,6 +68,10 @@ const TopSelect = (props) => {
             ...base,
             backgroundColor: "white"
         }),
+        valueContainer: base => ({
+            ...base,
+            padding: "2px 10px 2px 2px"
+        })
     }
 
     const options = [
@@ -77,7 +81,7 @@ const TopSelect = (props) => {
     ]
 
     const selectChange = (newId) => {
-        console.log(newId);
+        props.resetDate()
         navigate({
             pathname: `/servicos/${newId}`,
             search: `?p=1`

@@ -7,11 +7,19 @@ import red from "@material-ui/core/colors/red";
 import orange from "@material-ui/core/colors/orange";
 import { useNavigate } from 'react-router-dom'
 import "react-datepicker/dist/react-datepicker.css" 
-import pt from 'date-fns/locale/pt';
 import Select from 'react-select'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
 import TopSelect from '../styling/selectStyling';
+import curveArrow from '../assets/curve-arrow.png'
+import dayjs from 'dayjs';
+import elec from '../assets/electrician.png'
+import cana from '../assets/worker.png'
+import carp from '../assets/driver.png'
+
+
+require('dayjs/locale/pt')
+
 
 const Servicos = () => {
 
@@ -22,14 +30,16 @@ const Servicos = () => {
     const [items, setItems] = useState([])
     const navigate = useNavigate()
     const [date, setDate] = useState('dd/mm/yyyy')
+    const [dateObj, setDateObj] = useState(null)
     const [timeStart, setTimeStart] = useState(null)
     const [timeEnd, setTimeEnd] = useState(null)
     const [timeStartOptions, setTimeStartOptions] = useState([])
     const [timeEndOptions, setTimeEndOptions] = useState([])
+    dayjs.locale('pt')
 
     useEffect(() => {
         let aux = []
-        for(let i = 0; i < 80; i++) aux.push(i)
+        for(let i = 0; i < 40; i++) aux.push(i)
         let page = parseInt(Object.fromEntries([...searchParams]).p)
         console.log(page);
         if(aux.length >= page*24 && page>1){
@@ -57,26 +67,74 @@ const Servicos = () => {
         
         setTimeStartOptions(getTimeList(new Date()))
         setTimeEndOptions(getTimeList(new Date()))
-
-
+        
     }, [searchParams, id])
     
     useEffect(() => {
-        console.log(timeStart);
         if(timeStart !== null){
             let tempo = new Date()
-            console.log(timeStart.slice(3));
-            console.log(timeStart.slice(0,2));
             tempo.setMinutes(parseInt(timeStart.slice(3)))
             tempo.setHours(parseInt(timeStart.slice(0,2)))
-            console.log(tempo);
             setTimeEndOptions(getTimeList(new Date(tempo)))
         }
     }, [timeStart])
 
-    useEffect(() => {
+    const stylesTimeSelect = {
+        control: (base, state) => ({
+            ...base,
+            margin: 'auto',
+            border: 0,
+            fontSize: "1rem",
+            textTransform: "uppercase",
+            fontWeight: 600,
+            transition: "0.5s all ease-in-out",
+            borderRadius: 0,
+            boxShadow: "white",
+            "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.2)",
+                cursor: "pointer",
+                transition: "0.5s all ease-in-out",
+            }
+          
+        }),
+        option: (base, state) => ({
+            ...base,
+            textTransform: "uppercase",
+            cursor: "pointer",
+            color: "black",
+            fontWeight: state.isSelected? 600: 400,
+            backgroundColor: state.isSelected? "rgba(0,0,0,0.5) ": state.isFocused? 'rgba(0,0,0,0.2)': "transparent",
 
-    }, [timeEnd])
+        }),
+        menu: base => ({
+            ...base,
+            textTransform: "uppercase",
+            margin: "auto",
+            cursor: "pointer",
+            borderRadius: 0,
+            backgroundColor: "rgba(255,255,255,1)",
+            border: "3px solid white",
+            borderTop: 0,
+            borderLeft: 0
+        }),
+        container: base => ({
+            ...base,
+            width: "100%"
+        }),
+        singleValue: base => ({
+            ...base,
+            color: "#ef6c00"
+        }),
+    }
+
+    const resetDate = () => {
+        setDateObj(null)
+        setDate('dd/mm/yyyy')
+        setTimeStart(null)
+        setTimeEnd(null)
+        setTimeStartOptions([])
+        setTimeEndOptions([])
+    }
 
     const getTimeList = (temp) => {
         let finalTemp = new Date(temp)
@@ -101,8 +159,7 @@ const Servicos = () => {
         else
             if(parseInt(val)<10)
                 return `0${val}`
-        
-            
+
         return val
     }
 
@@ -151,6 +208,7 @@ const Servicos = () => {
     }
 
     const dateSelectHandler = (val) => {
+        setDateObj(new Date(val))
         let aux = new Date(val)
         let day = aux.getDate()>9?aux.getDate():`0${aux.getDate()}`
         let month = aux.getMonth()<9?`0${aux.getMonth() + 1}`:aux.getMonth()+1
@@ -158,63 +216,83 @@ const Servicos = () => {
         setDate(`${day}/${month}/${year}`)
         updateHours(val)
     }
+
+    const getMinDate = () => {
+        const minDate = new Date()
+        const tomorrow = new Date(minDate.getTime() + (1000 * 60 * 60 * 24))
+        return tomorrow
+    }
     return (
         <div className={styles.servicos}>
             <div className={styles.flex}>
                 <div className={styles.flex_left}>
                     <div className={styles[`left_${id}`]}>
-                        <div className={styles.left_spacing}></div>
                         <div className={styles.select}>
                             <TopSelect
-                                id={id}    
+                                id={id}
+                                resetDate={() => resetDate()}  
                             />
                         </div>
                         <div className={styles.left_area_calendar}>
                             <p className={styles.calendar_title}>Data e Hora</p>
                             <div className={styles.calendar_div}>
-                                <div className={styles.calendar_input} style={{borderBottom:date==="dd/mm/yyyy"?"4px solid #ddd":"4px solid #ef6c00"}}>
+                                <div className={styles.calendar_input} style={{borderBottom:date==="dd/mm/yyyy"?"1px dashed #ccc":"1px solid #ef6c00"}}>
                                     <p className={date !== "dd/mm/yyyy"?styles.date_selected:styles.date_not_selected}>{date}</p>
                                 </div>
                                 <Calendar className={styles.calendar_new}
                                     locale="pt-PT"
-                                    minDate={new Date()}
+                                    minDate={getMinDate()}
                                     next2Label=""
                                     prev2Label=""
                                     view="month"
                                     minDetail="month"
                                     maxDate={getMaxDate()}
                                     onChange={val => dateSelectHandler(val)}
+                                    value={dateObj}
+                                    formatShortWeekday={(locale, date) => dayjs(date).format('dd')}
                                     />
-                                <div className={styles.calendar_input_hora_start}>
-                                    <Select
-                                        //styles={stylesSelect}
-                                        placeholder="hh:mm"
-                                        options={timeStartOptions}
-                                        value={timeStartOptions.filter(option => option.value === timeStart)}
-                                        isSearchable={false}
-                                        onChange={value => {
-                                            setTimeStart(value.value)
-                                        }}
-                                        components={{ DropdownIndicator:() => null, 
-                                            IndicatorSeparator:() => null }}
-                                    />                                </div>
-                                <div className={styles.calendar_input_hora_end}>
-                                    {/* <p className={timeEnd !== "hh:mm"?styles.date_selected:styles.date_not_selected}>{timeEnd}</p> */}
-                                    <Select
-                                        //styles={stylesSelect}
-                                        placeholder="hh:mm"
-                                        options={timeEndOptions}
-                                        value={timeEndOptions.filter(option => option.value === timeEnd)}
-                                        isSearchable={false}
-                                        onChange={value => {
-                                            setTimeEnd(value.value)
-                                        }}
-                                        components={{ DropdownIndicator:() => null, 
-                                            IndicatorSeparator:() => null }}
-                                    />
-                                </div>
+                                <div className={styles.hour_div}>
+                                    <div className={styles.calendar_input_hora_start} style={{borderBottom:timeStart!==null && timeEnd !== null?"1px solid #ef6c00":timeStart!==null?"1px dashed #ef6c00":"1px dashed #ccc"}}>
+                                        <Select
+                                            styles={stylesTimeSelect}
+                                            placeholder={<p style={{color:"#ccc"}}>HH:MM</p>}
+                                            options={timeStartOptions}
+                                            value={timeStartOptions.filter(option => option.value === timeStart)}
+                                            isSearchable={false}
+                                            onChange={value => {
+                                                setTimeStart(value.value)
+                                            }}
+                                            components={{ DropdownIndicator:() => null, 
+                                                IndicatorSeparator:() => null }}
+                                            noOptionsMessage={() => {
 
+                                                return "Escolhe uma data"
+                                            }}
+                                        />                                </div>
+                                    <div className={styles.calendar_input_hora_end}>
+                                        <Select
+                                            styles={stylesTimeSelect}
+                                            placeholder={<p style={{color:"#ccc"}}>HH:MM</p>}
+                                            options={timeEndOptions}
+                                            value={timeEndOptions.filter(option => option.value === timeEnd)}
+                                            isSearchable={false}
+                                            onChange={value => {
+                                                setTimeEnd(value.value)
+                                            }}
+                                            components={{ DropdownIndicator:() => null, 
+                                                IndicatorSeparator:() => null }}
+                                            noOptionsMessage={() => null}
+                                        />
+                                    </div>
+                                    <img className={styles.hour_arrow} src={curveArrow}/>
+                                    <p className={styles.limpar} onClick={() => resetDate()}>Limpar</p>
+                                </div>
                             </div>
+                        </div>
+                        <div className={styles.left_logo}>
+                            <img className={styles.left_logo_img} src={id==="eletricistas"?elec
+                                                                        :id==="canalizadores"?cana
+                                                                        :carp}/>
                         </div>
                     </div>
                 </div>
@@ -224,50 +302,52 @@ const Servicos = () => {
                         </div>
                     </div>
                     <div className={styles.main}>
+                        <div className={styles.search_div}>
+                            <input className={styles.search}></input>
+                        </div>
                         <div className={styles.grid}>
                             {mapBoxesToDisplay()}
-                            <div className={styles.num}>
-                                {
-                                    currDisplay === "solo"?
-                                    <span></span>
-                                    :currDisplay === "init"?
-                                    <div className={styles.num_flex}>
-                                        <div className={styles.num_flex_content}>
-                                            <span style={{color:"white"}}>_</span>
-                                            <span style={{color:"white"}}>_</span>
-                                            <span className={styles.num_style}>{currPage}</span>
-                                            <span className={styles.num_style_side} onClick={() => arrowClick(1)}>{currPage + 1}</span>
-                                            <ArrowCircleRightIcon className={styles.arrow} sx={arrowStyle}
-                                                        onClick={() => arrowClick(1)}/>
-                                            
-                                        </div>
-                                    </div>
-                                    :currDisplay === "middle"?
-                                    <div className={styles.num_flex}>
-                                        <div className={styles.num_flex_content}>
-                                            <ArrowCircleLeftIcon className={styles.arrow} sx={arrowStyle}
-                                                        onClick={() => arrowClick(-1)}/>
-                                            <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>
-                                            <span className={styles.num_style}>{currPage}</span>
-                                            <span className={styles.num_style_side} onClick={() => arrowClick(1)}>{currPage + 1}</span>
-                                            <ArrowCircleRightIcon className={styles.arrow} sx={arrowStyle}
-                                                        onClick={() => arrowClick(1)}/>
-                                        </div>
-                                    </div>
-                                    :
-                                    <div className={styles.num_flex}>
-                                        <div className={styles.num_flex_content}>
-                                            <ArrowCircleLeftIcon className={styles.arrow} sx={arrowStyle}
-                                                        onClick={() => arrowClick(-1)}/>
-                                            <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>
-                                            <span className={styles.num_style}>{currPage}</span>
-                                            <span style={{color:"white"}}>__</span>
-                                            <span style={{color:"white"}}>__</span>
-                                        </div>
-                                    </div>
-                                }
+                        </div>
+                        <div className={styles.num}>
+                            {
+                                currDisplay === "solo"?
                                 <span></span>
-                            </div>
+                                :currDisplay === "init"?
+                                <div className={styles.num_flex}>
+                                    <div className={styles.num_flex_content}>
+                                        <span style={{color:"white"}}>_</span>
+                                        <span style={{color:"white"}}>_</span>
+                                        <span className={styles.num_style}>{currPage}</span>
+                                        <span className={styles.num_style_side} onClick={() => arrowClick(1)}>{currPage + 1}</span>
+                                        <ArrowCircleRightIcon className={styles.arrow} sx={arrowStyle}
+                                                    onClick={() => arrowClick(1)}/>
+                                        
+                                    </div>
+                                </div>
+                                :currDisplay === "middle"?
+                                <div className={styles.num_flex}>
+                                    <div className={styles.num_flex_content}>
+                                        <ArrowCircleLeftIcon className={styles.arrow} sx={arrowStyle}
+                                                    onClick={() => arrowClick(-1)}/>
+                                        <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>
+                                        <span className={styles.num_style}>{currPage}</span>
+                                        <span className={styles.num_style_side} onClick={() => arrowClick(1)}>{currPage + 1}</span>
+                                        <ArrowCircleRightIcon className={styles.arrow} sx={arrowStyle}
+                                                    onClick={() => arrowClick(1)}/>
+                                    </div>
+                                </div>
+                                :
+                                <div className={styles.num_flex}>
+                                    <div className={styles.num_flex_content}>
+                                        <ArrowCircleLeftIcon className={styles.arrow} sx={arrowStyle}
+                                                    onClick={() => arrowClick(-1)}/>
+                                        <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>
+                                        <span className={styles.num_style}>{currPage}</span>
+                                        <span style={{color:"white"}}>__</span>
+                                        <span style={{color:"white"}}>__</span>
+                                    </div>
+                                </div>
+                            }
                         </div>
                         
                         

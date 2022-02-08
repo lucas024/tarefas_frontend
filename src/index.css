@@ -46,10 +46,13 @@ p{
 .react-calendar__tile{
   font-family: 'Montserrat', sans-serif !important;
 }
+.react-calendar__month-view__weekdays__weekday > abbr{
+  text-decoration: none !important;
+}
 .react-calendar__tile--active{
   background-color: #ef6c00 !important;
   font-weight: 600;
-  color: black !important;
+  color: white !important;
 }
 .react-calendar{
   width: 100%;
