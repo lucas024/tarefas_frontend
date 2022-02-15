@@ -1,4 +1,4 @@
-import React, { useEffect, useState, forwardRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './servicos.module.css'
 import { useParams, useSearchParams } from 'react-router-dom';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
@@ -16,6 +16,8 @@ import dayjs from 'dayjs';
 import elec from '../assets/electrician.png'
 import cana from '../assets/worker.png'
 import carp from '../assets/driver.png'
+import Carta from './carta';
+import axios from 'axios';
 
 
 require('dayjs/locale/pt')
@@ -32,49 +34,75 @@ const Servicos = () => {
     const [date, setDate] = useState('dd/mm/yyyy')
     const [dateObj, setDateObj] = useState(null)
     const [timeStart, setTimeStart] = useState(null)
+    const [timeStartObj, setTimeStartObj] = useState(null)
     const [timeEnd, setTimeEnd] = useState(null)
     const [timeStartOptions, setTimeStartOptions] = useState([])
     const [timeEndOptions, setTimeEndOptions] = useState([])
+    const [scrollPosition, setScrollPosition] = useState(0)
+    const [mainRef, setMainRef] = useState(null)
+    const [searchVal, setSearchVal] = useState('')
+    const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio",
+    "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     dayjs.locale('pt')
+    const delay = [0, 0.08, 0.16, 0.24, 0.32, 0.40, 0.48, 0.56, 0.64, 0.72, 0.8,
+                    0.88, 0.96, 1.04, 1.12, 1.20, 1.28, 1.36, 1.44, 1.52, 1.60,
+                    1.68, 1.76, 1.84, 1.92, 2]
+    const [workers, setWorkers] = useState([])
+    const [gridAnim, setGridAnim] = useState(true)
 
     useEffect(() => {
-        let aux = []
-        for(let i = 0; i < 40; i++) aux.push(i)
-        let page = parseInt(Object.fromEntries([...searchParams]).p)
-        console.log(page);
-        if(aux.length >= page*24 && page>1){
-            if(aux.length > (page*24 + 24)) setItems(aux.slice((page-1)*24,(page-1)*24+24))
-            else setItems(aux.slice((page-1)*24, (page)*24 + 24 - (page-1)*24 + 24 - aux.length))
-            setCurrPage(page)
-            setCurrDisplay("middle")
-        }
-        else if(aux.length < page*24 && page>1){
-            setCurrPage(page)
-            setItems(aux.slice((page-1)*24))
-            setCurrDisplay("last")
-        }
-        else{
-            setCurrPage(1)
-            if(aux.length > 24){
-                setItems(aux.slice(0,24))
-                setCurrDisplay("init")
-            }
-            else{
-                setItems(aux)
-                setCurrDisplay("solo")
-            }
-        }     
-        
         setTimeStartOptions(getTimeList(new Date()))
         setTimeEndOptions(getTimeList(new Date()))
+        fetchWorkers()
+    }, [id])
+
+    useEffect(() => {
+        let page = parseInt(Object.fromEntries([...searchParams]).p)
+        if(workers!==null){
+            if(workers.length >= page*24 && page>1){
+                setCurrPage(page)
+                if(workers.length > (page*24 + 24)) setItems(workers.slice((page-1)*24,(page-1)*24+24))
+                else setItems(workers.slice((page-1)*24, (page)*24 + 24 - (page-1)*24 + 24 - workers.length))
+                setCurrDisplay("middle")
+            }
+            else if(workers.length < page*24 && page>1){
+                setCurrPage(page)
+                setItems(workers.slice((page-1)*24))
+                setCurrDisplay("last")
+            }
+            else{
+                setCurrPage(1)
+                if(workers.length > 24){
+                    setItems(workers.slice(0,24))
+                    setCurrDisplay("init")
+                }
+                else{
+                    setItems(workers)
+                    setCurrDisplay("solo")
+                }
+            }
+        }
         
-    }, [searchParams, id])
+    }, [workers, searchParams])
+
+    const fetchWorkers = () => {
+        axios.get(`http://localhost:5000/workers`).then(res => {
+            if(res.data!==null) setWorkers(res.data)
+            
+        })
+    }
     
     useEffect(() => {
         if(timeStart !== null){
             let tempo = new Date()
             tempo.setMinutes(parseInt(timeStart.slice(3)))
             tempo.setHours(parseInt(timeStart.slice(0,2)))
+            if(timeEnd !== null){
+                let tempoend = new Date()
+                tempoend.setMinutes(parseInt(timeEnd.slice(3)))
+                tempoend.setHours(parseInt(timeEnd.slice(0,2)))
+                if(tempoend.getTime() < tempo.getTime()) setTimeEnd(null)
+            }
             setTimeEndOptions(getTimeList(new Date(tempo)))
         }
     }, [timeStart])
@@ -177,12 +205,15 @@ const Servicos = () => {
     }
 
     const mapBoxesToDisplay = () => {
-        return items.map((val, i) => {
+        let delay = 0
+        return items.map((worker, i) => {
             return(
                 <div key={i} className={styles.box_case}>
-                    <div className={styles.box}>
-                        {val}
-                    </div>
+                    <Carta
+                        id={id}
+                        worker={worker}
+                        delay={delay[i]}
+                    />
                 </div>
             )
         })
@@ -191,7 +222,8 @@ const Servicos = () => {
         navigate({
             pathname: `/servicos/${id}`,
             search: `?p=${currPage + val}`
-        })   
+        })
+        handleScrollTop("smooth")
     }
 
     const arrowStyle = {
@@ -215,12 +247,30 @@ const Servicos = () => {
         let year = aux.getFullYear()
         setDate(`${day}/${month}/${year}`)
         updateHours(val)
+        handleScrollTop("smooth")
     }
 
     const getMinDate = () => {
         const minDate = new Date()
         const tomorrow = new Date(minDate.getTime() + (1000 * 60 * 60 * 24))
         return tomorrow
+    }
+
+    const handleScroll = async event => {
+        const { scrollHeight, scrollTop, clientHeight } = event.target
+        if(scrollTop > 0 ){
+            setScrollPosition(true)
+        }
+        else setScrollPosition(false)
+    }
+    
+    const handleScrollTop = (type) => {
+        mainRef.scrollTo({top: 0, behavior: type})
+    }
+      
+    const handleSearchVal = val => {
+        setSearchVal(val.target.value)
+        handleScrollTop("instant")
     }
     return (
         <div className={styles.servicos}>
@@ -260,12 +310,13 @@ const Servicos = () => {
                                             value={timeStartOptions.filter(option => option.value === timeStart)}
                                             isSearchable={false}
                                             onChange={value => {
+                                                setTimeStartObj(value.value)
                                                 setTimeStart(value.value)
+                                                handleScrollTop("smooth")
                                             }}
                                             components={{ DropdownIndicator:() => null, 
                                                 IndicatorSeparator:() => null }}
                                             noOptionsMessage={() => {
-
                                                 return "Escolhe uma data"
                                             }}
                                         />                                </div>
@@ -278,6 +329,7 @@ const Servicos = () => {
                                             isSearchable={false}
                                             onChange={value => {
                                                 setTimeEnd(value.value)
+                                                handleScrollTop("smooth")
                                             }}
                                             components={{ DropdownIndicator:() => null, 
                                                 IndicatorSeparator:() => null }}
@@ -299,13 +351,41 @@ const Servicos = () => {
                 <div className={styles.flex_right}>
                     <div className={styles.top}>
                         <div className={styles[`top_${id}`]}>
-                        </div>
                     </div>
-                    <div className={styles.main}>
+                    </div>
+                    <div className={styles.main} onScroll={handleScroll} ref={el => setMainRef(el)}>
+                        
                         <div className={styles.search_div}>
-                            <input className={styles.search}></input>
+                            <input onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder="Pesquisar"></input>
+                            <div className={styles.searchInfoDiv}>
+                                <span className={!scrollPosition?styles.searchInfo:styles.searchInfoScroll}>A mostrar disponibilidade
+                                        {date !=="dd/mm/yyyy"?
+                                        <span> para dia <span className={styles.cor}>{dateObj.getDate()} de {monthNames[dateObj.getMonth()]}</span></span>
+                                        :<span> para <span className={styles.cor}>os próximos dias</span></span>}
+                                        {timeStart!==null&&timeEnd!==null?
+                                            <span> entre <span className={styles.cor}>{timeStart} </span>
+                                                    - <span className={styles.cor}>{timeEnd}</span></span>
+                                        :timeStart!==null?
+                                            <span> a partir das <span className={styles.cor}>{timeStart}</span></span>
+                                        :timeEnd!==null?
+                                            <span> até às <span className={styles.cor}>{timeEnd}</span></span>
+                                        :
+                                        <span> a <span className={styles.cor}>qualquer hora</span></span>
+                                        }
+                                        
+                                </span>
+                            </div> 
                         </div>
-                        <div className={styles.grid}>
+                        <div className={gridAnim?styles.animGrid:styles.grid}
+                            onAnimationEnd={() =>{
+                                setGridAnim(false)
+                                console.log("yaya");
+                            }}
+                            onClick={() =>{
+                                setGridAnim(true)
+                                console.log("yo");
+                            } }
+                        >
                             {mapBoxesToDisplay()}
                         </div>
                         <div className={styles.num}>
@@ -349,9 +429,6 @@ const Servicos = () => {
                                 </div>
                             }
                         </div>
-                        
-                        
-                        
                     </div>
                 </div>
 

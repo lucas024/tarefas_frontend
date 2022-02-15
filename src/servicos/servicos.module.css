@@ -4,6 +4,14 @@
     position: relative;
     overflow: hidden;
 }
+.cor{
+    /* color: #ef6c00; */
+    color: black;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: underline;
+}
 .flex{
     display: flex;
     height: calc(100vh - 68px);
@@ -38,23 +46,46 @@
 }
 .main{
     width: 100%;
-    padding-top: 20px;
-    height: calc(100% - 61px);
+    height: calc(100% - 31px);
     background-color: #fafafa;
     -webkit-box-shadow: inset 18px 18px 8px -17px rgba(0,0,0,0.46); 
     box-shadow: inset 18px 18px 8px -17px rgba(0,0,0,0.46);
     position: relative;
     overflow-y: scroll;
     overflow-x: hidden;
+    z-index: 4;
 }
+
 .grid{
-    margin-top: 30px;
+    margin-top: 55px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(auto-fill, 200px);
     grid-row-gap: 1em;
     grid-column-gap: 1em;
+    z-index: 2;
 }
+
+.animGrid{
+    margin-top: 55px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(auto-fill, 200px);
+    grid-row-gap: 1em;
+    grid-column-gap: 1em;
+    z-index: 2;
+    animation: 1.2s ease-out 0s 1 slideInFromLeft;
+}
+
+@keyframes slideInFromLeft {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
 .box_case{
     width: 100%;
     height: 100%;
@@ -62,18 +93,7 @@
     flex-direction: column;
     min-height: 200px;
 }
-.box{
-    background-color: white;
-    align-self: center;
-    margin: auto;
-    height: 90%;
-    width: 90%;
-    border-radius: 10px;
-    max-width: 365px;
-    -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.72); 
-    box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.72);
-    cursor: pointer;
-}
+
 .num{
     width: 100%;
 }
@@ -88,7 +108,8 @@
     padding: 5px 10px;
     background-color: white;
     border: 1px solid rgb(138, 138, 138);
-    box-shadow: 0px 0px 3px 0px rgb(0 0 0 / 72%);    border-radius: 40px;
+    box-shadow: 0px 0px 3px 0px rgb(0 0 0 / 72%);    
+    border-radius: 40px;
     justify-content: space-around;
 }
 .num_style{
@@ -110,11 +131,113 @@
 }
 .search_div{
     width: 100%;
-    margin-left: 1.2%;
+    padding-left: 1.2%;
     position: fixed;
+    display: flex;
+    max-height: 40px;
+    padding-top: 10px;
+    background-color: rgba(255, 255, 255, 0.644);
+    padding-bottom: 5px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom: 1px solid rgb(161, 161, 161);
+    
 }
-.search{
+.searchTop{
+    width: 30%;
+    padding: 10px 10px;
+    border-radius: 50px;
+    border: 1px solid rgba(22,31,40,1);
+    font-size: 1rem;
 
+}
+.searchTop::placeholder{
+    color: rgb(131, 131, 131);
+}
+.searchTop:focus{
+    outline: none;
+    border: 1px solid rgba(22,31,40,1);
+    opacity: 1;
+    color: black;
+}
+.searchTop:focus::placeholder{
+    opacity: 0;
+}
+
+.search{
+    width: 30%;
+    padding: 10px 10px;
+    border-radius: 50px;
+    border: 1px solid rgba(22,31,40,1);
+    font-size: 1rem;
+    opacity: 0.3;
+}
+
+
+.search:focus{
+    outline: none;
+    border: 1px solid rgba(22,31,40,1);
+    opacity: 1;
+    color: black;
+}
+
+.search:hover{
+    outline: none;
+    border: 1px solid rgba(22,31,40,1);
+    opacity: 1;
+    color: black;
+    transition: opacity 0.3s;
+}
+
+.search:hover + .searchInfoDiv > .searchInfoScroll{
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+.search_div:hover{
+    background-color: white;
+    transition: 0.3s;
+}
+.search_div:hover > .search{
+    outline: none;
+    border: 1px solid rgba(22,31,40,1);
+    opacity: 1;
+    color: black;
+    transition: opacity 0.3s;
+}
+.search_div:hover > .searchInfoDiv > .searchInfoScroll{
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+.search_div:focus{
+    background-color: white;
+    transition: 0.3s;
+}
+.search:hover + .search_div {
+    background-color: white;
+    transition: all 0.3s;
+}
+
+.search:focus::placeholder{
+    opacity: 0;
+}
+
+.search:focus + .searchInfoDiv > .searchInfoScroll{
+    opacity: 1;
+}
+.searchInfoDiv{
+    display: flex;
+    width: 30%;
+    margin-left: 10px;
+    flex-direction: column;
+    justify-content: end;
+    font-size: 1rem;
+}
+.searchInfo{
+
+}
+
+.searchInfoScroll{
+    opacity: 0.5;
 }
 
 /* LEFT */
@@ -289,27 +412,58 @@
     width: 50px;
     height: 50px;
 }
-@media (max-width: 764px){
-    .grid{
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-@media (min-width: 765px){
-    .grid{
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
 
 
-@media (min-width: 1700px){
+
+@media (max-width: 2600px){
+    .grid{
+        grid-template-columns: repeat(5, 1fr);
+    }
+    .animGrid{
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+@media (max-width: 2000px){
     .grid{
         grid-template-columns: repeat(4, 1fr);
     }
+    .animGrid{
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+@media (max-width: 1700px){
+    .grid{
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .animGrid{
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .searchInfoDiv{
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 1100px){
+    .grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .animGrid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .searchInfoDiv{
+        font-size: 0.8rem;
+    }
 }
 
 
-@media (min-width: 2600px){
+@media (max-width: 800px){
     .grid{
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .animGrid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .cor{
+        font-size: 0.8rem;
     }
 }
