@@ -10,6 +10,7 @@ import Servicos from './servicos/servicos'
 import './app.css'
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
+import Worker from './worker/worker';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAf2f0loUTxnN61Yrs6BGaQoljVVkm68cs",
@@ -31,9 +32,14 @@ function App() {
       <BrowserRouter>
         <Navbar/>
         <Routes>
-            <Route exact path="/servicos/:id" element={<Servicos
-              storage={storage}
-            />}/>
+            <Route exact path="/servicos/:id" 
+              element={<Servicos
+                storage={storage}/>}
+            />  
+            <Route exact path="/pessoal/trabalhador" 
+              element={<Worker
+                storage={storage}/>}
+            />
             <Route path="/" element={<Home/>} />
         </Routes>
       </BrowserRouter>

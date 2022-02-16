@@ -44,9 +44,9 @@ const Servicos = () => {
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio",
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     dayjs.locale('pt')
-    const delay = [0, 0.08, 0.16, 0.24, 0.32, 0.40, 0.48, 0.56, 0.64, 0.72, 0.8,
-                    0.88, 0.96, 1.04, 1.12, 1.20, 1.28, 1.36, 1.44, 1.52, 1.60,
-                    1.68, 1.76, 1.84, 1.92, 2]
+    // const delay = [0, 0.08, 0.16, 0.24, 0.32, 0.40, 0.48, 0.56, 0.64, 0.72, 0.8,
+    //                 0.88, 0.96, 1.04, 1.12, 1.20, 1.28, 1.36, 1.44, 1.52, 1.60,
+    //                 1.68, 1.76, 1.84, 1.92, 2]
     const [workers, setWorkers] = useState([])
     const [gridAnim, setGridAnim] = useState(true)
 
@@ -54,7 +54,9 @@ const Servicos = () => {
         setTimeStartOptions(getTimeList(new Date()))
         setTimeEndOptions(getTimeList(new Date()))
         fetchWorkers()
+    //eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [id])
+    
 
     useEffect(() => {
         let page = parseInt(Object.fromEntries([...searchParams]).p)
@@ -105,10 +107,11 @@ const Servicos = () => {
             }
             setTimeEndOptions(getTimeList(new Date(tempo)))
         }
+        //eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [timeStart])
 
     const stylesTimeSelect = {
-        control: (base, state) => ({
+        control: (base) => ({
             ...base,
             margin: 'auto',
             border: 0,
@@ -257,7 +260,7 @@ const Servicos = () => {
     }
 
     const handleScroll = async event => {
-        const { scrollHeight, scrollTop, clientHeight } = event.target
+        const {scrollTop} = event.target.scrollTop
         if(scrollTop > 0 ){
             setScrollPosition(true)
         }
@@ -336,13 +339,13 @@ const Servicos = () => {
                                             noOptionsMessage={() => null}
                                         />
                                     </div>
-                                    <img className={styles.hour_arrow} src={curveArrow}/>
+                                    <img alt="arrow" className={styles.hour_arrow} src={curveArrow}/>
                                     <p className={styles.limpar} onClick={() => resetDate()}>Limpar</p>
                                 </div>
                             </div>
                         </div>
                         <div className={styles.left_logo}>
-                            <img className={styles.left_logo_img} src={id==="eletricistas"?elec
+                            <img alt="bottomLogo" className={styles.left_logo_img} src={id==="eletricistas"?elec
                                                                         :id==="canalizadores"?cana
                                                                         :carp}/>
                         </div>
@@ -379,11 +382,9 @@ const Servicos = () => {
                         <div className={gridAnim?styles.animGrid:styles.grid}
                             onAnimationEnd={() =>{
                                 setGridAnim(false)
-                                console.log("yaya");
                             }}
                             onClick={() =>{
                                 setGridAnim(true)
-                                console.log("yo");
                             } }
                         >
                             {mapBoxesToDisplay()}

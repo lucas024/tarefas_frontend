@@ -1,0 +1,12 @@
+.schedule{
+    width: 100%;
+}
+.textEd{
+    max-width: 90%;
+}
+
+@media (max-width: 570px){
+    .textEd{
+        max-width: 100%;
+    }
+}
