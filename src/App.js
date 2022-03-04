@@ -36,7 +36,7 @@ function App() {
               element={<Servicos
                 storage={storage}/>}
             />  
-            <Route exact path="/pessoal/trabalhador" 
+            <Route exact path="/trabalhador" 
               element={<Worker
                 storage={storage}/>}
             />

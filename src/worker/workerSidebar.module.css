@@ -1,0 +1,48 @@
+
+.align{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.worker_data_flex{
+    display: flex;
+    flex-direction: column;
+}
+.worker_img{
+    margin-top: 10px;
+    width: 130px;
+    height: 130px;
+    object-fit:cover;
+    border-radius: 50%;
+}
+.worker_personal_flex_column{
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+.name{
+    margin-top: 5px;
+    font-weight: 600;
+}
+.rating_div{
+    display: flex;
+    border: 1px solid #a28400;
+    border-radius: 5px;
+    width: fit-content;
+    padding: 1px;
+    background-color: #fdd835;
+
+}
+.star{
+    width: 15px;
+    height: 15px;
+}
+.rating{
+    margin-left: 5px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+.button{
+    background-color: #65b5f633 !important;
+}

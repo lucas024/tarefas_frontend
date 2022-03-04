@@ -1,0 +1,100 @@
+.dados{
+    display: flex;
+    justify-content: center;
+}
+.zona{
+    width: 90%;
+    margin-top: 20px;
+}
+.top_flex{
+    display: flex;
+}
+.top_img{
+    position: relative;
+}
+.top_img_img{
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.zona_right{
+    width: 80%;
+    margin-left: 10px;
+}
+.edit{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.edit_img_img{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    padding: 3px;
+}
+.edit_img_img:hover{
+    border: 1px solid #65b5f6;
+    padding: 2px;
+    background-color: #65b5f695;
+}
+.edit_img{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    padding: 3px;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+.edit_img:hover{
+    border: 1px solid #65b5f6;
+    padding: 2px;
+    background-color: #65b5f695;
+    border-bottom-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+.edit_area{
+}
+.input_flex{
+    display: flex;
+    margin-top: 5px;
+}
+.input{
+    width: 288px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    padding: 5px;
+}
+.input:focus{
+    outline: 1px solid #65b5f6;
+}
+.input_noedit{
+    width: 90%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    padding: 8px 3px;
+    margin-top: 5px;
+}
+.zona_bottom{
+    width: 100%;
+}
+.helper{
+    height: 100%;
+}
+.helper > div {
+    height: 100% !important;
+}
+.helper > div > input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem !important;
+    padding: 10px 5px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+
+.numberInput > input:focus {
+    outline: 1px solid #65b5f6;
+}
