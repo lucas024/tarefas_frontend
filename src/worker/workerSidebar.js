@@ -63,43 +63,49 @@ const WorkerSidebar = (props) => {
                     </div>
                 </div>
             </div>
+            <div style={{marginTop:"30px"}}></div>
             <List
-                sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-                component="nav"
+                sx={{ width: '100%', maxWidth: 360}}
+                component="nav" className={styles.worker_list}
             >
                 <ListItemButton onClick={() => sidebarNavigate("pedidos")} style={{borderTop:"1px solid #ccc"}} className={selectedSidebar==="pedidos"?styles.button:""}>
                     <ListItemIcon>
-                    <InboxIcon sx={{color:selectedSidebar==="pedidos"?"#65b5f6":"#888"}}/>
+                    <InboxIcon sx={{color:selectedSidebar==="pedidos"?"#FF785A":"#fff"}}/>
                     </ListItemIcon>
-                    <ListItemText primary="Pedidos" sx={{color:selectedSidebar==="pedidos"?"#65b5f6":"#000"}} />
+                    <ListItemText primary="Pedidos" sx={{color:selectedSidebar==="pedidos"?"#FF785A":"#fff"}} />
                 </ListItemButton>
                 <ListItemButton onClick={() => {
                     setOpen(!open)}} style={{borderTop:"1px solid #ccc"}}>
                     <ListItemIcon>
-                    <FaceIcon sx={{color:"#888"}}/>
+                    <FaceIcon sx={{color:"#fff"}}/>
                     </ListItemIcon>
-                    <ListItemText primary="Pessoal" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
+                    <ListItemText primary="Pessoal" sx={{color:"#fff"}}/>
+                    {open ? <ExpandLess sx={{color:selectedSidebar==="calendario"||
+                                                    selectedSidebar==="trabalhos"||
+                                                    selectedSidebar==="dados"?"#FF785A":"#fff"}} /> : 
+                            <ExpandMore sx={{color:selectedSidebar==="calendario"||
+                                        selectedSidebar==="trabalhos"||
+                                        selectedSidebar==="dados"?"#FF785A":"#fff"}} />}
                 </ListItemButton>
                 <Collapse in={open} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
                     <ListItemButton sx={{ pl: 4 }} onClick={() => sidebarNavigate("calendario")}  style={{borderTop:"1px dashed #ddd"}} className={selectedSidebar==="calendario"?styles.button:""}>
                         <ListItemIcon>
-                        <TodayIcon sx={{color:selectedSidebar==="calendario"?"#65b5f6":"#888"}}/>
+                        <TodayIcon sx={{color:selectedSidebar==="calendario"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Calendário" sx={{color:selectedSidebar==="calendario"?"#65b5f6":"#000"}}/>
+                        <ListItemText primary="Calendário" sx={{color:selectedSidebar==="calendario"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                     <ListItemButton sx={{ pl: 4 }} onClick={() => sidebarNavigate("trabalhos")} className={selectedSidebar==="trabalhos"?styles.button:""}>
                         <ListItemIcon>
-                        <ManageSearchIcon sx={{color:selectedSidebar==="trabalhos"?"#65b5f6":"#888"}}/>
+                        <ManageSearchIcon sx={{color:selectedSidebar==="trabalhos"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Trabalhos" sx={{color:selectedSidebar==="trabalhos"?"#65b5f6":"#000"}}/>
+                        <ListItemText primary="Trabalhos" sx={{color:selectedSidebar==="trabalhos"?"#FF785A":"#fff"}}/>
                     </ListItemButton>
                     <ListItemButton sx={{ pl: 4 }} onClick={() => sidebarNavigate("dados")} className={selectedSidebar==="dados"?styles.button:""}>
                         <ListItemIcon>
-                        <SettingsIcon sx={{color:selectedSidebar==="dados"?"#65b5f6":"#888"}}/>
+                        <SettingsIcon sx={{color:selectedSidebar==="dados"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Dados" sx={{color:selectedSidebar==="dados"?"#65b5f6":"#000"}}/>
+                        <ListItemText primary="Dados" sx={{color:selectedSidebar==="dados"?"#FF785A":"#fff"}}/>
                     </ListItemButton>
                     </List>
                 </Collapse>

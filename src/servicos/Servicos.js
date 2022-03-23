@@ -154,7 +154,7 @@ const Servicos = () => {
         }),
         singleValue: base => ({
             ...base,
-            color: "#ef6c00"
+            color: "#FF785A"
         }),
     }
 
@@ -211,11 +211,15 @@ const Servicos = () => {
         let delay = 0
         return items.map((worker, i) => {
             return(
-                <div key={i} className={styles.box_case}>
+                <div key={i} className={styles.box_case} onClick={() => navigate({
+                                                                    pathname: `/reserva`,
+                                                                    search: `?worker=worker_id`
+                                                                })}> 
                     <Carta
                         id={id}
                         worker={worker}
                         delay={delay[i]}
+                        
                     />
                 </div>
             )
@@ -289,7 +293,7 @@ const Servicos = () => {
                         <div className={styles.left_area_calendar}>
                             <p className={styles.calendar_title}>Data e Hora</p>
                             <div className={styles.calendar_div}>
-                                <div className={styles.calendar_input} style={{borderBottom:date==="dd/mm/yyyy"?"1px dashed #ccc":"1px solid #ef6c00"}}>
+                                <div className={styles.calendar_input} style={{borderBottom:date==="dd/mm/yyyy"?"1px dashed #ccc":"1px solid #FF785A"}}>
                                     <p className={date !== "dd/mm/yyyy"?styles.date_selected:styles.date_not_selected}>{date}</p>
                                 </div>
                                 <Calendar className={styles.calendar_new}
@@ -305,7 +309,7 @@ const Servicos = () => {
                                     formatShortWeekday={(locale, date) => dayjs(date).format('dd')}
                                     />
                                 <div className={styles.hour_div}>
-                                    <div className={styles.calendar_input_hora_start} style={{borderBottom:timeStart!==null && timeEnd !== null?"1px solid #ef6c00":timeStart!==null?"1px dashed #ef6c00":"1px dashed #ccc"}}>
+                                    <div className={styles.calendar_input_hora_start} style={{borderBottom:timeStart!==null && timeEnd !== null?"1px solid #FF785A":timeStart!==null?"1px dashed #FF785A":"1px dashed #ccc"}}>
                                         <Select
                                             styles={stylesTimeSelect}
                                             placeholder={<p style={{color:"#ccc"}}>HH:MM</p>}
@@ -366,8 +370,8 @@ const Servicos = () => {
                                         <span> para dia <span className={styles.cor}>{dateObj.getDate()} de {monthNames[dateObj.getMonth()]}</span></span>
                                         :<span> para <span className={styles.cor}>os próximos dias</span></span>}
                                         {timeStart!==null&&timeEnd!==null?
-                                            <span> entre <span className={styles.cor}>{timeStart} </span>
-                                                    - <span className={styles.cor}>{timeEnd}</span></span>
+                                            <span> entre <span className={styles.back_cor}><span className={styles.cor}>{timeStart} </span>
+                                                    - <span className={styles.cor}>{timeEnd}</span></span></span>
                                         :timeStart!==null?
                                             <span> a partir das <span className={styles.cor}>{timeStart}</span></span>
                                         :timeEnd!==null?
@@ -383,9 +387,9 @@ const Servicos = () => {
                             onAnimationEnd={() =>{
                                 setGridAnim(false)
                             }}
-                            onClick={() =>{
-                                setGridAnim(true)
-                            } }
+                            // onClick={() =>{
+                            //     setGridAnim(true)
+                            // } }
                         >
                             {mapBoxesToDisplay()}
                         </div>

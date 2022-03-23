@@ -1,12 +1,13 @@
 .dados{
     display: flex;
-    justify-content: center;
+    margin-left: 40px;
 }
 .zona{
     width: 90%;
     margin-top: 20px;
 }
 .top_flex{
+    margin-top: 5px;
     display: flex;
 }
 .top_img{
@@ -19,8 +20,8 @@
     border-radius: 5px;
 }
 .zona_right{
-    width: 80%;
     margin-left: 10px;
+
 }
 .edit{
     position: absolute;
@@ -55,6 +56,9 @@
 }
 .edit_area{
 }
+.edit_area_flex{
+    display: flex;
+}
 .input_flex{
     display: flex;
     margin-top: 5px;
@@ -66,19 +70,71 @@
     font-size: 1.1rem;
     padding: 5px;
 }
+.inputLong{
+    width: 400px;
+    font-size: 1rem;
+    font-weight: 600;
+    height: 95%;
+    border: none;
+    border-left: 1px solid #ccc;
+    margin-left: 10px;
+    background-color: white;
+    padding-left: 5px;
+}
+
+.inputShort{
+    width: 200px;
+    font-size: 1rem;
+    font-weight: 600;
+    height: 95%;
+    border: none;
+    border-left: 1px solid #ccc;
+    margin-left: 10px;
+    background-color: white;
+    padding-left: 5px;
+}
+
+.form_group{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0px 0px 0px 10px;
+    height: 40px;
+    background-color: #65b5f633;
+    display: flex;
+}
+
+.wrongIban_form_group{
+    border: 1px solid red;
+    border-radius: 5px;
+    padding: 0px 0px 0px 10px;
+    height: 40px;
+    background-color: #65b5f633;
+    display: flex;
+}
+.leftThing{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 .input:focus{
     outline: 1px solid #65b5f6;
 }
-.input_noedit{
-    width: 90%;
-    border: 1px solid #ccc;
+.inputLong:focus{
+    outline: 1px solid #65b5f6;
     border-radius: 5px;
-    font-size: 1.1rem;
-    padding: 8px 3px;
-    margin-top: 5px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.input_noedit{
+    width: 400px;
+    font-size: 1rem;
+    margin-left: 5px;
+    font-weight: 600;
 }
 .zona_bottom{
     width: 100%;
+    margin-top: 10px;
 }
 .helper{
     height: 100%;
@@ -97,4 +153,17 @@
 
 .numberInput > input:focus {
     outline: 1px solid #65b5f6;
+    border: none;
 }
+.numberInputWrong{
+    outline: 1px solid red;
+    border: 1px solid red;
+    border-radius: 5px;
+}
+
+.tituloZona{
+    
+}
+
+
+

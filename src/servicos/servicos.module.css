@@ -1,3 +1,5 @@
+@import '../index.css';
+
 .servicos{
     width: 100%;
     border-top: 1px solid #ddd;
@@ -5,12 +7,18 @@
     overflow: hidden;
 }
 .cor{
-    /* color: #ef6c00; */
-    color: black;
+    color: var(--action);
     text-transform: uppercase;
     font-size: 0.9rem;
     font-weight: 600;
-    text-decoration: underline;
+    background-color: white;
+    padding: 1px;
+    border-radius: 5px;
+}
+.back_cor{
+    background-color: white;
+    padding: 1px;
+    border-radius: 10px;
 }
 .flex{
     display: flex;
@@ -29,27 +37,30 @@
 .top_eletricistas{
     width: 100%;
     height: 100%;
-    background: linear-gradient(270deg, rgba(22,31,40,0.8122332859174964) 0%, rgba(22,31,40,1) 100%);
-    border-left: 1px solid rgb(165, 165, 165);
+    /* background: linear-gradient(270deg, rgba(22,31,40,0.8122332859174964) 0%, rgba(22,31,40,1) 100%); */
+    background-color: var(--brand);
+    border-left: 1px solid var(--neutral);
 }
 .top_canalizadores{
     width: 100%;
     height: 100%;
-    background: linear-gradient(270deg, rgba(239,104,72,0.7965860597439545) 0%, rgba(239,104,72,1) 100%);
-    border-left: 1px solid rgb(165, 165, 165);
+    /* background: linear-gradient(270deg, rgba(239,104,72,0.7965860597439545) 0%, rgba(239,104,72,1) 100%); */
+    background-color: var(--brand);
+    border-left: 1px solid var(--neutral);
 }
 .top_carpinteiros{
     width: 100%;
     height: 100%;
-    background: linear-gradient(270deg, rgba(255,156,81,0.8008534850640114) 0%, rgba(255,156,81,1) 100%);
-    border-left: 1px solid rgb(165, 165, 165);
+    /* background: linear-gradient(270deg, rgba(255,156,81,0.8008534850640114) 0%, rgba(255,156,81,1) 100%); */
+    background-color: var(--brand);
+    border-left: 1px solid var(--neutral);
 }
 .main{
     width: 100%;
     height: calc(100% - 31px);
-    background-color: #fafafa;
-    -webkit-box-shadow: inset 18px 18px 8px -17px rgba(0,0,0,0.46); 
-    box-shadow: inset 18px 18px 8px -17px rgba(0,0,0,0.46);
+    background-color: #161f28;
+    /* -webkit-box-shadow: inset 18px 18px 8px -17px rgba(0,0,0,0.46); 
+    box-shadow: inset 18px 18px 8px -17px rgba(0,0,0,0.46); */
     position: relative;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -156,7 +167,7 @@
 }
 .searchTop:focus{
     outline: none;
-    border: 1px solid rgba(22,31,40,1);
+    border: 1px solid var(--action);
     opacity: 1;
     color: black;
 }
@@ -250,7 +261,8 @@
 .left_eletricistas{
     height: 100%;
     width: 100%;
-    background: linear-gradient(0deg, rgba(22,31,40,0.8122332859174964) 0%, rgba(22,31,40,1) 100%);
+    /* background: linear-gradient(0deg, rgba(22,31,40,0.8122332859174964) 0%, rgba(22,31,40,1) 100%); */
+    background-color: var(--brand);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -258,7 +270,8 @@
 .left_canalizadores{
     height: 100%;
     width: 100%;
-    background: linear-gradient(0deg, rgba(239,104,72,0.7965860597439545) 0%, rgba(239,104,72,1) 100%);
+    /* background: linear-gradient(0deg, rgba(239,104,72,0.7965860597439545) 0%, rgba(239,104,72,1) 100%); */
+    background-color: var(--brand);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -266,7 +279,8 @@
 .left_carpinteiros{
     height: 100%;
     width: 100%;
-    background: linear-gradient(0deg, rgba(255,156,81,0.8008534850640114) 0%, rgba(255,156,81,1) 100%);
+    /* background: linear-gradient(0deg, rgba(255,156,81,0.8008534850640114) 0%, rgba(255,156,81,1) 100%); */
+    background-color: var(--brand);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -354,7 +368,7 @@
     border-top-right-radius: 0;
 }
 .date_selected{
-    color: #ef6c00;
+    color: var(--action);
     font-weight: 600;
     text-transform: uppercase;
     padding: 10px 0;

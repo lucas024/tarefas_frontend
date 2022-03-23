@@ -34,7 +34,7 @@ const TopSelect = (props) => {
             cursor: "pointer",
             color: "black",
             fontWeight: state.isSelected? 600: 400,
-            backgroundColor: state.isSelected? "rgba(0,0,0,0.5) ": state.isFocused? 'rgba(0,0,0,0.2)': "transparent",
+            backgroundColor: state.isSelected? "#FF785A ": state.isFocused? '#FF785A50': "transparent",
         }),
         menu: base => ({
             ...base,

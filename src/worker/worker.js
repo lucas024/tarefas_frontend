@@ -5,6 +5,7 @@ import ListW from './list';
 import WorkerSidebar from './workerSidebar';
 import { useSearchParams } from 'react-router-dom';
 import Dados from './dados';
+import Requests from './requests';
 
 const Worker = () => {
 
@@ -18,7 +19,7 @@ const Worker = () => {
             return <Schedule/>
         else if(val === "dados")
             return <Dados worker={worker}/>
-        else return <Schedule/>
+        else return <Requests/>
 
     }
     
@@ -31,7 +32,9 @@ const Worker = () => {
         description: "Trato de coisas da casa",
         email: "lucas.a.perry98@gmail.com",
         number: "915072070",
-        IBAN: "PT50 3746 0000 2837 4885 4652 1"
+        iban: "PT50 0027 0000 0001 2345 6783 3",
+        address: "Rua Conselheiro J S Ribeiro, 16 7E",
+        cp: '1600-432'
     }
 
     return (

@@ -31,10 +31,10 @@ const Carta = (props) => {
 
     useEffect(() => {
         if(availPoints > 30){
-            setAvailColor("#00e676")
+            setAvailColor("#FF785A")
         }
         else if(availPoints > 15){
-            setAvailColor("#ffc107")
+            setAvailColor("#BA8376")
         }
         else{
             setAvailColor("#d50000")

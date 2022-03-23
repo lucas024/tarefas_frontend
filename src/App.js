@@ -11,6 +11,7 @@ import './app.css'
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import Worker from './worker/worker';
+import UserReservationPage from './interaction/userReservationPage'
 
 const firebaseConfig = {
   apiKey: "AIzaSyAf2f0loUTxnN61Yrs6BGaQoljVVkm68cs",
@@ -38,6 +39,10 @@ function App() {
             />  
             <Route exact path="/trabalhador" 
               element={<Worker
+                storage={storage}/>}
+            />
+            <Route exact path="/reserva" 
+              element={<UserReservationPage
                 storage={storage}/>}
             />
             <Route path="/" element={<Home/>} />
