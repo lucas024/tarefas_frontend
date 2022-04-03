@@ -4,7 +4,7 @@
 
 :root {
   --neutral: #FFFFFF;
-  --brand: #161f28;
+  --brand: #161F28;
   --action: #FF785A;
   --helper: #BA8376;
 }
@@ -34,7 +34,7 @@ p{
   font-weight: 500;
   width: 100px !important;
   font-family: 'Montserrat', sans-serif !important;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 .react-calendar__navigation__label::first-letter{
   text-transform: capitalize;
@@ -70,6 +70,7 @@ p{
 .react-calendar{
   width: 100%;
   border: 0 !important;
+  border-radius: 5px;
 }
 .react-calendar__navigation__arrow .react-calendar__navigation__prev2-button{
   display: none;
@@ -81,32 +82,46 @@ p{
 .react-calendar__navigation{
   margin-bottom: 0 !important;
 }
-
+.react-calendar__navigation__arrow{
+  font-size: 2rem;
+  padding: 0 20px;
+}
+.react-calendar__navigation__prev2-button{
+  display: none;
+}
+.react-calendar__navigation__next2-button{
+  display: none;
+}
+.react-calendar__navigation button:enabled:focus{
+  background-color: white !important;
+}
 .react-calendar__month-view__days__day--neighboringMonth{
   color: #757575 !important;
+  background-color: rgba(204, 204, 204, 0.097) !important;
 }
 
 /* ===== Scrollbar CSS ===== */
-  /* Firefox */
-  * {
-    scrollbar-width: auto;
-    scrollbar-color: #2c2b2c #ffffff;
-  }
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #2c2b2c #ffffff;
+}
 
-  /* Chrome, Edge, and Safari */
-  *::-webkit-scrollbar {
-    width: 16px;
-  }
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 16px;
+}
 
-  *::-webkit-scrollbar-track {
-    background: #ffffff;
-  }
+*::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 10px;
+}
 
-  *::-webkit-scrollbar-thumb {
-    background-color: #2c2b2c;
-    border-radius: 10px;
-    border: 3px solid #ffffff;
-  }
+*::-webkit-scrollbar-thumb {
+  background-color: #2c2b2c;
+  border-radius: 10px;
+  border: 3px solid #ffffff;
+}
 
 .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
   color: black !important;

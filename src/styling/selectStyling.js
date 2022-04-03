@@ -1,91 +1,87 @@
 import React from 'react';
 import Select from 'react-select'
-import { useNavigate } from 'react-router-dom'
 
 const TopSelect = (props) => {
-
-    const navigate = useNavigate()
-
     
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            margin: 'auto',
-            backgroundColor: state.isSelected? "white": "transparent",
-            borderColor: "#161f28",
-            fontSize: "1rem",
+            backgroundColor: "#161F28",
+            borderColor: "#161F28",
+            fontSize: "0.9rem",
             textTransform: "uppercase",
-            color: "#ffffff",
+            color: "#FF785A",
             fontWeight: 600,
-            transition: "0.5s all ease-in-out",
-            borderRadius: 0,
+            width:"170px",
+            transition: "0.2s all ease-in-out",
+            borderRadius: "10px",
+            borderBottomLeftRadius: state.isFocused? 0: "10px",
+            borderBottomRightRadius: state.isFocused? 0: "10px",
             border: state.isSelected? "1px solid white": 0,
             boxShadow: "white",
             height: "40px",
             "&:hover": {
-                backgroundColor: "rgba(255,255,255,0.2)",
                 cursor: "pointer",
-                transition: "0.5s all ease-in-out",
             }
         }),
         option: (base, state) => ({
             ...base,
             textTransform: "uppercase",
             cursor: "pointer",
-            color: "black",
+            color: "#fff",
             fontWeight: state.isSelected? 600: 400,
             backgroundColor: state.isSelected? "#FF785A ": state.isFocused? '#FF785A50': "transparent",
         }),
         menu: base => ({
             ...base,
             textTransform: "uppercase",
+            width:"170px",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
-            backgroundColor: "rgba(255,255,255,1)",
-            border: "3px solid white",
+            backgroundColor: "#161F28",
             borderTop: 0,
             borderLeft: 0,
-            padding: "0"
+            borderBottomLeftRadius: "10px",
+            borderBottomRightRadius: "10px",
+            padding: "0",
+            zIndex: 4
         }),
         dropdownIndicator : base => ({
             ...base,
-            color: "inherit",
-            transition: "0.5s all ease-in-out",
+            color: "#FF785A",
+            transition: "0.3s all ease-in-out",
             "&:hover": {
-                color: "rgba(255,255,255,1)",
+                color: "#FF785A",
             }
         }),
         container: base => ({
             ...base,
-            width: "100%"
+            width: "100%",
         }),
         singleValue: base => ({
             ...base,
-            color: "white"
+            color: "#fff",
+            margin: "auto"
         }),
         indicatorSeparator : base => ({
             ...base,
-            backgroundColor: "white"
+            backgroundColor: "#FF785A"
         }),
         valueContainer: base => ({
             ...base,
-            padding: "2px 10px 2px 2px"
+            padding: "2px 10px 2px 2px",
         })
     }
 
     const options = [
-        { value: 'eletricistas', label: 'eletricista' },
-        { value: 'canalizadores', label: 'canalizador' },
-        { value: 'carpinteiros', label: 'carpinteiro' }
+        { value: 'eletricista', label: 'eletricista' },
+        { value: 'canalizador', label: 'canalizador' },
+        { value: 'carpinteiro', label: 'carpinteiro' }
     ]
 
-    const selectChange = (newId) => {
-        props.resetDate()
-        navigate({
-            pathname: `/servicos/${newId}`,
-            search: `?p=1`
-        })   
+    const selectChange = (val) => {
+        props.changeWorker(val)
     }
 
     
