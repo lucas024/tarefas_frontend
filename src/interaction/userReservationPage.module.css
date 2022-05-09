@@ -8,14 +8,17 @@
 .flex{
     display: flex;
     width: 100%;
-    height: calc(100vh - 68px);
+    height: calc(100vh - 69px);
+    background-color: var(--neutral);
 }
 .left{
     flex: 1 0 0;
     background-color: var(--brand);
+    min-width: 150px;
 }
 .main{
     flex: 6 0 0;
+    width: 100%;
     overflow-y: scroll;
 }
 
@@ -213,8 +216,8 @@
 }
 .area_label{
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: 2px;
+    bottom: 2px;
     padding: 2px 5px;
     background-color: var(--neutral);
     border-top-left-radius: 10px;
@@ -223,8 +226,8 @@
 }
 .area_label_wrong{
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: 1px;
+    bottom: 1px;
     padding: 2px 5px;
     background-color: #FFBABA;
     border-top-left-radius: 10px;
@@ -232,7 +235,6 @@
     font-weight: 600;
     z-index: 2;
 }
-
 
 .right_detailed_info{
     margin-top: 50px;
@@ -246,9 +248,7 @@
     text-transform: uppercase;
     font-weight: 600;
     font-size: 0.9rem;
-    border-bottom: 2px solid var(--action);
 }
-
 .top_desc{
     width: 100%;
     margin-top: 20px;
@@ -287,8 +287,8 @@
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--neutral);
-    right: 0;
-    bottom: 0;
+    right: 0px;
+    bottom: 0px;
     z-index: 2;
 }
 .contact_area{
@@ -336,6 +336,7 @@
     padding-left: 5px;
     font-size: 0.9rem;
     border-top-left-radius: 0;
+    border-bottom-right-radius: 0;
     font-weight: 600;
     font-family: 'Montserrat', sans-serif;
 }
@@ -357,6 +358,7 @@
     border-top-left-radius: 0;
     font-weight: 600;
     font-family: 'Montserrat', sans-serif;
+    border-bottom-right-radius: 0;
 }
 .bot_input_long:hover{
     border-color: var(--action);

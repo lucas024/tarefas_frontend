@@ -28,3 +28,8 @@
         max-width: 1440px;
     }
 }
+
+.loader{
+    position: absolute;
+    right: 0;
+}

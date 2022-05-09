@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+@import '../index.css';
+
 .navbar{
     background-color: white;
     flex: 0 1 auto;
@@ -28,6 +30,7 @@
 }
 .avatar{
     margin-right: 20px;
+    cursor: pointer;
 }
 .flex_end_publicar{
     display: flex;
@@ -53,16 +56,17 @@
     margin-bottom: 5px;
     cursor: pointer;
     position: relative;
+    font-size: 1.1rem;
 }
 
 .user_login:before {
     content: "";
     position: absolute;
     width: 100%;
-    height: 1px;
+    height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #000;
+    background-color: var(--action);
     visibility: hidden;
     transform: scaleX(0);
     transition: all 0.3s ease-in-out;
@@ -72,3 +76,106 @@
     visibility: visible;
   transform: scaleX(1);
   }
+
+.user_main{
+    position: relative;
+    align-self: flex-end;
+    height: 33px;
+}
+
+.user{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding: 5px 5px 0 5px;
+    border-bottom: none;
+    width: 180px;
+}
+.user:hover > * {
+    color: var(--action);
+}
+.user_text{
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.user_dropdown{
+    position: relative;
+    background-color: white;
+    width: calc(100% + 30px);
+    margin-left: -40px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    -webkit-box-shadow: 0px 4px 6px -3px rgba(0,0,0,0.67); 
+    box-shadow: 0px 4px 6px -3px rgba(0,0,0,0.67);
+    cursor: default;
+    z-index: 2;
+}
+
+
+.user_main:hover > .user > *{
+    color: var(--action);
+}
+.drop_user{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    padding-bottom: 20px;
+    width: 155px;
+    margin: auto;
+}
+.drop_user_text{
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--brand);
+}
+.user_icon{
+    margin-right: 5px;
+    color: var(--brand);
+}
+.drop_div_main{
+    width: 100%;
+    cursor: pointer;
+    padding: 10px 0;
+}
+.drop_div_main:hover{
+    background-color: var(--action);
+
+}
+.drop_div_main:hover{
+    color: white;
+}
+
+.drop_div{
+    display: flex;
+    justify-content: flex-start;
+    width: 155px;
+    margin: auto;
+    padding: 5px;
+}
+.drop_div_special{
+    display: flex;
+    width: 100%;
+}
+.drop_div_text{}
+.drop_div_number{
+    margin-left: 10px;
+}
+.drop_div_number_text{
+    padding: 1px 5px;
+    background-color: rgb(235, 235, 235);
+    border-radius: 50%;
+    color: var(--brand);
+    font-size: 0.9rem;
+}
+.drop_div_notification{
+    height: 7px;
+    width: 7px;
+    border-radius: 50%;
+    background-color: var(--action);
+    align-self: center;
+    margin-left: 20px;
+    border: 1px solid white;
+}

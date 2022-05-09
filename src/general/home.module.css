@@ -27,7 +27,7 @@
     color: rgb(22,31,40);
 }
 .home_back{
-    height: calc(100vh - 68px);
+    height: calc(100vh - 69px);
     display: flex;
 }
 .home_title{

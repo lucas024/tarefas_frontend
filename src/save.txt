@@ -1,0 +1,17 @@
+axios.post(`${props.api_url}/auth/register`, 
+        {
+            name: name,
+            phone: phone,
+            email: email,
+            password: password
+        })
+        .then(res => {
+            localStorage.setItem('user_info', JSON.stringify(res.data))
+            navigate({
+                pathname: `/`,
+                search: ``
+            })
+        })
+        .catch(err => {
+            setEmailWrong("Este e-mail já se encontra associado.")
+        })

@@ -1,0 +1,199 @@
+@import '../index.css';
+
+.auth{
+    width: 100%;
+}
+.auth_main{
+    width: 100%;
+    min-height: calc(100vh - 69px);
+    border-top: 1px solid #ccc;
+    background-color: var(--brand);
+}
+.area{
+    padding-bottom: 20px;
+    width: 400px;
+    background-color: var(--neutral);
+    margin: auto;
+    margin-top: 80px;
+    border-radius: 10px;
+}
+.area_top{
+    display: block;    
+    border-bottom: 1px solid #FF785A50;
+}
+.area_top ul{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+}
+.area_top li{
+    width: 50%;
+    display: inline-block;
+    list-style: none;
+    cursor: pointer;
+}
+.li_active{
+    border-bottom: 3px solid var(--action);
+}
+.li_text{
+    display: block;
+    width: max-content;
+    margin: auto;
+    padding: 20px;
+}
+.li_text_active{
+    display: block;
+    width: max-content;
+    margin: auto;
+    padding: 20px;
+    font-weight: 600;
+    color: var(--brand);
+}
+
+.area_top li:first-child .li_text:before{
+    right: 0;
+    left: auto;
+}
+.area_top li .li_text:before {
+    width: 100%;
+}
+.area_top li .li_text:before {
+    height: 3px;
+    background: #002f34;
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    transition: width 0.5s ease-in-out;
+}
+.align_vert{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.area_bot{
+    width: 80%;
+    margin: auto;
+    
+}
+.area_o2{
+    margin-top: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #FF785A50;
+    position: relative;
+}
+.o2_button{
+    display: flex;
+    padding: 10px 0px;
+    justify-content: center;
+    border: 3px solid var(--brand);
+    border-radius: 10px;
+    width: 100%;
+    margin: auto;
+    cursor: pointer;
+}
+.o2_img{
+    height: 25px;
+    width: 25px;
+}
+.o2_text{
+    font-weight: 600;
+    width: 200px;
+    margin-left: 10px;
+    font-size: 1.1rem;
+}
+.ou{
+    position: absolute;
+    background-color: var(--neutral);
+    width: 20px;
+    height: 20px;
+    padding: 5px 20px;
+    bottom: -15px;
+    left: calc(50% - 30px);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.login_div{
+    width: 100%;
+    margin-top: 40px;
+}
+.login{
+    width: 100%;
+}
+.login_title{
+    font-size: 1rem;
+    color: var(--grey);
+}
+.login_input{
+    padding: 15px 5px;
+    border: none;
+    background-color: var(--lightgrey);
+    font-size: 1.1rem;
+    width: 100%;
+    border-radius: 5px;
+    border-bottom: 3px solid var(--neutral);
+}
+.login_input:focus{
+    border: none;
+    outline: none;
+    border-bottom: 3px solid var(--action);
+}
+.recup_password{
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.recup_password:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.login_button_disabled{
+    margin-top: 20px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: rgb(168, 168, 168);
+    cursor: default;
+}
+.login_button{
+    margin-top: 20px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: var(--brand);
+    cursor: pointer;
+}
+.login_text{
+    padding: 15px 0;
+    margin: auto;
+    width: fit-content;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--neutral);
+}
+.login_button:hover{
+    background-color: var(--action);
+    transition: 0.1s ease-in-out;
+}
+.field_error{
+    font-size: 0.8rem;
+    color: red;
+}
+
+.login_error{
+    background-color: #ffe7e7;
+    border-radius: 5px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.login_error_text{
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 5px;
+    color: #d83232;
+}

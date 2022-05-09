@@ -15,6 +15,8 @@ const TopSelect = (props) => {
             width:"170px",
             transition: "0.2s all ease-in-out",
             borderRadius: "10px",
+            borderTopLeftRadius: "0px",
+            borderBottomRightRadius: "0px",
             borderBottomLeftRadius: state.isFocused? 0: "10px",
             borderBottomRightRadius: state.isFocused? 0: "10px",
             border: state.isSelected? "1px solid white": 0,

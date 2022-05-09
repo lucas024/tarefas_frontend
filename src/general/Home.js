@@ -16,7 +16,7 @@ const Home = () => {
     return(
         <div className={styles.home}>
             <div className={styles.home_back}>
-                <div className={styles.section_elet} onClick={() => navigate('/servicos/eletricistas')}>
+                <div className={styles.section_elet} onClick={() => navigate('/reserva?w=eletricista')}>
                     <a className={styles.link}>
                         <p className={styles.section_title}>
                             ELETRICISTA
@@ -25,7 +25,7 @@ const Home = () => {
                     
                     <img className={styles.section_img} src={elec}/>
                 </div>
-                <div className={styles.section_cana} onClick={() => navigate('/servicos/canalizadores')}>
+                <div className={styles.section_cana} onClick={() => navigate('/reserva?w=canalizador')}>
                     <a className={styles.link}>
                         <p className={styles.section_title}>
                             CANALIZADOR
@@ -33,7 +33,7 @@ const Home = () => {
                     </a>
                     <img className={styles.section_img} src={cana}/>
                 </div>
-                <div className={styles.section_carp} onClick={() => navigate('/servicos/carpinteiros')}>
+                <div className={styles.section_carp} onClick={() => navigate('/reserva?w=carpinteiro')}>
                     <a className={styles.link}>
                     <p className={styles.section_title}>
                         CARPINTEIRO

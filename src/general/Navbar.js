@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import styles from './navbar.module.css'
-import FaceIcon from '@mui/icons-material/Face';
-import { grey } from '@mui/material/colors';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import FaceIcon from '@mui/icons-material/Face';
+import {logout} from '../firebase/firebase'
 
 
 const ObjectID = require("bson-objectid");
 
-const Navbar = () => {
+const Navbar = (props) => {
 
     const navigate = useNavigate()
+    const [dropdown, setDropdown] = useState(false)
 
     useEffect(() => {
-        console.log(new Date('2022-02-21 20:20'))
     }, [])
 
     const generateWorker = () => {
@@ -55,6 +56,12 @@ const Navbar = () => {
         })
     }
 
+    const logoutHandler = () => {
+        setDropdown(false)
+        logout()
+        navigate('/authentication')
+    }
+
 
     return (
         <div className={styles.navbar}>
@@ -62,15 +69,58 @@ const Navbar = () => {
                 <div className={styles.flex_end}>
                     <p className={styles.title} 
                         onClick={() => navigate('/')}>Logo</p>
-                    {/* <p onClick={() => generateWorker()}>generate</p> */}
-                    {/* <p onClick={() => generateReserva()}>reserva</p> */}
                 </div>
                     <div className={styles.flex_end}>
                         <div className={styles.flex_right}>
                             <div className={styles.flex_end}>
-                                <p className={styles.user_login}>Iniciar Sessão</p>
+                                {
+                                    props.user?
+                                    <div className={styles.user_main} 
+                                            onMouseEnter={() => setDropdown(true)} 
+                                            onMouseOut={() => setDropdown(false)}
+                                            onMouseMove={() => setDropdown(true)} 
+                                            >
+                                        <div className={styles.user} >
+                                            <p className={styles.user_text}>Àrea Pessoal</p>
+                                            <KeyboardArrowDownIcon sx={{fontSize: "30px"}} className={styles.user_arrow}/>
+                                        </div>
+                                        <div className={styles.user_dropdown} hidden={!dropdown}>
+                                            <div className={styles.drop_user}>
+                                                <FaceIcon sx={{fontSize: "30px"}} className={styles.user_icon}/>
+                                                <span className={styles.drop_user_text}>{props.user.name}</span>
+                                            </div>
+                                            <div className={styles.drop_div_main} onClick={() => setDropdown(false)}>
+                                                <div className={styles.drop_div}>
+                                                    <div className={styles.drop_div_special}>
+                                                        <div style={{display:"flex"}}>
+                                                            <span className={styles.drop_div_text}>Reservas</span>
+                                                            <span className={styles.drop_div_number}>
+                                                                <span className={styles.drop_div_number_text}>1</span>
+                                                            </span>
+                                                        </div>
+                                                        <span className={styles.drop_div_notification}>
+
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div onClick={() => logoutHandler()} className={styles.drop_div_main} style={{borderTop:"1px solid #ccc", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
+                                                <div className={styles.drop_div}>
+                                                    <span className={styles.drop_div_text}>Logout</span>
+                                                </div>
+                                            </div>
+                                            
+
+                                        </div>
+                    
+                                    </div>
+                                    :
+                                    <p className={styles.user_login} 
+                                        onClick={() => navigate('/authentication')}>
+                                        Iniciar Sessão</p>
+                                }
                             </div>
-                            <FaceIcon className={styles.avatar} sx={{color: grey[900], fontSize: 40}} />
+                            
                     </div>
                 </div>               
             </div>

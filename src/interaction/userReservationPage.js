@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import styles from './userReservationPage.module.css'
 import elec from '../assets/electrician.png'
 import cana from '../assets/worker.png'
@@ -13,6 +14,7 @@ import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Geocode from "react-geocode";
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
+dayjs.locale('pt')
 
 const UserReservationPage = () => {
 
@@ -36,6 +38,8 @@ const UserReservationPage = () => {
     const [emailFocused, setEmailFocused] = useState(false)
     const [address, setAddress] = useState('')
     const [badAddress, setBadAddress] = useState(false)
+    const [wrongAddress, setWrongAddress] = useState(false)
+    const [addressFocused, setAddressFocused] = useState(false)
     const [porta, setPorta] = useState('')
     const [portaFocused, setPortaFocused] = useState(false)
     const [portaWrong, setPortaWrong] = useState(false)
@@ -44,6 +48,14 @@ const UserReservationPage = () => {
  
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio",
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+    const navigate = useNavigate();
+
+    const [searchParams, setSearchParams] = useSearchParams()
+
+    useEffect(() => {
+        setSelectedWorker(Object.fromEntries([...searchParams]).w)
+    }, [searchParams])
 
     useEffect(() => {
         if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
@@ -75,7 +87,8 @@ const UserReservationPage = () => {
         else if(nomeFocused) setNomeWrong(true)
         if(porta.length>0) setPortaWrong(false)
         else if(portaFocused) setPortaWrong(true)
-    }, [nome, phone, email, address, phoneFocused, emailFocused, dateObj, porta])
+        if(address.length===0 && addressFocused) setWrongAddress(true)
+    }, [nome, phone, email, address, phoneFocused, emailFocused, dateObj, porta, portaFocused, addressFocused])
 
 
     const nameFocused = () => {
@@ -197,6 +210,7 @@ const UserReservationPage = () => {
               console.log(lat, lng);
               if(38.84>=lat && lat>=38.68 && -9.06>lng && lng>-9.34){
                   setBadAddress(false)
+                  setWrongAddress(false)
                   setAddress(val.label)
               }
               else{
@@ -263,15 +277,19 @@ const UserReservationPage = () => {
                         <span className={styles.left_title}>Reserva</span>
                     </div>
                     <div className={styles.left_description_area}>
-                        <p className={styles.left_description}>
-                            Nesta página pode fazer um <span className={styles.action}>pedido de reserva</span> para o serviço 
-                            de que precisa. 
+                        <span className={styles.left_description}>
                             <p>
-                            Após fazer o pedido, receberá uma <span className={styles.action}>notificação </span>
-                            e um <span className={styles.action}>e-mail</span> (+/- 30 minutos) para confirmar o dia 
-                            e horário por nós proposto.
+                            Nesta página pode fazer um <span className={styles.action}>pedido de reserva</span> para o serviço 
+                            de que precisa.<br/>
+                            <br></br>
                             </p>
-                        </p>
+                            
+                            <p>
+                                Após fazer o pedido, receberá uma <span className={styles.action}>notificação </span>
+                                e um <span className={styles.action}>e-mail</span> (+/- 30 minutos) para confirmar o dia 
+                                e horário por nós proposto que se melhor enquadre na sua preferência.
+                            </p>
+                        </span>
                     </div>
                     
                     <div className={styles.left_list}>
@@ -298,17 +316,19 @@ const UserReservationPage = () => {
                                 <div className={styles.left_select}>
                                     <TopSelect
                                         id={selectedWorker}
-                                        changeWorker={val => setSelectedWorker(val)}
+                                        changeWorker={val => {
+                                            navigate(`/reserva?w=${val}`)
+                                            setSelectedWorker(val)}}
                                     />
                                 </div>
                             </div>
                             <div className={styles.top_right}>
                                 <div className={styles.top_right_flex}>
                                     <span className={styles.right_top_date} onClick={() => setShowCalendar(true)}>
-                                            <span className={styles.area_label}>Dia<span className={styles.asterisc}>*</span></span>
+                                            <span className={styles.area_label} style={{right:0, bottom:0}}>Dia<span className={styles.asterisc}>*</span></span>
                                         <span className={dateObj?styles.right_top_date_val:styles.right_top_date_val_unselected}>
                                             {   
-                                                dateObj?dateExtense:'DD/MM'
+                                                dateObj?dateExtense:'DATA'
                                             }</span>
                                     </span>
                                     <span className={styles.right_top_empty}></span>
@@ -317,18 +337,18 @@ const UserReservationPage = () => {
                                     <CallMissedOutgoingIcon className={styles.arrow} sx={{fontSize:"25px"}}/>
                                     <span className={styles.right_bot_hour_start}  onClick={() => setShowStart(true)}
                                             style={{borderRight:startTime&&endTime?"1px solid #FF785A":startTime?"1px dashed #FF785A":"1px dashed #FFF"}}>
-                                        <span className={styles.area_label}>De</span>
+                                        <span className={styles.area_label} style={{right:0, bottom:0}}>De</span>
                                         <span className={startTime?styles.right_top_date_val:styles.right_top_date_val_unselected}>
                                             {
-                                                startTime?startTime:"HH:MM"
+                                                startTime?startTime:"HORA INICIAL"
                                             }
                                         </span>
                                     </span>
                                     <span className={styles.right_bot_hour_finish} onClick={() => setShowEnd(true)}>
-                                        <span className={styles.area_label}>Até</span>
+                                        <span className={styles.area_label} style={{right:0, bottom:0}}>Até</span>
                                         <span className={endTime?styles.right_top_date_val:styles.right_top_date_val_unselected}>
                                             {
-                                                endTime?endTime:"HH:MM"
+                                                endTime?endTime:"HORA FINAL"
                                             }
                                         </span>
                                     </span>
@@ -358,8 +378,8 @@ const UserReservationPage = () => {
                                     <input onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
                                 </div>
                                 <div className={styles.bot_address_flex}>
-                                    <div className={styles.bot_input_div_search}>
-                                        <span className={badAddress?styles.area_label_wrong:styles.area_label_inverse}>Morada<span className={styles.asterisc}>*</span></span>
+                                    <div className={styles.bot_input_div_search} onClick={() => setAddressFocused(true)}>
+                                        <span className={badAddress||wrongAddress?styles.area_label_wrong:styles.area_label_inverse}>Morada<span className={styles.asterisc}>*</span></span>
                                         <GooglePlacesAutocomplete
                                         apiKey="AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk"
                                         autocompletionRequest={{
@@ -396,8 +416,8 @@ const UserReservationPage = () => {
                                                 ...provided,
                                                 width: "100%",
                                                 borderRadius: "10px",
-                                                borderTopLeftRadius: "0",
-                                                borderBottomRightRadius: "0",
+                                                borderTopLeftRadius: "0px",
+                                                borderBottomRightRadius: "0px",
                                                 height: "40px",
                                                 fontSize:"0.8rem",
                                                 border: state.isFocused?"2px solid #FF785A":"2px solid #161F28",
@@ -409,7 +429,7 @@ const UserReservationPage = () => {
                                             }),
                                             container: (provided, state) => ({
                                                 ...provided,
-                                                border: state.isFocused?"none":"none"
+                                                border: state.isFocused?"none":"none",
                                             }),
                                             dropdownIndicator: () => ({
                                                 color:"#fff"
@@ -449,7 +469,7 @@ const UserReservationPage = () => {
                             
                             <div className={styles.right_detailed_info}>
                                 <span className={styles.searchInfo}>Pedir<span className={styles.back_cor}>{selectedWorker}</span>
-                                    <span>para dia<span className={styles.back_cor}>{dateObj?dateObj.getDate():"DD"} de {dateObj?monthNames[dateObj.getMonth()]:"MM"}</span></span>
+                                    <span>para dia<span className={styles.back_cor}>{dateObj?`${dateObj.getDate()} de ${monthNames[dateObj.getMonth()]}`:"__"}</span></span>
                                     {startTime!==null&&endTime!==null?
                                         <span>entre as<span className={styles.back_cor}><span className={styles.cor}>{startTime} </span>
                                                 - <span className={styles.cor}>{endTime}</span></span>.</span>
