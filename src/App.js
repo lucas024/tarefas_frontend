@@ -16,6 +16,7 @@ import {auth} from './firebase/firebase'
 import axios from 'axios'
 import ClipLoader from "react-spinners/BounceLoader";
 import { css } from "@emotion/react";
+import User from './user/user';
 
 const override = css`
   display: block;
@@ -46,23 +47,11 @@ function App() {
   
 
   useEffect(() => {
-    if(userGoogle && !user){
+    setLoading(true)
+    if(userGoogle){
       axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
-        if(res.data == null){
-          axios.post(`${api_url}/auth/register`, 
-              {
-                  name: userGoogle.displayName,
-                  phone: "",
-                  email: userGoogle.email,
-                  google_uid: userGoogle.uid,
-                  address: "",
-                  photoUrl: userGoogle.photoURL
-              }).then(result => {
-                setUser(result.data.ops[0])
-                setLoading(false)
-              })
-        }
-        else{
+        if(res.data !== null){
+          console.log(res.data);
           setUser(res.data)
           setLoading(false)
         }
@@ -91,10 +80,20 @@ function App() {
               />
               <Route exact path="/reserva/*" 
                 element={<UserReservationPage
+                  user={user}
+                  api_url={api_url}
+                  loading={loading}
+                  loadingHandler={bool => setLoading(bool)}
+                  />}
+              />
+              <Route exact path="/user" 
+                element={<User
+                  user={user}
                   />}
               />
               <Route exact path="/authentication/*" 
                 element={<Auth
+                  setUser = {user => setUser(user)}
                   api_url={api_url}
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}/>}

@@ -4,15 +4,18 @@ import facebook from '../assets/facebook.png'
 import google from '../assets/google.png'
 import validator from 'validator'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
     registerWithEmailAndPassword, 
     loginWithEmailAndPassword,
     fetchSignInMethodsForEmailHandler,
     auth,
-    provider} from '../firebase/firebase'
+    provider,
+    providerFacebook
+    } from '../firebase/firebase'
 import {
     GoogleAuthProvider,
+    FacebookAuthProvider,
     signInWithPopup,
     } from "firebase/auth"
 
@@ -20,9 +23,9 @@ const Auth = (props) => {
 
     const [selectedAuth, setSelectedAuth] = useState(1)
 
-    const [emailLogin, setEmailLogin] = useState("lucas.a.perry98@gmail.com")
+    const [emailLogin, setEmailLogin] = useState("")
     const [emailLoginWrong, setEmailLoginWrong] = useState(false)
-    const [passwordLogin, setPasswordLogin] = useState("asasasas")
+    const [passwordLogin, setPasswordLogin] = useState("")
     const [loginError, setLoginError] = useState(null)
 
     const [email, setEmail] = useState("")
@@ -40,6 +43,18 @@ const Auth = (props) => {
     const [phoneFocused, setPhoneFocused] = useState(false)
 
     const navigate = useNavigate()
+
+    const location = useLocation()
+
+
+    useEffect(() => {
+        if(location.state && location.state.carry){
+            setSelectedAuth(0)
+            setName(location.state.nameCarry)
+            setPhone(location.state.phoneCarry)
+            setEmail(location.state.emailCarry)
+        }
+    }, [location])
 
     useEffect(() => {
         if(name.length>1){
@@ -70,6 +85,24 @@ const Auth = (props) => {
         }
     }, [password])
 
+    const navigateHandler = () => {
+        console.log("yaya");
+        navigate(`/reserva?w=${location.state.worker}`,
+            {
+                state: {
+                    carry: true,
+                    date: location.state.date,
+                    init: location.state.init,
+                    end: location.state.end,
+                    desc: location.state.desc,
+                    nameCarry: name,
+                    phoneCarry: phone,
+                    emailCarry: email,
+                }
+            })
+    }
+    
+
     const loginHandler = () => {
         props.loadingHandler(true)
         setEmailLoginWrong(false)
@@ -85,10 +118,13 @@ const Auth = (props) => {
                         else if(res[0] === "password"){
                             loginWithEmailAndPassword(emailLogin, passwordLogin)
                             .then(() => {
-                                navigate({
-                                    pathname: `/`,
-                                    search: ``
-                                })
+                                if(location.state && location.state.carry)
+                                {
+                                    navigateHandler()
+                                } 
+                                else{
+                                    navigate('/')
+                                }
                                 props.loadingHandler(false)
                             })
                             .catch(err => {
@@ -124,10 +160,20 @@ const Auth = (props) => {
                             email: email,
                             google_uid: res.user.uid,
                             address: "",
-                            photoURL: ""
+                            photoURL: "",
                         })
-                        .then(() => {
+                        .then(res => {
+                            console.log(res.data)
+                            props.setUser(res.data.ops[0])
                             props.loadingHandler(false)
+                            if(location.state && location.state.carry)
+                            {
+                                navigateHandler()
+                            } 
+                            else{
+                                navigate('/')
+                            }
+                            
                         })
                         .catch(() => {
                             props.loadingHandler(false)
@@ -146,6 +192,9 @@ const Auth = (props) => {
             }
         else{
             props.loadingHandler(false)
+            if(!validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
+                setPasswordWrong(true)
+            }
         }
     }
 
@@ -198,13 +247,32 @@ const Auth = (props) => {
         props.loadingHandler(true)
         signInWithPopup(auth, provider)
         .then((result) => {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            // The signed-in user info.
             const user = result.user;
-            // ...
-            navigate('/')
+
+            axios.get(`${props.api_url}/auth/get_user`, { params: {google_uid: user.uid} }).then(res => {
+                if(res.data == null){
+                  axios.post(`${props.api_url}/auth/register`, 
+                      {
+                          name: user.displayName,
+                          phone: "",
+                          email: user.email,
+                          google_uid: user.uid,
+                          address: "",
+                          photoUrl: user.photoURL
+                      }).then(result => {
+                            console.log(result);
+                            props.setUser(result.data.ops[0])
+                            props.setLoading(false)
+                      })
+                }
+            })
+            if(location.state && location.state.carry)
+            {
+                navigateHandler()
+            } 
+            else{
+                navigate('/')
+            }
         }).catch((error) => {
             // Handle Errors here.
             const errorCode = error.code;
@@ -214,6 +282,55 @@ const Auth = (props) => {
             // The AuthCredential type that was used.
             const credential = GoogleAuthProvider.credentialFromError(error);
             // ...
+            props.loadingHandler(false)
+        });
+    }
+
+    const signInWithPopupFacebookHandler = () => {
+        props.loadingHandler(true)
+        signInWithPopup(auth, providerFacebook)
+        .then((result) => {
+            // The signed-in user info.
+            const user = result.user;
+
+            axios.get(`${props.api_url}/auth/get_user`, { params: {google_uid: user.uid} }).then(res => {
+                if(res.data == null){
+                  axios.post(`${props.api_url}/auth/register`, 
+                      {
+                          name: user.displayName,
+                          phone: "",
+                          email: user.email,
+                          google_uid: user.uid,
+                          address: "",
+                          photoUrl: user.photoURL
+                      }).then(result => {
+                            console.log(result);
+                            props.setUser(result.data.ops[0])
+                            props.setLoading(false)
+                      })
+                }
+            })
+
+            if(location.state && location.state.carry)
+            {
+                navigateHandler()
+            } 
+            else{
+                navigate('/')
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.email;
+            // The AuthCredential type that was used.
+            const credential = FacebookAuthProvider.credentialFromError(error);
+
+            // ...
+            props.loadingHandler(false)
         });
     }
 
@@ -237,7 +354,7 @@ const Auth = (props) => {
                         <div>
                             <div className={styles.area_bot}>
                                 <div className={styles.area_o2}>
-                                    <div className={styles.o2_button}>
+                                    <div className={styles.o2_button} onClick={() => signInWithPopupFacebookHandler()}>
                                         <img src={facebook} className={styles.o2_img}></img>
                                         <span className={styles.align_vert}>
                                             <span className={styles.o2_text}>Entrar com Facebook</span>
@@ -292,12 +409,16 @@ const Auth = (props) => {
                                     if(!props.loading) loginHandler()}}>
                                     <p className={styles.login_text}>Efectue o seu login</p>
                                 </div>
+                                <div className={styles.bottom_switch}>
+                                    <span className={styles.bottom_switch_text}>Não tens conta? </span>
+                                    <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Registar</span>
+                                </div>
                             </div>
                         </div>
                         :
                         <div className={styles.area_bot}>
                             <div className={styles.area_o2}>
-                                <div className={styles.o2_button}>
+                                <div className={styles.o2_button} onClick={() => signInWithPopupFacebookHandler()}>
                                     <img src={facebook} className={styles.o2_img}></img>
                                     <span className={styles.align_vert}>
                                         <span className={styles.o2_text}>Entrar com Facebook</span>
@@ -388,6 +509,10 @@ const Auth = (props) => {
                             <div className={!props.loading?styles.login_button:styles.login_button_disabled} style={{marginTop:"20px"}} onClick={() => {
                                     if(!props.loading) registerHandler()}}>
                                 <p className={styles.login_text}>Registar no ________</p>
+                            </div>
+                            <div className={styles.bottom_switch}>
+                                <span className={styles.bottom_switch_text}>Já tens conta? </span>
+                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(1)}>Login</span>
                             </div>
                         </div>
                     }

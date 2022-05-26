@@ -85,7 +85,9 @@ const Navbar = (props) => {
                                             <KeyboardArrowDownIcon sx={{fontSize: "30px"}} className={styles.user_arrow}/>
                                         </div>
                                         <div className={styles.user_dropdown} hidden={!dropdown}>
-                                            <div className={styles.drop_user}>
+                                            <div className={styles.drop_user} onClick={() => {
+                                                                                        setDropdown(false)
+                                                                                        navigate('/user')}}>
                                                 <FaceIcon sx={{fontSize: "30px"}} className={styles.user_icon}/>
                                                 <span className={styles.drop_user_text}>{props.user.name}</span>
                                             </div>

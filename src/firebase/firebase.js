@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app"
 import {
   GoogleAuthProvider,
+  FacebookAuthProvider,
   getAuth,
   signInWithRedirect,
   getRedirectResult,
@@ -28,6 +29,7 @@ const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 auth.languageCode = 'pt';
 const provider = new GoogleAuthProvider();
+const providerFacebook = new FacebookAuthProvider();
 
 const registerWithEmailAndPassword = async (email, password) => {
   var result = await createUserWithEmailAndPassword(auth, email, password)
@@ -52,6 +54,7 @@ const fetchSignInMethodsForEmailHandler = async (email) => {
 export {
   auth,
   provider,
+  providerFacebook,
   fetchSignInMethodsForEmailHandler,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,

@@ -42,6 +42,7 @@
     "react-spinners": "^0.11.0",
     "react-time-picker": "^4.5.0",
     "react-tooltip": "^4.2.21",
+    "react-transition-group": "^4.4.2",
     "rxjs": "^7.5.2",
     "uuid": "^8.3.2",
     "validator": "^13.7.0",

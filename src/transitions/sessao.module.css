@@ -1,0 +1,20 @@
+@import '../index.css';
+
+.sessao{
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    padding: 10px;
+    max-width: 150px;
+    text-align: center;
+    background-color: var(--brand);
+    color: var(--neutral);
+    border-bottom: 4px solid var(--action);
+    border-radius: 10px;
+    cursor: default;
+    z-index: 2;
+}
+
+.sessao_text{
+
+}

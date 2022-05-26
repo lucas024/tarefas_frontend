@@ -1,0 +1,205 @@
+@import '../index.css';
+
+.reserva{
+    height: 100%;
+    width: 90%;
+    margin: auto;
+}
+.reserva_top{
+    display: flex;
+    margin-top: 30px;
+    height: fit-content;
+}
+.top_img{
+    width: 200px;
+    height: 200px;
+    border: 5px solid var(--brand);
+}
+.top_text{
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 20px;
+    width: 50%;
+}
+.text_name{
+    font-weight: 600;
+    font-size: 1.8rem;
+    text-decoration: 3px underline var(--action);
+    text-underline-offset: 2px;
+}
+.text_desc{
+    min-height: 80px;
+    font-size: 1rem;
+}
+.middle{
+    margin-top: 30px;
+}
+.top_title{
+    font-size: 1.8rem;
+    color: var(--brand);
+    font-weight: 600;
+    align-self: center;
+    display: inline-block;
+    margin-top: 40px;
+    text-transform: uppercase;
+}
+.middle_title{
+    font-size: 1.5rem;
+    color: var(--brand);
+    font-weight: 600;
+    align-self: center;
+    display: inline-block;
+}
+.middle_button_div{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.button_area{
+    width: fit-content;
+    display: flex;
+    align-content: center;
+}
+.button_proceed{
+    height: 35px;
+    display: flex;
+    border: 5px solid #fdd835;
+    border-bottom: none;
+    background-color: #fdd83550;
+    border-radius: 5px;
+    padding: 0 5px;
+    -webkit-box-shadow: inset 0px 0px 5px -1px #000000; 
+    box-shadow: inset 0px 0px 5px -1px #000000;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+.button_proceed_text{
+    align-self: center;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.button_cancel_area{
+    background-color: rgb(255, 124, 124);
+    height: 45px;
+    width: 45px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.button_cancel_area:hover{
+    background-color: rgb(255, 52, 52);
+    transition: 300ms;
+}
+.button_cancel{
+    height: 45px;
+    width: 45px;
+}
+
+.middle_main{
+    background-color: var(--brand);
+    border: 5px solid #fdd835;
+    border-radius: 5px;
+    border-top-right-radius: 0px;
+}
+.middle_flex{
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    margin: auto;
+    font-size: 3rem;
+    margin-top: 10px;
+}
+.middle_aux_text{
+    color: var(--action);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    align-self: flex-end;
+}
+.middle_day{
+    display: flex;
+}
+.middle_day_text{
+    color: var(--neutral);
+    font-weight: 600;
+    text-transform: uppercase;
+    align-self: flex-end;
+}
+.hours_flex{
+    display: flex;
+    color: var(--neutral);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.divider{
+    width: 90%;
+    height: 2px;
+    background-color: var(--neutral);
+    margin: 20px auto;
+}
+.hours_start{
+
+}
+.hours_divide{
+    margin: 0 5px;
+}
+.hours_end{}
+.middle_worker{}
+.worker_img{}
+.worker_text{}
+.middle_info{
+    width: 90%;
+    margin: auto;
+}
+.middle_info_zone{
+    border-left: 3px solid var(--neutral);
+}
+.middle_desc{
+    width: 100%;
+    height: 60px;
+    border-radius: 5px;
+    border: 2px solid var(--brand);
+    resize: none;
+    font-size: 0.9rem;
+    padding: 2px;
+    font-family: inherit;
+    z-index: -1;
+    font-weight: 600;
+    border: 2px solid var(--brand);
+    color: var(--neutral);
+}
+.middle_aux_symbol{
+    color: var(--action);
+    height: 25px;
+    width: 25px;
+    align-self: center;
+}
+.middle_info_divider{
+    width: 50px;
+    height: 3px;
+    background-color: var(--neutral);
+    margin: 15px 0;
+}
+.middle_info_flex{
+    display: flex;
+    padding: 0 5px;
+}
+.middle_info_text{
+    color: var(--neutral);
+    font-size: 1.8rem;
+    margin-left: 2px;
+}
+.desc{
+    width: 100%;
+    
+}
+.middle_location{}
+.bottom{}
+.bottom_flex{}
+.money{}
+.money_label{}
+.money_value{}
+.details{}
+.bottom_button{}
+.button_text{}

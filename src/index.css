@@ -16,6 +16,8 @@ input:-webkit-autofill:active {
   --grey: #71848d;
   --lightgrey: #f2f4f5;
   --check: #6EB241;
+  --yellow: #fdd835;
+  --red: #8F1106;
 }
 
 html { 
@@ -149,4 +151,26 @@ p{
 
 .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root:hover {
   background-color: #65b5f633 !important;
+}
+
+
+.transition-enter{
+  opacity: 0;
+}
+.transition-enter-active {
+  opacity: 1;
+  transform: translateY(50%);
+  transition: 1200ms;
+}
+.transition-enter-done{
+  transform: translateY(50%);
+}
+.transition-exit {
+  opacity: 1;
+  transform: translateY(50%);
+}
+.transition-exit-active {
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: 400ms;
 }

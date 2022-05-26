@@ -197,3 +197,21 @@
     padding: 5px;
     color: #d83232;
 }
+
+.bottom_switch{
+    margin-top: 10px;
+    font-size: 0.9rem;
+    text-align: right;
+}
+.bottom_switch_text{
+    cursor: default;
+}
+.bottom_switch_button{
+    cursor: pointer;
+    font-weight: 600;
+
+}
+.bottom_switch_button:hover{
+    text-decoration: underline;
+    color: var(--action);
+}

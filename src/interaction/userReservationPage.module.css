@@ -20,6 +20,7 @@
     flex: 6 0 0;
     width: 100%;
     overflow-y: scroll;
+    position: relative;
 }
 
 .reservar{
@@ -58,6 +59,17 @@
     justify-content: space-between;
     flex: 1 0 0;
     position: relative;
+}
+.clear_time{
+    position: absolute;
+    right: 0;
+    top: -7px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+.clear_time:hover{
+    text-decoration: underline;
 }
 .right_top_date{
     width: 50%;
@@ -147,7 +159,7 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
-    z-index: 2;
+    z-index: 4;
 }
 .calendar_area{
     width: fit-content;
@@ -291,6 +303,11 @@
     bottom: 0px;
     z-index: 2;
 }
+.devider{
+    height: 2px;
+    background-color: var(--brand);
+    margin-top: 30px;
+}
 .contact_area{
     background-color: var(--brand);
     padding: 5px;
@@ -298,6 +315,9 @@
     border-top-left-radius: 0;
     border-bottom-right-radius: 0;
     margin-top: 10px;
+    margin-bottom: 25px;
+    width: 40%;
+    min-width: 450px;
 }
 .bottom{
     margin-top: 25px;
@@ -318,6 +338,7 @@
     width: max-content;
     margin-top: 10px;
     width: 550px;
+    z-index: 3;
 }
 .bot_address_flex{
     position: relative;
@@ -339,6 +360,14 @@
     border-bottom-right-radius: 0;
     font-weight: 600;
     font-family: 'Montserrat', sans-serif;
+}
+.bot_input_short:disabled{
+    background-color: rgb(169, 169, 169);
+    border: none;
+}
+.bot_input_long:disabled{
+    background-color: rgb(169, 169, 169);
+    border: none;
 }
 
 .bot_input_short:hover{
@@ -478,14 +507,14 @@
     .address_not_allowed{
         position: absolute;
         right: 0;
-        top: -35px;
+        bottom: -45px;
         width: 150px;
     }
     .address_not_allowed_text{
         font-size: 0.7rem;
     }
     .bot_input_div_search{
-        width: 500px;
+        width: 400px;
     }
     .left_description{
         font-size: 0.8rem;
@@ -500,3 +529,20 @@
         font-size: 0.7rem;
     }
 }
+
+.transition{
+    opacity: 0.2;
+    background-color: orange;
+  }
+  .transition-enter-active {
+    opacity: 1;
+    background-color: black;
+    transition: opacity 200ms;
+  }
+  .transition-exit {
+    opacity: 1;
+  }
+  .transition-exit-active {
+    opacity: 0;
+    transition: opacity 200ms;
+  }

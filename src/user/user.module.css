@@ -1,0 +1,47 @@
+@import '../index.css';
+
+.worker{
+    width: 100%;
+    height: 100%;
+    border-top: 1px solid #ccc;
+}
+.flex{
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 68px);
+}
+.left{
+    flex: 1 0 40px;
+    border-right: 1px solid #ccc;
+    background-color: var(--brand);
+    height: 100%;
+}
+.right{
+    flex: 6 0 0;
+}
+.worker_area{
+    width: 100%;
+}
+.area_tabs_div{
+    display: flex;
+}
+.tab{
+    padding: 8px 15px;
+    clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+    background-color: #65b5f691;
+    cursor: pointer;
+    color: white;
+}
+.selectedTab{
+    padding: 8px 15px;
+    clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+    background-color: #65b5f6;
+    cursor: pointer;
+    border-bottom: 5px solid #65b5f6;
+    color: white;
+    font-weight: 600;
+}
+.area{
+
+}
+

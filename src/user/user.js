@@ -1,45 +1,29 @@
 import React, { useState } from 'react'
+import Reserva from './reserva'
 import styles from './user.module.css'
+import UserSidebar from './userSidebar'
+import { useSearchParams } from 'react-router-dom';
 
-const User = () => {
+const User = (props) => {
 
-    const [currentArea, updateCurrentArea] = useState()
+    const [searchParams] = useSearchParams()
 
     const displayCurrentArea = () => {
-
+        let val = Object.fromEntries([...searchParams]).t
+        if(val === "upcreservation")
+            return <Reserva user={props.user}/>
     }
 
     return (
         <div className={styles.worker}>
             <div className={styles.flex}>
-                <div className={styles.left}></div>
+                <div className={styles.left}>
+                    <UserSidebar user={props.user} />
+                </div>
                 <div className={styles.right}>
-                    <div className={styles.right_top}>
-                        <div className={styles.top_flex}>
-                            <div className={styles.worker_data_flex}>
-                                <img className={styles.worker_img}/>
-                                <div className={styles.worker_personal_flex_column}>
-                                    <span className={styles.name}></span>
-                                    <div className={styles.rating_div}>
-                                        <img className={styles.star}/>
-                                        <span className={styles.rating}></span>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                            <div className={styles.worker_desc_div}>
-                                <span className={styles.worker_desc}></span>
-                            </div>
-                        </div>
-                    </div>
                     <div className={styles.worker_area}>
-                        <div className={styles.area_tabs_div}>
-                            <span>Reservas</span>
-                            <span></span>
-                            <span></span>
-                        </div>
                         <div className={styles.area}>
-                            {displayCurrentArea}
+                            {displayCurrentArea()}
                         </div>
                     </div>
                 </div>
