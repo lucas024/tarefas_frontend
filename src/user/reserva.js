@@ -1,9 +1,6 @@
 import React, {useEffect} from 'react'
 import styles from './reserva.module.css'
-import no_pic from '../assets/user.png'
-import ClearIcon from '@mui/icons-material/Clear';
-import EngineeringIcon from '@mui/icons-material/Engineering';
-import PinDropIcon from '@mui/icons-material/PinDrop';
+import no_pic from '../assets/worker_default.png'
 const Reserva = (props) => {
 
 
@@ -11,7 +8,7 @@ const Reserva = (props) => {
         <div className={styles.reserva}>
             <p className={styles.top_title}>Reserva</p>
             <div className={styles.reserva_top}>
-                <img className={styles.top_img} src={props.user&&props.user.photoUrl?props.user.photoUrl:no_pic}></img>
+                <img className={styles.top_img} ></img>
                 <div className={styles.top_text}>
                     <span className={styles.text_name}>António Silva</span>
                     <span className={styles.text_desc}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ut nulla ultrices, finibus leo eu, placerat tortor. Nunc diam eros, vestibulum molestie leo in, viverra lacinia sem. Donec nec eros condimentum, eleifend quam sed, imperdiet sem. Morbi iaculis nunc felis. Ut sed laoreet enim, vel viverra sapien. Sed ex sapien.</span>
@@ -52,27 +49,28 @@ const Reserva = (props) => {
                         <span className={styles.worker_text}></span>
                     </div> */}
                     <div className={styles.middle_info}>
-                        <span className={styles.middle_aux_text}>Detalhes da reserva</span>
+                        <span className={styles.middle_aux_text} style={{color:"white", fontSize:"0.9rem"}}>Detalhes da reserva</span>
                         <div className={styles.middle_info_zone}>
-                            {/* <div className={styles.middle_desc}>
-                                <span className={styles.desc} disable={true}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ut nulla ultrices, finibus leo eu, placerat tortor. Nunc diam eros, vestibulum molestie leo in, viverra lacinia sem. Donec nec eros condimentum, eleifend quam sed, imperdiet sem. Morbi iaculis nunc felis. Ut sed laoreet enim, vel viverra sapien. Sed ex sapien.</span>
-                            </div> */}
                             <div className={styles.middle_info_flex} style={{paddingTop:"15px"}}>
-                                <EngineeringIcon className={styles.middle_aux_symbol}/>
-                                <span className={styles.middle_info_text}>António Silva</span>
+                                <span className={styles.middle_aux_text_minor}>Descrição</span>
+                                <span className={styles.middle_info_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ut nulla ultrices, finibus leo eu, placerat tortor. Nunc diam eros, vestibulum molestie leo in, viverra lacinia sem. Donec nec eros condimentum, eleifend quam sed, imperdiet sem. Morbi iaculis nunc felis. Ut sed laoreet enim, vel viverra sapien. Sed ex sapien.</span>
                             </div>
-                            <div className={styles.middle_info_divider}></div>
-                            <div className={styles.middle_info_flex}>
-                                <PinDropIcon className={styles.middle_aux_symbol}/>
-                                <span className={styles.middle_info_text}>R. Conselheiro Jose Silvestre Ribeiro</span>
-                            </div>
-                            <div className={styles.middle_location}>
-                                {/* TODO */}
+                            <div className={styles.middle_info_flex} style={{paddingTop:"15px"}}>
+                                <span className={styles.middle_aux_text_minor}>Localização</span>
+                                <span className={styles.middle_info_text}>R. Conselheiro José Silvestre Ribeiro, 16</span>
                             </div>
                         </div>
                         
                     </div>
-                    
+                    <div className={styles.middle_info} style={{marginTop:"30px", marginBottom:"15px"}}>
+                        <span className={styles.middle_aux_text} style={{color:"white", fontSize:"0.9rem"}}>Profissional</span>
+                        <div className={styles.middle_info_zone}>
+                            <div className={styles.middle_info_flex} style={{paddingTop:"5px"}}>
+                                <span className={styles.middle_info_text_worker}>António Silva</span>
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
                 <div className={styles.bottom}>
                     <div className={styles.bottom_flex}>
@@ -85,7 +83,7 @@ const Reserva = (props) => {
                         </div>
                     </div>
                     <div className={styles.bottom_button}>
-                        <span className={styles.button_text}></span>
+                        <span className={styles.button_text}>Confirmar horário</span>
                     </div>
                 </div>
             </div>
