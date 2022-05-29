@@ -1,12 +1,23 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import styles from './reserva.module.css'
 import no_pic from '../assets/worker_default.png'
+
 const Reserva = (props) => {
 
+    const [type, setType] = useState(0)
+    const [typeColor, setTypeColor] = useState("#A9A9A9")
+
+    useEffect(() => {
+        if(type===0) {setTypeColor("#a9a9a9")}
+        if(type===1) {setTypeColor("#fdd835")}
+    }, [type])
 
     return (
         <div className={styles.reserva}>
-            <p className={styles.top_title}>Reserva</p>
+            <div className={styles.button_cancel_area}>
+                <span className={styles.button_cancel}>Cancelar Reserva</span>
+            </div>
+            <p className={styles.top_title} onClick={() => setType(1)}>Reserva</p>
             <div className={styles.reserva_top}>
                 <img className={styles.top_img} ></img>
                 <div className={styles.top_text}>
@@ -19,18 +30,25 @@ const Reserva = (props) => {
                 <div className={styles.middle_button_div}>
                     <p className={styles.middle_title}></p>
                     <div className={styles.button_area}>
-                        <div className={styles.button_proceed}>
+                        <div className={styles.button_proceed} style={{borderColor:typeColor, backgroundColor:typeColor+"50"}}>
                             <span className={styles.button_proceed_text}>
-                                Por Confirmar
+                                {
+                                    type===1?"Por Confirmar":
+                                        "Pendente"
+                                    }
                             </span>
                         </div>
-                        {/* <span className={styles.button_cancel_area}>
-                            <ClearIcon className={styles.button_cancel}/>
-                        </span> */}
                     </div>
                     
                 </div>
-                <div className={styles.middle_main}>
+                <div className={styles.middle_main} style={{borderColor:typeColor}}>
+                    {
+                        type===0?
+                        <div className={styles.middle_pendent_frontdrop}>
+                            <span className={styles.middle_front_text}>PENDENTE</span>
+                        </div>
+                        :null
+                    }
                     <div className={styles.middle_flex}>
                         <div className={styles.middle_day}>
                         <span className={styles.middle_aux_text}>dia</span>
@@ -82,9 +100,25 @@ const Reserva = (props) => {
                             {/* TODO */}
                         </div>
                     </div>
-                    <div className={styles.bottom_button}>
-                        <span className={styles.button_text}>Confirmar horário</span>
+                    <div>
+                        <span className={styles.bottom_por_confirmar_text}>
+                            {
+                                type===1?
+                                    "Feliz com o dia e horário proposto?"
+                                :"Pedido de reserva a ser processado"
+                            }
+                            </span>
                     </div>
+                    <div className={type===0?styles.bottom_button_disabled:styles.bottom_button} style={{backgroundColor:typeColor}}>
+                        <span className={styles.button_text}>{
+                            type===1?
+                                "Confirmar Reserva"
+                                :"PENDENTE"
+                        }</span>
+                    </div>
+                    {/* <div className={styles.button_cancel_area_bottom}>
+                        <span className={styles.button_cancel_bottom}>Cancelar Reserva</span>
+                    </div> */}
                 </div>
             </div>
         </div>

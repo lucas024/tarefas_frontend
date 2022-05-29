@@ -4,10 +4,10 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import Home from './general/Home'
-import Navbar from './general/Navbar'
-import Servicos from './servicos/Servicos'
-import './App.css'
+import Home from './general/home'
+import Navbar from './general/navbar'
+import Servicos from './servicos/servicos'
+import './app.css'
 import Worker from './worker/worker';
 import UserReservationPage from './interaction/userReservationPage'
 import Auth from './auth/auth';
