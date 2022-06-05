@@ -15,17 +15,97 @@
 }
 .flex{
     width: 90%;
-    margin: auto;
+    margin: 20px auto;
     display: flex;
 }
 .image_wrapper{
     height: 250px;
     width: 250px;
     border: 2px solid var(--brand);
+    display: flex;
+    position: relative;
 }
-
-
-
+.edit_icon{
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: var(--action);
+    font-size: 30px;
+    cursor: pointer;
+}
+.edit_icon:hover{
+    opacity: 0.7;
+}
+.image{
+    height: 100%;
+    width: 100%;
+}
+.image_tbd{
+    height: 80%;
+    width: 80%;
+    align-self: center;
+    margin: auto;
+}
+.input_flex_edit{
+    height: 220px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    border: 1px dashed var(--action);
+    padding: 10px 20px 20px 20px;
+}
+.input_flex{
+    height: 220px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    border: 1px dashed #00000030;
+    padding: 10px 20px 20px 20px;
+}
+.input_edit_wrapper{
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.input_div{
+    display: flex;
+    flex-direction: column;
+}
+.input_input{
+    border: 1px solid var(--brand);
+    border-radius: 5px;
+    height: 35px;
+    width: 250px;
+    padding-left: 5px;
+    font-size: 1.4rem;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+}
+.input_div_wrapper{
+    display: flex;
+    align-items: center;
+    margin-top: 2px;
+}
+.input_icon{
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    color: var(--action);
+}
+.input_title{
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+.input_email{
+    font-weight: 600;
+    font-style: italic;
+    color: #00000070;
+    font-size: 1.4rem;
+}
 
 @media (max-width: 1024px){
     .top_title{

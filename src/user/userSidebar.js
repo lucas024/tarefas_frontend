@@ -10,7 +10,7 @@ import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import { useSearchParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
-import no_pic from '../assets/user.png'
+import FaceIcon from '@mui/icons-material/Face';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 const UserSidebar = (props) => {
@@ -70,7 +70,11 @@ const UserSidebar = (props) => {
         <div className={styles.workerSidebar}>
             <div className={styles.worker_data_flex}>
                 <div className={styles.align}>
-                    <img src={props.user&&props.user.photoUrl?props.user.photoUrl:no_pic} className={styles.worker_img}/>
+                    {
+                        props.user&&props.user.photoUrl?
+                        <img className={styles.worker_img} src={props.user.photoUrl}/>
+                        :<FaceIcon className={styles.worker_img_icon}/>
+                    }
                 </div>
                 <div className={styles.align}>
                     <span className={styles.name}>{props.user?props.user.name:null}</span>
