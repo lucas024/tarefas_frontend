@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import styles from './userReservationPage.module.css'
 import elec from '../assets/electrician.png'
@@ -16,6 +16,10 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao';
 import Popup from '../transitions/popup';
 import axios from 'axios'
+import EventIcon from '@mui/icons-material/Event';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import EngineeringIcon from '@mui/icons-material/Engineering';
+import Sad from '@mui/icons-material/SentimentVeryDissatisfied';
 
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
@@ -55,6 +59,7 @@ const UserReservationPage = (props) => {
     const [confirmationPopup, setConfirmationPopup] = useState(false)
     const [tooManyReservations, setTooManyReservations] = useState(false)
  
+    const divRef = useRef(null)
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio",
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
@@ -89,7 +94,14 @@ const UserReservationPage = (props) => {
     }, [props.user])
 
     useEffect(() => {
-        setSelectedWorker(Object.fromEntries([...searchParams]).w)
+        props.loadingHandler(true)
+        if(Object.fromEntries([...searchParams]).w){
+            setSelectedWorker(Object.fromEntries([...searchParams]).w)
+        }
+        else {
+            setSelectedWorker('eletricista')
+        }
+        props.loadingHandler(false)
     }, [searchParams])
 
     useEffect(() => {
@@ -260,9 +272,6 @@ const UserReservationPage = (props) => {
 
     const confirmarPopupHandler = () => {
         props.loadingHandler(true)
-        console.log(startTime)
-        console.log(endTime)
-        console.log(dateObj)
         var valInit = new Date(dateObj)
         var valEnd = new Date(dateObj)
         if(startTime)
@@ -278,6 +287,7 @@ const UserReservationPage = (props) => {
             requestStartTime: startTime?valInit:new Date(valInit.setHours(8)),
             requestedEndTime: endTime?valEnd:new Date(valEnd.setHours(18)),
             requestedDate: dateObj,
+            reservationMadeTime: new Date(),
             desc: description,
             localizacao: address,
             porta: porta,
@@ -286,7 +296,8 @@ const UserReservationPage = (props) => {
             startTime: null,
             endTime: null,
             date: null,
-            worker: null
+            worker: null,
+            workerType: selectedWorker
         }
         axios.post(`${props.api_url}/reservations/add`, reserva).then(res => {
             setConfirmationPopup(false)
@@ -299,6 +310,7 @@ const UserReservationPage = (props) => {
                     console.log(res);
                 })
             }
+            navigate('/user')
         })
     }
 
@@ -352,31 +364,43 @@ const UserReservationPage = (props) => {
 
     return (
         <div className={styles.reservation}>
-            {
-            showCalendar?
-                <div className={styles.calendar}>
-                    <div className={styles.calendar_area}>
-                        <span className={styles.calendar_x} onClick={() => setShowCalendar(false)}></span>
-                        <p className={styles.calendar_title}>Escolher dia</p>
-                        <div className={styles.calendar_div}>
-                            <Calendar className={styles.calendar_object}
-                                locale="pt-PT"
-                                minDate={getMinDate()}
-                                next2Label=""
-                                prev2Label=""
-                                view="month"
-                                minDetail="month"
-                                maxDate={getMaxDate()}
-                                onChange={val => dateSelectHandler(val)}
-                                value={dateObj}
-                                formatShortWeekday={(locale, date) => dayjs(date).format('dd')}
-                                />
-                        </div>
+            <div className={showCalendar?styles.calendar:styles.calendar_disabled}>
+                <CSSTransition 
+                in={showCalendar}
+                timeout={600}
+                classNames="reservation"
+                unmountOnExit
+                >  
+                <div className={styles.calendar_area}>
+                    <span className={styles.calendar_x} onClick={() => setShowCalendar(false)}></span>
+                    <p className={styles.calendar_title}>Escolher dia</p>
+                    <div className={styles.calendar_div}>
+                                            
+                        <Calendar className={styles.calendar_object}
+                            locale="pt-PT"
+                            minDate={getMinDate()}
+                            next2Label=""
+                            prev2Label=""
+                            view="month"
+                            minDetail="month"
+                            maxDate={getMaxDate()}
+                            onChange={val => dateSelectHandler(val)}
+                            value={dateObj}
+                            formatShortWeekday={(locale, date) => dayjs(date).format('dd')}
+                            />
+                        
                     </div>
                 </div>
-            :
-            showStart?
-                <div className={styles.calendar} onClick={() => setShowStart(false)}>
+                </CSSTransition>
+            </div>
+
+            <div className={showStart?styles.calendar:styles.calendar_disabled} onClick={() => setShowStart(false)}>
+                <CSSTransition 
+                    in={showStart}
+                    timeout={600}
+                    classNames="reservation_less"
+                    unmountOnExit
+                    >  
                     <div className={styles.calendar_area}>
                         <span className={styles.calendar_x} onClick={() => setShowStart(false)}></span>
                         <p className={styles.calendar_title}>Hora Inicial</p>
@@ -384,20 +408,34 @@ const UserReservationPage = (props) => {
                             {displayStartHours()}
                         </div>
                     </div>
-                </div>
-            :
-            showEnd?
-                <div className={styles.calendar} onClick={() => setShowEnd(false)}>
+                </CSSTransition>
+            </div>
+            <div className={showEnd?styles.calendar:styles.calendar_disabled} onClick={() => setShowEnd(false)}>
+                <CSSTransition 
+                        in={showEnd}
+                        timeout={600}
+                        classNames="reservation_less"
+                        unmountOnExit
+                        >  
                     <div className={styles.calendar_area}>
                         <span className={styles.calendar_x} onClick={() => setShowEnd(false)}></span>
+                        {
+                            startTime?
+                            <div className={styles.time_indicator}>
+                                <p className={styles.time_indicator_text}>Hora inicial escolhida:</p>
+                                <p className={styles.time_indicator_value}>12:00</p>
+                            </div>
+                            :null
+                        }
+                        
+                        
                         <p className={styles.calendar_title}>Hora Final</p>
                         <div className={styles.hour_div}>
                             {displayEndHours()}
                         </div>
                     </div>
-                </div>
-            :null
-            }
+                </CSSTransition>
+            </div>
             {
                 tooManyReservations?
                     <Popup
@@ -461,7 +499,11 @@ const UserReservationPage = (props) => {
                         <Sessao text={"Sessão iniciada com Sucesso!"}/>
                     </CSSTransition>
                     <div className={styles.reservar}>
-                        <span className={styles.bot_title}>Disponibilidade</span>
+                        <div className={styles.bot_title_wrapper}>
+                            <span className={styles.bot_title_indicator}>1</span>
+                            <span className={styles.bot_title}>Disponibilidade de <span className={styles.action}>Dia</span> e <span className={styles.action}>Hora</span></span>
+                        </div>
+                        
                         <div className={styles.top}>
                             <div className={styles.top_left}>
                                 <img src={selectedWorker==="eletricista"?elec:
@@ -482,7 +524,11 @@ const UserReservationPage = (props) => {
                                             <span className={styles.area_label} style={{right:0, bottom:0}}>Dia<span className={styles.asterisc}>*</span></span>
                                         <span className={dateObj?styles.right_top_date_val:styles.right_top_date_val_unselected}>
                                             {   
-                                                dateObj?dateExtense:'DATA'
+                                                dateObj?dateExtense:
+                                                    <div className={styles.date_icon_wrapper}>
+                                                        <EventIcon className={styles.date_icon}/>
+                                                        <span className={styles.info_text_dia_top}>Escolher Dia</span>
+                                                    </div>
                                             }</span>
                                     </span>
                                     <span className={styles.right_top_empty}></span>
@@ -494,7 +540,11 @@ const UserReservationPage = (props) => {
                                         <span className={styles.area_label} style={{right:0, bottom:0}}>De</span>
                                         <span className={startTime?styles.right_top_date_val:styles.right_top_date_val_unselected}>
                                             {
-                                                startTime?startTime:"HORA INICIAL"
+                                                startTime?startTime:
+                                                <div className={styles.date_icon_wrapper}>
+                                                    <AccessTimeIcon className={styles.date_icon}/>
+                                                    <span className={styles.info_text_dia_top}>Escolher Hora inicial</span>
+                                                </div>
                                             }
                                         </span>
                                     </span>
@@ -502,7 +552,11 @@ const UserReservationPage = (props) => {
                                         <span className={styles.area_label} style={{right:0, bottom:0}}>Até</span>
                                         <span className={endTime?styles.right_top_date_val:styles.right_top_date_val_unselected}>
                                             {
-                                                endTime?endTime:"HORA FINAL"
+                                                endTime?endTime:
+                                                    <div className={styles.date_icon_wrapper}>
+                                                        <AccessTimeIcon className={styles.date_icon}/>
+                                                        <span className={styles.info_text_dia_top}>Escolher Hora final</span>
+                                                    </div>
                                             }
                                         </span>
                                     </span>
@@ -521,8 +575,11 @@ const UserReservationPage = (props) => {
                         </div>
                         <div className={styles.devider}></div>
                         <div className={styles.bottom}>
-                            <span className={styles.bot_title}>Detalhes de contacto</span>
-                            <div className={styles.contact_area}>
+                            <div className={styles.bot_title_wrapper}>
+                                <span className={styles.bot_title_indicator}>2</span>
+                                <span className={styles.bot_title}>Detalhes de contacto</span>
+                            </div>
+                            <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
                                 <div className={styles.bot_input_div} style={{marginTop:"0"}}>
                                     <span className={nomeWrong?styles.area_label_wrong:styles.area_label_inverse}>Nome<span className={styles.asterisc}>*</span></span>
                                     <input disabled={props.user} onFocus={() => {nameFocused()}} maxLength={26} onChange={e => setNome(e.target.value)} value={nome} className={styles.bot_input_short} ></input>
@@ -537,8 +594,11 @@ const UserReservationPage = (props) => {
                                 </div>
                                 
                             </div>
-                            <span className={styles.bot_title}>Localização</span>
-                            <div className={styles.contact_area}>
+                            <div className={styles.bot_title_wrapper}>
+                                <span className={styles.bot_title_indicator}>3</span>
+                                <span className={styles.bot_title}>Localização</span>
+                            </div>
+                            <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
                                 <div className={styles.bot_address_flex}>
                                     <div className={styles.bot_input_div_search} onClick={() => setAddressFocused(true)}>
                                         <span className={badAddress||wrongAddress?styles.area_label_wrong:styles.area_label_inverse}>Morada<span className={styles.asterisc}>*</span></span>
@@ -613,7 +673,7 @@ const UserReservationPage = (props) => {
                                             <div className={styles.column_fix}>
                                                 <span className={styles.address_not_allowed}>
                                                     <span className={styles.address_not_allowed_text}>
-                                                        <span style={{fontWeight:600}}>AINDA</span> não operamos nesta zona :(
+                                                        <span style={{fontWeight:600}}>AINDA</span> não operamos nesta zona <Sad className={styles.sad_face}/>
                                                     </span>
                                                 </span>
                                             </div>
@@ -632,22 +692,36 @@ const UserReservationPage = (props) => {
                                 </div>
                             </div>
                             
-                            <div className={styles.right_detailed_info}>
-                                <span className={styles.searchInfo}>Pedir<span className={styles.back_cor}>{selectedWorker}</span>
-                                    <span>para dia<span className={styles.back_cor}>{dateObj?`${dateObj.getDate()} de ${monthNames[dateObj.getMonth()]}`:"__"}</span></span>
-                                    {startTime!==null&&endTime!==null?
-                                        <span>entre as<span className={styles.back_cor}><span className={styles.cor}>{startTime} </span>
-                                                - <span className={styles.cor}>{endTime}</span></span>.</span>
-                                    :startTime!==null?
-                                        <span>a partir das<span className={styles.back_cor}>{startTime}</span>.</span>
-                                    :endTime!==null?
-                                        <span>até às<span className={styles.back_cor}>{endTime}</span>.</span>
-                                    :
-                                    <span>a<span className={styles.back_cor}>qualquer hora</span>.</span>
-                                    }
-                                </span>
+                            <div className={styles.info}>
+                                <span className={styles.info_title}>Pedido de Reserva</span>
+                                <div className={styles.info_flex_wrapper}>
+                                    <div className={styles.info_flex}>
+                                        <EngineeringIcon className={styles.info_icon}/>
+                                        <span className={styles.info_text}>{selectedWorker}</span>
+                                    </div>
+                                    <div className={styles.info_divider}></div>
+                                    <div className={styles.info_flex}>
+                                        <EventIcon className={styles.info_icon}/>
+                                        <span>{dateObj?<span className={styles.info_text}>{dateObj.getDate()} de {monthNames[dateObj.getMonth()]}</span>:<span className={styles.info_text_dia}>Escolher Dia</span>}</span>
+                                    </div>
+                                    <div className={styles.info_divider}></div>
+                                    <div className={styles.info_flex}>
+                                        <AccessTimeIcon className={styles.info_icon}/>
+                                        {startTime!==null&&endTime!==null?
+                                            <span>Entre as<span className={styles.back_cor}><span className={styles.cor}>{startTime} </span>
+                                                    - <span className={styles.cor}>{endTime}</span></span></span>
+                                        :startTime!==null?
+                                            <span>A partir das<span className={styles.back_cor}>{startTime}</span></span>
+                                        :endTime!==null?
+                                            <span>Até às<span className={styles.back_cor}>{endTime}</span></span>
+                                        :
+                                        <span><span className={styles.back_cor}>qualquer hora</span></span>
+                                        }
+                                    </div>          
+                                </div>
+                                
                             </div>
-                            <div data-tip={complete?"":"Preenche todos os campos assinalados com *"} className={complete?styles.bot_button:styles.bot_button_disabled} onClick={() => {
+                            <div ref={divRef} data-tip={complete?"":"Preenche todos os campos assinalados com *"} className={complete?styles.bot_button:styles.bot_button_disabled} onClick={() => {
                                     if(complete) confirmarHandler()}}>
                                 <span className={complete?styles.bot_button_text:styles.bot_button_text_disabled} >{props.user?"Confirmar":"Criar conta e Confirmar" }</span>
                             </div>

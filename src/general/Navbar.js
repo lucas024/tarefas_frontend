@@ -95,7 +95,9 @@ const Navbar = (props) => {
                                                 <div className={styles.drop_div}>
                                                     <div className={styles.drop_div_special}>
                                                         <div style={{display:"flex"}}>
-                                                            <span className={styles.drop_div_text}>Reservas</span>
+                                                            <span className={styles.drop_div_text} onClick={() => {
+                                                                navigate('/user')
+                                                            }}>Reservas</span>
                                                             <span className={styles.drop_div_number}>
                                                                 <span className={styles.drop_div_number_text}>1</span>
                                                             </span>

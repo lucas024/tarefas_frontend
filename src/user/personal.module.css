@@ -1,0 +1,42 @@
+.personal{
+    color: var(--brand);
+}
+.personal_title{
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
+}
+.top_title{
+    font-size: 1.8rem;
+    color: var(--brand);
+    font-weight: 600;
+    align-self: center;
+    text-transform: uppercase;
+}
+.flex{
+    width: 90%;
+    margin: auto;
+    display: flex;
+}
+.image_wrapper{
+    height: 250px;
+    width: 250px;
+    border: 2px solid var(--brand);
+}
+
+
+
+
+@media (max-width: 1024px){
+    .top_title{
+        font-size: 1.4rem;
+    }
+    .item_wrapper{
+        font-size: 0.8rem;
+    }
+}
+@media (max-width: 850px){
+    .item_wrapper{
+        font-size: 0.6rem;
+    }
+}

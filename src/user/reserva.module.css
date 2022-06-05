@@ -1,20 +1,33 @@
-@import '../index.css';
-
 .reserva{
     height: 100%;
     width: 90%;
     margin: auto;
     position: relative;
 }
+.reserva_previous{
+    height: 100%;
+    width: 90%;
+    margin: auto;
+    position: relative;
+    padding: 10px;
+    border: 5px dashed var(--brand);
+}
 .reserva_top{
     display: flex;
     margin-top: 20px;
     height: fit-content;
 }
-.top_img{
+.top_img_wrapper{
     width: 150px;
     height: 150px;
     border: 5px solid var(--brand);
+    display: flex;
+}
+.top_img{
+    width: 120px;
+    height: 120px;
+    align-self: center;
+    margin: auto;
 }
 .top_text{
     min-height: 100%;
@@ -30,8 +43,22 @@
     text-decoration: 3px underline var(--action);
     text-underline-offset: 2px;
 }
+.text_name_tbd{
+    font-weight: 400;
+    font-size: 1.8rem;
+    text-decoration: 1px underline var(--action);
+    text-underline-offset: 2px;
+    font-style: italic;
+}
+.underline{
+    text-decoration: underline;
+    font-weight: 500;
+}
 .text_desc{
     min-height: 80px;
+    font-size: 1rem;
+}
+.text_desc_tbd{
     font-size: 1rem;
 }
 .middle{
@@ -70,8 +97,6 @@
     border-bottom: none;
     border-radius: 5px;
     padding: 0 5px;
-    -webkit-box-shadow: inset 0px 0px 5px -1px #000000; 
-    box-shadow: inset 0px 0px 5px -1px #000000;
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
     z-index: -1;
@@ -102,13 +127,31 @@
     height: 45px;
     width: 45px;
 }
-
+.middle_date_info{
+    position: absolute;
+    right: 0;
+    bottom: -20px;
+    color: #00000090;
+    font-style: italic;
+    font-size: 0.8rem;
+}
 .middle_main{
     background-color: var(--brand);
     border: 5px solid transparent;
     border-radius: 5px;
     border-top-right-radius: 0px;
     position: relative;
+}
+.middle_top{
+    position: relative;
+}
+.middle_check{
+    position: absolute;
+    top: calc(50% - 60px);
+    left: calc(50% - 60px);
+    width: 120px !important;
+    height: 120px !important;
+    color: white;
 }
 .middle_pendent_frontdrop{
     position: absolute;
@@ -135,11 +178,16 @@
     font-size: 3rem;
     margin-top: 10px;
 }
+.middle_aux_text_wrapper{
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+}
 .middle_aux_text{
     color: var(--action);
     font-size: 0.9rem;
     text-transform: uppercase;
-    align-self: flex-end;
+    align-self: flex-start;
 }
 .middle_aux_text_minor{
     color: var(--action);
@@ -181,6 +229,10 @@
     width: 90%;
     margin: auto;
 }
+.middle_info_grey{
+    width: 90%;
+    margin: auto;
+}
 .middle_info_zone{
     border-left: 3px dashed var(--neutral);
 }
@@ -214,6 +266,9 @@
     display: flex;
     padding: 0 5px;
     flex-direction: column;
+}.middle_info_flex_hor{
+    display: flex;
+    padding: 0 5px;
 }
 .middle_info_text{
     color: var(--neutral);
@@ -221,13 +276,31 @@
     margin-left: 10px;
 }
 .middle_info_text_worker{
-    color: var(--neutral);
+    color: #ffffff70;
     font-size: 1.2rem;
     margin-left: 10px;
     text-decoration: underline;
-    text-decoration-color: var(--action);
+    text-decoration-color: #1EACAA;
     text-decoration-thickness: 2px;
     text-underline-offset: 2px;
+    align-self: center;
+}
+.middle_info_text_worker_simple{
+    color: var(--neutral);
+    font-size: 1.2rem;
+    margin-left: 10px;
+    font-style: italic;
+}
+.middle_info_money{
+    color: #1EACAA;
+    font-size: 30px;
+}
+.middle_info_money_disabled{
+    color: #414B55;
+    font-size: 22px;
+}
+.color_important{
+    color: #00000050 !important;
 }
 .desc{
     width: 100%;
@@ -250,11 +323,10 @@
     margin-bottom: 5px;
     font-size: 1rem;
     display: inline-block;
-    text-decoration: underline;
 }
 .bottom_button{
     width: 100%;
-    height: 80px;
+    height: 60px;
     border-bottom: 5px solid var(--brand);
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -268,8 +340,9 @@
     width: 100%;
     height: 60px;
     display: flex;
-    -webkit-box-shadow: inset 0px 0px 3px -1px rgba(0,0,0,0.5); 
-    box-shadow: inset 0px 0px 3px -1px rgba(0,0,0,0.5);
+    cursor: default;
+    -webkit-box-shadow: inset 0px 0px 12px -3px rgba(0,0,0,0.5); 
+    box-shadow: inset 0px 0px 12px -3px rgba(0,0,0,0.5);
 }
 .bottom_button:hover{
     -webkit-box-shadow: 0px 6px 8px 4px rgba(0,0,0,0.5); 
@@ -305,4 +378,207 @@
     margin: auto;
     align-self: center;
     text-transform: uppercase;
+}
+.confirmar_text_highlight{
+    text-transform: uppercase;
+    color: var(--brand);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-decoration-color: var(--action);
+    text-underline-offset: 1px;
+    text-decoration-thickness: 2px;
+}
+.info_flex{
+    display: flex;
+    margin-left: 30px;
+    cursor: pointer;
+    align-items: flex-start;
+}
+.info_flex:hover > span {
+    color: #ffffff80;
+}
+.info_icon{
+    color: var(--neutral);
+    width: 10px !important;
+    height: 10px !important;
+    margin-left: 1px;
+}
+.info_icon_text{
+    color: var(--neutral);
+    text-decoration: underline;
+    margin-left: 2px;
+    font-size: 0.8rem;
+}
+.year_small{
+    font-size: 0.8rem;
+}
+.blank{
+    width: 90%;
+    margin: auto;
+}
+.blank_flex{
+    margin: auto;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin-top: 70px;
+}
+.blank_text{
+    align-self: center;
+    font-size: 2rem;
+    font-style: italic;
+    color: #00000070;
+}
+.blank_face{
+    width: 30px;
+    height: 30px;
+    align-self: center;
+    margin-left: 5px;
+    color: #00000070;
+}
+
+.blank_request{
+    margin: 60px auto;
+    font-size: 0.9rem;
+}
+.blank_request_click{
+    color: var(--action);
+    text-decoration: underline;
+    cursor: pointer;
+}
+.blank_request_click:hover{
+    opacity: 0.6;
+}
+
+.previous_wrapper{
+    display: flex;
+    flex-direction: column;
+    font-style: italic;
+}
+
+.previous_text{}
+.previous_date{
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+.previous_text{
+    align-self: center;
+}
+
+.previous_voltar{
+    align-self: flex-start;
+    font-style: normal;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 10px;
+    width: fit-content;
+    margin-top: 20px;
+    padding: 5px 5px 5px 0;
+    margin-bottom: 20px;
+}
+.previous_voltar:hover{
+    background-color: #00000050;
+}
+.previous_symbol{
+    width: 30px;
+    height: 30px;
+    align-self: center;
+}
+.previous_voltar_text{
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+@media (max-width: 1024px){
+    .top_title{
+        font-size: 1.4rem;
+    }
+    .previous_voltar_text{
+        font-size: 1.4rem;
+    }
+    .text_name{
+        font-size: 1.4rem;
+    }
+    .text_name_tbd{
+        font-size: 1.4rem;
+    }
+    .text_desc{
+        font-size: 0.8rem;
+        width: 80%;
+    }
+    .text_desc_tbd{
+        font-size: 0.8rem;
+        width: 80%;
+    }
+    .button_proceed{
+        height: 25px;
+    }
+    .button_proceed_text{
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+    .middle_front_text{
+        font-size: 4rem;
+    }
+    .button_text{
+        font-size: 2rem;
+    }
+    .bottom_por_confirmar_text{
+        font-size: 0.8rem;
+    }
+    .middle_aux_text{
+        font-size: 0.7rem !important;
+    }
+    .middle_flex{
+        font-size: 2.2rem;
+    }
+    .middle_aux_text_minor{
+        font-size: 0.6rem;
+    }
+    .middle_info_text{
+        font-size: 0.9rem;
+    }
+    .middle_info_money_disabled{
+        font-size: 18px;
+    }
+    .middle_info_text_worker{
+        font-size: 1rem !important;
+    }
+    .middle_info_text_worker_simple{
+        font-size: 1rem;
+    }
+    .info_icon_text{
+        font-size: 0.6rem;
+    }
+    .info_icon{
+        width: 7px !important;
+        height: 7px !important;
+    }
+}
+
+@media (max-width: 900px){
+    .blank_text{
+        font-size: 1.5rem;
+    }
+    .blank_request{
+        font-size: 0.8rem;
+    }
+    .middle_flex{
+        font-size: 1.8rem;
+    }
+
+}
+
+@media (max-width: 768px){
+    .blank_text{
+        font-size: 1.2rem;
+    }
+    .middle_front_text{
+        font-size: 3rem;
+    }
+    .middle_flex{
+        font-size: 1.4rem;
+    }
 }

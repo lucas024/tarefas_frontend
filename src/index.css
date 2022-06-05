@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Unna:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;0,800;0,900;1,300;1,400;1,600;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,400;1,600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 input:-webkit-autofill,
@@ -159,18 +159,61 @@ p{
 }
 .transition-enter-active {
   opacity: 1;
-  transform: translateY(50%);
-  transition: 1200ms;
+  transform: translateY(40%);
+  transition: 600ms;
 }
 .transition-enter-done{
-  transform: translateY(50%);
+  transform: translateY(40%);
 }
 .transition-exit {
   opacity: 1;
-  transform: translateY(50%);
+  transform: translateY(40%);
 }
 .transition-exit-active {
   opacity: 0;
-  transform: translateY(-50%);
-  transition: 400ms;
+  transform: translateY(-40%);
+  transition: 200ms;
 }
+
+.reservation-enter{
+  opacity: 0;
+}
+.reservation-enter-active {
+  opacity: 1;
+  transform: translateY(50%);
+  transition: 600ms;
+}
+.reservation-enter-done{
+  transform: translateY(50%);
+}
+.reservation-exit {
+  opacity: 1;
+  transform: translateY(50%);
+}
+.reservation-exit-active {
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: 200ms;
+}
+
+.reservation_less-enter{
+  opacity: 0;
+}
+.reservation_less-enter-active {
+  opacity: 1;
+  transform: translateY(20%);
+  transition: 600ms;
+}
+.reservation_less-enter-done{
+  transform: translateY(20%);
+}
+.reservation_less-exit {
+  opacity: 1;
+  transform: translateY(20%);
+}
+.reservation_less-exit-active {
+  opacity: 0;
+  transform: translateY(-20%);
+  transition: 200ms;
+}
+

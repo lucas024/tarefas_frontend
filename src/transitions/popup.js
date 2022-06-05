@@ -7,6 +7,7 @@ import elec from '../assets/electrician.png'
 import cana from '../assets/worker.png'
 import carp from '../assets/driver.png'
 import {CSSTransition}  from 'react-transition-group';
+import { useNavigate } from 'react-router-dom';
 
 const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio",
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -14,6 +15,7 @@ const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio",
 const Popup = (props) => {
 
     const [transition, setTransition] = useState(false)
+    const navigate = useNavigate()
 
     useEffect(() => {
         setTransition(true)
@@ -66,15 +68,19 @@ const Popup = (props) => {
                         </div>
                         <div className={styles.help_text}>
                                 <p className={styles.help_text_val}>
-                                    Após confirmar o pedido, receberá uma <span className={styles.action}>notificação </span>
-                                    e um <span className={styles.action}>e-mail</span> a confirmar o dia 
-                                    e horário por nós proposto!
+                                    Após carregar em confirmar, o pedido será analisado, podendo seguir o seu processo na sua 
+                                    <span className={styles.action}> àrea pessoal</span>.
+                                    <p style={{fontSize:"0.7rem", textAlign:"left", marginTop:"10px", fontStyle:"italic"}}>
+                                        Receberá também um <span className={styles.action}>e-mail</span> a com a proposta final de dia
+                                        e horário!
+                                    </p>
+                                    
                                 </p>
                         </div>
                         <span className={styles.confirm_button} onClick={() => props.confirmHandler()}>
                             CONFIRMAR
                         </span>
-                        <span className={styles.cancel_text} onClick={() => props.cancelHandler()}>cancelar</span>
+                        <span className={styles.cancel_text} onClick={() => props.cancelHandler()}>Cancelar</span>
                     </div>
                 </CSSTransition>
             :
@@ -90,12 +96,12 @@ const Popup = (props) => {
                         <div className={styles.help_text}>
                                 <p className={styles.help_text_val}>
                                     Tem uma reserva que tem de ser confirmada.
-                                    Ir para <span 
+                                </p>
+                                <p 
                                         className={styles.action_touchable} 
                                         onClick={() => {
-                                            props.cancelHandler()
-                                        }}>reservas</span>.
-                                </p>
+                                            navigate('/user')
+                                        }}>As minhas reservas</p>
                         </div>
                         <span className={styles.confirm_button} onClick={() => props.cancelHandler()}>
                             OK

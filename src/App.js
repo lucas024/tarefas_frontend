@@ -23,7 +23,7 @@ const override = css`
   margin: 0 auto;
   border-color: red;
   position: absolute;
-  z-index: 4;
+  z-index: 11;
   left: calc(50% - 75px);
   top: calc(50% - 75px);
 `;
@@ -67,6 +67,12 @@ function App() {
     <div className="App">
       <div>
         <ClipLoader color={"#FF785A"} css={override} loading={loading} size={150} />
+        {
+          loading?
+          <div className="frontdrop"></div>
+          :null
+        }
+        
         <BrowserRouter>
           <Navbar user={user} />
           <Routes>
@@ -89,6 +95,7 @@ function App() {
               <Route exact path="/user" 
                 element={<User
                   user={user}
+                  loadingHandler={bool => setLoading(bool)}
                   />}
               />
               <Route exact path="/authentication/*" 

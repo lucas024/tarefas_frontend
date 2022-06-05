@@ -15,9 +15,10 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 const UserSidebar = (props) => {
 
-    const [open, setOpen] = useState(true)
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams] = useSearchParams()
     const [selectedSidebar, setSelectedSidebar] = useState("pedidos")
+    const [typeColor, setTypeColor] = useState("#C3CEDA")
+    const [type, setType] = useState(null)
 
     const navigate = useNavigate()
 
@@ -31,6 +32,28 @@ const UserSidebar = (props) => {
             sidebarNavigate("upcreservation")
         }        
     }, [searchParams])
+
+    useEffect(() => {
+        if(props.nextReservation){
+            if(props.nextReservation.type===0){
+                setType(props.nextReservation.type)
+                {setTypeColor("#C3CEDA")}
+            }
+            if(props.nextReservation.type===1){
+                setType(props.nextReservation.type)
+                {setTypeColor("#fdd835")}
+            } 
+            if(props.nextReservation.type===2){
+                setType(props.nextReservation.type)
+                {setTypeColor("#30A883")}
+            } 
+            if(props.nextReservation.type===3){
+                setType(props.nextReservation.type)
+                {setTypeColor("#1EACAA")}
+            } 
+        }
+        
+    }, [props.nextReservation])
 
     const sidebarNavigate = (val) => {
         navigate({
@@ -56,43 +79,53 @@ const UserSidebar = (props) => {
             <div style={{marginTop:"10px"}}></div>
             <div className={styles.sidebar_flex}>
                 <List
-                    sx={{ width: '100%', maxWidth: 360}}
                     component="nav" className={styles.worker_list}
                 >
-                    <ListItemButton onClick={() => sidebarNavigate("upcreservation")} className={selectedSidebar==="upcreservation"?styles.button_special:styles.button_special_nonselected}>
-                        <ListItemIcon>
-                        <UpcomingIcon sx={{color:selectedSidebar==="upcreservation"?"#fdd835":"#fff"}}/>
+                    <ListItemButton onClick={() => sidebarNavigate("upcreservation")}  
+                            className={selectedSidebar==="upcreservation"?styles.button_special:styles.button_special_nonselected}
+                            style={{borderTop:`3px solid ${typeColor}`, borderBottom:`3px solid ${typeColor}`}}>
+                        <ListItemIcon >
+                        <UpcomingIcon sx={{color:selectedSidebar==="upcreservation"?typeColor:"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Próxima reserva" sx={{color:selectedSidebar==="upcreservation"?"#fdd835":"#fff"}} />
+                        <ListItemText primary={<div className={styles.prox_wrapper}>
+                                <span className={styles.prox}>Próxima reserva</span>
+                                {
+                                    type===0?<span className={styles.prox_aux}>(a processar)</span>
+                                    :type===1?<span className={styles.prox_aux} style={{marginLeft:"25px"}}>(por confirmar)</span>
+                                    :type===2?<span className={styles.prox_aux}>(confirmado)</span>
+                                    :type===3?<span className={styles.prox_aux}>(por pagar)</span>
+                                    :null
+                                }
+                                
+                            </div> }sx={{color:selectedSidebar==="upcreservation"?typeColor:"#fff"}} />
                     </ListItemButton>
                     <ListItemButton onClick={() => sidebarNavigate("reservations")}  className={selectedSidebar==="reservations"?styles.button:""}>
                         <ListItemIcon>
                         <ManageSearchIcon sx={{color:selectedSidebar==="reservations"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Reservas" sx={{color:selectedSidebar==="reservations"?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={<span className={styles.prox}>Reservas</span>} sx={{color:selectedSidebar==="reservations"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                     <ListItemButton onClick={() => sidebarNavigate("personal")} className={selectedSidebar==="personal"?styles.button:""}>
                         <ListItemIcon>
                         <AccessibilityIcon sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Dados pessoais" sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={<span className={styles.prox}>Dados pessoais</span>} sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                 </List>
                 <List
-                    sx={{ width: '100%', maxWidth: 360}}
                     component="nav" className={styles.worker_list_bottom}
                 >
                     <ListItemButton onClick={() => sidebarNavigate("support")} className={selectedSidebar==="support"?styles.button:""}>
                         <ListItemIcon>
                         <SupportAgentIcon sx={{color:selectedSidebar==="support"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Suporte" sx={{color:selectedSidebar==="support"?"#FF785A":"#fff"}} />
+                        <ListItemText primary={<span className={styles.prox}>Suporte</span>} sx={{color:selectedSidebar==="support"?"#FF785A":"#fff"}} />
                     </ListItemButton>
                     <ListItemButton onClick={() => logoutHandler()} >
                         <ListItemIcon>
                         <LogoutIcon sx={{color:"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary="Logout" sx={{color:selectedSidebar===""?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={<span className={styles.prox}>Logout</span>} sx={{color:selectedSidebar===""?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                 </List>
             </div>

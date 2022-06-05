@@ -2,6 +2,19 @@
     margin: auto;
     width: 90%;
 }
+.App{
+    position: relative;
+}
+
+.frontdrop{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #00000060;
+    z-index: 10;
+}   
 
 @media screen and (max-width:991px){
     .wid-main{
@@ -27,9 +40,4 @@
     .wid-main{
         max-width: 1440px;
     }
-}
-
-.loader{
-    position: absolute;
-    right: 0;
 }
