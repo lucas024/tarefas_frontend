@@ -1,0 +1,15 @@
+.suporte{
+    color: var(--brand);
+}
+.suporte_title{
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
+}
+.top_title{
+    font-size: 1.8rem;
+    color: var(--brand);
+    font-weight: 600;
+    align-self: center;
+    text-transform: uppercase;
+}

@@ -39,8 +39,8 @@
 }
 .worker_img_icon{
     margin-top: 10px;
-    width: 130px;
-    height: 130px;
+    width: 130px !important;
+    height: 130px !important;
     background-color: white;
     border-radius: 50%;
 }

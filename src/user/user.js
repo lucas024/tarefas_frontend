@@ -6,6 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import ReservaList from './reservaList';
 import Personal from './personal';
+import Suporte from './suporte';
 
 const User = (props) => {
 
@@ -17,7 +18,6 @@ const User = (props) => {
         props.loadingHandler(true)
         if(props.user){
             axios.get(`http://localhost:5000/reservations`, { params: {user_id: props.user._id} }).then(res => {
-            console.log(res.data)
             for(let el of res.data){
                 if(el.type<2){
                     setNextReservation(el)
@@ -34,10 +34,13 @@ const User = (props) => {
         let val = Object.fromEntries([...searchParams]).t
         if(val === "upcreservation")
             return <Reserva nextReservation={nextReservation}/>
-        if(val === "reservations")
+        else if(val === "reservations")
             return <ReservaList nextReservation={nextReservation} reservations={reservations}/>
-        if(val === "personal")
-            return <Personal user={props.user}/>
+        else if(val === "personal")
+            return <Personal user={props.user} api_url={props.api_url} refreshUser={() => props.refreshUser()}/>
+        else if(val === "support")
+            return <Suporte user={props.user} api_url={props.api_url}/>
+            
     }
 
     return (

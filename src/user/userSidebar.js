@@ -12,6 +12,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
 import FaceIcon from '@mui/icons-material/Face';
 import LogoutIcon from '@mui/icons-material/Logout';
+import {logout} from '../firebase/firebase'
 
 const UserSidebar = (props) => {
 
@@ -63,7 +64,10 @@ const UserSidebar = (props) => {
     }
 
     const logoutHandler = () => {
-        
+        logout()
+        navigate({
+            pathname: `/authentication`,
+        })
     }
 
     return (

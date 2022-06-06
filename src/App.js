@@ -49,18 +49,37 @@ function App() {
   useEffect(() => {
     setLoading(true)
     if(userGoogle){
+      console.log(userGoogle);
       axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
         if(res.data !== null){
           console.log(res.data);
           setUser(res.data)
           setLoading(false)
         }
-    })
+      }).catch(err => {
+        setLoading(false)
+        console.log(err)
+      })
     }
     else{
+      console.log("ayo");
       setLoading(false)
     }
   }, [userGoogle])
+
+  const refreshUser = () => {
+    setLoading(true)
+    axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
+      if(res.data !== null){
+        console.log(res.data);
+        setUser(res.data)
+        setLoading(false)
+      }
+    }).catch(err => {
+      setLoading(false)
+      console.log(err)
+    })
+  }
 
 
   return (
@@ -95,7 +114,9 @@ function App() {
               <Route exact path="/user" 
                 element={<User
                   user={user}
+                  api_url={api_url}
                   loadingHandler={bool => setLoading(bool)}
+                  refreshUser={() => refreshUser()}
                   />}
               />
               <Route exact path="/authentication/*" 

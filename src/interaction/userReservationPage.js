@@ -299,7 +299,7 @@ const UserReservationPage = (props) => {
             worker: null,
             workerType: selectedWorker
         }
-        axios.post(`${props.api_url}/reservations/add`, reserva).then(res => {
+        axios.post(`${props.api_url}/reservations/add`, reserva).then(() => {
             setConfirmationPopup(false)
             props.loadingHandler(false)
             if(props.user.phone === "" || props.user.phone !== phone){

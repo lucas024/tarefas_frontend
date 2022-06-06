@@ -13,6 +13,7 @@ import {
   updatePhoneNumber,
   fetchSignInMethodsForEmail
 } from "firebase/auth"
+import { getStorage } from "firebase/storage";
 
 
 const firebaseConfig = {
@@ -26,6 +27,7 @@ const firebaseConfig = {
 }
 
 const app = initializeApp(firebaseConfig)
+const storage = getStorage(app)
 const auth = getAuth(app)
 auth.languageCode = 'pt';
 const provider = new GoogleAuthProvider();
@@ -55,6 +57,7 @@ export {
   auth,
   provider,
   providerFacebook,
+  storage,
   fetchSignInMethodsForEmailHandler,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
