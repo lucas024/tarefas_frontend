@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styles from './workerSidebar.module.css'
 import StarRateIcon from '@mui/icons-material/StarRate';
-import yellow from "@material-ui/core/colors/yellow";
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -58,7 +57,7 @@ const WorkerSidebar = (props) => {
                     <div className={styles.rating_div}>
                         <StarRateIcon
                             className={styles.star}
-                            sx={{fontSize: 10, color:yellow[50]}}/>
+                            sx={{fontSize: 10}}/>
                         <span className={styles.rating}>{parseFloat(props.worker.rating).toFixed(1)}</span>
                     </div>
                 </div>

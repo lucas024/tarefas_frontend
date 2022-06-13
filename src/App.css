@@ -16,6 +16,7 @@
     z-index: 10;
 }   
 
+
 @media screen and (max-width:991px){
     .wid-main{
         width: 98%;

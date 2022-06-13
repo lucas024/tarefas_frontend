@@ -4,9 +4,6 @@ import elec from '../assets/electrician.png'
 import cana from '../assets/worker.png'
 import carp from '../assets/driver.png'
 import StarRateIcon from '@mui/icons-material/StarRate';
-import red from "@material-ui/core/colors/red";
-import orange from "@material-ui/core/colors/orange";
-import yellow from "@material-ui/core/colors/yellow";
 
 const Carta = (props) => {
     
@@ -22,9 +19,9 @@ const Carta = (props) => {
 
     const starColorStyle = (rating) => {
         return ({
-                color: rating<2.5?red[800]
-                :rating<3.5?orange[600]
-                :yellow[500],
+                color: rating<2.5?"red"
+                :rating<3.5?"orange"
+                :"yellow",
                 fontSize: 20
         })
     }

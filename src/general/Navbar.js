@@ -85,19 +85,18 @@ const Navbar = (props) => {
                                             <KeyboardArrowDownIcon sx={{fontSize: "30px"}} className={styles.user_arrow}/>
                                         </div>
                                         <div className={styles.user_dropdown} hidden={!dropdown}>
-                                            <div className={styles.drop_user} onClick={() => {
-                                                                                        setDropdown(false)
-                                                                                        navigate('/user')}}>
+                                            <div className={styles.drop_user}>
                                                 <FaceIcon sx={{fontSize: "30px"}} className={styles.user_icon}/>
                                                 <span className={styles.drop_user_text}>{props.user.name}</span>
                                             </div>
-                                            <div className={styles.drop_div_main} onClick={() => setDropdown(false)}>
+                                            <div className={styles.drop_div_main} onClick={() => {
+                                                navigate('/user?t=publications')
+                                                setDropdown(false)}
+                                                }>
                                                 <div className={styles.drop_div}>
                                                     <div className={styles.drop_div_special}>
                                                         <div style={{display:"flex"}}>
-                                                            <span className={styles.drop_div_text} onClick={() => {
-                                                                navigate('/user')
-                                                            }}>Reservas</span>
+                                                            <span className={styles.drop_div_text}>Reservas</span>
                                                             <span className={styles.drop_div_number}>
                                                                 <span className={styles.drop_div_number_text}>1</span>
                                                             </span>

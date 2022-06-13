@@ -1,9 +1,9 @@
 @import '../index.css';
 
 .sessao{
-    position: absolute;
-    right: 10px;
-    top: 0px;
+    position: fixed;
+    right: 40px;
+    top: 100px;
     padding: 10px;
     max-width: 150px;
     text-align: center;

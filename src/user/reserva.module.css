@@ -1,16 +1,134 @@
+
+
+.previous_voltar{
+    width: 100%;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 3px 3px rgba(0,0,0,0.12),
+    0 4px 4px rgba(0,0,0,0.12);
+    display: flex;
+    height: 80px;
+    padding-left: 3%;
+    background-color: white;
+    cursor: pointer;
+}
+.previous_voltar:hover{
+    background-color: #ffffff50;
+}
+.previous_symbol{
+    width: 25px;
+    height: 25px;
+    align-self: center;
+}
+.previous_voltar_text{
+    font-size: 1.5rem;
+    font-weight: 600;
+    align-self: center;
+}
 .reserva{
     height: 100%;
     width: 90%;
-    margin: auto;
     position: relative;
+    margin: auto;
+    overflow-x: auto;
 }
-.reserva_previous{
-    height: 100%;
-    width: 90%;
+.top_top{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.top_left{
+    display: flex;
+    flex-direction: column;
+    width: 55%;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px;
+    justify-content: space-between;
+    background-color: white;
+}
+.top_left_top{
+    display: flex;
+    flex-direction: column;
+}
+.top_right{
+    width: 40%;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-left: 10px;
+    height: fit-content;
+    max-height: fit-content;
+}
+.map_div{
+    margin-top: 10px;
+    height: 150px;
     margin: auto;
-    position: relative;
-    padding: 10px;
-    border: 5px dashed var(--brand);
+    width: 90%;
+}
+.map_pointer{
+    height: 80px;
+    width: 80px;
+    margin-left: -40px;
+    margin-top: -40px;
+    border-radius: 50%;
+    border: 4px solid var(--action);
+    background-color: #FF785A50;
+}
+.top_desc_text{
+    margin-top: 20px;
+    font-weight: 600;
+}
+.top_desc{
+    margin-top: 5px;
+    text-align: left;
+    color: var(--brand);
+    width: 70%;
+    font-size: 1rem;
+}
+.top_date{
+    font-size: 0.6rem;
+    color: #406367;
+}
+
+.top_right_user{
+    text-transform: uppercase;
+    font-weight: 600;
+    display: inline-block;
+}
+.user_info{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.user_info_name{
+    font-weight: 400;
+}
+.user_info_number_symbol{
+    font-size: 1rem;
+    background-color: var(--action);
+    padding: 5px;
+    border-radius: 50%;
+    align-self: center;
+}
+.user_info_number{
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--brand);
+    margin-left: 10px;
+    align-self: center;
+}
+.top_right_div{
+    display: flex;
+    margin-top: 20px;
+}
+.top_right_img{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 10px;
 }
 .reserva_top{
     display: flex;
@@ -50,6 +168,15 @@
     text-underline-offset: 2px;
     font-style: italic;
 }
+.photos{
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+.action{
+    color: var(--action);
+}
 .underline{
     text-decoration: underline;
     font-weight: 500;
@@ -68,9 +195,9 @@
     font-size: 1.8rem;
     color: var(--brand);
     font-weight: 600;
-    align-self: center;
+    align-self: flex-start;
     display: inline-block;
-    margin-top: 20px;
+    margin-top: 5px;
     text-transform: uppercase;
 }
 .middle_title{
@@ -127,6 +254,17 @@
     height: 45px;
     width: 45px;
 }
+.details{
+    display: flex;
+    align-items: center;
+}
+.details_id{
+    font-size: 0.6rem;
+    color: var(--brand);
+    opacity: 0.8;
+    margin-right: 20px;
+}
+
 .middle_date_info{
     position: absolute;
     right: 0;
@@ -210,9 +348,9 @@
     text-transform: uppercase;
 }
 .divider{
-    width: 90%;
-    height: 2px;
-    background-color: var(--neutral);
+    width: 100%;
+    height: 1px;
+    background-color: var(--brand);
     margin: 20px auto;
 }
 .hours_start{
@@ -431,11 +569,11 @@
     color: #00000070;
 }
 .blank_face{
-    width: 30px;
-    height: 30px;
+    width: 100px !important;
+    height: 100px !important;
     align-self: center;
-    margin-left: 5px;
     color: #00000070;
+    margin-top: 20px;
 }
 
 .blank_request{
@@ -454,42 +592,23 @@
 .previous_wrapper{
     display: flex;
     flex-direction: column;
-    font-style: italic;
 }
 
-.previous_text{}
+.previous_text{
+    font-style: normal !important;
+    color: var(--brand);
+    font-weight: 500;
+}
 .previous_date{
-    font-size: 1.5rem;
+    font-size: 0.7rem;
     font-weight: 400;
+    opacity: 0.5;
 }
 .previous_text{
     align-self: center;
+    font-style: italic;
 }
 
-.previous_voltar{
-    align-self: flex-start;
-    font-style: normal;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 10px;
-    width: fit-content;
-    margin-top: 20px;
-    padding: 5px 5px 5px 0;
-    margin-bottom: 20px;
-}
-.previous_voltar:hover{
-    background-color: #00000050;
-}
-.previous_symbol{
-    width: 30px;
-    height: 30px;
-    align-self: center;
-}
-.previous_voltar_text{
-    font-size: 1.5rem;
-    font-weight: 600;
-}
 
 @media (max-width: 1024px){
     .top_title{

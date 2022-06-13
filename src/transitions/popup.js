@@ -37,42 +37,21 @@ const Popup = (props) => {
                     unmountOnExit
                     >
                 <div className={styles.popup}>
-                        <span className={styles.value}>Reserva</span>
+                        <span className={styles.value}>Publicar</span>
                         <div className={styles.divider}></div>
                         <div className={styles.line}>
                             <CircleOutlinedIcon className={styles.line_circle}/>
+                            <span className={styles.helper_text}>Serviço:</span>
                             <span className={styles.line_text} style={{textTransform:"capitalize"}}>{props.worker}</span>
-                            <img src={props.worker==="eletricista"?elec
-                                    :props.worker==="canalizador"?cana:carp} className={styles.worker}></img>
                         </div>
 
-                        <div className={styles.line}>
-                            <EventIcon className={styles.line_circle}/>
-                            <span className={styles.line_text}><span className={styles.back_cor}>{props.dateDay}</span> de <span className={styles.back_cor}>{monthNames[props.dateMonth]}</span></span>
-                        </div>
-                        
-                        <div className={styles.line}>
-                            <AccessTimeIcon className={styles.line_circle}/>
-                            <span className={styles.line_text}>
-                                {props.startTime!==null&&props.endTime!==null?
-                                        <span>Entre as <span className={styles.back_cor}><span className={styles.cor}>{props.startTime} </span>
-                                                - <span className={styles.cor}>{props.endTime}</span></span></span>
-                                    :props.startTime!==null?
-                                        <span>A partir das <span className={styles.back_cor}>{props.startTime}</span></span>
-                                    :props.endTime!==null?
-                                        <span>Até às <span className={styles.back_cor}>{props.endTime}</span></span>
-                                    :
-                                    <span>A <span className={styles.back_cor}>qualquer hora</span></span>
-                                    }
-                            </span>
-                        </div>
                         <div className={styles.help_text}>
                                 <p className={styles.help_text_val}>
-                                    Após carregar em confirmar, o pedido será analisado, podendo seguir o seu processo na sua 
-                                    <span className={styles.action}> àrea pessoal</span>.
-                                    <p style={{fontSize:"0.7rem", textAlign:"left", marginTop:"10px", fontStyle:"italic"}}>
-                                        Receberá também um <span className={styles.action}>e-mail</span> a com a proposta final de dia
-                                        e horário!
+                                    Após carregar em confirmar, a sua publicação será analisada, podendo seguir processo na sua  
+                                    <span className={styles.action}> Àrea Pessoal</span>.
+                                    <p style={{fontSize:"0.7rem", textAlign:"left", marginTop:"50px", fontStyle:"italic"}}>
+                                        Receberá também um <span className={styles.action}>e-mail</span> a confirmar a publicação
+                                        do seu pedido!
                                     </p>
                                     
                                 </p>

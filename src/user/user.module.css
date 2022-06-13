@@ -5,20 +5,21 @@
     height: 100%;
     border-top: 1px solid #ccc;
     overflow: hidden;
+    background-color: var(--background);
 }
 .flex{
     display: flex;
     width: 100%;
-    height: calc(100vh - 68px);
+    height: calc(100vh - 69px);
 }
 .left{
-    flex: 1 0 40px;
+    width: 250px;
     border-right: 1px solid #ccc;
     background-color: var(--brand);
     height: 100%;
 }
 .right{
-    flex: 6 0 0;
+    flex-grow: 1;
 }
 .worker_area{
     width: 100%;
@@ -44,6 +45,6 @@
 }
 .area{
     height: calc(100vh - 68px);
-    overflow-y: scroll !important;
+    overflow: auto;
 }
 

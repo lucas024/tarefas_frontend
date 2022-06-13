@@ -5,7 +5,6 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import UpcomingIcon from '@mui/icons-material/Upcoming';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import { useSearchParams } from 'react-router-dom';
@@ -25,7 +24,7 @@ const UserSidebar = (props) => {
 
     useEffect(() => {
         let val = Object.fromEntries([...searchParams]).t
-        if(val === "upcreservation" || val === "reservations" || val === "support" ||  val === "personal"){
+        if(val === "upcreservation" || val === "publications" || val === "support" ||  val === "personal"){
             setSelectedSidebar(val)
         } 
         else{
@@ -89,7 +88,7 @@ const UserSidebar = (props) => {
                 <List
                     component="nav" className={styles.worker_list}
                 >
-                    <ListItemButton onClick={() => sidebarNavigate("upcreservation")}  
+                    {/* <ListItemButton onClick={() => sidebarNavigate("upcreservation")}  
                             className={selectedSidebar==="upcreservation"?styles.button_special:styles.button_special_nonselected}
                             style={{borderTop:`3px solid ${typeColor}`, borderBottom:`3px solid ${typeColor}`}}>
                         <ListItemIcon >
@@ -106,12 +105,12 @@ const UserSidebar = (props) => {
                                 }
                                 
                             </div> }sx={{color:selectedSidebar==="upcreservation"?typeColor:"#fff"}} />
-                    </ListItemButton>
-                    <ListItemButton onClick={() => sidebarNavigate("reservations")}  className={selectedSidebar==="reservations"?styles.button:""}>
+                    </ListItemButton> */}
+                    <ListItemButton style={{borderTop:"3px solid #71848d"}} onClick={() => sidebarNavigate("publications")}  className={selectedSidebar==="publications"?styles.button:""}>
                         <ListItemIcon>
-                        <ManageSearchIcon sx={{color:selectedSidebar==="reservations"?"#FF785A":"#fff"}}/>
+                        <ManageSearchIcon sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Reservas</span>} sx={{color:selectedSidebar==="reservations"?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={<span className={styles.prox}>Publicações</span>} sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                     <ListItemButton onClick={() => sidebarNavigate("personal")} className={selectedSidebar==="personal"?styles.button:""}>
                         <ListItemIcon>

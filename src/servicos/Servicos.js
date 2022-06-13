@@ -3,8 +3,6 @@ import styles from './servicos.module.css'
 import { useParams, useSearchParams } from 'react-router-dom';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import red from "@material-ui/core/colors/red";
-import orange from "@material-ui/core/colors/orange";
 import { useNavigate } from 'react-router-dom'
 import "react-datepicker/dist/react-datepicker.css" 
 import Select from 'react-select'
@@ -234,9 +232,9 @@ const Servicos = () => {
     }
 
     const arrowStyle = {
-        color: id==="eletricistas"?orange[800]
-        :id==="canalizadores"?red[600]
-        :orange[600],
+        color: id==="eletricistas"?"orange"
+        :id==="canalizadores"?"red"
+        :"orange",
         fontSize:30
     }
 

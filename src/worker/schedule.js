@@ -18,7 +18,6 @@ import {
 import dayjs from 'dayjs';
 import axios from 'axios';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import red from "@material-ui/core/colors/red";
 import Select from 'react-select'
 import { styled, alpha } from '@mui/material/styles';
 import Notification from '../general/notification'
@@ -218,7 +217,7 @@ const Schedule = (props) => {
               style={{marginTop:"20px"}}
             />
             <div className={styles.local} style={{display:"flex"}}>
-              <LocationOnIcon sx={{fontSize: 15, color: red["500"]}}/>
+              <LocationOnIcon sx={{fontSize: 15}}/>
               <span className={styles.textEd}>{currentSelection?currentSelection.localizacao:null}</span>
             </div>
           </div>

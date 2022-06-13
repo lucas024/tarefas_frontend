@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Reserva from './reserva'
 import styles from './user.module.css'
 import UserSidebar from './userSidebar'
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ReservaList from './reservaList';
 import Personal from './personal';
@@ -13,6 +13,8 @@ const User = (props) => {
     const [searchParams] = useSearchParams()
     const [reservations, setReservations] = useState([])
     const [nextReservation, setNextReservation] = useState(null)
+    const navigate = useNavigate()
+
 
     useEffect(() => {
         props.loadingHandler(true)
@@ -27,20 +29,18 @@ const User = (props) => {
             props.loadingHandler(false)
             })
         }
+
         
     }, [props.user])
 
     const displayCurrentArea = () => {
         let val = Object.fromEntries([...searchParams]).t
-        if(val === "upcreservation")
-            return <Reserva nextReservation={nextReservation}/>
-        else if(val === "reservations")
+        if(val === "publications")
             return <ReservaList nextReservation={nextReservation} reservations={reservations}/>
         else if(val === "personal")
             return <Personal user={props.user} api_url={props.api_url} refreshUser={() => props.refreshUser()}/>
         else if(val === "support")
-            return <Suporte user={props.user} api_url={props.api_url}/>
-            
+            return <Suporte user={props.user} api_url={props.api_url}/> 
     }
 
     return (

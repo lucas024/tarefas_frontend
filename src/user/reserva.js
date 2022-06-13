@@ -4,10 +4,14 @@ import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import CheckIcon from '@mui/icons-material/Check';
 import InfoIcon from '@mui/icons-material/Info';
 import Popup_detalhes from '../transitions/popup_detalhes';
-import anonymous from '../assets/anonymous.png'
 import Sad from '@mui/icons-material/SentimentVeryDissatisfied';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import FaceIcon from '@mui/icons-material/Face';
+import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
+import Geocode from "react-geocode";
+import GoogleMapReact from 'google-map-react';
+import ImageGallery from 'react-image-gallery';
 
 const Reserva = (props) => {
 
@@ -15,6 +19,10 @@ const Reserva = (props) => {
     const [typeColor, setTypeColor] = useState("#fdd835")
     const [detalhes, setDetalhes] = useState(false)
     const [reservation, setReservation] = useState({})
+    const [lat, setLat] = useState("")
+    const [lng, setLng] = useState("")
+    const [address, setAddress] = useState(null)
+    const [images, setImages] = useState(null)
 
     const navigate = useNavigate()
 
@@ -29,19 +37,34 @@ const Reserva = (props) => {
     }, [type])
 
     useEffect(() => {
-        if(props.nextReservation)
+        if(props.nextReservation){
             setReservation(props.nextReservation)
+            setAddressHandler(props.nextReservation.localizacao)
+            let arr = []
+            for(let img of props.nextReservation.photos){
+                arr.push({
+                    original: img,
+                    thumbnail: img,
+                    originalHeight: "300px",
+                    originalWidth: "700px",
+                    thumbnailHeight: "50px",
+                    thumbnailWidth: "100px",
+                })
+            }
+            setImages(arr)
+        }
+            
     }, [props.nextReservation])
 
-    const funcAux = () => {
-        let aux = type
-        aux++
-        if(aux>3){
-            setType(0)
-        } else {
-            
-            setType(aux)
-        } 
+    const setAddressHandler = (val) => {
+        Geocode.fromAddress(val).then(
+            (response) => {
+              const { lat, lng } = response.results[0].geometry.location;
+              console.log(lat);
+              console.log(lng);
+              setLat(lat)
+              setLng(lng)
+            })
     }
 
     const reservationToDate = () => {
@@ -50,6 +73,16 @@ const Reserva = (props) => {
             return <span>{`${date.getDate()} de ${monthNames[date.getMonth()]}`}<span className={styles.year_small}>({date.getFullYear()})</span></span>
         }
         else return <span>-- -- -----</span>
+    }
+
+    const getPublicationDate = () => {
+        if(reservation.publication_time){
+            let date = new Date(reservation.publication_time)
+            return <span>{`Publicado a ${date.getDate()} de ${monthNames[date.getMonth()]} de ${date.getFullYear()}`}</span>
+        }
+        else{
+            return <span>sdsidjsidj</span>
+        }
     }
 
     const getHours = (date1) => {
@@ -103,16 +136,21 @@ const Reserva = (props) => {
     }
 
     const getRequestedDate = () => {
-        let val = reservation.reservationMadeTime
+        let val = reservation.publication_time
         if(val){
             let time = new Date(val)
             return <span>pedido feito a <span style={{textDecoration:"underline"}}>{time.toISOString().split("T")[0]}</span></span>
         }
     }
 
+    const getNumberDisplay = number => {
+        return `${number.slice(0,3)} ${number.slice(3,6)} ${number.slice(6)}`
+    }
+
     return (
         <div>
             {
+                
                 reservation.user_id?
                 <div>
                     {
@@ -121,53 +159,83 @@ const Reserva = (props) => {
                             cancelHandler={() => setDetalhes(false)}/>
                         :null
                     }
-                    {
-                        props.previous?
-                        <div style={{width:"90%", margin:"auto"}}>
-                            <div className={styles.previous_voltar} onClick={() => props.back_handler()}>
-                                <ArrowBackIcon className={styles.previous_symbol}/>
-                                <span className={styles.previous_voltar_text}>VOLTAR ÀS RESERVAS</span>
-                            </div>
-                        </div>
-                        
-                        :null
-                    }
-                    <div className={props.previous?styles.reserva_previous:styles.reserva}>
-                        <div className={styles.button_cancel_area}>
+
+                    <div className={styles.previous_voltar} onClick={() => props.back_handler()}>
+                        <ArrowBackIcon className={styles.previous_symbol}/>
+                        <span className={styles.previous_voltar_text}>VOLTAR ÀS <span className={styles.action}>PUBLICAÇÕES</span></span>
+                    </div>
+
+                    <div className={styles.reserva}>
+                        {/* <div className={styles.button_cancel_area}>
                             <span className={styles.button_cancel}>Cancelar Reserva</span>
-                        </div>
-                        <p className={styles.top_title} onClick={() => funcAux()}>{
-                            props.previous?
-                            <div className={styles.previous_wrapper}>
-                                <span className={styles.previous_text}>Reserva Passada <span className={styles.previous_date}>({props.previous_date})</span></span>
-                            </div>
-                            
-                            :"Próxima Reserva"
-                        }</p>
-                        <div className={styles.reserva_top}>
-                            <div className={styles.top_img_wrapper}>
-                                <img className={styles.top_img} src={reservation.worker?reservation.worker.photo:anonymous}></img>
-
-                            </div>
-                            <div className={styles.top_text}>
-                                {
-                                    reservation.worker?
-                                        <span className={styles.text_name}>António Silva</span>
-                                    :<span className={styles.text_name_tbd}>Profissional a Determinar</span>
-                                }
-                                {
-                                    reservation.worker?
-                                        <span className={styles.text_desc}>
-                                            {reservation.worker.description}
-                                        </span>:
-                                        <span className={styles.text_desc_tbd}>
-                                            Após análise e confirmação, será atribuído um profissonal à sua reserva!
-                                        </span>
-
-                                }   
+                        </div> */}
+                        <div className={styles.top_top}>
+                            <div className={styles.top_left}>
+                                <div className={styles.top_left_top}>
+                                    <span className={styles.top_date}>{getPublicationDate()}</span>
+                                    <div className={styles.top_title}>
+                                        {
+                                        <div className={styles.previous_wrapper}>
+                                            <span className={styles.previous_text}>{reservation.title}</span>
+                                        </div>
+                                        }
+                                    </div>
+                                    <span className={styles.top_desc_text}>DESCRIÇÃO</span>
+                                    <span className={styles.top_desc}>
+                                            OSsapdoi oasidoiwqeiusaidu saduiqwui said uiuqwiueiasudeiusa diasuidwquiesaidji
+                                    </span>
+                                </div>
+                                
+                                <div>
+                                    <div className={styles.divider}></div>
+                                    <div className={styles.details}>
+                                        <span className={styles.details_id}>ID: {reservation._id}</span>
+                                        <span className={styles.details_id}>Visualizações: {reservation.clicks}</span>
+                                    </div>
+                                </div>
                                 
                             </div>
+                            <div className={styles.top_right}>
+                                <span className={styles.top_right_user}>Utilizador</span>
+                                <div className={styles.top_right_div}>
+                                    {
+                                        reservation.user_photo!==""?
+                                        <img src={reservation.user_photo} className={styles.top_right_img}></img>
+                                        :<FaceIcon className={styles.top_right_img}/>
+                                    }
+                                    <div className={styles.user_info}>
+                                        <span className={styles.user_info_name}>{reservation.user_name}</span>
+                                        <span style={{display:"flex", alignItems:"center", marginTop:"5px"}}>
+                                            <PhoneOutlinedIcon className={styles.user_info_number_symbol}/>
+                                            <span className={styles.user_info_number}>{getNumberDisplay(reservation.user_phone)}</span>   
+                                        </span>
+                                    </div>                                    
+                                </div>
+                                <span className={styles.top_right_user} style={{marginTop:"40px", marginBottom:"10px"}}>Localização</span>
+                                <div className={styles.map_div}>
+                                        <GoogleMapReact 
+                                            bootstrapURLKeys={{ key:"AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk"}}
+                                            defaultZoom={14}
+                                            center={{ lat: lat, lng: lng}}    
+                                            >
+                                           <div
+                                                lat={lat}
+                                                lng={lng}
+                                                className={styles.map_pointer}
+                                           />
+                                        </GoogleMapReact>
+                                    </div>
+                            </div>
                         </div>
+                        <div className={styles.photos}>
+                            <span className={styles.top_right_user}>Fotografias</span>
+                            <ImageGallery 
+                                items={images} 
+                                infinite={false} 
+                                showPlayButton={false}/>
+                        </div>
+                        
+
 
                         <div className={styles.middle}>
                             <div className={styles.middle_button_div}>
@@ -176,10 +244,8 @@ const Reserva = (props) => {
                                     <div className={styles.button_proceed} style={{borderColor:typeColor, backgroundColor:typeColor+"50"}}>
                                         <span className={styles.button_proceed_text}>
                                             {
-                                                type===1?"Por Confirmar":
-                                                type===2?"Confirmada":
-                                                type===3?"Por Pagar":
-                                                type===4?"Concluído":
+                                                type===1?"Publicado":
+                                                type===2?"Concluído":
                                                     "A PROCESSAR"
                                                 }
                                         </span>
@@ -252,12 +318,12 @@ const Reserva = (props) => {
                                                 }    
                                             </span>
                                                 {
-                                                        type>=3?
-                                                        <span className={styles.info_flex} onClick={() => setDetalhes(true)}>
-                                                            <span className={styles.info_icon_text}>detalhes</span>
-                                                            <InfoIcon className={styles.info_icon}/>
-                                                        </span>
-                                                        :null
+                                                    type>=3?
+                                                    <span className={styles.info_flex} onClick={() => setDetalhes(true)}>
+                                                        <span className={styles.info_icon_text}>detalhes</span>
+                                                        <InfoIcon className={styles.info_icon}/>
+                                                    </span>
+                                                    :null
                                                 }
                                         </div>
                                     </div>
@@ -293,10 +359,8 @@ const Reserva = (props) => {
                                 <div className={type===0||type===2?styles.bottom_button_disabled:styles.bottom_button} style={{backgroundColor:typeColor}}>
                                     <span className={styles.button_text}>
                                     {
-                                        type===1?"Confirmar":
-                                        type===2?"Reserva Confirmada":
-                                        type===3?"Pagar":
-                                        type===4?"Concluído":
+                                        type===1?"Publicado":
+                                        type===2?"Concluído":
                                             "A PROCESSAR"
                                     }</span>
                                 </div>
@@ -307,10 +371,10 @@ const Reserva = (props) => {
                 </div>
                 :<div className={styles.blank}>
                     <div className={styles.blank_flex}>
-                        <span className={styles.blank_text}>Não tem nenhuma reserva marcada</span>
+                        <span className={styles.blank_text}>Esta publicaçaõ não existe</span>
                         <Sad className={styles.blank_face}/>
                         <span className={styles.blank_request}>
-                            Fazer um pedido de <span className={styles.blank_request_click} onClick={() => navigate('/reserva')}>reserva</span>
+                            Fazer uma <span className={styles.blank_request_click} onClick={() => navigate('/reserva')}>publicação</span>
                         </span>
                     </div>
                     

@@ -86,18 +86,17 @@ const Auth = (props) => {
     }, [password])
 
     const navigateHandler = () => {
-        console.log("yaya");
         navigate(`/reserva?w=${location.state.worker}`,
             {
                 state: {
                     carry: true,
-                    date: location.state.date,
-                    init: location.state.init,
-                    end: location.state.end,
                     desc: location.state.desc,
                     nameCarry: name,
                     phoneCarry: phone,
                     emailCarry: email,
+                    title: location.state.title,
+                    images: location.state.images,
+                    imageFiles: location.state.imageFiles
                 }
             })
     }
