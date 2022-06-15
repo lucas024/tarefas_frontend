@@ -146,7 +146,7 @@ const ReservaList = (props) => {
                 :
                 <div>
                     <div className={styles.list_title}>
-                        <span className={styles.top_title}>Publicações</span>
+                        <span className={styles.top_title}>As Minhas Publicações</span>
                     </div>
 
                     <div className={styles.list}>

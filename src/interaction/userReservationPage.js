@@ -431,7 +431,7 @@ const UserReservationPage = (props) => {
                                 <div className={styles.diff_right}>
                                     <span className={styles.diff_right_title}>Descrição</span>
                                     <div className={styles.top_desc}>
-                                        <textarea maxLength={250} className={styles.top_desc_area} placeholder="Descrição do problema..." value={description} onChange={e => setDescription(e.target.value)}>
+                                        <textarea className={styles.top_desc_area} placeholder="Descrição do problema..." value={description} onChange={e => setDescription(e.target.value)}>
                                         
                                         </textarea>
                                     </div>
