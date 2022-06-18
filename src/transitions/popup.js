@@ -1,16 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import styles from './popup.module.css'
 import CircleOutlinedIcon from '@mui/icons-material/Circle';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import EventIcon from '@mui/icons-material/Event';
-import elec from '../assets/electrician.png'
-import cana from '../assets/worker.png'
-import carp from '../assets/driver.png'
 import {CSSTransition}  from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
-
-const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio",
-    "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
 const Popup = (props) => {
 
@@ -49,10 +41,10 @@ const Popup = (props) => {
                                 <p className={styles.help_text_val}>
                                     Após carregar em confirmar, a sua publicação será analisada, podendo seguir processo na sua  
                                     <span className={styles.action}> Àrea Pessoal</span>.
-                                    <p style={{fontSize:"0.7rem", textAlign:"left", marginTop:"50px", fontStyle:"italic"}}>
+                                    <span style={{fontSize:"0.7rem", textAlign:"left", marginTop:"50px", fontStyle:"italic"}}>
                                         Receberá também um <span className={styles.action}>e-mail</span> a confirmar a publicação
                                         do seu pedido!
-                                    </p>
+                                    </span>
                                     
                                 </p>
                         </div>

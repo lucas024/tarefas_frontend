@@ -17,7 +17,7 @@ input:-webkit-autofill:active {
   --grey: #71848d;
   --check: #6EB241;
   --yellow: #fdd835;
-  --red: #F40009;
+  --red: #ff3b30;
   --background: #f2f4f5;
 }
 
@@ -149,7 +149,7 @@ p{
 }
 
 *::-webkit-scrollbar-track {
-  background: #ffffff;
+  background: transparent;
   border-radius: 10px;
 }
 

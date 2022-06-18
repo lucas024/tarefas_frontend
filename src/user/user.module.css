@@ -13,7 +13,8 @@
     height: calc(100vh - 69px);
 }
 .left{
-    width: 250px;
+    width: 200px;
+    min-width: 200px;
     border-right: 1px solid #ccc;
     background-color: var(--brand);
     height: 100%;
@@ -48,3 +49,9 @@
     overflow: auto;
 }
 
+@media (min-width: 1024px) {
+    .left{
+        min-width: 250px;
+        width: 250px;
+    }
+}

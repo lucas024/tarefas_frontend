@@ -1,18 +1,20 @@
 import React, {useEffect, useState} from 'react'
 import styles from './reservaList.module.css'
-import elec from '../assets/electrician.png'
-import cana from '../assets/worker.png'
-import carp from '../assets/driver.png'
-import EventIcon from '@mui/icons-material/Event';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import Reserva from './reserva'
+import { useNavigate } from 'react-router-dom';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { storage } from '../firebase/firebase'
+import { ref, deleteObject } from "firebase/storage";
+import axios from 'axios';
+import Loader from '../general/loader';
+import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 
 const ReservaList = (props) => {
 
-    const [displayReserva, setDisplayReserva] = useState(null)
+    const navigate = useNavigate()
+    const [removeArray, setRemoveArray] = useState([])
+    const [loading, setLoading] = useState(false)
     const [activeReservations, setActiveReservations] = useState(false)
     const [notActiveReservations, setNotActiveReservations] = useState(false)
-    
 
     useEffect(() => {
         for(let res of props.reservations){
@@ -37,14 +39,60 @@ const ReservaList = (props) => {
         return "#FFFFFF"
     }
 
-    const displayActiveReservations = () => {
+    const deleteHandler = async (e, reservation) => {
+        e.stopPropagation()
+        setLoading(true)
+        const obj = {
+            _id:reservation._id
+        }
+        console.log(obj);
+        await Promise.all(reservation.photos.map((photo, key) => {
+            const deleteRef = ref(storage, `/posts/${reservation._id}/${key}`)
+            return deleteObject(deleteRef)
+        }))
+        axios.post(`${props.api_url}/reservations/remove`, obj)
+            .then(() => {
+                setLoading(false)
+                props.refreshPublications()
+            })
+    }
+
+    const cancelHandler = (e, reservationID) => {
+        e.stopPropagation()
+        let val = [...removeArray]
+        val.splice(val.indexOf(reservationID), 1)
+        setRemoveArray(val)
+    }
+
+    const displayReservations = (num1, num2) => {
         return props.reservations.map((res, i) => {
-            if(res.type<2){
+            if(res.type===num1 || res.type===num2){
                 return (
-                    <div key={i} className={styles.item_wrapper} onClick={() => {setDisplayReserva(res)}}>    
+                    <div key={i} className={styles.item_wrapper} onClick={() => navigatePubHandler(res._id, res.type)}>
+                        {
+                            removeArray.includes(res._id)?
+                                <div className={styles.remove_div}>
+                                    <div className={styles.center_text_div}>
+                                        <span className={styles.center_text}>
+                                            Tem a certeza de que quer <span className={styles.center_text_special}>eliminar</span> a publicação?
+                                        </span>
+                                    </div>
+                                    <span className={styles.button_eliminate} onClick={e => deleteHandler(e, res)}>
+                                        Eliminar
+                                    </span>
+                                    <span className={styles.button_cancel} onClick={e => cancelHandler(e, res._id)}>
+                                        Cancelar
+                                    </span>
+                                </div>
+                            :null
+                        }
                         <div className={styles.item} style={{borderColor:getTypeColor(res.type)}}>
                             <div className={styles.item_left}>
-                                <img src={res.photos[0]?res.photos[0]:""} className={styles.item_img}></img>
+                                {
+                                    res?.photos[0]?
+                                    <img src={res?.photos[0]} className={styles.item_img}></img>
+                                    :<NoPhotographyIcon className={styles.item_no_img}/>
+                                }
                                 <div className={styles.item_title_div}>
                                     <span className={styles.item_title}>
                                             {res.title}
@@ -58,15 +106,22 @@ const ReservaList = (props) => {
                                 </div>
                             </div>
                             <div className={styles.item_right}>
-                                <div className={styles.item_flex_indicator} style={{backgroundColor:getTypeColor(res.type)}}>
-                                    <span className={styles.item_indicator}></span>
-                                    <span className={styles.item_type}>
-                                        {
-                                            res.type===1?"Activo":
-                                            res.type===2?"Concluído":
-                                                "Processar"
-                                        }
-                                    </span>
+                                <div className={styles.top_left_indicator_more}>
+                                    <div className={styles.item_flex_indicator} style={{backgroundColor:getTypeColor(res.type)}}>
+                                        <span className={styles.item_indicator}></span>
+                                        <span className={styles.item_type}>
+                                            {
+                                                res.type===1?"Activo":
+                                                res.type===2?"Concluído":
+                                                    "Processar"
+                                            }
+                                        </span>
+                                    </div>
+                                    <DeleteOutlineIcon className={styles.more} onClick={e => {
+                                        e.stopPropagation()
+                                        let val = [...removeArray]
+                                        val.push(res._id)
+                                        setRemoveArray(val)}}/>
                                 </div>
                                 <div className={styles.item_flex}>
                                     <div className={styles.item_time}>{getTime(res.publication_time)}</div>
@@ -83,106 +138,53 @@ const ReservaList = (props) => {
         })
     }
 
-    const displayNonActiveReservations = () => {
-        return props.reservations.map((res, i) => {
-            if(res.type===2){
-                return (
-                    <div key={i} className={styles.item_wrapper} style={{borderColor:getTypeColor(res.type)}} 
-                        onClick={() => {setDisplayReserva(res)}}>
-                        <div className={styles.item}>
-                            <div className={styles.item_flex}>
-                                <span className={styles.item_indicator} style={{backgroundColor:getTypeColor(res.type)}}></span>
-                                <span className={styles.item_type} style={{color:getTypeColor(res.type)}}>
-                                    {
-                                        res.type===1?"Publicado":
-                                        res.type===2?"Concluído":
-                                            "A processar"
-                                    }
-                                </span>
-                            </div>
-                            <div className={styles.item_flex}>
-                                {
-                                    res.workerType==="eletricista"?
-                                    <img src={elec} className={styles.item_flex_worker}></img>
-                                    :res.workerType==="canalizador"?
-                                    <img src={cana} className={styles.item_flex_worker}></img>
-                                    :
-                                    <img src={carp} className={styles.item_flex_worker}></img>
-                                }
-                                <span className={styles.item_flex_worker_text}>{res.workerType}</span>
-                            </div>
-                            <div className={styles.item_flex}>
-                                <EventIcon className={styles.item_flex_symbol}/>
-                                {
-                                    res.date?
-                                    <span></span>
-                                    :<span className={styles.text_tbd}>Por determinar</span>
-                                }
-                            </div>
-                            <div className={styles.item_flex}>
-                                <AccessTimeIcon className={styles.item_flex_symbol}/>
-                                {
-                                    res.startTime?
-                                    <span></span>
-                                    :<span className={styles.text_tbd}>Por determinar</span>
-                                }  
-                            </div>
-                            <span className={styles.request_date}>{getTime(res.requestedDate)}</span>
-                        </div>
-                    </div>
-                )
-            }
-        })
+    const navigatePubHandler = (id, type) => {
+        navigate(`/main/publications/publication?id=${id}&pubstate=${type}`, 
+                {
+                state: {
+                    fromUserPage: true,
+                }
+                }
+            )
     }
 
     return (
         <div className={styles.reserva_list}>
-            {
-                displayReserva?
-                <Reserva 
-                    nextReservation={displayReserva} 
-                    previous={true} 
-                    back_handler={() => setDisplayReserva(null)}/>
-                :
-                <div>
-                    <div className={styles.list_title}>
-                        <span className={styles.top_title}>As Minhas Publicações</span>
-                    </div>
+            <Loader loading={loading}/>
+            <div className={styles.list_title}>
+                <span className={styles.top_title}>As Minhas Publicações</span>
+            </div>
 
-                    <div className={styles.list}>
-                        <div className={styles.list_prox}>
-                            <span className={styles.list_prox_text}>Publicações Activas</span>
-                        </div>
-                            <div>
-                            {
-                            activeReservations?
-                                displayActiveReservations()
-                            :
-                            <div className={styles.item_none}>
-                                <div className={styles.item_flex}>
-                                    <span className={styles.item_type_tbd}>Sem publicações activas</span>
-                                </div>
-                            </div>
-                            }
-                            </div>
-                            <div className={styles.list_prox} style={{marginTop:0}}>
-                                <span className={styles.list_prox_text}>Publicações Concluídas</span>
-                            </div>
-                            {
-                                notActiveReservations?
-                                displayNonActiveReservations()
-                                :
-                                <div className={styles.item_none}>
-                                    <div className={styles.item_flex}>
-                                        <span className={styles.item_type_tbd}>Sem publicações concluídas</span>
-                                    </div>
-                                </div>
-                                }
-                        </div>
+            <div className={styles.list}>
+                <div className={styles.list_prox}>
+                    <span className={styles.list_prox_text}>Publicações Activas</span>
                 </div>
-
-            }
-            
+                    <div>
+                    {
+                        activeReservations?
+                            displayReservations(0, 1)
+                        :
+                        <div className={styles.item_none}>
+                            <div className={styles.item_flex}>
+                                <span className={styles.item_type_tbd}>Sem publicações activas</span>
+                            </div>
+                        </div>
+                    }
+                    </div>
+                    <div className={styles.list_prox} style={{marginTop:0}}>
+                        <span className={styles.list_prox_text}>Publicações Concluídas</span>
+                    </div>
+                    {
+                        notActiveReservations?
+                            displayReservations(2, 2)
+                        :
+                        <div className={styles.item_none}>
+                            <div className={styles.item_flex}>
+                                <span className={styles.item_type_tbd}>Sem publicações concluídas</span>
+                            </div>
+                        </div>
+                        }
+                </div>
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Reserva from './reserva'
+import Reserva from '../main/reserva'
 import styles from './user.module.css'
 import UserSidebar from './userSidebar'
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -19,7 +19,12 @@ const User = (props) => {
     useEffect(() => {
         props.loadingHandler(true)
         if(props.user){
-            axios.get(`http://localhost:5000/reservations`, { params: {user_id: props.user._id} }).then(res => {
+            updateReservations()
+        }
+    }, [props.user])
+
+    const updateReservations = () => {
+        axios.get(`http://localhost:5000/reservations`, { params: {user_id: props.user._id} }).then(res => {
             for(let el of res.data){
                 if(el.type<2){
                     setNextReservation(el)
@@ -28,19 +33,17 @@ const User = (props) => {
             setReservations(res.data)
             props.loadingHandler(false)
             })
-        }
-
-        
-    }, [props.user])
+    }
 
     const displayCurrentArea = () => {
         let val = Object.fromEntries([...searchParams]).t
         if(val === "publications")
-            return <ReservaList nextReservation={nextReservation} reservations={reservations}/>
+            return <ReservaList api_url={props.api_url} reservations={reservations} user={props.user} refreshPublications={() => updateReservations()}/>
         else if(val === "personal")
             return <Personal user={props.user} api_url={props.api_url} refreshUser={() => props.refreshUser()}/>
         else if(val === "support")
-            return <Suporte user={props.user} api_url={props.api_url}/> 
+            return <Suporte user={props.user} api_url={props.api_url}/>
+        return <span>page not exist</span>
     }
 
     return (

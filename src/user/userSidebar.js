@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import styles from './userSidebar.module.css'
+import styles from '../general/sidebar.module.css'
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -17,43 +17,15 @@ const UserSidebar = (props) => {
 
     const [searchParams] = useSearchParams()
     const [selectedSidebar, setSelectedSidebar] = useState("pedidos")
-    const [typeColor, setTypeColor] = useState("#C3CEDA")
-    const [type, setType] = useState(null)
 
     const navigate = useNavigate()
 
     useEffect(() => {
         let val = Object.fromEntries([...searchParams]).t
-        if(val === "upcreservation" || val === "publications" || val === "support" ||  val === "personal"){
+        if(val === "publications" || val === "support" ||  val === "personal"){
             setSelectedSidebar(val)
         } 
-        else{
-            setSelectedSidebar("upcreservation")
-            sidebarNavigate("upcreservation")
-        }        
     }, [searchParams])
-
-    useEffect(() => {
-        if(props.nextReservation){
-            if(props.nextReservation.type===0){
-                setType(props.nextReservation.type)
-                {setTypeColor("#C3CEDA")}
-            }
-            if(props.nextReservation.type===1){
-                setType(props.nextReservation.type)
-                {setTypeColor("#fdd835")}
-            } 
-            if(props.nextReservation.type===2){
-                setType(props.nextReservation.type)
-                {setTypeColor("#30A883")}
-            } 
-            if(props.nextReservation.type===3){
-                setType(props.nextReservation.type)
-                {setTypeColor("#1EACAA")}
-            } 
-        }
-        
-    }, [props.nextReservation])
 
     const sidebarNavigate = (val) => {
         navigate({
@@ -70,13 +42,13 @@ const UserSidebar = (props) => {
     }
 
     return (
-        <div className={styles.workerSidebar}>
-            <div className={styles.worker_data_flex}>
+        <div className={styles.sidebar}>
+            <div className={styles.sidebar_data_flex}>
                 <div className={styles.align}>
                     {
                         props.user&&props.user.photoUrl?
-                        <img className={styles.worker_img} src={props.user.photoUrl}/>
-                        :<FaceIcon className={styles.worker_img_icon}/>
+                        <img className={styles.sidebar_img} src={props.user.photoUrl}/>
+                        :<FaceIcon className={styles.sidebar_img_icon}/>
                     }
                 </div>
                 <div className={styles.align}>
@@ -86,26 +58,8 @@ const UserSidebar = (props) => {
             <div style={{marginTop:"10px"}}></div>
             <div className={styles.sidebar_flex}>
                 <List
-                    component="nav" className={styles.worker_list}
+                    component="nav" className={styles.sidebar_list}
                 >
-                    {/* <ListItemButton onClick={() => sidebarNavigate("upcreservation")}  
-                            className={selectedSidebar==="upcreservation"?styles.button_special:styles.button_special_nonselected}
-                            style={{borderTop:`3px solid ${typeColor}`, borderBottom:`3px solid ${typeColor}`}}>
-                        <ListItemIcon >
-                        <UpcomingIcon sx={{color:selectedSidebar==="upcreservation"?typeColor:"#fff"}}/>
-                        </ListItemIcon>
-                        <ListItemText primary={<div className={styles.prox_wrapper}>
-                                <span className={styles.prox}>Próxima reserva</span>
-                                {
-                                    type===0?<span className={styles.prox_aux}>(a processar)</span>
-                                    :type===1?<span className={styles.prox_aux} style={{marginLeft:"25px"}}>(por confirmar)</span>
-                                    :type===2?<span className={styles.prox_aux}>(confirmado)</span>
-                                    :type===3?<span className={styles.prox_aux}>(por pagar)</span>
-                                    :null
-                                }
-                                
-                            </div> }sx={{color:selectedSidebar==="upcreservation"?typeColor:"#fff"}} />
-                    </ListItemButton> */}
                     <ListItemButton style={{borderTop:"3px solid #71848d"}} onClick={() => sidebarNavigate("publications")}  className={selectedSidebar==="publications"?styles.button:""}>
                         <ListItemIcon>
                         <ManageSearchIcon sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
@@ -120,7 +74,7 @@ const UserSidebar = (props) => {
                     </ListItemButton >
                 </List>
                 <List
-                    component="nav" className={styles.worker_list_bottom}
+                    component="nav" className={styles.sidebar_list_bottom}
                 >
                     <ListItemButton onClick={() => sidebarNavigate("support")} className={selectedSidebar==="support"?styles.button:""}>
                         <ListItemIcon>

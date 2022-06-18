@@ -19,6 +19,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { storage } from '../firebase/firebase'
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { Loader } from '@googlemaps/js-api-loader'
 
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
@@ -56,7 +57,8 @@ const UserReservationPage = (props) => {
     const [images, setImages] = useState([])
     const [imageFiles, setImageFiles] = useState([])
     const [inPropFoto, setInPropFoto] = useState(false)
-    const [firebaseUrlArray, setFirebaseUrlArray] = useState([])
+    const [lat, setLat] = useState("")
+    const [lng, setLng] = useState("")
 
     const maxFiles = 6
     const inputRef = useRef(null);
@@ -68,7 +70,18 @@ const UserReservationPage = (props) => {
     const [searchParams] = useSearchParams()
 
     useEffect(() => {
-        
+        if(window.google){
+            console.log("loaded");
+        }
+        else{
+            new Loader({
+                apiKey: "AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk",
+                libraries: ["places"]
+              });
+        }
+    }, [])
+
+    useEffect(() => {
         return () => {
             for(let el of imageFiles) URL.revokeObjectURL(el)
         } 
@@ -161,6 +174,8 @@ const UserReservationPage = (props) => {
               if(38.84>=lat && lat>=38.68 && -9.06>lng && lng>-9.34){
                   setBadAddress(false)
                   setWrongAddress(false)
+                  setLat(lat)
+                  setLng(lng)
                   setAddress(val.label)
               }
               else{
@@ -199,7 +214,10 @@ const UserReservationPage = (props) => {
             type:0,
             workerType: selectedWorker,
             clicks: 0,
-            photos: arr
+            photos: arr,
+            lat: lat,
+            lng: lng,
+            photoUrl: props.user.photoUrl
         }
         axios.post(`${props.api_url}/reservations/add`, reserva).then(() => {
             setConfirmationPopup(false)
@@ -212,7 +230,7 @@ const UserReservationPage = (props) => {
                     console.log(res);
                 })
             }
-            navigate('/user')
+            navigate('/user?t=publications')
         })
     }
 
@@ -241,7 +259,8 @@ const UserReservationPage = (props) => {
 
     const checkPendingReservations = () => {
         axios.get(`${props.api_url}/reservations/get_by_id`, { params: {user_id: props.user._id} }).then(res => {
-            if(res.data.length<3){
+            console.log(res.data);
+            if(res.data?.length<3){
                 props.loadingHandler(false)
                 setConfirmationPopup(true)
             }
@@ -293,7 +312,7 @@ const UserReservationPage = (props) => {
         if(images.length===6){
             return images.map((img, i) => {
                 return (
-                    <div className={styles.foto_img_wrapper} onClick={() => deleteImageHandler(img)}>
+                    <div key={i} className={styles.foto_img_wrapper} onClick={() => deleteImageHandler(img)}>
                         <DeleteIcon className={styles.foto_img_delete}/>
                         <img key={i} src={img} className={styles.foto_img}></img>
                         <span className={styles.foto_img_number}>Fotografia {i+1}</span>
@@ -308,7 +327,7 @@ const UserReservationPage = (props) => {
             return arr.map((img, i) => {
                 if(!img.blank){
                     return (
-                        <div className={styles.helper_img_div}>
+                        <div key={i} className={styles.helper_img_div}>
                             <div className={styles.foto_img_wrapper} onClick={() => deleteImageHandler(img)}>
                                 <span className={styles.frontdrop_helper}></span>
                                 <DeleteIcon className={styles.foto_img_delete}/>
@@ -322,7 +341,7 @@ const UserReservationPage = (props) => {
                 }
                 else {
                     return (
-                        <div className={styles.foto_img_wrapper_add} onClick={() => handleClick()}>
+                        <div key={i} className={styles.foto_img_wrapper_add} onClick={() => handleClick()}>
                             <AddCircleOutlineIcon className={styles.foto_symbol_add}/>
                             <span className={styles.foto_symbol_indicator}>Adicionar</span>
                         </div>
@@ -401,7 +420,7 @@ const UserReservationPage = (props) => {
                     classNames="transition"
                     unmountOnExit
                     >
-                        <Sessao text={"Excedeste o limite de fotografias (max. 6)"}/>
+                    <Sessao text={"Excedeste o limite de fotografias (max. 6)"}/>
                     </CSSTransition>
                     <div className={styles.reservar}>
                         <div className={styles.bot_title_wrapper}>
@@ -555,7 +574,7 @@ const UserReservationPage = (props) => {
                                             indicatorSeparator: () => null
                                             },
                                             IndicatorsContainer:()=>(<></>),
-                                            placeholder: () => "",
+                                            placeholder: "Pesquise o local do serviço...",
                                             noOptionsMessage: () => "Pesquisar morada",
                                             loadingMessage: () => "A pesquisar...",
                                         }}

@@ -1,0 +1,39 @@
+.blank{
+    width: 100%;
+    margin: auto;
+    border-top: 1px solid #ccc;
+}
+.blank_flex{
+    margin: auto;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin-top: 70px;
+}
+.blank_text{
+    align-self: center;
+    font-size: 2rem;
+    font-style: italic;
+    color: #00000070;
+}
+.blank_face{
+    width: 100px !important;
+    height: 100px !important;
+    align-self: center;
+    color: #00000070;
+    margin-top: 20px;
+}
+
+.blank_request{
+    margin: 60px auto;
+    font-size: 0.9rem;
+    color: #00000070;
+}
+.blank_request_click{
+    color: var(--action);
+    text-decoration: underline;
+    cursor: pointer;
+}
+.blank_request_click:hover{
+    opacity: 0.6;
+}

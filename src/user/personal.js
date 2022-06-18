@@ -82,57 +82,64 @@ const Personal = (props) => {
                 <span className={styles.top_title}>Dados Pessoais</span>
             </div>
             <div className={styles.flex}>
-                <div className={styles.image_wrapper}>
-                    {
-                        props.user&&props.user.photoUrl?
-                        <img className={styles.image} src={props.user.photoUrl}/>
-                        :<FaceIcon className={styles.image_tbd}/>
-                    }
-                    <div className={styles.image_input_wrapper}>
-                        <EditIcon className={styles.edit_icon}/>
-                        <input type="file" title=" " value="" onChange={(val) => userImageHandler(val)} accept="image/png, image/jpeg"/>
-                    </div>
-                    
-                </div>
-                <div className={edit?styles.input_flex_edit:styles.input_flex}>
-                    {
-                        !edit?
-                            <div className={styles.input_edit_wrapper}>
-                                <EditIcon className={styles.edit_icon} onClick={() => setEdit(true)}/>
-                            </div>
-                            :
-                            <div className={styles.input_edit_wrapper}>
-                                <CheckIcon className={styles.edit_icon} onClick={() => editDoneHandler()}/>
-                            </div>
-                }
-                    <div className={styles.input_div}>
-                        <span className={styles.input_title}>Nome</span>
-                        <div className={styles.input_div_wrapper}>
-                            <FaceIcon className={styles.input_icon}/>
-                            <span className={styles.input_email}>{name}</span>
+                <div>
+                    <span className={styles.personal_subtitle}>Fotografia</span>
+                    <div className={styles.image_wrapper}>
+                        {
+                            props.user&&props.user.photoUrl?
+                            <img className={styles.image} src={props.user.photoUrl}/>
+                            :<FaceIcon className={styles.image_tbd}/>
+                        }
+                        <div className={styles.image_input_wrapper}>
+                            <EditIcon className={styles.edit_icon}/>
+                            <input type="file" title=" " value="" onChange={(val) => userImageHandler(val)} accept="image/png, image/jpeg"/>
                         </div>
-                    </div>
-                    <div className={styles.input_div}>
-                        <span className={styles.input_title}>Telefone</span>
-                        <div className={styles.input_div_wrapper}>
-                            <PhoneIphoneIcon className={styles.input_icon}/>
-                            <input className={phoneWrong?styles.input_wrong
-                                                :edit?styles.input_input_edit
-                                                :styles.input_input}
-                                    value={phoneVisual}
-                                    maxLength={11} 
-                                    onChange={e => setPhoneHandler(e.target.value)}
-                                    disabled={!edit}></input>
-                        </div>
-                    </div>
-                    <div className={styles.input_div}>
-                        <span className={styles.input_title}>E-mail</span>
-                        <div className={styles.input_div_wrapper}>
-                            <AlternateEmailIcon className={styles.input_icon}/>
-                            <span className={styles.input_email}>{email}</span>
-                        </div>
+                        
                     </div>
                 </div>
+                <div style={{marginTop:"20px"}}>
+                    <span className={styles.personal_subtitle}>Dados</span>
+                    <div className={edit?styles.input_flex_edit:styles.input_flex}>
+                        {
+                            !edit?
+                                <div className={styles.input_edit_wrapper}>
+                                    <EditIcon className={styles.edit_icon} onClick={() => setEdit(true)}/>
+                                </div>
+                                :
+                                <div className={styles.input_edit_wrapper}>
+                                    <CheckIcon className={styles.edit_icon} onClick={() => editDoneHandler()}/>
+                                </div>
+                        }
+                        <div className={styles.input_div}>
+                            <span className={styles.input_title}>Nome</span>
+                            <div className={styles.input_div_wrapper}>
+                                <FaceIcon className={styles.input_icon}/>
+                                <span className={styles.input_email}>{name}</span>
+                            </div>
+                        </div>
+                        <div className={styles.input_div}>
+                            <span className={styles.input_title}>Telefone</span>
+                            <div className={styles.input_div_wrapper}>
+                                <PhoneIphoneIcon className={styles.input_icon}/>
+                                <input className={phoneWrong?styles.input_wrong
+                                                    :edit?styles.input_input_edit
+                                                    :styles.input_input}
+                                        value={phoneVisual}
+                                        maxLength={11} 
+                                        onChange={e => setPhoneHandler(e.target.value)}
+                                        disabled={!edit}></input>
+                            </div>
+                        </div>
+                        <div className={styles.input_div}>
+                            <span className={styles.input_title}>E-mail</span>
+                            <div className={styles.input_div_wrapper}>
+                                <AlternateEmailIcon className={styles.input_icon}/>
+                                <span className={styles.input_email}>{email}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     )

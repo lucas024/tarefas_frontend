@@ -159,7 +159,7 @@ const Auth = (props) => {
                             email: email,
                             google_uid: res.user.uid,
                             address: "",
-                            photoURL: "",
+                            photoUrl: "",
                         })
                         .then(res => {
                             console.log(res.data)

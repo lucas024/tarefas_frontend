@@ -9,21 +9,19 @@
     background-color: rgba(0, 0, 0, 0.65);
     z-index: 5;
 }
+.popup_wrapper{
+    position: absolute;
+}
 .popup{
     position: absolute;
     width: 550px;
     padding-bottom: 15px;
     left: calc(50% - 275px);
-    top: calc(50% - 450px);
-    background-color: var(--brand);
+    top: calc(50% - 350px);
+    background-color: white;
     border-radius: 2px;
     display: flex;
     flex-direction: column;
-    color: var(--neutral);
-    box-shadow: 0 1px 1px rgba(237, 237, 237, 0.15), 
-    0 2px 2px rgba(237, 237, 237,0.15), 
-    0 4px 4px rgba(237, 237, 237,0.15), 
-    0 8px 8px rgba(237, 237, 237,0.15);
     z-index: 6;
 }
 .value{
@@ -32,11 +30,14 @@
     align-self: center;
     margin-top: 10px;
     font-size: 1.5rem;
+    color: var(--action);
+    font-weight: 600;
 }
 .divider{
     width: 90%;
     margin: auto;
-    border-top: 2px solid var(--action);
+    height: 2px;
+    background-color: var(--brand);
     margin: 5px auto;
 }
 .line{
@@ -58,6 +59,45 @@
     align-self: center;
     margin-left: 5px;
     font-size: 1.1rem;
+}
+.center_text_div{
+    width: 90%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+.center_text{
+}
+.button_eliminate{
+    width: 90%;
+    margin: auto;
+    border-radius: 5px;
+    border: 1px solid var(--action);
+    text-align: center;
+    padding: 5px 0;
+    cursor: pointer;
+}
+.button_cancel{
+    width: 90%;
+    margin: 5px auto;
+    border-radius: 5px;
+    background-color: var(--brand);
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+}
+.button_cancel:hover{
+    background-color: #010304;
+}
+.button_eliminate:hover{
+    color: white;
+    background-color: var(--action);
+}
+.center_text_special{
+    color: var(--action);
+    text-transform: uppercase;
 }
 .worker{
     width: 20px;

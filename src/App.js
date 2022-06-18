@@ -13,20 +13,11 @@ import Auth from './auth/auth';
 import { onAuthStateChanged } from 'firebase/auth';
 import {auth} from './firebase/firebase'
 import axios from 'axios'
-import ClipLoader from "react-spinners/BounceLoader";
-import { css } from "@emotion/react";
 import User from './user/user';
 import ProtectedRoute from './protectedRoute';
-
-const override = css`
-  display: block;
-  margin: 0 auto;
-  border-color: red;
-  position: absolute;
-  z-index: 11;
-  left: calc(50% - 75px);
-  top: calc(50% - 75px);
-`;
+import Main from './main/main';
+import Loader from './general/loader';
+import Reserva from './main/reserva';
 
 
 function App() {
@@ -51,7 +42,6 @@ function App() {
     if(userGoogle){
       axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
         if(res.data !== null){
-          console.log(res.data);
           setUser(res.data)
           setLoading(false)
         }
@@ -80,13 +70,7 @@ function App() {
   return (
     <div className="App">
       <div>
-        <ClipLoader color={"#FF785A"} css={override} loading={loading} size={150} />
-        {
-          loading?
-          <div className="frontdrop"></div>
-          :null
-        }
-        
+        <Loader loading={loading}/>        
         <BrowserRouter>
           <Navbar user={user} />
           <Routes>
@@ -98,6 +82,18 @@ function App() {
                 element={<Worker
                   />}
               /> */}
+              <Route exact path="/main/publications/publication" 
+                element={<Reserva
+                  user={user}
+                  api_url={api_url}
+                  />}
+              />
+              <Route exact path="/main/publications" 
+                element={<Main
+                  user={user}
+                  api_url={api_url}
+                  />}
+              />
               <Route exact path="/reserva/*" 
                 element={<UserReservationPage
                   user={user}
