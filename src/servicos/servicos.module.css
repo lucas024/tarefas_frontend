@@ -1,7 +1,9 @@
 @import '../index.css';
 
 .servicos{
-    width: 100%;
+    width: 95%;
+    height: calc(100vh - 67px);
+    margin: 0 auto;
     border-top: 1px solid #ddd;
     position: relative;
     overflow: hidden;
@@ -15,52 +17,10 @@
     padding: 1px;
     border-radius: 5px;
 }
-.back_cor{
-    background-color: white;
-    padding: 1px;
-    border-radius: 10px;
-}
-.flex{
-    display: flex;
-    height: calc(100vh - 69px);
-    background-color: white;
-}
-.flex_right{
-    flex: 6 0 0;
-    background-color: #ddd;
-    height: 100%;
-}
-.top{
-    width: 100%;
-    height: 40px;
-}
-.top_eletricistas{
-    width: 100%;
-    height: 100%;
-    /* background: linear-gradient(270deg, rgba(22,31,40,0.8122332859174964) 0%, rgba(22,31,40,1) 100%); */
-    background-color: var(--brand);
-    border-left: 1px solid var(--neutral);
-}
-.top_canalizadores{
-    width: 100%;
-    height: 100%;
-    /* background: linear-gradient(270deg, rgba(239,104,72,0.7965860597439545) 0%, rgba(239,104,72,1) 100%); */
-    background-color: var(--brand);
-    border-left: 1px solid var(--neutral);
-}
-.top_carpinteiros{
-    width: 100%;
-    height: 100%;
-    /* background: linear-gradient(270deg, rgba(255,156,81,0.8008534850640114) 0%, rgba(255,156,81,1) 100%); */
-    background-color: var(--brand);
-    border-left: 1px solid var(--neutral);
-}
+
 .main{
     width: 100%;
-    height: calc(100% - 31px);
-    background-color: #161f28;
-    /* -webkit-box-shadow: inset 18px 18px 8px -17px rgba(0,0,0,0.46); 
-    box-shadow: inset 18px 18px 8px -17px rgba(0,0,0,0.46); */
+    height: 100%;
     position: relative;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -142,113 +102,74 @@
 }
 .search_div{
     width: 100%;
-    padding-left: 1.2%;
-    position: fixed;
+    margin-top: 10px;
+}
+.placeholder{
     display: flex;
-    max-height: 40px;
-    padding-top: 10px;
-    background-color: rgba(255, 255, 255, 0.644);
-    padding-bottom: 5px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-bottom: 1px solid rgb(161, 161, 161);
-    
+    align-items: center;
+}
+.placeholder_icon{
+    width: 20px !important;
+    height: 20px !important;
+}
+.search_filter_div{
+    width: 100%;
+    display: flex;
+    margin-top: 10px;
+}
+.search_input_div{
+    width: 100%;
+    position: relative;
+}
+.search_input_div_icon{
+    position: absolute;
+    width: 20px !important;
+    height: 20px !important;
+    top: calc(50% - 10px);
+    left: 10px;
+    color: #ccc;
+}
+.search_final_icon{
+    position: absolute;
+    right: 10px;
+    top: calc(50% - 15px);
+    background-color: var(--action);
+    padding: 5px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    color: white;
+    width: 30px !important;
+    height: 30px !important;
+}
+.search_final_icon:hover{
+    box-shadow: 0px 0px 3px 0px rgb(0 0 0 / 72%);    
+    cursor: pointer;
+    transition: 150ms;
 }
 .searchTop{
-    width: 30%;
-    padding: 10px 10px;
-    border-radius: 50px;
-    border: 1px solid rgba(22,31,40,1);
+    width: 100%;
+    padding: 15px 35px;
+    border-radius: 5px;
     font-size: 1rem;
-
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    color: #ccc;
+    font-style: normal;
 }
 .searchTop::placeholder{
-    color: rgb(131, 131, 131);
+    color: #ccc;
 }
 .searchTop:focus{
     outline: none;
-    border: 1px solid var(--action);
+    border-bottom: 1px solid var(--action);
     opacity: 1;
     color: black;
+}
+.searchTop:focus + .search_input_div_icon{
+    color: var(--brand);
 }
 .searchTop:focus::placeholder{
     opacity: 0;
-}
-
-.search{
-    width: 30%;
-    padding: 10px 10px;
-    border-radius: 50px;
-    border: 1px solid rgba(22,31,40,1);
-    font-size: 1rem;
-    opacity: 0.3;
-}
-
-
-.search:focus{
-    outline: none;
-    border: 1px solid rgba(22,31,40,1);
-    opacity: 1;
-    color: black;
-}
-
-.search:hover{
-    outline: none;
-    border: 1px solid rgba(22,31,40,1);
-    opacity: 1;
-    color: black;
-    transition: opacity 0.3s;
-}
-
-.search:hover + .searchInfoDiv > .searchInfoScroll{
-    opacity: 1;
-    transition: opacity 0.3s;
-}
-.search_div:hover{
-    background-color: white;
-    transition: 0.3s;
-}
-.search_div:hover > .search{
-    outline: none;
-    border: 1px solid rgba(22,31,40,1);
-    opacity: 1;
-    color: black;
-    transition: opacity 0.3s;
-}
-.search_div:hover > .searchInfoDiv > .searchInfoScroll{
-    opacity: 1;
-    transition: opacity 0.3s;
-}
-.search_div:focus{
-    background-color: white;
-    transition: 0.3s;
-}
-.search:hover + .search_div {
-    background-color: white;
-    transition: all 0.3s;
-}
-
-.search:focus::placeholder{
-    opacity: 0;
-}
-
-.search:focus + .searchInfoDiv > .searchInfoScroll{
-    opacity: 1;
-}
-.searchInfoDiv{
-    display: flex;
-    width: 30%;
-    margin-left: 10px;
-    flex-direction: column;
-    justify-content: flex-end;
-    font-size: 1rem;
-}
-.searchInfo{
-
-}
-
-.searchInfoScroll{
-    opacity: 0.5;
 }
 
 /* LEFT */

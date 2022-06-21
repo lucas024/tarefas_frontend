@@ -74,21 +74,13 @@ function App() {
         <BrowserRouter>
           <Navbar user={user} />
           <Routes>
-              {/* <Route exact path="/servicos/:id" 
-                element={<Servicos
-                  />}
-              />   */}
-              {/* <Route exact path="/trabalhador" 
-                element={<Worker
-                  />}
-              /> */}
               <Route exact path="/main/publications/publication" 
                 element={<Reserva
                   user={user}
                   api_url={api_url}
                   />}
               />
-              <Route exact path="/main/publications" 
+              <Route exact path="/main/publications/*" 
                 element={<Main
                   user={user}
                   api_url={api_url}

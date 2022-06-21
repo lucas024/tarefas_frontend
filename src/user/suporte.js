@@ -62,9 +62,6 @@ const Suporte = (props) => {
         }
     }, [props.user])
 
-    useEffect(() => {
-        
-    }, [messages])
 
     useEffect(() => {
         props.user&&socket.current.emit("add_user", props.user._id)

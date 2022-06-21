@@ -11,6 +11,7 @@
     0 4px 4px rgba(0,0,0,0.12);
     display: flex;
     height: 80px;
+    background-color: white;
 }
 .top_title{
     font-size: 1.8rem;

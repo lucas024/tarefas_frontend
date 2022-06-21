@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
 import styles from './home.module.css'
-import elec from '../assets/electrician.png'
-import cana from '../assets/worker.png'
-import carp from '../assets/driver.png'
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import PostAddIcon from '@mui/icons-material/PostAdd';
 import {useNavigate} from 'react-router-dom'
 
 const Home = () => {
@@ -16,30 +15,33 @@ const Home = () => {
     return(
         <div className={styles.home}>
             <div className={styles.home_back}>
-                <div className={styles.section_elet} onClick={() => navigate('/reserva?w=eletricista')}>
-                    <a className={styles.link}>
+                <div className={styles.section_one} onClick={() => navigate('/main/publications')}>
+                    <div className={styles.section_content}>
+                        <PersonSearchIcon className={styles.section_img}/>
                         <p className={styles.section_title}>
-                            ELETRICISTA
+                            PROCURAR
                         </p>
-                    </a>
+                        <p className={styles.section_title}>
+                            <span style={{textDecoration:"underline"}}>TRABALHADORES</span>
+                        </p>
+                        <p className={styles.section_title}>
+                            E <span style={{textDecoration:"underline"}}>TRABALHO</span>
+                        </p>
+                    </div>
                     
-                    <img className={styles.section_img} src={elec}/>
+                    <a className={styles.link}/>
                 </div>
-                <div className={styles.section_cana} onClick={() => navigate('/reserva?w=canalizador')}>
-                    <a className={styles.link}>
+                <div className={styles.section_two} onClick={() => navigate('/reserva?w=eletricista')}>
+                    <div className={styles.section_content}>
+                        <PostAddIcon className={styles.section_img} style={{color:"#161F28"}}/>
                         <p className={styles.section_title}>
-                            CANALIZADOR
+                            <span style={{textDecoration:"underline"}}>PUBLICAR</span>
                         </p>
-                    </a>
-                    <img className={styles.section_img} src={cana}/>
-                </div>
-                <div className={styles.section_carp} onClick={() => navigate('/reserva?w=carpinteiro')}>
-                    <a className={styles.link}>
-                    <p className={styles.section_title}>
-                        CARPINTEIRO
-                    </p>
-                    </a>
-                    <img className={styles.section_img} src={carp}/>
+                        <p className={styles.section_title}>
+                            UM TRABALHO
+                        </p>
+                    </div>
+                    <a className={styles.link2}/>
                 </div>
             </div>
             <div className={styles.tag}>
