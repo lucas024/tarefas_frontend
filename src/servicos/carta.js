@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from './carta.module.css'
-import elec from '../assets/electrician.png'
-import cana from '../assets/worker.png'
-import carp from '../assets/driver.png'
-import StarRateIcon from '@mui/icons-material/StarRate';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
 
 const Carta = (props) => {
     
@@ -39,39 +37,37 @@ const Carta = (props) => {
     }, [availPoints])
 
     return(
-        <div className={styles.box} style={{borderBottom:`3px solid ${availColor}`}}
+        <div className={styles.box}
            >
             <div className={styles.box_mask}>
                 {
                 worker?
                 <div className={styles.top_flex}>
                     <img className={styles.worker_img} 
-                        src={worker.img!==""?worker.img:props.id==="eletricistas"?elec
-                        :props.id==="canalizadores"?cana
-                        :carp}/>
+                        src={worker.img!==""?worker.img:""}/>
                     <div className={styles.worker_info_div}>
                         <span className={styles.worker_info_name}>{worker.name.first} {worker.name.first}</span>
-                        <span className={styles.worker_info_flex}>
-                            <StarRateIcon className={styles.worker_info_star} sx={starColorStyle(worker.rating)}/> 
-                            <span className={styles.worker_info_rating_div}>
-                                <span className={styles.worker_info_rating}>{parseFloat(worker.rating).toFixed(1)}</span>
-                            </span>
+                        <span className={styles.worker_info_type}>
+                            Particular
                         </span>
                     </div>
                 </div>
                 :null
                 }
-                <div className={styles.avail}>
-                    <span className={styles.avail_info}>
-                        <span style={{fontWeight:600, color:availColor}}>
-                            {
-                                availPoints>40?"Alta ":
-                                availPoints>25?"Media ":
-                                "Baixa "
-                            }
-                        </span> 
-                        disponibilidade
+                <div className={styles.middle}>
+                    <span className={styles.middle_desc}>
+                        asdwoqkd sadqwokdosakd sadokasodkowqdsad kasdasdpwqdosap daspdoqpwoesad Sdasdasd
                     </span>
+                </div>
+                <div className={styles.bottom}>
+                    <div className={styles.bottom_div}>
+                        <LocationOnIcon className={styles.bottom_div_icon} style={{color:props.locationActive?"#FF785A":"#71848d"}}/>
+                        <span className={styles.bottom_div_text}>Lisboa, Setúbal</span>
+                    </div>
+                    <div className={styles.bottom_div}>
+                        <PersonIcon className={styles.bottom_div_icon} style={{color:props.workerActive?"#FF785A":"#71848d"}}/>
+                        <span className={styles.bottom_div_text}>Eletricista, Carpinteiro, Jardins</span>
+                    </div>
                 </div>
             </div>
         </div>

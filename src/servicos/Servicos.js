@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from './servicos.module.css'
 import { useParams, useSearchParams } from 'react-router-dom';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs';
 import Carta from './carta';
 import axios from 'axios';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import FilterSelect from './filterSelect';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
 
 require('dayjs/locale/pt')
 
@@ -25,6 +26,7 @@ const Servicos = () => {
     const navigate = useNavigate()
     const [scrollPosition, setScrollPosition] = useState(0)
     const [mainRef, setMainRef] = useState(null)
+    const [clear, setClear] = useState(false)
     const [searchVal, setSearchVal] = useState('')
     const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio",
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -34,11 +36,15 @@ const Servicos = () => {
     //                 1.68, 1.76, 1.84, 1.92, 2]
     const [workers, setWorkers] = useState([])
     const [gridAnim, setGridAnim] = useState(true)
+    const [locationActive, setLocationActive] = useState(false)
+    const [workerActive, setWorkerActive] = useState(false)
+
+    const myRef = useRef(null)
 
     useEffect(() => {
-        //fetchWorkers()
+        fetchWorkers()
     //eslint-disable-next-line react-hooks/exhaustive-deps 
-    }, [id])
+    }, [])
     
 
     useEffect(() => {
@@ -72,10 +78,22 @@ const Servicos = () => {
 
     const fetchWorkers = () => {
         axios.get(`http://localhost:5000/workers`).then(res => {
-            if(res.data!==null) setWorkers(res.data)
-            
+            if(res.data!==null){
+                let arr = res.data
+                arr = fisher_yates_shuffle(arr)
+                setWorkers(arr)
+            }
         })
     }
+
+    const fisher_yates_shuffle = arr => {
+        let i = arr.length;
+        while (--i > 0) {
+          let randIndex = Math.floor(Math.random() * (i + 1));
+          [arr[randIndex], arr[i]] = [arr[i], arr[randIndex]];
+        }
+        return arr;
+      }
 
     const mapBoxesToDisplay = () => {
         let delay = 0
@@ -89,7 +107,8 @@ const Servicos = () => {
                         id={id}
                         worker={worker}
                         delay={delay[i]}
-                        
+                        locationActive={locationActive}
+                        workerActive={workerActive}
                     />
                 </div>
             )
@@ -97,17 +116,9 @@ const Servicos = () => {
     }
     const arrowClick = (val) => {
         navigate({
-            pathname: `/servicos/${id}`,
             search: `?p=${currPage + val}`
         })
-        handleScrollTop("smooth")
-    }
-
-    const arrowStyle = {
-        color: id==="eletricistas"?"orange"
-        :id==="canalizadores"?"red"
-        :"orange",
-        fontSize:30
+        handleScrollTop()
     }
 
 
@@ -119,30 +130,77 @@ const Servicos = () => {
         else setScrollPosition(false)
     }
     
-    const handleScrollTop = (type) => {
-        mainRef.scrollTo({top: 0, behavior: type})
+    const handleScrollTop = () => {
+        myRef.current.scrollIntoView()
     }
       
     const handleSearchVal = val => {
         setSearchVal(val.target.value)
-        handleScrollTop("instant")
+        handleScrollTop()
     }
     return (
         <div className={styles.servicos}>
-            <div className={styles.main} onScroll={handleScroll} ref={el => setMainRef(el)}>
-                
-                <div className={styles.search_div}>
+            <div className={styles.main} onScroll={handleScroll}>
+                <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_input_div}>
-                        <input onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder="Pesquisar"></input>
+                        <input onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder="Pesquisar trabalhadores..."></input>
                         <PersonSearchIcon className={styles.search_input_div_icon}/>
                         <SearchIcon className={styles.search_final_icon}/>
                     </div>
-                    <div className={styles.search_filter_div}>
-                        <FilterSelect />
-                        <FilterSelect />
+                    <div className={styles.search_filter_div_wrapper}>
+                        <div className={styles.search_filter_div}>
+                            <FilterSelect type="zona" clear={clear} valueChanged={bool => setLocationActive(bool)}/>
+                            <div style={{marginLeft:"10px"}}>
+                                <FilterSelect type="worker" clear={clear} valueChanged={bool => setWorkerActive(bool)}/>
+                            </div>
+                        </div>
+                        <span className={styles.search_clear} onClick={() =>{
+                            setLocationActive(false)
+                            setWorkerActive(false)
+                            setClear(!clear)}}>
+                            Limpar Pesquisa
+                        </span>
                     </div>
-
                 </div>
+                <div className={styles.divider}></div>
+                <div className={styles.top_info}>
+                    <span className={styles.top_info_numbers}>
+                        {workers.length} Trabalhadores
+                    </span>
+                    <div className={styles.top_info_filter}>
+                        <div className={styles.top_info_filter_flex}>
+                            <LocationOnIcon className={styles.top_info_filter_icon}/>
+                            <span  className={styles.top_info_filter_text}>região:</span>
+                        </div>
+                        {
+                            locationActive?
+                            <span  className={styles.top_info_filter_value_on}>
+                                {locationActive}
+                            </span>
+                            :
+                            <span  className={styles.top_info_filter_value}>
+                                Todas
+                            </span>
+                        }
+                    </div>
+                    <div className={styles.top_info_filter}>
+                        <div className={styles.top_info_filter_flex}>
+                            <PersonIcon className={styles.top_info_filter_icon}/>
+                            <span  className={styles.top_info_filter_text}>Tipo de Trabalhador:</span>
+                        </div>
+                        {
+                            workerActive?
+                            <span  className={styles.top_info_filter_value_on}>
+                                {workerActive}
+                            </span>
+                            :
+                            <span  className={styles.top_info_filter_value}>
+                                Todos
+                            </span>
+                        }
+                    </div>
+                </div>
+                
                 <div className={gridAnim?styles.animGrid:styles.grid}
                     onAnimationEnd={() =>{
                         setGridAnim(false)
@@ -162,9 +220,9 @@ const Servicos = () => {
                             <div className={styles.num_flex_content}>
                                 <span style={{color:"white"}}>_</span>
                                 <span style={{color:"white"}}>_</span>
-                                <span className={styles.num_style}>{currPage}</span>
+                                <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
                                 <span className={styles.num_style_side} onClick={() => arrowClick(1)}>{currPage + 1}</span>
-                                <ArrowCircleRightIcon className={styles.arrow} sx={arrowStyle}
+                                <ArrowForwardIosIcon className={styles.arrow}
                                             onClick={() => arrowClick(1)}/>
                                 
                             </div>
@@ -172,22 +230,22 @@ const Servicos = () => {
                         :currDisplay === "middle"?
                         <div className={styles.num_flex}>
                             <div className={styles.num_flex_content}>
-                                <ArrowCircleLeftIcon className={styles.arrow} sx={arrowStyle}
+                                <ArrowBackIosNewIcon className={styles.arrow}
                                             onClick={() => arrowClick(-1)}/>
                                 <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>
-                                <span className={styles.num_style}>{currPage}</span>
+                                <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
                                 <span className={styles.num_style_side} onClick={() => arrowClick(1)}>{currPage + 1}</span>
-                                <ArrowCircleRightIcon className={styles.arrow} sx={arrowStyle}
+                                <ArrowForwardIosIcon className={styles.arrow}
                                             onClick={() => arrowClick(1)}/>
                             </div>
                         </div>
                         :
                         <div className={styles.num_flex}>
                             <div className={styles.num_flex_content}>
-                                <ArrowCircleLeftIcon className={styles.arrow} sx={arrowStyle}
+                                <ArrowBackIosNewIcon className={styles.arrow}
                                             onClick={() => arrowClick(-1)}/>
                                 <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>
-                                <span className={styles.num_style}>{currPage}</span>
+                                <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
                                 <span style={{color:"white"}}>__</span>
                                 <span style={{color:"white"}}>__</span>
                             </div>

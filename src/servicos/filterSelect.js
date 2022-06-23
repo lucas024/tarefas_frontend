@@ -1,12 +1,61 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Select from 'react-select'
-import NotListedLocationOutlinedIcon from '@mui/icons-material/NotListedLocationOutlined';
 import styles from './servicos.module.css'
+import PersonIcon from '@mui/icons-material/Person';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 const FilterSelect = (props) => {
 
     const [selectedValue, setSelectedValue] = useState(null)
+    const [options, setOptions] = useState([])
 
+    useEffect(() => {
+        if(props.type==="zona"){
+            setOptions(
+                [
+                    { value: 'acores', label: 'Açores' },
+                    { value: 'aveiro', label: 'Aveiro' },
+                    { value: 'beja', label: 'Beja' },
+                    { value: 'braga', label: 'Braga' },
+                    { value: 'braganca', label: 'Bragança' },
+                    { value: 'castelo_branco', label: 'Castelo Branco' },
+                    { value: 'coimbra', label: 'Coimbra' },
+                    { value: 'evora', label: 'Évora' },
+                    { value: 'faro', label: 'Faro' },
+                    { value: 'guarda', label: 'Guarda' },
+                    { value: 'leiria', label: 'Leiria' },
+                    { value: 'lisboa', label: 'Lisboa' },
+                    { value: 'madeira', label: 'Madeira' },
+                    { value: 'portalegre', label: 'Portalegre' },
+                    { value: 'porto', label: 'Porto' },
+                    { value: 'santarem', label: 'Santarém' },
+                    { value: 'setubal', label: 'Setúbal' },
+                    { value: 'viana_do_castelo', label: 'Viana do Castelo' },
+                    { value: 'vila_real', label: 'Vila Real' },
+                    { value: 'viseu', label: 'Viseu' }
+                ]
+            )
+        }
+        else if(props.type === "worker"){
+            setOptions(
+                [
+                    { value: 'carpinteiro', label: 'Carpinteiro' },
+                    { value: 'canalizador', label: 'Canalizador' },
+                    { value: 'eletricista', label: 'Eletricista' },
+                    { value: 'empreiteiro', label: 'Empreiteiro' },
+                    { value: 'mudancas', label: 'Mudanças' },
+                    { value: 'pintor', label: 'Pintor' },
+                    { value: 'piscinas', label: 'Piscinas' },
+                    { value: 'jardins', label: 'Jardins' },
+                ]
+            )
+        }
+    }, [props.type])
+
+    useEffect(() => {
+        setSelectedValue(null)
+    }, [props.clear])
+ 
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
@@ -74,32 +123,8 @@ const FilterSelect = (props) => {
         placeholder: base => ({
             ...base,
             color: "#ccc",
-            fontStyle: "italic"
         })
     }
-
-    const options = [
-        { value: 'acores', label: 'Açores' },
-        { value: 'aveiro', label: 'Aveiro' },
-        { value: 'beja', label: 'Beja' },
-        { value: 'braga', label: 'Braga' },
-        { value: 'braganca', label: 'Bragança' },
-        { value: 'castelo_branco', label: 'Castelo Branco' },
-        { value: 'coimbra', label: 'Coimbra' },
-        { value: 'evora', label: 'Évora' },
-        { value: 'faro', label: 'Faro' },
-        { value: 'guarda', label: 'Guarda' },
-        { value: 'leiria', label: 'Leiria' },
-        { value: 'lisboa', label: 'Lisboa' },
-        { value: 'madeira', label: 'Madeira' },
-        { value: 'portalegre', label: 'Portalegre' },
-        { value: 'porto', label: 'Porto' },
-        { value: 'santarem', label: 'Santarém' },
-        { value: 'setubal', label: 'Setúbal' },
-        { value: 'viana_do_castelo', label: 'Viana do Castelo' },
-        { value: 'vila_real', label: 'Vila Real' },
-        { value: 'viseu', label: 'Viseu' }
-    ]
 
     return (
         <Select
@@ -108,13 +133,21 @@ const FilterSelect = (props) => {
             value={options.filter(option => option.value === selectedValue)}
             isSearchable={true}
             onChange={value => {
+                props.valueChanged(value.label)
                 setSelectedValue(value.value)
             }}
             placeholder={
-            <span className={styles.placeholder}>
-                <NotListedLocationOutlinedIcon className={styles.placeholder_icon}/>
-                Zona
-            </span>}
+                props.type==="zona"?
+                <span className={styles.placeholder}>
+                    <LocationOnIcon className={styles.placeholder_icon}/>
+                    Região
+                </span>
+                :
+                <span className={styles.placeholder}>
+                    <PersonIcon className={styles.placeholder_icon}/>
+                    Trabalhador
+                </span>
+            }
         />
     )
 }

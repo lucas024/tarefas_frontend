@@ -38,8 +38,15 @@ const MainSidebar = (props) => {
             <div className={styles.sidebar_icon_wrapper}>
                 {
                     selectedSidebar==="trabalhadores"?
-                    <PersonSearchIcon className={styles.sidebar_top_icon}/>
-                    :<ManageSearchIcon className={styles.sidebar_top_icon}/>
+                    <div className={styles.sidebar_top}>
+                        <span className={styles.sidebar_top_text}>TRABALHADORES</span>
+                        <PersonSearchIcon className={styles.sidebar_top_icon}/>
+                    </div>
+                    :
+                    <div className={styles.sidebar_top}>
+                        <span className={styles.sidebar_top_text}>TRABALHOS</span>
+                        <ManageSearchIcon className={styles.sidebar_top_icon}/>
+                    </div>
                 }
             </div>
             
