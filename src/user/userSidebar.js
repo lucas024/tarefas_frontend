@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import FaceIcon from '@mui/icons-material/Face';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {logout} from '../firebase/firebase'
+import ChatIcon from '@mui/icons-material/Chat';
 
 const UserSidebar = (props) => {
 
@@ -22,7 +23,7 @@ const UserSidebar = (props) => {
 
     useEffect(() => {
         let val = Object.fromEntries([...searchParams]).t
-        if(val === "publications" || val === "support" ||  val === "personal"){
+        if(val === "publications" || val === "support" ||  val === "personal" ||  val === "messages"){
             setSelectedSidebar(val)
         } 
     }, [searchParams])
@@ -60,17 +61,28 @@ const UserSidebar = (props) => {
                 <List
                     component="nav" className={styles.sidebar_list}
                 >
-                    <ListItemButton style={{borderTop:"3px solid #71848d"}} onClick={() => sidebarNavigate("publications")}  className={selectedSidebar==="publications"?styles.button:""}>
-                        <ListItemIcon>
-                        <ManageSearchIcon sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
-                        </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Publicações</span>} sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
-                    </ListItemButton >
-                    <ListItemButton onClick={() => sidebarNavigate("personal")} className={selectedSidebar==="personal"?styles.button:""}>
+                    {
+                        props.user.type?
+                        null:
+                        <ListItemButton style={{borderTop:"3px solid #71848d"}} onClick={() => sidebarNavigate("publications")}  className={selectedSidebar==="publications"?styles.button:""}>
+                            <ListItemIcon>
+                            <ManageSearchIcon sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
+                            </ListItemIcon>
+                            <ListItemText primary={<span className={styles.prox}>Publicações</span>} sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
+                        </ListItemButton >
+                    }
+                    
+                    <ListItemButton style={{borderTop:props.user.type?"3px solid #71848d":null}} onClick={() => sidebarNavigate("personal")} className={selectedSidebar==="personal"?styles.button:""}>
                         <ListItemIcon>
                         <AccessibilityIcon sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Dados pessoais</span>} sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={<span className={styles.prox}>Perfil</span>} sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
+                    </ListItemButton >
+                    <ListItemButton onClick={() => sidebarNavigate("messages")} className={selectedSidebar==="messages"?styles.button:""}>
+                        <ListItemIcon>
+                        <ChatIcon sx={{color:selectedSidebar==="messages"?"#FF785A":"#fff"}}/>
+                        </ListItemIcon>
+                        <ListItemText primary={<span className={styles.prox}>Mensagens</span>} sx={{color:selectedSidebar==="messages"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                 </List>
                 <List

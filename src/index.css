@@ -242,3 +242,25 @@ p{
   transition: 200ms;
 }
 
+
+
+.banner-enter{
+  opacity: 0;
+}
+.banner-enter-active {
+  opacity: 1;
+  transform: translateY(10%);
+  transition: 600ms;
+}
+.banner-enter-done{
+  transform: translateY(10%);
+}
+.banner-exit {
+  opacity: 1;
+  transform: translateY(10%);
+}
+.banner-exit-active {
+  opacity: 0;
+  transform: translateY(-10%);
+  transition: 200ms;
+}

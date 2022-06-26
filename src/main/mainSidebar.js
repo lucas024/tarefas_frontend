@@ -11,33 +11,32 @@ import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 const MainSidebar = (props) => {
 
     const [searchParams] = useSearchParams()
-    const [selectedSidebar, setSelectedSidebar] = useState("trabalhadores")
 
     const navigate = useNavigate()
 
     useEffect(() => {
         let val = Object.fromEntries([...searchParams]).t
-        if(val === "trabalhadores" || val === "trabalhos"){
-            setSelectedSidebar(val)
-        } 
+        //page
     }, [searchParams])
+
 
     const sidebarNavigate = (val) => {
         navigate({
-            pathname: `/main/publication/${selectedSidebar}`,
+            pathname: `/main/publication/${props.selected}`,
             search: `?page=${val}`
         })
+
+        //
     }
 
     const handleSelectedSidebar = val => {
-        setSelectedSidebar(val)
         navigate(`/main/publications/${val}`)
     }
     return (
         <div className={styles.sidebar}>
             <div className={styles.sidebar_icon_wrapper}>
                 {
-                    selectedSidebar==="trabalhadores"?
+                    props.selected==="trabalhadores"?
                     <div className={styles.sidebar_top}>
                         <span className={styles.sidebar_top_text}>TRABALHADORES</span>
                         <PersonSearchIcon className={styles.sidebar_top_icon}/>
@@ -55,17 +54,17 @@ const MainSidebar = (props) => {
                 <List
                     component="nav" className={styles.sidebar_list}
                 >
-                    <ListItemButton style={{borderTop:"3px solid #71848d"}} onClick={() => handleSelectedSidebar("trabalhadores")}  className={selectedSidebar==="trabalhadores"?styles.button:""}>
+                    <ListItemButton style={{borderTop:"3px solid #71848d"}} onClick={() => handleSelectedSidebar("trabalhos")} className={props.selected==="trabalhos"?styles.button:""}>
                         <ListItemIcon>
-                        <PersonSearchIcon sx={{color:selectedSidebar==="trabalhadores"?"#FF785A":"#fff"}}/>
+                        <ManageSearchIcon sx={{color:props.selected==="trabalhos"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Trabalhadores</span>} sx={{color:selectedSidebar==="trabalhadores"?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={<span className={styles.prox}>Trabalhos</span>} sx={{color:props.selected==="trabalhos"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
-                    <ListItemButton onClick={() => handleSelectedSidebar("trabalhos")} className={selectedSidebar==="trabalhos"?styles.button:""}>
+                    <ListItemButton onClick={() => handleSelectedSidebar("trabalhadores")}  className={props.selected==="trabalhadores"?styles.button:""}>
                         <ListItemIcon>
-                        <ManageSearchIcon sx={{color:selectedSidebar==="trabalhos"?"#FF785A":"#fff"}}/>
+                        <PersonSearchIcon sx={{color:props.selected==="trabalhadores"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Trabalhos</span>} sx={{color:selectedSidebar==="trabalhos"?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={<span className={styles.prox}>Trabalhadores</span>} sx={{color:props.selected==="trabalhadores"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                 </List>
                 

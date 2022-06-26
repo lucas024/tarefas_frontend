@@ -18,6 +18,7 @@ import ProtectedRoute from './protectedRoute';
 import Main from './main/main';
 import Loader from './general/loader';
 import Reserva from './main/reserva';
+import AuthWorker from './auth/authWorker';
 
 
 function App() {
@@ -44,6 +45,17 @@ function App() {
         if(res.data !== null){
           setUser(res.data)
           setLoading(false)
+        }
+        else{
+          axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
+            if(res.data !== null){
+              setUser(res.data)
+              setLoading(false)
+            }
+            else{
+              setLoading(false)
+            }
+          })
         }
       }).catch(err => {
         setLoading(false)
@@ -106,14 +118,21 @@ function App() {
                 </ProtectedRoute>
                 }
               />
-              <Route exact path="/authentication/*" 
+              <Route exact path="/authentication/worker" 
+                element={<AuthWorker
+                  setUser = {user => setUser(user)}
+                  api_url={api_url}
+                  loading={loading}
+                  loadingHandler={bool => setLoading(bool)}/>}
+              />
+              <Route exact path="/authentication" 
                 element={<Auth
                   setUser = {user => setUser(user)}
                   api_url={api_url}
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}/>}
               />
-              <Route path="/" element={<Home/>} />
+              <Route path="/" element={<Home user={user}/>} />
               <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

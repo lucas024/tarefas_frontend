@@ -71,7 +71,6 @@ const UserReservationPage = (props) => {
 
     useEffect(() => {
         if(window.google){
-            console.log("loaded");
         }
         else{
             new Loader({
@@ -171,17 +170,23 @@ const UserReservationPage = (props) => {
         Geocode.fromAddress(val.label).then(
             (response) => {
               const { lat, lng } = response.results[0].geometry.location;
-              if(38.84>=lat && lat>=38.68 && -9.06>lng && lng>-9.34){
-                  setBadAddress(false)
-                  setWrongAddress(false)
-                  setLat(lat)
-                  setLng(lng)
-                  setAddress(val.label)
-              }
-              else{
-                  setBadAddress(true)
-                  setAddress('')
-              }
+              setLat(lat)
+              setLng(lng)
+              setAddress(val.label)
+              setBadAddress(false)
+              setWrongAddress(false)
+
+            //   if(38.84>=lat && lat>=38.68 && -9.06>lng && lng>-9.34){
+            //       setBadAddress(false)
+            //       setWrongAddress(false)
+            //       setLat(lat)
+            //       setLng(lng)
+            //       setAddress(val.label)
+            //   }
+            //   else{
+            //       setBadAddress(true)
+            //       setAddress('')
+            //   }
             })
     }
 
@@ -445,7 +450,7 @@ const UserReservationPage = (props) => {
                             <div className={styles.top_right}>
                                 <div className={styles.diff_right}>
                                     <span className={styles.diff_right_title}>Título<span className={styles.action}>*</span></span>
-                                    <input onFocus={() => {setTituloFocused(true)}} placeholder="Título da publicação..." maxLength={40} onChange={e => setTitulo(e.target.value)} value={titulo} className={styles.top_input_short} style={{borderBottom:tituloWrong?"3px solid red":!tituloWrong&&tituloFocused?"3px solid #26B282":""}}></input>
+                                    <input onFocus={() => {setTituloFocused(true)}} placeholder="Título da publicação..." maxLength={40} onChange={e => setTitulo(e.target.value)} value={titulo} className={styles.top_input_short} style={{borderColor:tituloWrong&&titulo.length>0?"red":!tituloWrong&&tituloFocused&&titulo.length>0?"#26B282":""}}></input>
                                 </div>
                                 <div className={styles.diff_right}>
                                     <span className={styles.diff_right_title}>Descrição</span>
@@ -494,16 +499,16 @@ const UserReservationPage = (props) => {
                             </div>
                             <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
                                 <div className={styles.bot_input_div} style={{marginTop:"0"}}>
-                                    <span style={{borderBottom:nomeWrong?"3px solid red":!nomeWrong&&nomeFocused?"3px solid #26B282":!nomeWrong&&nome.length>0?"3px solid #26B282":"", borderRight:nomeWrong?"3px solid red":!nomeWrong&&nomeFocused?"3px solid #26B282":!nomeWrong&&nome.length>0?"3px solid #26B282":""}} className={styles.area_label_inverse}>Nome<span className={styles.asterisc}>*</span></span>
-                                    <input style={{borderBottom:nomeWrong?"3px solid red":!nomeWrong&&nomeFocused?"3px solid #26B282":!nomeWrong&&nome.length>0?"3px solid #26B282":""}} disabled={props.user} onFocus={() => {nameFocused()}} maxLength={26} onChange={e => setNome(e.target.value)} value={nome} className={styles.bot_input_short} ></input>
+                                    <span style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"transparent", borderRight:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"transparent"}} className={styles.area_label_inverse}>Nome<span className={styles.asterisc}>*</span></span>
+                                    <input style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"transparent"}} disabled={props.user} onFocus={() => {nameFocused()}} maxLength={26} onChange={e => setNome(e.target.value)} value={nome} className={styles.bot_input_short} ></input>
                                 </div>
                                 <div className={styles.bot_input_div}>
-                                    <span style={{borderBottom:phoneWrong?"3px solid red":!phoneWrong&&phoneFocused?"3px solid #26B282":!phoneFocused&&phone.length===9?"3px solid #26B282":"", borderRight:phoneWrong?"3px solid red":!phoneWrong&&phoneFocused?"3px solid #26B282":!phoneFocused&&phone.length===9?"3px solid #26B282":""}} className={styles.area_label_inverse}>Telefone<span className={styles.asterisc}>*</span></span>
-                                    <input style={{borderBottom:phoneWrong?"3px solid red":!phoneWrong&&phoneFocused?"3px solid #26B282":!phoneFocused&&phone.length===9?"3px solid #26B282":""}} onFocus={() => {setPhoneFocused(true)}} maxLength={11} onChange={e => setPhoneHandler(e.target.value)} value={phoneVisual} className={styles.bot_input_short}></input>
+                                    <span style={{borderColor:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"transparent", borderRight:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"transparent"}} className={styles.area_label_inverse}>Telefone<span className={styles.asterisc}>*</span></span>
+                                    <input style={{borderColor:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"transparent"}} onFocus={() => {setPhoneFocused(true)}} maxLength={11} onChange={e => setPhoneHandler(e.target.value)} value={phoneVisual} className={styles.bot_input_short}></input>
                                 </div>
                                 <div className={styles.bot_input_div}>
-                                    <span style={{borderBottom:emailWrong?"3px solid red":!emailWrong&&emailFocused?"3px solid #26B282":!emailWrong&&email.length>3?"3px solid #26B282":"", borderRight:emailWrong?"3px solid red":!emailWrong&&emailFocused?"3px solid #26B282":!emailWrong&&email.length>3?"3px solid #26B282":""}} className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
-                                    <input style={{borderBottom:emailWrong?"3px solid red":!emailWrong&&emailFocused?"3px solid #26B282":!emailWrong&&email.length>3?"3px solid #26B282":""}} disabled={props.user} onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
+                                    <span style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"transparent", borderRight:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"transparent"}} className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
+                                    <input style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"transparent"}} disabled={props.user} onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
                                 </div>
                                 
                             </div>
@@ -514,16 +519,16 @@ const UserReservationPage = (props) => {
                             <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
                                 <div className={styles.bot_address_flex}>
                                     <div className={styles.bot_input_div_search} onClick={() => setAddressFocused(true)}>
-                                        <span  style={{borderBottom:badAddress||wrongAddress?"3px solid red":!badAddress&&!wrongAddress&&addressFocused?"3px solid #26B282":"", borderRight:(badAddress||wrongAddress)?"3px solid red":!badAddress&&!wrongAddress&&addressFocused?"3px solid #26B282":""}} className={styles.area_label_inverse}>Morada<span className={styles.asterisc}>*</span></span>
+                                        <span  style={{borderColor:badAddress||wrongAddress?"red":!badAddress&&!wrongAddress&&addressFocused?"#26B282":"", borderRight:(badAddress||wrongAddress)?"red":!badAddress&&!wrongAddress&&addressFocused?"#26B282":""}} className={styles.area_label_inverse}>Morada<span className={styles.asterisc}>*</span></span>
                                         <GooglePlacesAutocomplete
                                         apiKey="AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk"
                                         autocompletionRequest={{
-                                            bounds: [
-                                            { lat: 38.74, lng: -9.27 },
-                                            { lat: 38.83, lng: -9.17 },
-                                            { lat: 38.79, lng: -9.09 },
-                                            { lat: 38.69, lng: -9.21 },
-                                            ],
+                                            // bounds: [ //BOUNDS LISBOA
+                                            // { lat: 38.74, lng: -9.27 },
+                                            // { lat: 38.83, lng: -9.17 },
+                                            // { lat: 38.79, lng: -9.09 },
+                                            // { lat: 38.69, lng: -9.21 },
+                                            // ],
                                             componentRestrictions: {
                                             country: ['pt'],
                                             }
@@ -550,7 +555,7 @@ const UserReservationPage = (props) => {
                                             control: (provided, state) => ({
                                                 ...provided,
                                                 width: "100%",
-                                                borderRadius: "10px",
+                                                borderRadius: "5px",
                                                 borderTopLeftRadius: "0px",
                                                 height: "40px",
                                                 fontSize:"0.8rem",
@@ -574,29 +579,18 @@ const UserReservationPage = (props) => {
                                             indicatorSeparator: () => null
                                             },
                                             IndicatorsContainer:()=>(<></>),
-                                            placeholder: "Pesquise o local do serviço...",
+                                            placeholder: "Pesquisar...",
                                             noOptionsMessage: () => "Pesquisar morada",
                                             loadingMessage: () => "A pesquisar...",
                                         }}
                                         />
                                         </div>
-                                        {
-                                            badAddress?
-                                            <div className={styles.column_fix}>
-                                                <span className={styles.address_not_allowed}>
-                                                    <span className={styles.address_not_allowed_text}>
-                                                        <span style={{fontWeight:600}}>AINDA</span> não operamos nesta zona <Sad className={styles.sad_face}/>
-                                                    </span>
-                                                </span>
-                                            </div>
-                                            :null
-                                        }
                                     </div>
                                     <div className={styles.address_flex}>
                                         <div className={styles.bot_input_div}>
                                             
-                                            <span style={{borderBottom:portaWrong?"3px solid red":!portaWrong&&portaFocused?"3px solid #26B282":"", borderRight:portaWrong?"3px solid red":!portaWrong&&portaFocused?"3px solid #26B282":""}} className={styles.area_label_inverse}>Porta<span className={styles.asterisc}>*</span></span>
-                                            <input style={{width:"100px", borderBottom:portaWrong?"3px solid red":!portaWrong&&portaFocused?"3px solid #26B282":""}} onFocus={() => {setPortaFocused(true)}} maxLength={5} onChange={e => setPorta(e.target.value)} value={porta} className={styles.bot_input_short}></input>
+                                            <span style={{borderColor:portaWrong?"red":!portaWrong&&portaFocused?"#26B282":""}} className={styles.area_label_inverse}>Porta<span className={styles.asterisc}>*</span></span>
+                                            <input style={{width:"100px", borderColor:portaWrong?"red":!portaWrong&&portaFocused?"#26B282":""}} onFocus={() => {setPortaFocused(true)}} maxLength={5} onChange={e => setPorta(e.target.value)} value={porta} className={styles.bot_input_short}></input>
                                         </div>
                                         <div className={styles.bot_input_div}>
                                             <span className={styles.area_label_inverse}>Andar</span>

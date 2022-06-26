@@ -5,7 +5,6 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs';
-import Carta from './carta';
 import axios from 'axios';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
@@ -13,11 +12,12 @@ import FilterSelect from './filterSelect';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import Loader from './../general/loader';
+import Row from './row';
 
 require('dayjs/locale/pt')
 
 
-const Servicos = (props) => {
+const Trabalhos = (props) => {
 
     const {id} = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
@@ -31,14 +31,13 @@ const Servicos = (props) => {
     const [searchVal, setSearchVal] = useState('')
     dayjs.locale('pt')
     const [allItems, setAllItems] = useState([])
-    const [gridAnim, setGridAnim] = useState(true)
     const [locationActive, setLocationActive] = useState(false)
     const [workerActive, setWorkerActive] = useState(false)
 
     const myRef = useRef(null)
 
     useEffect(() => {
-        fetchWorkers()
+        fetchPublications()
         setClear(!clear)
         setLocationActive(false)
         setWorkerActive(false)
@@ -76,9 +75,9 @@ const Servicos = (props) => {
         
     }, [allItems, searchParams])
 
-    const fetchWorkers = () => {
+    const fetchPublications = () => {
         setLoading(true)
-        axios.get(`${props.api_url}/workers`).then(res => {
+        axios.get(`${props.api_url}/reservations`).then(res => {
             if(res.data!==null){
                 let arr = res.data
                 arr = fisher_yates_shuffle(arr)
@@ -95,26 +94,33 @@ const Servicos = (props) => {
           [arr[randIndex], arr[i]] = [arr[i], arr[randIndex]];
         }
         return arr;
-      }
+    }
 
-    const mapBoxesToDisplay = () => {
-        return items?.map((worker, i) => {
+    const navigatePubHandler = (id) => {
+        navigate(`/main/publications/publication?id=${id}&prevpage=${currPage}`, 
+                {
+                state: {
+                    fromUserPage: false,
+                }
+                }
+            )
+    }
+
+    const mapRowsToDisplay = () => {
+        return items?.map((item, i) => {
             return(
-                <div key={i} className={styles.box_case} onClick={() => navigate({
-                                                                    pathname: `/reserva`,
-                                                                    search: `?worker=worker_id`
-                                                                })}> 
-                    <Carta
+                <div key={i} className={styles.row} onClick={() => navigatePubHandler(item._id)}> 
+                    <Row
                         id={id}
-                        worker={worker}
+                        item={item}
                         locationActive={locationActive}
                         workerActive={workerActive}
+                        user={props.user}
                     />
                 </div>
             )
         })
     }
-
     const arrowClick = (val) => {
         navigate({
             search: `?p=${currPage + val}`
@@ -145,7 +151,7 @@ const Servicos = (props) => {
             <div className={styles.main} onScroll={handleScroll}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_input_div}>
-                        <input onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Pesquisar trabalhadores...`}></input>
+                        <input onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Pesquisar trabalhos...`}></input>
                         <PersonSearchIcon className={styles.search_input_div_icon}/>
                         <SearchIcon className={styles.search_final_icon}/>
                     </div>
@@ -172,8 +178,8 @@ const Servicos = (props) => {
                             
                             {
                                 allItems.length===1?
-                                <span className={styles.top_info_numbers}>1 TRABALHADOR</span>
-                                :<span className={styles.top_info_numbers}>{allItems.length} trabalhadores</span>
+                                <span className={styles.top_info_numbers}>1 TRABALHO</span>
+                                :<span className={styles.top_info_numbers}>{allItems.length} trabalhos</span>
                             }
                             <div className={styles.top_info_filter}>
                                 <div className={styles.top_info_filter_flex}>
@@ -208,11 +214,8 @@ const Servicos = (props) => {
                                 }
                             </div>
                         </div>
-                        <div className={gridAnim?styles.animGrid:styles.grid}
-                            onAnimationEnd={() =>{
-                                setGridAnim(false)
-                            }}>
-                                {mapBoxesToDisplay()}
+                        <div className={styles.list}>
+                            {mapRowsToDisplay()}
                         </div>
                         <div className={styles.num}>
                             {
@@ -263,4 +266,4 @@ const Servicos = (props) => {
     )
 }
 
-export default Servicos;
+export default Trabalhos;

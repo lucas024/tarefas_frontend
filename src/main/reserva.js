@@ -20,6 +20,13 @@ import Loader2 from '../general/loader';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import { Loader } from '@googlemaps/js-api-loader'
+import blurredMap from '../assets/blurredMap.png'
+import arrow from '../assets/curve-down-arrow.png'
+import WorkerBanner from '../general/workerBanner';
+
+
+const ObjectID = require("bson-objectid");
+
 
 const Reserva = (props) => {
 
@@ -30,10 +37,13 @@ const Reserva = (props) => {
     const [userView, setUserView] = useState(false)
     const [eliminationPopup, setEliminationPopup] = useState(false)
     const [publicationUser, setPublicationUser] = useState({})
+    const [workerBanner, setWorkerBanner] = useState(false)
+    const [loadingChat, setLoadingChat] = useState(false)
 
     const [isMapApiLoaded, setIsMapApiLoaded] = useState(false)
 
     const scrollRef = useRef(null)
+    const messageRef = useRef(null)
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -44,10 +54,10 @@ const Reserva = (props) => {
     const [searchParams] = useSearchParams()
     const [params, setParams] = useState([])
     const [loading, setLoading] = useState(false)
+    const [page, setPage] = useState(null)
 
     useEffect(() => {
         if(isMapApiLoaded || window.google){
-            console.log("loaded");
         }
         else{
             const loader = new Loader({
@@ -62,7 +72,8 @@ const Reserva = (props) => {
         setLoading(true)
         const paramsAux = Object.fromEntries([...searchParams])
         setParams(paramsAux)
-        props.user&&axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
+        setPage(paramsAux.prevpage)
+        axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
             if(res.data){
                 setReservation(res.data)
                 let arr = []
@@ -80,7 +91,7 @@ const Reserva = (props) => {
                 axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: res.data.user_id} })
                     .then(res2 => {
                         setPublicationUser(res2.data)
-                        if(props.user._id === res.data.user_id){
+                        if(props.user?._id === res.data.user_id){
                             setUserView(true)
                         }
                         setLoading(false)
@@ -143,9 +154,46 @@ const Reserva = (props) => {
         navigate(-1)
     }
 
+    const sendMessageHandler = () => {
+        if(text!==""&&reservation.user_id!==props.user._id){
+            setLoadingChat(true)
+
+            let text_object = {
+                origin_id : props.user._id,
+                timestamp : new Date().getTime(),
+                text: text
+            }
+
+            axios.post(`${props.api_url}/chats/update_user_chat`, {
+                user_name: props.user.name,
+                user_photoUrl: props.user.photoUrl,
+                user_phone: props.user.phone,
+                user_id: props.user._id,
+                other_user_name: publicationUser.name,
+                other_user_photoUrl: publicationUser.photoUrl,
+                other_user_phone: publicationUser.phone,
+                other_user_id: publicationUser._id,
+                text: text_object,
+                updated: new Date().getTime(),
+                chat_id: ObjectID()
+            })
+            .then(() => {
+                setLoadingChat(false)
+                //navigate('/user?t=messages')
+                //aquela cena que desce
+            })
+        }
+        
+    }
 
     return (
-        <div>
+        <div style={{position:"relative"}}>
+            {
+                workerBanner?
+                <WorkerBanner cancel={() => setWorkerBanner(false)}/>
+                :null
+            }
+            
             {
                 reservation?.user_id?
                 <div className={styles.test} style={{overflowY:eliminationPopup?"hidden":"auto"}}>
@@ -165,16 +213,14 @@ const Reserva = (props) => {
                         </div>
                         :
                         <div className={styles.normal_back}>
-                            <div className={styles.normal_back_left} onClick={() => navigate('/main/publications')}>
+                            <div className={styles.normal_back_left} onClick={() => navigate(-1)}>
                                 <ArrowBackIosIcon className={styles.normal_back_left_symbol}/>
                                 <span className={styles.normal_back_left_text}>TRABALHOS</span>
                             </div>
-                            <div className={styles.normal_back_right}>
+                            <div className={styles.normal_back_right} onClick={() => navigate(-1)}>
                                 <span className={styles.normal_back_right_dir}>Trabalhos</span>
                                 <span className={styles.normal_back_right_sep}>/</span>
-                                <span className={styles.normal_back_right_dir}>Eletricista</span>
-                                <span className={styles.normal_back_right_sep}>/</span>
-                                <span className={styles.normal_back_right_dir}>Página 3</span>
+                                <span className={styles.normal_back_right_dir}>Página {page}</span>
                             </div>
                         </div>
                     }
@@ -238,36 +284,58 @@ const Reserva = (props) => {
                                 
                                 <div>
                                     <div className={styles.divider}></div>
-                                    <div className={styles.details}>
-                                        <span className={styles.details_id}>ID: {reservation._id}</span>
-                                        <span className={styles.details_id}>Visualizações: {reservation.clicks}</span>
+                                        <div className={styles.details}>
+                                            <span className={styles.details_id}>ID: {reservation._id}</span>
+                                            <span className={styles.details_id}>Visualizações: {reservation.clicks}</span>
+                                        </div>
                                     </div>
                                 </div>
-                                
-                            </div>
                             <div className={styles.top_right}>
+                                <span className={styles.top_right_message} onClick={() => messageRef.current.scrollIntoView() }>
+                                    Enviar Mensagem
+                                </span>
                                 <span className={styles.top_right_user}>Utilizador</span>
                                 <div className={styles.top_right_div}>
                                     {
-                                        reservation.user_photo!==""?
+                                        publicationUser.photoUrl!==""?
                                         <img src={publicationUser?.photoUrl} className={styles.top_right_img}></img>
                                         :<FaceIcon className={styles.top_right_img}/>
                                     }
                                     <div className={styles.user_info}>
+                                        {
+                                            props.user?
+                                            null
+                                            :
+                                            <div className={styles.market}>
+                                                <img src={arrow} className={styles.market_arrow}/>
+                                                <span className={styles.market_text}>Gostava de contacar <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span>?</span>
+                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                                            </div>
+                                        }
                                         <span className={styles.user_info_name}>{reservation.user_name}</span>
                                         <span style={{display:"flex", alignItems:"center", marginTop:"5px"}}>
                                             <PhoneOutlinedIcon className={styles.user_info_number_symbol}/>
-                                            <span className={styles.user_info_number}>{getNumberDisplay(publicationUser?.phone)}</span>   
+                                            {
+                                                props.user?
+                                                <span className={styles.user_info_number}>{getNumberDisplay(publicationUser?.phone)}</span> 
+                                                :<span className={styles.user_info_number_blur}>123 456 789</span> 
+                                            }
+                                              
                                         </span>
                                     </div>                                    
                                 </div>
                                 <span className={styles.top_right_user} style={{marginTop:"40px"}}>Localização</span>
                                 <div className={styles.location_div}>
                                     <LocationOnIcon className={styles.location_pin}/>
-                                    <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}, ${reservation.andar}`}</span>
+                                    {
+                                            props.user?
+                                            <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}, ${reservation.andar}`}</span>
+                                            :<span className={styles.location_blur}>R. Abcdefg Hijklmonpqrstuvxyz 99, Porta 99</span> 
+                                        }
                                 </div>
-                                
-                                <div className={styles.map_div}>
+                                {
+                                    props.user?
+                                    <div className={styles.map_div}>
                                         <GoogleMapReact 
                                             bootstrapURLKeys={{ key:"AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk", libraries: ["places"]}}
                                             defaultZoom={14}
@@ -276,6 +344,13 @@ const Reserva = (props) => {
                                             <Marker lat={reservation.lat} lng={reservation.lng}/>
                                         </GoogleMapReact>
                                     </div>
+                                    :
+                                    <div className={styles.map_div}>
+                                        <img src={blurredMap} className={styles.blurred_map}/>
+                                    </div>
+
+                                }
+                                
                             </div>
                         </div>
                         <div className={styles.photos}>
@@ -296,31 +371,53 @@ const Reserva = (props) => {
                                 <div className={styles.message_top_flex}>
                                     <div className={styles.message_left}>
                                         {
-                                            reservation.user_photo!==""?
-                                            <img src={reservation.user_photo} className={styles.top_right_img}></img>
+                                            publicationUser.photoUrl!==""?
+                                            <img src={publicationUser?.photoUrl} className={styles.top_right_img}></img>
                                             :<FaceIcon className={styles.top_right_img}/>
                                         }
                                         <span className={styles.message_left_user_name}>{reservation.user_name}</span>
                                     </div>
                                     <span style={{display:"flex", alignItems:"center", marginTop:"5px"}}>
                                         <PhoneOutlinedIcon className={styles.user_info_number_symbol}/>
-                                        <span className={styles.user_info_number}>{getNumberDisplay(reservation.user_phone)}</span>   
+                                        {
+                                            props.user?
+                                            <span className={styles.user_info_number}>{getNumberDisplay(publicationUser?.phone)}</span> 
+                                            :<span className={styles.user_info_number_blur}>123 456 789</span> 
+                                        }
                                     </span>
                                 </div>
-                                <textarea 
-                                    className={styles.message_textarea}
-                                    placeholder="Escrever mensagem..."
-                                    value={text}
-                                    onChange={e => setText(e.target.value)}
-                                />
-                                <div className={styles.message_enviar_div}>
+                                {
+                                    props.user?
+                                    <div style={{position:"relative"}}>
+                                        <Loader2 loading={loadingChat}/>
+                                        <textarea 
+                                        className={styles.message_textarea}
+                                        placeholder="Escrever mensagem..."
+                                        value={text}
+                                        onChange={e => setText(e.target.value)} />
+                                    </div>
+                                    :
+                                    <div className={styles.textarea_wrapper}>
+                                        <textarea 
+                                            className={styles.message_textarea_disabled}
+                                            placeholder="Escrever mensagem..."
+                                        />
+                                        <div className={styles.frontdrop}>
+                                            <span className={styles.frontdrop_text}>Para enviar mensagem à/ao <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span>,</span>
+                                            <span className={styles.frontdrop_text}>torne-se um trabalhador Arranja.</span>
+                                            <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                                        </div>
+                                    </div>
+                                }
+                                
+                                <div className={styles.message_enviar_div} ref={messageRef} onClick={() => sendMessageHandler()}>
                                     <span className={text!==""?styles.message_enviar:styles.message_enviar_disabled}>
                                         Enviar
                                     </span>
                                 </div>
                             </div>
                             :
-                            <div style={{marginTop:"10px"}}></div>
+                            <div style={{marginTop:"40px"}}></div>
                         }
                         
                     </div>

@@ -7,6 +7,8 @@ import axios from 'axios';
 import ReservaList from './reservaList';
 import Personal from './personal';
 import Suporte from './suporte';
+import NoPage from './../general/noPage';
+import Messages from './messages';
 
 const User = (props) => {
 
@@ -24,7 +26,7 @@ const User = (props) => {
     }, [props.user])
 
     const updateReservations = () => {
-        axios.get(`http://localhost:5000/reservations`, { params: {user_id: props.user._id} }).then(res => {
+        axios.get(`http://localhost:5000/reservations/get_by_id`, { params: {user_id: props.user._id} }).then(res => {
             for(let el of res.data){
                 if(el.type<2){
                     setNextReservation(el)
@@ -37,13 +39,15 @@ const User = (props) => {
 
     const displayCurrentArea = () => {
         let val = Object.fromEntries([...searchParams]).t
-        if(val === "publications")
+        if(val === "publications" && props.user?.type===1)
             return <ReservaList api_url={props.api_url} reservations={reservations} user={props.user} refreshPublications={() => updateReservations()}/>
         else if(val === "personal")
             return <Personal user={props.user} api_url={props.api_url} refreshUser={() => props.refreshUser()}/>
         else if(val === "support")
             return <Suporte user={props.user} api_url={props.api_url}/>
-        return <span>page not exist</span>
+        else if(val === "messages")
+            return <Messages user={props.user} api_url={props.api_url}/>
+        return <NoPage object={"página"}/>
     }
 
     return (

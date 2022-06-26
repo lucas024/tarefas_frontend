@@ -142,10 +142,10 @@ const Schedule = (props) => {
   );
 
   const getReservations = () => {
-    axios.get(`http://localhost:5000/reservations`, { params: {worker_id: "620a9935dd773b6c652adf99"} }).then(res => {
-          console.log(res.data)
-          setReservations(res.data)
-    })
+    // axios.get(`http://localhost:5000/reservations`, { params: {worker_id: "620a9935dd773b6c652adf99"} }).then(res => {
+    //       console.log(res.data)
+    //       setReservations(res.data)
+    // })
   }
     
   const commitChanges = changes => {

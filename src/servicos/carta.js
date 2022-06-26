@@ -46,7 +46,7 @@ const Carta = (props) => {
                     <img className={styles.worker_img} 
                         src={worker.img!==""?worker.img:""}/>
                     <div className={styles.worker_info_div}>
-                        <span className={styles.worker_info_name}>{worker.name.first} {worker.name.first}</span>
+                        <span className={styles.worker_info_name}>{worker.name?.first} {worker.name?.first}</span>
                         <span className={styles.worker_info_type}>
                             Particular
                         </span>

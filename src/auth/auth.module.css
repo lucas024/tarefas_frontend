@@ -2,12 +2,29 @@
 
 .auth{
     width: 100%;
+    position: relative;
+}
+.auth_top{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+}
+.auth_top_text{
+    font-size: 5rem;
+    font-weight: 800;
+    color: white;
+    opacity: 0.2;
 }
 .auth_main{
     width: 100%;
-    min-height: calc(100vh - 69px);
+    min-height: calc(100vh - 68px);
     border-top: 1px solid #ccc;
     background-color: var(--brand);
+    display: flex;
+    flex-direction: column;
 }
 .area{
     padding-bottom: 20px;
@@ -20,6 +37,8 @@
 .area_top{
     display: block;    
     border-bottom: 1px solid #FF785A50;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
 }
 .area_top ul{
     margin: 0;
@@ -93,6 +112,7 @@
     width: 100%;
     margin: auto;
     cursor: pointer;
+    background-color: white;
 }
 .o2_img{
     height: 25px;
@@ -130,7 +150,7 @@
 .login_input{
     padding: 15px 5px;
     border: none;
-    background-color: var(--lightgrey);
+    background-color: var(--background);
     font-size: 1.1rem;
     width: 100%;
     border-radius: 5px;
@@ -214,4 +234,47 @@
 .bottom_switch_button:hover{
     text-decoration: underline;
     color: var(--action);
+}
+.user_button{
+    margin-right: 5px;
+    font-weight: 600;
+    background-color: var(--brand);
+    border: 3px solid var(--brand);
+    border-radius: 5px;
+    padding: 7px;
+    z-index: 3;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+    color: white;
+}
+.user_button:hover{
+    cursor: pointer;
+    background-color: transparent;
+    color: var(--brand);
+    transition: 150ms;
+}
+.worker_button{
+    margin-right: 5px;
+    font-weight: 600;
+    background-color: var(--action);
+    border: 3px solid var(--action);
+    border-radius: 5px;
+    padding: 7px;
+    z-index: 3;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+    color: white;
+}
+.worker_button:hover{
+    cursor: pointer;
+    background-color: transparent;
+    color: var(--action);
+    transition: 150ms;
+}
+.button_area{
+    display: flex;
+    width: 100%;
+    margin-top: 30px;
+    margin-bottom: 5px;
+    justify-content: flex-end;
 }

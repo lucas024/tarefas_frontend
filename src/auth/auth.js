@@ -160,6 +160,7 @@ const Auth = (props) => {
                             google_uid: res.user.uid,
                             address: "",
                             photoUrl: "",
+                            type: 0
                         })
                         .then(res => {
                             console.log(res.data)
@@ -257,7 +258,8 @@ const Auth = (props) => {
                           email: user.email,
                           google_uid: user.uid,
                           address: "",
-                          photoUrl: user.photoURL
+                          photoUrl: user.photoURL,
+                          type: 0
                       }).then(result => {
                             console.log(result);
                             props.setUser(result.data.ops[0])
@@ -301,7 +303,8 @@ const Auth = (props) => {
                           email: user.email,
                           google_uid: user.uid,
                           address: "",
-                          photoUrl: user.photoURL
+                          photoUrl: user.photoURL,
+                          type: 0
                       }).then(result => {
                             console.log(result);
                             props.setUser(result.data.ops[0])
@@ -507,7 +510,7 @@ const Auth = (props) => {
                             </div>
                             <div className={!props.loading?styles.login_button:styles.login_button_disabled} style={{marginTop:"20px"}} onClick={() => {
                                     if(!props.loading) registerHandler()}}>
-                                <p className={styles.login_text}>Registar no ________</p>
+                                <p className={styles.login_text}>Registar no Arranja</p>
                             </div>
                             <div className={styles.bottom_switch}>
                                 <span className={styles.bottom_switch_text}>Já tens conta? </span>
@@ -515,8 +518,9 @@ const Auth = (props) => {
                             </div>
                         </div>
                     }
-                    
-                    
+                </div>
+                <div className={styles.button_area}>
+                    <span className={styles.worker_button} onClick={() => navigate('/authentication/worker')}>Registar como Trabalhador</span>
                 </div>
             </div>
         </div>

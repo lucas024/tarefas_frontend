@@ -68,7 +68,7 @@ const ReservaList = (props) => {
         return props.reservations.map((res, i) => {
             if(res.type===num1 || res.type===num2){
                 return (
-                    <div key={i} className={styles.item_wrapper} onClick={() => navigatePubHandler(res._id, res.type)}>
+                    <div key={i} className={styles.item_wrapper} onClick={() => navigatePubHandler(res._id)}>
                         {
                             removeArray.includes(res._id)?
                                 <div className={styles.remove_div}>
@@ -138,8 +138,8 @@ const ReservaList = (props) => {
         })
     }
 
-    const navigatePubHandler = (id, type) => {
-        navigate(`/main/publications/publication?id=${id}&pubstate=${type}`, 
+    const navigatePubHandler = (id) => {
+        navigate(`/main/publications/publication?id=${id}`, 
                 {
                 state: {
                     fromUserPage: true,

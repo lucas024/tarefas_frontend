@@ -79,7 +79,7 @@ const Personal = (props) => {
     return (
         <div className={styles.personal}>
             <div className={styles.personal_title}>
-                <span className={styles.top_title}>Dados Pessoais</span>
+                <span className={styles.top_title}>Perfil</span>
             </div>
             <div className={styles.flex}>
                 <div>

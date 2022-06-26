@@ -1,0 +1,136 @@
+.row{
+    display: flex;
+    height: 150px;
+    background-color: white;
+    border-radius: 5px;
+    border-bottom: 3px solid transparent;
+}
+.row:hover{
+    border-bottom: 3px solid var(--action) !important;
+    cursor: pointer;
+}
+.row_time{
+    width: 20%;
+    border-right: 4px solid var(--background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--grey);
+    min-width: 100px;
+}
+.row_time_date{
+    text-align: center;
+}
+.row_right{
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+}
+.row_right_left{
+    display: flex;
+    padding: 10px;
+}
+.row_img{
+    width: 150px  !important;
+    height: 100%  !important;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.item_no_img{
+    width: 130px  !important;
+    height: 100%  !important;
+    margin-left: 10px;
+}
+.title_div{
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+}
+.title{
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+.desc{
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 1rem;
+    font-weight: 400;
+    white-space: pre-line;
+}
+.row_right_right{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    justify-content: space-between
+}
+.right_flex{
+    display: flex;
+    align-items: center;
+}
+.right_type_icon{
+    width: 15px !important;
+    height: 15px !important;
+    color: var(--grey);
+}
+.right_type{
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--grey);
+    margin-left: 2px;
+    font-size: 0.8rem;
+}
+
+.item_indicator{
+    background-color: white;
+    border-radius: 10px;
+    height: 60%;
+    width: 5px;
+}
+.item_flex_indicator{
+    display: flex;
+    height: 25px;
+    align-self: center;
+    align-items: center;
+    border-radius: 5px;
+    padding: 0 5px;
+}
+.item_type{
+    margin-left: 5px;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+
+
+
+@media (max-width: 924px){
+    .title{
+        font-size: 1rem;
+    }
+    .desc{
+        text-overflow: ellipsis;
+        overflow: hidden; 
+        width: 150px;
+        white-space: nowrap;
+    }
+}
+@media (max-width: 850px){
+    .title{
+
+    }
+    .desc{
+        text-overflow: ellipsis;
+        overflow: hidden; 
+        width: 100px;
+        white-space: nowrap;
+    }
+}
+@media (max-width: 768px){
+
+}

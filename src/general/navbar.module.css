@@ -21,7 +21,7 @@
 .flex_end{
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
 }
 .flex_right{
     display: flex;
@@ -58,7 +58,44 @@
     position: relative;
     font-size: 1.1rem;
 }
-
+.chat_div{
+    display: flex;
+    position: relative;
+    align-items: center;
+    margin-right: 20px;
+}
+.chat{
+    color: var(--brand);
+}
+.chat_notification{
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    position: absolute;
+    right: -4px;
+    top: 5px;
+    background-color: var(--action);
+}
+.chat_div:hover > *{
+    cursor: pointer;
+    color: var(--action);
+}
+.user_button{
+    margin-right: 20px;
+    background-color: var(--brand);
+    padding: 7px;
+    box-sizing: border-box;
+    color: white;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 3px solid var(--brand);
+}
+.user_button:hover{
+    background-color: white;
+    transition: 150ms;
+    color: var(--brand);
+}
 .user_login:before {
     content: "";
     position: absolute;
@@ -82,16 +119,20 @@
     align-self: flex-end;
     height: 33px;
 }
-
+.dropdown_invis{
+    padding: 10px 0;
+    background-color: transparent !important;
+    width: calc(100% + 30px);
+    margin-left: -40px;
+}
 .user{
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     position: relative;
-    padding: 5px 5px 0 5px;
     border-bottom: none;
-    width: 180px;
+    width: 160px;
 }
 .user:hover > * {
     color: var(--action);
@@ -110,7 +151,8 @@
     -webkit-box-shadow: 0px 4px 6px -3px rgba(0,0,0,0.67); 
     box-shadow: 0px 4px 6px -3px rgba(0,0,0,0.67);
     cursor: default;
-    z-index: 3;
+    z-index: 5;
+    border: 1px solid #ccc;
 }
 
 
