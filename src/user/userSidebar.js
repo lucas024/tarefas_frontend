@@ -13,6 +13,7 @@ import FaceIcon from '@mui/icons-material/Face';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
+import CircleIcon from '@mui/icons-material/Circle';
 
 const UserSidebar = (props) => {
 
@@ -82,7 +83,12 @@ const UserSidebar = (props) => {
                         <ListItemIcon>
                         <ChatIcon sx={{color:selectedSidebar==="messages"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Mensagens</span>} sx={{color:selectedSidebar==="messages"?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={
+                            <span style={{display:"flex"}}>
+                                <span className={styles.prox}>Mensagens</span>
+                                {props.notifications?.length>0? <CircleIcon className={styles.drop_div_notification}></CircleIcon>:null}
+                            </span>
+                        } sx={{color:selectedSidebar==="messages"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                 </List>
                 <List

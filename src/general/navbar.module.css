@@ -161,7 +161,6 @@
 }
 .drop_user{
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 10px;
     padding-bottom: 20px;
@@ -172,6 +171,11 @@
     text-transform: uppercase;
     font-weight: 600;
     color: var(--brand);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 120px;
+    text-align: left;
 }
 .user_icon{
     margin-right: 5px;
@@ -220,4 +224,45 @@
     align-self: center;
     margin-left: 20px;
     border: 1px solid white;
+}
+
+.skeleton_button{
+    width: 100px;
+    height: 30px;
+    border-radius: 5px;
+    background-color: var(--skeleton);
+    animation-name: color;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.skeleton_message{
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    margin: 0 20px;
+    background-color: var(--skeleton);
+    animation-name: color;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.skeleton_text{
+    width: 100px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: var(--skeleton);
+    animation-name: color;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes color {
+    0% {
+      background-color: var(--skeleton);
+    }
+    50% {
+      background-color: #ccc;
+    }
+    100% {
+      background-color: var(--skeleton);
+    }
 }

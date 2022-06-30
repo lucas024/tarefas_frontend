@@ -19,6 +19,7 @@ input:-webkit-autofill:active {
   --yellow: #fdd835;
   --red: #ff3b30;
   --background: #f2f4f5;
+  --skeleton: #cccccc80;
 }
 
 
@@ -145,7 +146,7 @@ p{
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-  width: 16px;
+  width: 8px;
 }
 
 *::-webkit-scrollbar-track {
@@ -156,7 +157,7 @@ p{
 *::-webkit-scrollbar-thumb {
   background-color: #2c2b2c;
   border-radius: 10px;
-  border: 3px solid #ffffff;
+  border: 1px solid #ffffff;
 }
 
 .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
@@ -205,19 +206,19 @@ p{
 }
 .reservation-enter-active {
   opacity: 1;
-  transform: translateY(50%);
+  transform: translateY(30%);
   transition: 600ms;
 }
 .reservation-enter-done{
-  transform: translateY(50%);
+  transform: translateY(30%);
 }
 .reservation-exit {
   opacity: 1;
-  transform: translateY(50%);
+  transform: translateY(30%);
 }
 .reservation-exit-active {
   opacity: 0;
-  transform: translateY(-50%);
+  transform: translateY(-30%);
   transition: 200ms;
 }
 
@@ -264,3 +265,4 @@ p{
   transform: translateY(-10%);
   transition: 200ms;
 }
+

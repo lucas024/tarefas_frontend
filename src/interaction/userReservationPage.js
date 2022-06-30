@@ -101,7 +101,7 @@ const UserReservationPage = (props) => {
 
     useEffect(() => {
         if(props.user){
-            setNome(props.user.name)
+            setNome(`${props.user.name} ${props.user.surname}`)
             setEmail(props.user.email)
             if(props.user.phone){
                 setPhone(props.user.phone)
@@ -381,7 +381,7 @@ const UserReservationPage = (props) => {
                     :null
             }
             <div className={styles.flex}>
-                <div className={styles.left}>
+                {/* <div className={styles.left}>
                     <div className={styles.left_title_area}>
                         <span className={styles.left_title}>Publicar</span>
                     </div>
@@ -409,7 +409,7 @@ const UserReservationPage = (props) => {
                             
                         </span>
                     </div>
-                </div>
+                </div> */}
                 <div className={styles.main}>
                     <CSSTransition 
                     in={inProp}
@@ -428,6 +428,14 @@ const UserReservationPage = (props) => {
                     <Sessao text={"Excedeste o limite de fotografias (max. 6)"}/>
                     </CSSTransition>
                     <div className={styles.reservar}>
+                        <div className={styles.reservar_upper}>
+                            <p className={styles.reservar_upper_title}>PUBLICAR</p>
+                            <p className={styles.reservar_upper_desc}>
+                                Nesta página pode criar uma <span className={styles.action}>trabalho</span> para o serviço 
+                                de que precisa.<br/>
+                                <br></br>
+                            </p>
+                        </div>
                         <div className={styles.bot_title_wrapper}>
                             <span className={styles.bot_title_indicator}>1</span>
                             <span className={styles.bot_title}>Detalhes da Publicação</span>
@@ -493,116 +501,122 @@ const UserReservationPage = (props) => {
                         <div className={styles.devider}></div>
                         
                         <div className={styles.bottom}>
-                            <div className={styles.bot_title_wrapper}>
-                                <span className={styles.bot_title_indicator}>2</span>
-                                <span className={styles.bot_title}>Detalhes de contacto</span>
-                            </div>
-                            <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
-                                <div className={styles.bot_input_div} style={{marginTop:"0"}}>
-                                    <span style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"transparent", borderRight:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"transparent"}} className={styles.area_label_inverse}>Nome<span className={styles.asterisc}>*</span></span>
-                                    <input style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"transparent"}} disabled={props.user} onFocus={() => {nameFocused()}} maxLength={26} onChange={e => setNome(e.target.value)} value={nome} className={styles.bot_input_short} ></input>
+                            <div className={styles.bottom_area}>
+                                <div className={styles.bot_title_wrapper}>
+                                    <span className={styles.bot_title_indicator}>2</span>
+                                    <span className={styles.bot_title}>Detalhes de contacto</span>
                                 </div>
-                                <div className={styles.bot_input_div}>
-                                    <span style={{borderColor:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"transparent", borderRight:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"transparent"}} className={styles.area_label_inverse}>Telefone<span className={styles.asterisc}>*</span></span>
-                                    <input style={{borderColor:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"transparent"}} onFocus={() => {setPhoneFocused(true)}} maxLength={11} onChange={e => setPhoneHandler(e.target.value)} value={phoneVisual} className={styles.bot_input_short}></input>
-                                </div>
-                                <div className={styles.bot_input_div}>
-                                    <span style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"transparent", borderRight:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"transparent"}} className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
-                                    <input style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"transparent"}} disabled={props.user} onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
+                                <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
+                                    <div className={styles.bot_input_div} style={{marginTop:"0"}}>
+                                        <span style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"", borderRight:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"transparent"}} className={styles.area_label_inverse}>Nome<span className={styles.asterisc}>*</span></span>
+                                        <input placeholder='Nome...' style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":""}} disabled={props.user} onFocus={() => {nameFocused()}} maxLength={36} onChange={e => setNome(e.target.value)} value={nome} className={styles.bot_input_short}></input>
+                                    </div>
+                                    <div className={styles.bot_input_div}>
+                                        <span style={{borderColor:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"", borderRight:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"transparent"}} className={styles.area_label_inverse}>Telefone<span className={styles.asterisc}>*</span></span>
+                                        <input placeholder='91...' style={{borderColor:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":""}} onFocus={() => {setPhoneFocused(true)}} maxLength={11} onChange={e => setPhoneHandler(e.target.value)} value={phoneVisual} className={styles.bot_input_short}></input>
+                                    </div>
+                                    <div className={styles.bot_input_div}>
+                                        <span style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"", borderRight:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"transparent"}} className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
+                                        <input placeholder='Email...' style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":""}} disabled={props.user} onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
+                                    </div>
+                                    
                                 </div>
                                 
                             </div>
-                            <div className={styles.bot_title_wrapper}>
-                                <span className={styles.bot_title_indicator}>3</span>
-                                <span className={styles.bot_title}>Localização</span>
-                            </div>
-                            <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
-                                <div className={styles.bot_address_flex}>
-                                    <div className={styles.bot_input_div_search} onClick={() => setAddressFocused(true)}>
-                                        <span  style={{borderColor:badAddress||wrongAddress?"red":!badAddress&&!wrongAddress&&addressFocused?"#26B282":"", borderRight:(badAddress||wrongAddress)?"red":!badAddress&&!wrongAddress&&addressFocused?"#26B282":""}} className={styles.area_label_inverse}>Morada<span className={styles.asterisc}>*</span></span>
-                                        <GooglePlacesAutocomplete
-                                        apiKey="AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk"
-                                        autocompletionRequest={{
-                                            // bounds: [ //BOUNDS LISBOA
-                                            // { lat: 38.74, lng: -9.27 },
-                                            // { lat: 38.83, lng: -9.17 },
-                                            // { lat: 38.79, lng: -9.09 },
-                                            // { lat: 38.69, lng: -9.21 },
-                                            // ],
-                                            componentRestrictions: {
-                                            country: ['pt'],
-                                            }
-                                        }}
-                                        selectProps={{
-                                            address,
-                                            onChange: setAddressHandler,
-                                            styles: {
-                                            input: (provided) => ({
-                                                ...provided,
-                                                color: '#161F28',
-                                                fontWeight: 600,
-                                            }),
-                                            option: (provided) => ({
-                                                ...provided,
-                                                color: '#161F28',
-                                                fontWeight: 600
-                                            }),
-                                            singleValue: (provided) => ({
-                                                ...provided,
-                                                color: '#161F28',
-                                                fontWeight: 600
-                                            }),
-                                            control: (provided, state) => ({
-                                                ...provided,
-                                                width: "100%",
-                                                borderRadius: "5px",
-                                                borderTopLeftRadius: "0px",
-                                                height: "40px",
-                                                fontSize:"0.8rem",
-                                                border: state.isFocused?"2px solid #FF785A":"2px solid #161F28",
-                                                "&:hover": {
-                                                    border: "2px solid #FF785A",
-                                                    cursor: "text",
+                            <div className={styles.bottom_area_second}>
+                                <div className={styles.bot_title_wrapper}>
+                                    <span className={styles.bot_title_indicator}>3</span>
+                                    <span className={styles.bot_title}>Localização</span>
+                                </div>
+                                <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
+                                    <div className={styles.bot_address_flex}>
+                                        <div className={styles.bot_input_div_search} onClick={() => setAddressFocused(true)}>
+                                            <span  style={{borderColor:badAddress||wrongAddress?"red":!badAddress&&!wrongAddress&&addressFocused?"#26B282":"", borderRight:(badAddress||wrongAddress)?"red":!badAddress&&!wrongAddress&&addressFocused?"#26B282":""}} className={styles.area_label_inverse}>Morada<span className={styles.asterisc}>*</span></span>
+                                            <GooglePlacesAutocomplete
+                                            apiKey="AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk"
+                                            autocompletionRequest={{
+                                                // bounds: [ //BOUNDS LISBOA
+                                                // { lat: 38.74, lng: -9.27 },
+                                                // { lat: 38.83, lng: -9.17 },
+                                                // { lat: 38.79, lng: -9.09 },
+                                                // { lat: 38.69, lng: -9.21 },
+                                                // ],
+                                                componentRestrictions: {
+                                                country: ['pt'],
+                                                }
+                                            }}
+                                            selectProps={{
+                                                address,
+                                                onChange: setAddressHandler,
+                                                styles: {
+                                                input: (provided) => ({
+                                                    ...provided,
+                                                    color: '#161F28',
+                                                    fontWeight: 600,
+                                                }),
+                                                option: (provided) => ({
+                                                    ...provided,
+                                                    color: '#161F28',
+                                                    fontWeight: 600
+                                                }),
+                                                singleValue: (provided) => ({
+                                                    ...provided,
+                                                    color: '#161F28',
+                                                    fontWeight: 600
+                                                }),
+                                                control: (provided, state) => ({
+                                                    ...provided,
+                                                    width: "100%",
+                                                    borderRadius: "5px",
+                                                    height: "40px",
+                                                    fontSize:"0.9rem",
+                                                    backgroundColor: "#f2f4f5",
+                                                    border:"none",
+                                                    borderBottom: state.isFocused?"2px solid #FF785A":"2px solid #161F28",
+                                                    "&:hover": {
+                                                        borderBottom: "2px solid #FF785A",
+                                                        cursor: "text",
+                                                    },
+                                                    boxShadow: state.isFocused?"none":"none",
+                                                    zIndex: 1
+                                                }),
+                                                container: (provided, state) => ({
+                                                    ...provided,
+                                                    border: state.isFocused?"none":"none",
+                                                    zIndex: 1
+                                                }),
+                                                dropdownIndicator: () => ({
+                                                    color:"#fff",
+                                                    zIndex: 4
+                                                }),
+                                                indicatorSeparator: () => null
                                                 },
-                                                boxShadow: state.isFocused?"none":"none",
-                                                zIndex: 1
-                                            }),
-                                            container: (provided, state) => ({
-                                                ...provided,
-                                                border: state.isFocused?"none":"none",
-                                                zIndex: 1
-                                            }),
-                                            dropdownIndicator: () => ({
-                                                color:"#fff",
-                                                zIndex: 4
-                                            }),
-                                            indicatorSeparator: () => null
-                                            },
-                                            IndicatorsContainer:()=>(<></>),
-                                            placeholder: "Pesquisar...",
-                                            noOptionsMessage: () => "Pesquisar morada",
-                                            loadingMessage: () => "A pesquisar...",
-                                        }}
-                                        />
+                                                IndicatorsContainer:()=>(<></>),
+                                                placeholder: "Pesquisar...",
+                                                noOptionsMessage: () => "Pesquisar morada",
+                                                loadingMessage: () => "A pesquisar...",
+                                            }}
+                                            />
+                                            </div>
                                         </div>
+                                        <div className={styles.address_flex}>
+                                            <div className={styles.bot_input_div}>
+                                                
+                                                <span style={{borderColor:portaWrong?"red":!portaWrong&&portaFocused?"#26B282":""}} className={styles.area_label_inverse}>Porta<span className={styles.asterisc}>*</span></span>
+                                                <input style={{width:"100px", borderColor:portaWrong?"red":!portaWrong&&portaFocused?"#26B282":""}} onFocus={() => {setPortaFocused(true)}} maxLength={5} onChange={e => setPorta(e.target.value)} value={porta} className={styles.bot_input_short}></input>
+                                            </div>
+                                            <div className={styles.bot_input_div}>
+                                                <span className={styles.area_label_inverse}>Andar</span>
+                                                <input style={{width:"100px", marginLeft:"10px"}} maxLength={11} onChange={e => setAndar(e.target.value)} value={andar} className={styles.bot_input_short}></input>
+                                            </div>
                                     </div>
-                                    <div className={styles.address_flex}>
-                                        <div className={styles.bot_input_div}>
-                                            
-                                            <span style={{borderColor:portaWrong?"red":!portaWrong&&portaFocused?"#26B282":""}} className={styles.area_label_inverse}>Porta<span className={styles.asterisc}>*</span></span>
-                                            <input style={{width:"100px", borderColor:portaWrong?"red":!portaWrong&&portaFocused?"#26B282":""}} onFocus={() => {setPortaFocused(true)}} maxLength={5} onChange={e => setPorta(e.target.value)} value={porta} className={styles.bot_input_short}></input>
-                                        </div>
-                                        <div className={styles.bot_input_div}>
-                                            <span className={styles.area_label_inverse}>Andar</span>
-                                            <input style={{width:"100px", marginLeft:"10px"}} maxLength={11} onChange={e => setAndar(e.target.value)} value={andar} className={styles.bot_input_short}></input>
-                                        </div>
                                 </div>
                             </div>
-                            <div ref={divRef} data-tip={complete?"":"Preenche todos os campos assinalados com *"} className={complete?styles.bot_button:styles.bot_button_disabled} onClick={() => {
-                                    if(complete) confirmarHandler()}}>
-                                <span className={complete?styles.bot_button_text:styles.bot_button_text_disabled} >{props.user?"Publicar":"Criar conta e Publicar" }</span>
-                            </div>
                         </div>
+                        <div ref={divRef} data-tip={complete?"":"Preenche todos os campos assinalados com *"} className={complete?styles.bot_button:styles.bot_button_disabled} onClick={() => {
+                                    if(complete) confirmarHandler()}}>
+                                <span className={complete?styles.bot_button_text:styles.bot_button_text_disabled} >{props.user?"Publicar Trabalho":"Criar conta e Publicar trabalho" }</span>
+                            </div>
                     </div>
                     
                 </div>

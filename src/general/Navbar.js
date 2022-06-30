@@ -7,54 +7,18 @@ import FaceIcon from '@mui/icons-material/Face';
 import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
 
-const ObjectID = require("bson-objectid");
-
 const Navbar = (props) => {
 
     const navigate = useNavigate()
     const [dropdown, setDropdown] = useState(false)
+    const [skeleton, setSkeleton] = useState(true)
+
 
     useEffect(() => {
-    }, [])
-
-    const generateWorker = () => {
-
-        const workerId = ObjectID()
-
-        let worker = {
-            _id: workerId,
-            name: {first: "Lucas", last: workerId},
-            img: 'https://firebasestorage.googleapis.com/v0/b/hustle-292f2.appspot.com/o/IMG_1538.jpg?alt=media&token=e4014301-2e1a-4347-b7d9-bf76b840f9c8',
-            rating: 4,
-            description: "Trato de coisas da casa",
-            weekends: false,
+        if(props.userLoadAttempt){
+            setSkeleton(false)
         }
-
-        axios.post('http://localhost:5000/workers/add', worker).then(res => {
-            console.log(res.data)
-        })
-    }
-
-    const generateReserva = () => {
-
-        const reservaID = ObjectID()
-
-        let reserva = {
-            _id: reservaID,
-            worker_id: "620a9935dd773b6c652adf99",
-            user_id: "12345",
-            startDate: new Date('2022-02-23 14:20'),
-            endDate: new Date('2022-02-23 17:20'),
-            notas: "Notas sobre a cena",
-            title: `${reservaID}`,
-            localizacao: "R. Conselheiro Jose Silvestre Ribeiro, n16 7E",
-            type:0,
-        }
-
-        axios.post('http://localhost:5000/reservations/add', reserva).then(res => {
-            console.log(res.data)
-        })
-    }
+    }, [props.userLoadAttempt])
 
     const logoutHandler = () => {
         setDropdown(false)
@@ -75,6 +39,8 @@ const Navbar = (props) => {
                                 <span className={styles.user_button} onClick={() => {navigate('/main/publications/trabalhos')}}>
                                         TRABALHOS
                                 </span>
+                                :skeleton?
+                                <span className={styles.skeleton_button}></span>
                                 :
                                 <span className={styles.user_button} onClick={() => {navigate('/reserva?t=eletricista')}}>
                                         PUBLICAR
@@ -83,10 +49,18 @@ const Navbar = (props) => {
                             {
                                 props.user?
                                 <div className={styles.chat_div} onClick={() => navigate('/user?t=messages')}>
-                                    <span className={styles.chat_notification}></span>
+                                    {
+                                        props.notifications?.length>0?
+                                        <span className={styles.chat_notification}></span>
+                                        :null
+                                    }   
+                                    
                                     <ChatIcon className={styles.chat}/>
                                 </div>
-                                :null
+                                :skeleton?
+                                <span className={styles.skeleton_message}></span>
+                                :
+                                null
                             }
                             <div className={styles.flex_end}>
                                 {
@@ -108,10 +82,10 @@ const Navbar = (props) => {
                                             <div className={styles.user_dropdown}>   
                                             <div className={styles.drop_user}>
                                                 <FaceIcon sx={{fontSize: "30px"}} className={styles.user_icon}/>
-                                                <span className={styles.drop_user_text}>{props.user.name}</span>
+                                                <span className={styles.drop_user_text}>{props.user.name} {props.user.surname}</span>
                                             </div>
                                             {
-                                                props.user?.type?
+                                                props.user?.type===1?
                                                 null
                                                 :
                                                 <div className={styles.drop_div_main} onClick={() => {
@@ -145,13 +119,13 @@ const Navbar = (props) => {
                                                         <div className={styles.drop_div_special}>
                                                             <div style={{display:"flex"}}>
                                                                 <span className={styles.drop_div_text}>Mensagens</span>
-                                                                <span className={styles.drop_div_number}>
-                                                                    <span className={styles.drop_div_number_text}>1</span>
-                                                                </span>
                                                             </div>
-                                                            <span className={styles.drop_div_notification}>
-    
-                                                            </span>
+                                                            {
+                                                                props.notifications?.length>0?
+                                                                <span className={styles.drop_div_notification} />
+                                                                :null
+                                                            }
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -177,10 +151,11 @@ const Navbar = (props) => {
                                         </div>
                     
                                     </div>
-                                    :
-                                    <p className={styles.user_login} 
-                                        onClick={() => navigate('/authentication')}>
-                                        Iniciar Sessão</p>
+                                    :skeleton?
+                                    <span className={styles.skeleton_text}></span>
+                                    :<p className={styles.user_login} 
+                                    onClick={() => navigate('/authentication')}>
+                                    Iniciar Sessão</p>
                                 }
                             </div>
                             
@@ -193,9 +168,3 @@ const Navbar = (props) => {
 
 export default Navbar;
 
-
-
-const fbLogin = (fbApi) => {
-    fbApi.login(function(response) {
-    })
-}

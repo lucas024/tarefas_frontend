@@ -3,7 +3,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Navigate
+  Navigate,
 } from "react-router-dom";
 import Home from './general/home'
 import Navbar from './general/navbar'
@@ -27,6 +27,10 @@ function App() {
   const [user, setUser] = useState(null)
   const [userGoogle, setUserGoogle] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [notifications, setNotifications] = useState([])
+  const [userLoadAttempt, setUserLoadAttemp] = useState(false)
+
+  
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -36,6 +40,14 @@ function App() {
       setUser(null)
     }
   });
+
+  const updateLocalNotifications = notification_id => {
+    let arr = [...notifications]
+    arr.splice(arr.indexOf(notification_id), 1)
+    setNotifications(arr)
+  }
+
+
   
 
   useEffect(() => {
@@ -44,12 +56,16 @@ function App() {
       axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
         if(res.data !== null){
           setUser(res.data)
+          setNotifications(res.data.notifications)
+          setUserLoadAttemp(true)
           setLoading(false)
         }
         else{
           axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
             if(res.data !== null){
               setUser(res.data)
+              setNotifications(res.data.notifications)
+              setUserLoadAttemp(true)
               setLoading(false)
             }
             else{
@@ -63,6 +79,7 @@ function App() {
     }
     else{
       setLoading(false)
+      setUserLoadAttemp(true)
     }
   }, [userGoogle])
 
@@ -84,7 +101,7 @@ function App() {
       <div>
         <Loader loading={loading}/>        
         <BrowserRouter>
-          <Navbar user={user} />
+          <Navbar user={user} notifications={notifications} userLoadAttempt={userLoadAttempt}/>
           <Routes>
               <Route exact path="/main/publications/publication" 
                 element={<Reserva
@@ -110,6 +127,8 @@ function App() {
                 element={
                 <ProtectedRoute user={user}>
                   <User
+                    notifications={notifications}
+                    updateNotification={not_id => updateLocalNotifications(not_id)}
                     user={user}
                     api_url={api_url}
                     loadingHandler={bool => setLoading(bool)}
@@ -132,7 +151,7 @@ function App() {
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}/>}
               />
-              <Route path="/" element={<Home user={user}/>} />
+              <Route path="/" element={<Home user={user} notifications={notifications} userLoadAttempt={userLoadAttempt}/>} />
               <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

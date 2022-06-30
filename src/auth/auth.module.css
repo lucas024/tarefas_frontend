@@ -161,6 +161,9 @@
     outline: none;
     border-bottom: 3px solid var(--action);
 }
+.login_input::placeholder{
+    color: #ccc;
+}
 .recup_password{
     font-size: 0.9rem;
     font-weight: 600;

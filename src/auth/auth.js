@@ -36,6 +36,9 @@ const Auth = (props) => {
     const [passwordFocused, setPasswordFocused] = useState(false)
     const [name, setName] = useState("")
     const [nameWrong, setNameWrong] = useState(false)
+    const [surname, setSurname] = useState("")
+    const [surnameWrong, setSurnameWrong] = useState(false)
+    const [surnameFocused, setSurnameFocused] = useState(false)
     const [nameFocused, setNameFocused] = useState(false)
     const [phone, setPhone] = useState("")
     const [phoneVisual, setPhoneVisual] = useState('')
@@ -92,6 +95,7 @@ const Auth = (props) => {
                     carry: true,
                     desc: location.state.desc,
                     nameCarry: name,
+                    apelidoCarry: surname,
                     phoneCarry: phone,
                     emailCarry: email,
                     title: location.state.title,
@@ -108,7 +112,6 @@ const Auth = (props) => {
         if(validator.isEmail(emailLogin)){
             fetchSignInMethodsForEmailHandler(emailLogin)
                 .then(res => {
-                    console.log(res);
                     if(res.length>0){
                         if(res[0] === "google.com"){
                             setLoginError('Este e-mail encontra-se registado através da Google. Por favor inicia a sessão com "Entrar com Google"')
@@ -122,7 +125,11 @@ const Auth = (props) => {
                                     navigateHandler()
                                 } 
                                 else{
-                                    navigate('/')
+                                    navigate('/', {
+                                        state: {
+                                            carry: true
+                                        }
+                                    })
                                 }
                                 props.loadingHandler(false)
                             })
@@ -146,6 +153,7 @@ const Auth = (props) => {
         props.loadingHandler(true)
         if(validator.isMobilePhone(phone, "pt-PT")
             && name.length>1
+            && surname.length>1
             && validator.isEmail(email)
             && validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
                 
@@ -155,6 +163,7 @@ const Auth = (props) => {
                         axios.post(`${props.api_url}/auth/register`, 
                         {
                             name: name,
+                            surname: surname,
                             phone: phone,
                             email: email,
                             google_uid: res.user.uid,
@@ -171,7 +180,11 @@ const Auth = (props) => {
                                 navigateHandler()
                             } 
                             else{
-                                navigate('/')
+                                navigate('/', {
+                                    state: {
+                                        carry: true
+                                    }
+                                })
                             }
                             
                         })
@@ -210,6 +223,16 @@ const Auth = (props) => {
         }
         else{
             setNameWrong(false)
+        }
+    }
+
+    const validateSurnameHandler = () => {
+        setSurnameFocused(false)
+        if(name.length<2){
+            setSurnameWrong(true)
+        }
+        else{
+            setSurnameWrong(false)
         }
     }
 
@@ -272,7 +295,11 @@ const Auth = (props) => {
                 navigateHandler()
             } 
             else{
-                navigate('/')
+                navigate('/', {
+                    state: {
+                        carry: true
+                    }
+                })
             }
         }).catch((error) => {
             // Handle Errors here.
@@ -318,7 +345,11 @@ const Auth = (props) => {
                 navigateHandler()
             } 
             else{
-                navigate('/')
+                navigate('/', {
+                    state: {
+                        carry: true
+                    }
+                })
             }
         })
         .catch((error) => {
@@ -334,6 +365,13 @@ const Auth = (props) => {
             // ...
             props.loadingHandler(false)
         });
+    }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault()
+            loginHandler()
+        }
     }
 
 
@@ -376,7 +414,7 @@ const Auth = (props) => {
                                     <div className={styles.login}>
                                         <p className={styles.login_title}>E-mail</p>
                                         <input 
-            
+                                            onKeyDown={handleKeyDown}
                                             style={{borderBottom:emailLoginWrong?"3px solid red":""}}
                                             className={styles.login_input} 
                                             placeholder="E-mail"
@@ -388,6 +426,7 @@ const Auth = (props) => {
                                     <div className={styles.login} style={{marginTop:"10px"}}>
                                         <p className={styles.login_title}>Password</p>
                                         <input 
+                                            onKeyDown={handleKeyDown}
                                             className={styles.login_input} 
                                             placeholder="Password"
                                             type="password"
@@ -440,7 +479,7 @@ const Auth = (props) => {
                                 <div className={styles.login}>
                                     <p className={styles.login_title}>Nome</p>
                                     <input 
-                                        maxLength={26}
+                                        maxLength={12}
                                         onChange={e => setName(e.target.value)} 
                                         className={styles.login_input} 
                                         placeholder="Nome" 
@@ -450,6 +489,24 @@ const Auth = (props) => {
                                         style={{borderBottom:nameWrong?"3px solid red":!nameWrong&&name.length>1?"3px solid #6EB241":""}}></input>
                                     {
                                         nameWrong?
+                                        <span className={styles.field_error}>Por favor, escreva pelo menos 2 caracteres.</span>
+                                        :null
+                                    }
+                                    
+                                </div>
+                                <div className={styles.login} style={{marginTop:"10px"}}>
+                                    <p className={styles.login_title}>Apelido</p>
+                                    <input 
+                                        maxLength={24}
+                                        onChange={e => setSurname(e.target.value)} 
+                                        className={styles.login_input} 
+                                        placeholder="Apelido" 
+                                        value={surname}
+                                        onBlur={() => validateSurnameHandler()}
+                                        onFocus={() => setSurnameFocused(true)}
+                                        style={{borderBottom:surnameWrong?"3px solid red":!surnameWrong&&surname.length>1?"3px solid #6EB241":""}}></input>
+                                    {
+                                        surnameWrong?
                                         <span className={styles.field_error}>Por favor, escreva pelo menos 2 caracteres.</span>
                                         :null
                                     }

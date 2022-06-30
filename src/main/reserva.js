@@ -163,24 +163,31 @@ const Reserva = (props) => {
                 timestamp : new Date().getTime(),
                 text: text
             }
+            let objID = ObjectID()
 
             axios.post(`${props.api_url}/chats/update_user_chat`, {
                 user_name: props.user.name,
                 user_photoUrl: props.user.photoUrl,
                 user_phone: props.user.phone,
                 user_id: props.user._id,
+                user_type: props.user.type,
                 other_user_name: publicationUser.name,
                 other_user_photoUrl: publicationUser.photoUrl,
                 other_user_phone: publicationUser.phone,
                 other_user_id: publicationUser._id,
+                other_user_type: publicationUser.type,
                 text: text_object,
                 updated: new Date().getTime(),
-                chat_id: ObjectID()
+                chat_id: objID
             })
             .then(() => {
                 setLoadingChat(false)
                 //navigate('/user?t=messages')
                 //aquela cena que desce
+            })
+            axios.post(`${props.api_url}/user/update_user_notifications`, {
+                _id: reservation.user_id,
+                notification_id: objID
             })
         }
         
@@ -291,9 +298,14 @@ const Reserva = (props) => {
                                     </div>
                                 </div>
                             <div className={styles.top_right}>
-                                <span className={styles.top_right_message} onClick={() => messageRef.current.scrollIntoView() }>
-                                    Enviar Mensagem
-                                </span>
+                                {
+                                    !userView?
+                                    <span className={styles.top_right_message} onClick={() => messageRef.current.scrollIntoView() }>
+                                        Enviar Mensagem
+                                    </span>
+                                    :null
+                                }
+                                
                                 <span className={styles.top_right_user}>Utilizador</span>
                                 <div className={styles.top_right_div}>
                                     {

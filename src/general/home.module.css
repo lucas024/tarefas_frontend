@@ -57,6 +57,7 @@
     align-self: center;
     margin-bottom: 150px;
     justify-content: center;
+    width: 100%;
 }
 .section_title{
     text-align: center;
@@ -153,6 +154,77 @@
 .worker_button:hover{
     text-decoration: underline;
     cursor: pointer;
+}
+.skeleton_content_in_img{
+    width: 50%;
+    margin: auto;
+    height: 200px;
+    border-radius: 5px;
+    display: block;
+    background-color: var(--skeleton);
+    animation-name: color;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.skeleton_content_in{
+    text-align: center;
+    margin: 10px auto;
+    width: 50%;
+    height: 50px;
+    border-radius: 5px;
+    background-color: var(--skeleton);
+    animation-name: color;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.skeleton_worker_botbanner{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    z-index: 3;
+    width: 150px;
+    height: 30px;
+    border-radius: 5px;
+    background-color: var(--skeleton);
+    animation-name: color;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.skeleton_publish{
+    position: absolute;
+    left: calc(50% - 150px);
+    bottom: 15%;
+    width: 300px;
+    height: 90px;
+    border-radius: 5px;
+    background-color: var(--skeleton);
+    animation-name: color;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.skeleton_tag{
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    width: 300px;
+    height: 100px;
+    border-radius: 5px;
+    background-color: var(--skeleton);
+    animation-name: color;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes color {
+    0% {
+      background-color: var(--skeleton);
+    }
+    50% {
+      background-color: #ccc;
+    }
+    100% {
+      background-color: var(--skeleton);
+    }
 }
 
 @media (max-width: 768px){
