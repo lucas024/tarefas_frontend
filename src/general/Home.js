@@ -66,11 +66,11 @@ const Home = (props) => {
                 :null
             }
             {
-                props.user?.type===1?
-                null
-                :
                 skeleton?
                 <span className={styles.skeleton_worker_botbanner}></span>
+                :
+                props.user?.type===1?
+                null
                 :
                 <span className={styles.worker_button} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
             }
@@ -99,6 +99,15 @@ const Home = (props) => {
                     }
                 </div>
                 {
+                    skeleton?
+                    <div className={styles.section_two}>
+                        <div className={styles.section_content}>
+                            <span className={styles.skeleton_content_in_img}></span>
+                            <p className={styles.skeleton_content_in}></p>
+                            <p className={styles.skeleton_content_in}></p>
+                        </div>
+                    </div>
+                    :
                     props.user?.type===1?
                     <div className={styles.section_two} onClick={() => navigate('/user?t=personal')}>
                         <div className={styles.section_content}>
@@ -113,14 +122,6 @@ const Home = (props) => {
                             </p>
                         </div>
                         <a className={styles.link2}/>
-                    </div>
-                    :skeleton?
-                    <div className={styles.section_two}>
-                        <div className={styles.section_content}>
-                            <span className={styles.skeleton_content_in_img}></span>
-                            <p className={styles.skeleton_content_in}></p>
-                            <p className={styles.skeleton_content_in}></p>
-                        </div>
                     </div>
                     :
                     <div className={styles.section_two} onClick={() => navigate('/main/publications/trabalhadores')}>
@@ -142,11 +143,11 @@ const Home = (props) => {
                 }
             </div>
             {
-                props.user?.type===1?
-                null
-                :
                 skeleton?
                 <span className={styles.skeleton_publish}></span>
+                :
+                props.user?.type===1?
+                null                
                 :
                 <div className={styles.publish} onClick={() => navigate('/reserva?w=eletricista')}>
                     <span className={styles.publish_or}>OU</span>
@@ -159,11 +160,11 @@ const Home = (props) => {
                 </div>
             }
             {
-                props.user?.type===1?
-                null
-                :
                 skeleton?
                 <span className={styles.skeleton_tag}></span>
+                :
+                props.user?.type===1?
+                null
                 :
                 <div className={styles.tag}>
                     <p className={styles.tag_text}>

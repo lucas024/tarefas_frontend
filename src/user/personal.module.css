@@ -5,13 +5,15 @@
 }
 .personal_title{
     width: 100%;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
-    0 2px 2px rgba(0,0,0,0.12), 
-    0 3px 3px rgba(0,0,0,0.12),
-    0 4px 4px rgba(0,0,0,0.12);
+    border-bottom: 1px solid #ccc;
     display: flex;
     height: 80px;
     background-color: white;
+}
+.top_info{
+    height: fit-content;
+    transition: all 150ms;
+    cursor: pointer;
 }
 .top_title{
     font-size: 1.8rem;
@@ -21,21 +23,108 @@
     text-transform: uppercase;
     margin-left: 3%;
 }
-.flex{
-    margin: 20px auto;
+.top_title_two{
+    font-size: 3rem;
+    color: var(--action);
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    opacity: 0.3;
+}
+.top_complete{
+    color: var(--brand);
+    opacity: 0.7;
+    font-weight: 700;
+    font-size: 1rem;
+    display: inline-block;
+}
+.top_complete_arrow{
+    width: 20px !important;
+    height: 20px !important;
+    transition: all 150ms;
+}
+.top_complete_arrow_show{
+    width: 20px !important;
+    height: 20px !important;
+    transform: rotate(90deg);
+    transition: all 150ms;
+}
+.action{
+    color: var(--action);
+}
+.mid{
+    margin: auto;
+    padding: 20px;
+    padding-top: 20px;
+    width: 90%;
+    background-color: white;
+    box-sizing: border-box;
+}
+.top_complete_line{
     display: flex;
-    margin-left: 3%;
-    flex-direction: column;
+    align-items: center;
+}
+.line_icon{
+    width: 15px !important;
+    height: 15px !important;
+}
+.line_text{
+    margin-left: 5px;
+    color: #ccc;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+.line_val{
+    width: 18px !important;
+    height: 18px !important;
+    margin-left: 5px;
+    color: var(--grey);
+}
+.line_text_complete{
+    color: var(--action);
+    margin-left: 5px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+.line_val_complete{
+    width: 18px !important;
+    height: 18px !important;
+    color: var(--action);
+    margin-left: 5px;
+}
+.top_desc{
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+.divider_max{
+    height: 1px;
+    width: 100%;
+    margin: 10px auto;
+    background-color: var(--brand);
+}
+.special{
+    text-decoration: underline;
+}
+.flex{
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.top_right{
+    margin-left: 30px;
+    position: relative;
 }
 .image_wrapper{
     height: 250px;
     width: 250px;
-    border: 2px solid var(--brand);
+    border: 1px solid #ccc;
     display: flex;
     position: relative;
     border-radius: 5px;
     box-sizing: border-box;
-    background-color: white;
+    background-color: var(--background);
 }
 .edit_icon{
     position: absolute;
@@ -64,6 +153,7 @@ input[type=file]{
     height: 100%;
     width: 100%;
     border-radius: 5px;
+    object-fit: cover;
 }
 .image_tbd{
     height: 80% !important;
@@ -73,18 +163,18 @@ input[type=file]{
 }
 .input_flex_edit{
     height: 220px;
-    margin-left: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     position: relative;
-    border: 2px dashed var(--action);
+    border: 1px solid var(--action);
     padding: 10px 20px 20px 20px;
     min-width: 390px;
     border-radius: 5px;
 }
 .input_flex{
     height: 220px;
+    min-height: 220px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -94,11 +184,13 @@ input[type=file]{
     border-radius: 5px;
     background-color: white;
     width: fit-content;
+    border: 1px solid #ccc;
 }
 .personal_subtitle{
     font-weight: 500;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     text-transform: uppercase;
+    display: inline-block;
 }
 .input_edit_wrapper{
     position: absolute;
@@ -121,8 +213,9 @@ input[type=file]{
     border-radius: 5px;
 }
 .input_input{
-    border: 1px solid #ccc;
-    color: var(--brand);
+    border: none;
+    border-bottom: 1px solid #ccc;
+    color: #ccc;
     height: 35px;
     width: 250px;
     padding-left: 5px;
@@ -132,7 +225,9 @@ input[type=file]{
     border-radius: 5px;
 }
 .input_input_edit{
-    border: 1px solid #ccc;
+    border: none;
+    border-bottom: 1px solid var(--action);
+    background-color: var(--background);
     color: var(--brand);
     height: 35px;
     width: 250px;
@@ -140,8 +235,6 @@ input[type=file]{
     font-size: 1.4rem;
     font-weight: 500;
     font-family: 'Montserrat', sans-serif;
-    -webkit-box-shadow: 0px 0px 5px -3px #000000; 
-    box-shadow: 0px 0px 5px -3px #000000;
     border-radius: 5px;
 }
 .input_div_wrapper{
@@ -150,10 +243,10 @@ input[type=file]{
     margin-top: 2px;
 }
 .input_icon{
-    width: 30px !important;
-    height: 30px !important;
+    width: 20px !important;
+    height: 20px !important;
     margin-right: 5px;
-    color: var(--action);
+    color: var(--brand);
 }
 .input_title{
     font-weight: 500;
@@ -165,6 +258,338 @@ input[type=file]{
     color: #00000070;
     font-size: 1.4rem;
 }
+.title_flex{
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-between;
+    align-items: center;
+}
+.edit{
+    padding: 3px 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 3px solid var(--action);
+    background-color: var(--action);
+    color: white;
+    cursor: pointer;
+}
+.save{
+    padding: 3px 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 3px solid var(--action);
+    background-color: white;
+    color: var(--brand);
+    font-weight: 600;
+    cursor: pointer;
+}
+.edit_top{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 3px 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 3px solid var(--action);
+    background-color: var(--action);
+    color: white;
+    cursor: pointer;
+}
+.save_top{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 3px 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 3px solid var(--action);
+    background-color: white;
+    color: var(--brand);
+    font-weight: 600;
+    cursor: pointer;
+}
+.helper{
+    color: var(--action);
+}
+.divider{
+    height: 2px;
+    width: 100%;
+    margin: 10px 0;
+    background-color: #ccc;
+}
+.divider_active{
+    height: 2px;
+    width: 100%;
+    margin: 10px 0;
+    background-color: var(--action);
+}
+.flex_bottom{
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+    justify-content: space-between;
+    position: relative;
+}
+.radio_area{
+    display: flex;
+    align-items: center;
+}
+.flex_left{
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+}
+.flex_title{
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.flex_select_div{
+    width: 50%;
+    margin-top: 10px;
+}
+/* Customize the label (the container) */
+.container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size: 1.2rem;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+position: absolute;
+opacity: 0;
+height: 0;
+width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+position: absolute;
+top: 0;
+left: 0;
+height: 25px;
+width: 25px;
+background-color: var(--background);
+}
+.checkmark_disabled{
+position: absolute;
+top: 0;
+left: 0;
+height: 25px;
+width: 25px;
+background-color: var(--background);
+}
+.checkbox_text{
+
+}
+.checkbox_text_disabled{
+color: #ccc;
+}
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+background-color: var(--action);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+content: "";
+position: absolute;
+display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+left: 9px;
+top: 5px;
+width: 5px;
+height: 10px;
+border: solid white;
+border-width: 0 3px 3px 0;
+-webkit-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+transform: rotate(45deg);
+}
+
+    
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark_disabled {
+background-color: #ff785ac3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark_disabled:after {
+content: "";
+position: absolute;
+display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark_disabled:after {
+display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark_disabled:after {
+left: 9px;
+top: 5px;
+width: 5px;
+height: 10px;
+border: solid white;
+border-width: 0 3px 3px 0;
+-webkit-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+transform: rotate(45deg);
+}
+
+.shake{
+    animation: shake 1s infinite;
+}
+
+@keyframes shake {
+    10%, 90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    
+    20%, 80% {
+      transform: translate3d(2px, 0, 0);
+    }
+  
+    30%, 50%, 70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+  
+    40%, 60% {
+      transform: translate3d(4px, 0, 0);
+    }
+}
+.radio_div{
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+.radio_text{
+    margin-left: 30px;
+    font-size: 1.2rem;
+}
+.radio_text_disabled{
+    margin-left: 30px;
+    font-size: 1.2rem;
+    color: #ccc;
+}
+.radio_button_input{
+    height: 25px;
+    padding-left: 5px;
+    margin-left: 5px;
+    font-size: 1.2rem;
+    font-weight: 400;
+    background-color: var(--white);
+    color: var(--brand);
+    border: none;
+    border-bottom: 1px solid var(--brand);
+    outline: none;
+    width: fit-content;
+}
+.radio_button_input:disabled{
+    color: rgb(148, 148, 148);
+}
+/* Customize the label (the container) */
+.radio_area {
+    display: flex;
+    position: relative;
+    height: 20px;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin: 10px 0;
+    align-items: center;
+  }
+  
+  /* Hide the browser's default radio button */
+  .radio_area input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom radio button */
+  .fake_radio_button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: var(--background);
+    border-radius: 50%;
+  }
+
+  .fake_radio_button_disabled{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: var(--background);
+    border-radius: 50%;
+    }
+  
+  /* On mouse-over, add a grey background color */
+  .radio_area:hover input ~ .fake_radio_button {
+    background-color: #ccc;
+  }
+
+  
+  /* When the radio button is checked, add a blue background */
+  .radio_area input:checked ~ .fake_radio_button {
+    background-color: var(--action);
+  }
+
+    /* When the radio button is checked, add a blue background */
+    .radio_area input:checked ~ .fake_radio_button_disabled {
+        background-color: #ff785ac3;
+      }
+      
+  
+  /* Create the indicator (the dot/circle - hidden when not checked) */
+  .fake_radio_button:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the indicator (dot/circle) when checked */
+  .radio_area input:checked ~ .fake_radio_button:after {
+    display: block;
+  }
+  
+  /* Style the indicator (dot/circle) */
+  .radio_area .fake_radio_button:after {
+    top: 9px;
+    left: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+  }
 
 @media (max-width: 1024px){
     .top_title{
@@ -195,8 +620,8 @@ input[type=file]{
         height: 20px;
     }
     .input_icon{
-        width: 20px !important;
-        height: 20px !important;
+        width: 15px !important;
+        height: 15px !important;
     }
     .input_flex{
         height: 160px;

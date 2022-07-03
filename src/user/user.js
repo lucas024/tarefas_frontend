@@ -9,6 +9,7 @@ import Personal from './personal';
 import Suporte from './suporte';
 import NoPage from './../general/noPage';
 import Messages from './messages';
+import Subscription from './subscription';
 
 const User = (props) => {
 
@@ -42,11 +43,13 @@ const User = (props) => {
         if(val === "publications" && props.user?.type!==1)
             return <ReservaList api_url={props.api_url} reservations={reservations} user={props.user} refreshPublications={() => updateReservations()}/>
         else if(val === "personal")
-            return <Personal user={props.user} api_url={props.api_url} refreshUser={() => props.refreshUser()}/>
+            return <Personal user={props.user} api_url={props.api_url} updateUser={(val, what) => props.updateUser(val, what)} />
         else if(val === "support")
             return <Suporte user={props.user} api_url={props.api_url}/>
         else if(val === "messages")
             return <Messages user={props.user} api_url={props.api_url} updateNotification={not_id => props.updateNotification(not_id)}/>
+        else if(val === "subscription" ** props.user?.type!==1)
+            return <Subscription user={props.user} api_url={props.api_url}/>
         return <NoPage object={"página"}/>
     }
 
@@ -54,7 +57,7 @@ const User = (props) => {
         <div className={styles.worker}>
             <div className={styles.flex}>
                 <div className={styles.left}>
-                    <UserSidebar user={props.user} nextReservation={nextReservation} notifications={props.notifications}/>
+                    <UserSidebar incompleteUser={props.incompleteUser} user={props.user} nextReservation={nextReservation} notifications={props.notifications}/>
                 </div>
                 <div className={styles.right}>
                     <div className={styles.worker_area}>

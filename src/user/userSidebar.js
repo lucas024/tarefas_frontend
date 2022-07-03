@@ -14,6 +14,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
 import CircleIcon from '@mui/icons-material/Circle';
+import CardMembershipIcon from '@mui/icons-material/CardMembership';
 
 const UserSidebar = (props) => {
 
@@ -24,7 +25,7 @@ const UserSidebar = (props) => {
 
     useEffect(() => {
         let val = Object.fromEntries([...searchParams]).t
-        if(val === "publications" || val === "support" ||  val === "personal" ||  val === "messages"){
+        if(val === "publications" || val === "support" ||  val === "personal" ||  val === "messages" || val === "subscription"){
             setSelectedSidebar(val)
         } 
     }, [searchParams])
@@ -77,8 +78,23 @@ const UserSidebar = (props) => {
                         <ListItemIcon>
                         <AccessibilityIcon sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Perfil</span>} sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={
+                            <span style={{display:"flex"}}>
+                                <span className={styles.prox}>Perfil</span>
+                                {props.incompleteUser? <CircleIcon className={styles.drop_div_notification}></CircleIcon>:null}
+                            </span>
+                            } sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
+                    {
+                        props.user.type?
+                        <ListItemButton onClick={() => sidebarNavigate("subscription")}  className={selectedSidebar==="subscription"?styles.button:""}>
+                            <ListItemIcon>
+                            <CardMembershipIcon sx={{color:selectedSidebar==="subscription"?"#FF785A":"#fff"}}/>
+                            </ListItemIcon>
+                            <ListItemText primary={<span className={styles.prox}>Subscrição</span>} sx={{color:selectedSidebar==="subscription"?"#FF785A":"#fff"}}/>
+                        </ListItemButton >
+                        :null
+                    }
                     <ListItemButton onClick={() => sidebarNavigate("messages")} className={selectedSidebar==="messages"?styles.button:""}>
                         <ListItemIcon>
                         <ChatIcon sx={{color:selectedSidebar==="messages"?"#FF785A":"#fff"}}/>

@@ -13,7 +13,7 @@ import Loader from './../general/loader';
 
 const Messages = (props) => {
     
-    const socket = useRef()
+    //const socket = useRef()
     const [messages, setMessages] = useState([])
     const [currentText, setCurrentText] = useState("")
     const [adminOn, setAdminOn] = useState(false)
@@ -61,8 +61,12 @@ const Messages = (props) => {
             setLoadingChats(true)
             axios.get(`${props.api_url}/chats/get_user_chats`, { params: {user_id: props.user._id} }).then(res => {
                 if(res.data !== null && res.data !== "" && res.data.length>0){
+                    console.log(res.data);
                     setSelectedChat(res.data[0])
                     setMessages(res.data[0].texts)
+                    let arr = res.data
+                    arr[0][`${props.user._id}_read`] = true
+                    setChats(arr)
                     if(res.data[0].user_one===props.user._id){
                         props.updateNotification(res.data[0]._id)
                         removeNotificationHandler(res.data[0]._id, res.data[0].user_two, false)
@@ -71,9 +75,7 @@ const Messages = (props) => {
                         props.updateNotification(res.data[0]._id)
                         removeNotificationHandler(res.data[0]._id, res.data[0].user_one)
                     }
-                    let arr = res.data
-                    arr[0][`${props.user._id}_read`] = true
-                    setChats(arr)
+                    
                     chatareaRef.current.scrollIntoView({block: 'nearest', inline: 'start'})
                 }
                 setLoadingChats(false)
@@ -129,12 +131,12 @@ const Messages = (props) => {
 
     const sendHandler = () => {
         console.log(getOtherUserId());
-        socket.current.emit("sendMessage", {
-            sender_id: props.user._id,
-            receiver_id: getOtherUserId(),
-            text: currentText,
-            timestamp: new Date().getTime()
-        })
+        // socket.current.emit("sendMessage", {
+        //     sender_id: props.user._id,
+        //     receiver_id: getOtherUserId(),
+        //     text: currentText,
+        //     timestamp: new Date().getTime()
+        // })
     }
 
     const messageHandler = () => {

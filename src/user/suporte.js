@@ -30,21 +30,17 @@ const Suporte = (props) => {
     `;
 
     useEffect(() => {
-        document.body.style.overflow = 'hidden';
-        socket.current = io("ws://localhost:5500")
-        socket.current.on("getMessage", data => {
-            console.log(data.text)
-        })
-        socket.current.on("getUsers", data => {
-            console.log(data)
-        })
-        socket.current.on("adminOn", bool => {
-            console.log(bool);
-            setAdminOn(bool)
-        })       
-        return () => {
-            document.body.style.overflow = 'auto';
-        }
+        // socket.current = io("ws://localhost:5500")
+        // socket.current.on("getMessage", data => {
+        //     console.log(data.text)
+        // })
+        // socket.current.on("getUsers", data => {
+        //     console.log(data)
+        // })
+        // socket.current.on("adminOn", bool => {
+        //     console.log(bool);
+        //     setAdminOn(bool)
+        // })       
     }, [])
 
     useEffect(() => {
@@ -64,7 +60,7 @@ const Suporte = (props) => {
 
 
     useEffect(() => {
-        props.user&&socket.current.emit("add_user", props.user._id)
+        // props.user&&socket.current.emit("add_user", props.user._id)
     }, [props.user])
 
     useEffect(() => {
@@ -160,7 +156,10 @@ const Suporte = (props) => {
                     <div className={styles.top}>
                         <div className={styles.top_left_flex}>
                             <span className={styles.top_left_indicator} style={{backgroundColor:adminOn?"#6EB241":"#F40009"}}></span>
-                            <SupportAgentIcon className={styles.top_left_name}></SupportAgentIcon>
+                            <span className={styles.top_left_name}>Cristina</span>
+                            <SupportAgentIcon className={styles.top_left_name}/>
+                            <span className={styles.top_left_name_indicator}>(Suporte da Arranja)</span>
+
                         </div>
                     </div>
                     <div className={styles.chat_area}>

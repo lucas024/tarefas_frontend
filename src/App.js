@@ -29,6 +29,7 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [userLoadAttempt, setUserLoadAttemp] = useState(false)
+  const [incompleteUser, setIncompleteUser] = useState(false)
 
   
 
@@ -57,6 +58,9 @@ function App() {
         if(res.data !== null){
           setUser(res.data)
           setNotifications(res.data.notifications)
+          if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
+            setIncompleteUser(true)
+          }
           setUserLoadAttemp(true)
           setLoading(false)
         }
@@ -65,6 +69,9 @@ function App() {
             if(res.data !== null){
               setUser(res.data)
               setNotifications(res.data.notifications)
+              if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
+                setIncompleteUser(true)
+              }
               setUserLoadAttemp(true)
               setLoading(false)
             }
@@ -83,16 +90,11 @@ function App() {
     }
   }, [userGoogle])
 
-  const refreshUser = () => {
-    setLoading(true)
-    axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
-      if(res.data !== null){
-        setUser(res.data)
-        setLoading(false)
-      }
-    }).catch(err => {
-      setLoading(false)
-    })
+  const updateUser = (val, what) => {
+    console.log(val, what);
+    let userAux = user
+    userAux[what] = val
+    setUser(userAux)
   }
 
 
@@ -101,7 +103,7 @@ function App() {
       <div>
         <Loader loading={loading}/>        
         <BrowserRouter>
-          <Navbar user={user} notifications={notifications} userLoadAttempt={userLoadAttempt}/>
+          <Navbar user={user} notifications={notifications} incompleteUser={incompleteUser} userLoadAttempt={userLoadAttempt}/>
           <Routes>
               <Route exact path="/main/publications/publication" 
                 element={<Reserva
@@ -127,12 +129,13 @@ function App() {
                 element={
                 <ProtectedRoute user={user}>
                   <User
+                    incompleteUser={incompleteUser}
                     notifications={notifications}
                     updateNotification={not_id => updateLocalNotifications(not_id)}
                     user={user}
                     api_url={api_url}
                     loadingHandler={bool => setLoading(bool)}
-                    refreshUser={() => refreshUser()}
+                    updateUser={(val, what) => updateUser(val, what)}
                     />
                 </ProtectedRoute>
                 }

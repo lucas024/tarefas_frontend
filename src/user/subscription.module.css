@@ -1,0 +1,41 @@
+.subscription{
+    color: var(--brand);
+    overflow-x: auto !important;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background);
+}
+.subscription_title{
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    height: 80px;
+    background-color: white;
+}
+.top_title{
+    font-size: 1.8rem;
+    color: var(--brand);
+    font-weight: 600;
+    align-self: center;
+    text-transform: uppercase;
+    margin-left: 3%;
+}
+.mid{
+    margin: auto;
+    padding: 20px;
+    padding-top: 20px;
+    width: 90%;
+    background-color: white;
+    box-sizing: border-box;
+}
+.display{}
+.display_user{}
+.user_img{}
+.user_top_flex{}
+.user_name{}
+.user_desc{}
+.display_sub{}
+.sub_pre{}
+.sub_val_date{}
+.details{}
+.details_title{}

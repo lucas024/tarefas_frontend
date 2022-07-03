@@ -91,7 +91,10 @@ const AuthWorker = (props) => {
                             google_uid: res.user.uid,
                             address: "",
                             photoUrl: "",
-                            type: 1
+                            regioes: [],
+                            trabalhos: [],
+                            type: 1,
+                            state: 0
                         })
                         .then(res => {
                             console.log(res.data)
@@ -177,20 +180,23 @@ const AuthWorker = (props) => {
             axios.get(`${props.api_url}/auth/get_user`, { params: {google_uid: user.uid} }).then(res => {
                 if(res.data == null){
                   axios.post(`${props.api_url}/auth/register/worker`, 
-                      {
-                          name: user.displayName,
-                          phone: "",
-                          email: user.email,
-                          google_uid: user.uid,
-                          address: "",
-                          photoUrl: user.photoURL,
-                          type: 1
-                      }).then(result => {
+                        {
+                            name: user.displayName,
+                            phone: "",
+                            email: user.email,
+                            google_uid: user.uid,
+                            address: "",
+                            photoUrl: user.photoURL,
+                            regioes: [],
+                            trabalhos: [],
+                            type: 1,
+                            state: 0
+                        }).then(result => {
                             console.log(result);
                             props.setUser(result.data.ops[0])
                             props.setLoading(false)
                             navigate('/')
-                      })
+                        })
                 }
             })
         }).catch((error) => {
