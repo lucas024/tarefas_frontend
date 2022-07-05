@@ -291,7 +291,7 @@ const Personal = (props) => {
     return (
         <div className={styles.personal}>
             <div className={styles.personal_title}>
-                <span className={styles.top_title}>Perfil</span>
+                <span className={styles.top_title}>Perfil Trabalhador</span>
             </div>
             <CSSTransition 
                 in={photoPop}
@@ -319,7 +319,7 @@ const Personal = (props) => {
             </CSSTransition>
             <div className={styles.mid}>
                 <div className={styles.top}>
-                    <p className={styles.top_title_two}>trabalhador</p>
+                    {/* <p className={styles.top_title_two}>trabalhador</p> */}
                     <div className={styles.top_info}  onClick={() => setDisplayTop(!displayTop)}>
                         {/* <div className={styles.divider_max}></div> */}
                         {

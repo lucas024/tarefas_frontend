@@ -30,13 +30,13 @@
     text-align: center;
     text-transform: uppercase;
     opacity: 0.3;
+    margin-bottom: 20px;
 }
 .top_complete{
     color: var(--brand);
-    opacity: 0.7;
-    font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.9rem;
     display: inline-block;
+    text-transform: uppercase;
 }
 .top_complete_arrow{
     width: 20px !important;
@@ -101,7 +101,7 @@
     height: 1px;
     width: 100%;
     margin: 10px auto;
-    background-color: var(--brand);
+    background-color: #ccc;
 }
 .special{
     text-decoration: underline;
@@ -249,14 +249,14 @@ input[type=file]{
     color: var(--brand);
 }
 .input_title{
-    font-weight: 500;
-    font-size: 1.2rem;
+    font-weight: 400;
+    font-size: 1rem;
+    text-transform: uppercase;
 }
 .input_email{
-    font-weight: 600;
-    font-style: italic;
-    color: #00000070;
-    font-size: 1.4rem;
+    font-weight: 400;
+    color: #ccc;
+    font-size: 1.1rem;
 }
 .title_flex{
     display: flex;
@@ -340,8 +340,9 @@ input[type=file]{
     flex-direction: column;
 }
 .flex_title{
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 400;
+    text-transform: uppercase;
 }
 .flex_select_div{
     width: 50%;
@@ -602,7 +603,10 @@ transform: rotate(45deg);
         font-size: 1.2rem;
     }
     .input_title{
-        font-size: 1.1rem;
+        font-size: 0.9rem;
+    }
+    .flex_title{
+        font-size: 0.9rem;
     }
     .input_email{
         font-size: 1rem;
