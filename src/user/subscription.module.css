@@ -32,24 +32,42 @@
     overflow-x: scroll;
 }
 .mid_content{
-    width: max-content;
+    width: 600px;
     margin: auto;
 }
 .display{
-    margin: 30px auto;
-    /* box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
-    0 2px 2px rgba(0,0,0,0.12), 
-    0 3px 3px rgba(0,0,0,0.12); */
-    border-bottom: 1px solid var(--check);
     width: 100%;
+    background-color: #6EB24190;
+    border-radius: 5px;
 }
 .display_top{
     display: flex;
     align-items: center;
+    padding: 10px;
     justify-content: space-between;
-    height: 60px;
+}
+.subtitle{
+    margin: 20px 0 10px 0;
+    font-size: 1.3rem;
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.subtitle_sub{
+    margin: 10px 0 5px 0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    display: inline-block;
+    font-weight: 400;
+    align-self: flex-start;
+    color: #ccc;
+}
+.divider{
     width: 100%;
-    padding-bottom: 10px;
+    height: 1px;
+    background-color: #ccc;
+    border-radius: 5px;
+    margin: 5px 0;
 }
 .display_user{
     display: flex;
@@ -67,28 +85,28 @@
 }
 .user_name{
     font-size: 1.2rem;
-    font-weight: 600;
+    color: black;
 }
 .user_desc{
-    color: #ccc;
+    color: white;
+    font-weight: 600;
 }
 .display_right{
     margin-left: 20px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    height: 60px;
+    align-self: flex-end;
 }
 
 .display_right_icon{
     width: auto !important;
-    height: 40px !important;
+    height: 30px !important;
     border-radius: 50%;
     color: var(--check);
     padding: 0px;
 }
 .display_right_text{
-    font-size: 0.8rem;
+    font-size: 0.6rem;
 }
 .display_sub{
     display: flex;
@@ -96,12 +114,14 @@
     flex-direction: column;
 }
 .sub_pre{
-    color: #ccc;
+    color: white;
+    font-size: 0.9rem;
 }
 .sub_val_date{
     font-size: 1rem;
     color: var(--action);
     text-transform: uppercase;
+    font-weight: 600;
 }
 .plano_text{
     font-size: 0.9rem;
@@ -115,18 +135,27 @@
     font-weight: 600;
 }
 .details{
-    width: fit-content;
-    margin: auto;
+    width: 100%;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
+    height: 380px;
+}
+.ver_planos{
+    font-size: 0.6rem;
+    text-decoration: underline;
+    color: #0073C1;
+    cursor: pointer;
+}
+.ver_planos:hover{
+    opacity: 0.8;
 }
 .details_top{
     display: flex;
 }
 .details_area{
-    width: fit-content;
+    width: 100%;
     margin: auto;
-    margin-top: 10px;
     display: flex;
 }
 .card{
@@ -287,4 +316,126 @@
 }
 .button_cancel:hover{
     opacity: 0.8;
+}
+
+.indicator_div{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+.indicator_subdiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+    cursor: pointer;
+    position: relative;
+}
+.indicator{
+    height: 3px;
+    border-radius: 20px;
+    width: 100%;
+    background-color: #ccc;
+}
+.indicator_text{
+    font-size: 0.7rem;
+    color: #ccc;
+}
+.indicator_check{
+    width: 20px !important;
+    height: 20px !important;
+    color: var(--action);
+    position: absolute;
+    top: -20px;
+}
+
+.plans{
+    height: 380px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.plans_area{
+    height: 275px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.plans_title{
+    font-weight: 600;
+    display: inline-block;
+    text-transform: uppercase;
+    text-align: center;
+}
+.plans_sections{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    margin-top: 10px;
+}
+.section{
+    height: 100%;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #ff785ae0;
+    width: 32%;
+    display: flex;
+    flex-direction: column;
+}
+.section:hover{
+    cursor: pointer;
+    transition: 200ms;
+    transform: scale(1.05);
+}
+.section_img{
+    width: 40px;
+    height: 40px;
+    margin: 20px auto;
+}
+.section_type{
+    font-weight: 700;
+    margin: 0 auto;
+    font-size: 1.5rem;
+}
+.section_type_desc{
+    color: white;
+    margin: 0 auto;
+    font-size: 0.7rem;
+    text-align: center;
+}
+.section_valor_div{
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+.section_valor_top{
+    display: flex;
+    color: var(--brand);
+}
+.section_valor_top_symbol{
+    width: 15px !important;
+    height: 15px !important;
+}
+.section_valor_top_number{
+    font-size: 2rem;
+    font-weight: 700;
+}
+.section_valor_top_number_decimal{
+    font-size: 1rem;
+    font-weight: 600;
+}
+.section_desc_of_pay{
+    color: white;
+    font-size: 0.7rem;
+    margin: 0 auto;
+}
+.section_button{
+    color: var(--action);
+    margin: auto;
+    border-radius: 20px;
+    background-color: white;
+    padding: 3px 10px;
 }
