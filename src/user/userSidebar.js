@@ -64,7 +64,7 @@ const UserSidebar = (props) => {
                     component="nav" className={styles.sidebar_list}
                 >
                     {
-                        props.user.type?
+                        props.user?.type?
                         null:
                         <ListItemButton style={{borderTop:"3px solid #71848d"}} onClick={() => sidebarNavigate("publications")}  className={selectedSidebar==="publications"?styles.button:""}>
                             <ListItemIcon>
@@ -74,7 +74,7 @@ const UserSidebar = (props) => {
                         </ListItemButton >
                     }
                     
-                    <ListItemButton style={{borderTop:props.user.type?"3px solid #71848d":null}} onClick={() => sidebarNavigate("personal")} className={selectedSidebar==="personal"?styles.button:""}>
+                    <ListItemButton style={{borderTop:props.user?.type?"3px solid #71848d":null}} onClick={() => sidebarNavigate("personal")} className={selectedSidebar==="personal"?styles.button:""}>
                         <ListItemIcon>
                         <AccessibilityIcon sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
@@ -86,7 +86,7 @@ const UserSidebar = (props) => {
                             } sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                     {
-                        props.user.type?
+                        props.user?.type?
                         <ListItemButton onClick={() => sidebarNavigate("subscription")}  className={selectedSidebar==="subscription"?styles.button:""}>
                             <ListItemIcon>
                             <CardMembershipIcon sx={{color:selectedSidebar==="subscription"?"#FF785A":"#fff"}}/>

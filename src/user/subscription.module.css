@@ -34,6 +34,9 @@
 .mid_content{
     width: 600px;
     margin: auto;
+    position: relative;
+    height: calc(100vh - 150px);
+    overflow: hidden;
 }
 .display{
     width: 100%;
@@ -71,6 +74,7 @@
 }
 .display_user{
     display: flex;
+    width: 100%;
 }
 .user_img{
     width: 60px;
@@ -80,8 +84,10 @@
 }
 .user_top_flex{
     display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     flex-direction: column;
-    align-items: flex-start;
 }
 .user_name{
     font-size: 1.2rem;
@@ -90,6 +96,15 @@
 .user_desc{
     color: white;
     font-weight: 600;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+.user_desc_helper{
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
 }
 .display_right{
     margin-left: 20px;
@@ -108,10 +123,67 @@
 .display_right_text{
     font-size: 0.6rem;
 }
+.selected_plan{
+    display: flex;
+    margin-top: 15px;
+    align-self: flex-start;
+    flex-direction: column;
+}
+.selected_plan_title{
+    font-weight: 600;
+    text-transform: uppercase;
+}   
+.selected_plan_value{
+    color: var(--action);
+}
+.selected_plan_no_value{
+    color: #ccc;
+    font-style: italic;
+}
+.selected_plan_info{
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+}
+.info_div{
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+.info_icon{
+    width: 8px !important;
+    height: 8px !important;
+    color: var(--action);
+}
+.info_subdiv{
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+}
+.info_text_helper{
+    font-weight: 400;
+    text-transform: capitalize;
+    color: #ccc;
+    width: 74px;
+}
+.info_text{
+    font-weight: 600;
+    margin-left: 5px;
+}
 .display_sub{
     display: flex;
-    margin-top: 5px;
+    margin-top: 15px;
     flex-direction: column;
+    align-self: flex-start;
+    height: 90px;
+}
+.prox_cobr_val{
+    color: var(--action);
+    font-weight: 600;
+}
+.cancel{
+    font-size: 0.8rem;
+    margin-top: 5px;
 }
 .sub_pre{
     color: white;
@@ -135,11 +207,23 @@
     font-weight: 600;
 }
 .details{
+    position: absolute;
+    top: 30px;
+    right: 0;
     width: 100%;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    height: 380px;
+    height: 420px;
+    transition: all 400ms ease-in-out;
+    opacity: 1;
+}
+.details_hide{
+    height: 420px;
+    transform: translateX(800px);
+    overflow: hidden;
+    transition: all 400ms ease-in-out;
+    opacity: 0;
 }
 .ver_planos{
     font-size: 0.6rem;
@@ -155,8 +239,9 @@
 }
 .details_area{
     width: 100%;
-    margin: auto;
+    margin: 0 auto;
     display: flex;
+    height: 225px;
 }
 .card{
     border-radius: 10px;
@@ -168,6 +253,7 @@
     background: linear-gradient(135deg, rgba(255,120,90,1) 0%, rgba(254,170,141,1) 100%);
     font-family: 'Gugi', cursive;
     margin-top: 30px;
+    height: 155px;
 }
 .card_top{
     display: flex;
@@ -178,6 +264,17 @@
 .brand{
     height: 20px;
     width: auto;
+}
+.brand_master{
+    height: 20px;
+    border-radius: 5px;
+    transform: scale(1.5);
+    margin-right: 5px;
+}
+.brand_american{
+    height: 20px;
+    transform: scale(2.2);
+    margin-right: 10px;
 }
 .card_mid{
     display: flex;
@@ -238,6 +335,14 @@
 .right_section{
     display: flex;
     flex-direction: column;
+    position: relative;
+}
+.card_wrong{
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    color: var(--red);
+    font-size: 0.6rem;
 }
 .right_helper{
     color: #ccc;
@@ -250,6 +355,7 @@
 .right_section_short{
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 .right_input{
     border: none;
@@ -290,7 +396,23 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin: 15px 0;
+    margin-top: 20px;
+}
+.buttons_plan{
+
+}
+.button_add_disabled{
+    width: 70%;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    background-color: var(--action);
+    color: rgb(255, 222, 222);
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 200ms;
+    opacity: 0.5;
+    cursor: default;
 }
 .button_add{
     width: 70%;
@@ -300,6 +422,8 @@
     background-color: var(--action);
     color: white;
     cursor: pointer;
+    text-transform: uppercase;
+    transition: all 200ms;
 }
 .button_add:hover{
     opacity: 0.8;
@@ -319,9 +443,12 @@
 }
 
 .indicator_div{
+    position: absolute;
+    top: 420px;
+    width: 100%;
     display: flex;
     justify-content: space-around;
-    margin-top: 20px;
+    margin-top: 35px;
 }
 .indicator_subdiv{
     display: flex;
@@ -340,6 +467,7 @@
 .indicator_text{
     font-size: 0.7rem;
     color: #ccc;
+    text-align: center;
 }
 .indicator_check{
     width: 20px !important;
@@ -348,13 +476,37 @@
     position: absolute;
     top: -20px;
 }
-
+.display_one{
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    transition: all 400ms ease-in-out;
+    height: 600px;
+    overflow: hidden;
+    margin-top: 10px;
+    opacity: 1;
+}
+.display_one_hide{
+    opacity: 0;
+    transition: all 400ms ease-in-out;
+}
 .plans{
-    height: 380px;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    height: 420px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    opacity: 1;
+    transition:  all 400ms ease-in-out;
+}
+.plans_hide{
+    transform: translateX(-800px);
+    overflow: hidden;
+    transition: all 400ms ease-in-out;
+    opacity: 0;
 }
 .plans_area{
     height: 275px;
@@ -371,11 +523,32 @@
 .plans_sections{
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     height: 100%;
     margin-top: 10px;
 }
+.popular{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.6rem;
+    color: white;
+    border-radius: 5px;
+    background-color: var(--brand);
+    font-weight: 500;
+    padding: 2px 4px;
+}
 .section{
+    height: 100%;
+    border-radius: 5px;
+    background-color: #ff785ae0;
+    width: 31%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 5px;
+    position: relative;
+}
+.section_selected{
     height: 100%;
     border-radius: 5px;
     box-sizing: border-box;
@@ -383,6 +556,10 @@
     width: 32%;
     display: flex;
     flex-direction: column;
+    transform: scale(1.05);
+    border-bottom: 3px solid var(--brand);
+    cursor: pointer;
+    position: relative;
 }
 .section:hover{
     cursor: pointer;
@@ -437,5 +614,105 @@
     margin: auto;
     border-radius: 20px;
     background-color: white;
-    padding: 3px 10px;
+    padding: 1px 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.section_button_selected{
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    color: white;
+    margin: auto;
+}
+.section_button_selected_icon{
+    width: 20px !important;
+    height: 20px !important;
+}
+.section_button_selected_text{
+    font-size: 0.8rem;
+    margin-top: -2px;
+    font-weight: 600;
+}
+.initial{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.card_right{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+.card_right_title{
+
+}
+.card_right_bottom{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.card_right_button{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    text-align: center;
+    border-radius: 5px;
+    border: 2px solid var(--action);
+    background-color: var(--action);
+    height: 48%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-transform: uppercase;
+    margin-top: 5px;
+}
+.card_right_button:hover{
+    background-color: white;
+    color: var(--action);
+    transition: 200ms;
+    cursor: pointer;
+}
+.card_right_button_remove{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    text-align: center;
+    border-radius: 5px;
+    border: 2px solid var(--brand);
+    background-color: var(--brand);
+    color: white;
+    font-weight: 600;
+    height: 48%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+.card_right_button_remove:hover{
+    background-color: white;
+    color: var(--brand);
+    transition: 200ms;
+    cursor: pointer;
+}
+.display_zero{
+    height: 100%;
+    transition: all 400ms ease-in-out;
+}
+.display_zero_hide{
+    height: 0;
+    transition: all 400ms ease-in-out;
+}
+.alterar_plano{
+    margin-top: 5px;
+    font-size: 0.8rem;
+}
+.arrow{
+    margin: 0px 5px;
 }

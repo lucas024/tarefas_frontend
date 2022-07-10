@@ -73,7 +73,7 @@ const AuthWorker = (props) => {
         }
     }, [password])
 
-    const registerHandler = () => {
+    const registerHandler = async () => {
         props.loadingHandler(true)
         if(validator.isMobilePhone(phone, "pt-PT")
             && name.length>1
@@ -81,8 +81,13 @@ const AuthWorker = (props) => {
             && validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
                 
                 registerWithEmailAndPassword(email, password)
-                    .then(res => {
+                    .then(async res => {
                         console.log(res)
+                        const obj = await axios.post(`${props.api_url}/create-customer`, {
+                            name: name,
+                            phone: phone,
+                            email: email,
+                        })
                         axios.post(`${props.api_url}/auth/register/worker`, 
                         {
                             name: name,
@@ -94,7 +99,11 @@ const AuthWorker = (props) => {
                             regioes: [],
                             trabalhos: [],
                             type: 1,
-                            state: 0
+                            state: 0,
+                            stripe_id: obj.data.customer.id,
+                            entity: 0,
+                            entity_name: "",
+                            plan: -1
                         })
                         .then(res => {
                             console.log(res.data)
@@ -177,9 +186,14 @@ const AuthWorker = (props) => {
         .then((result) => {
             const user = result.user;
 
-            axios.get(`${props.api_url}/auth/get_user`, { params: {google_uid: user.uid} }).then(res => {
+            axios.get(`${props.api_url}/auth/get_user`, { params: {google_uid: user.uid} }).then(async res => {
                 if(res.data == null){
-                  axios.post(`${props.api_url}/auth/register/worker`, 
+                    const obj = await axios.post(`${props.api_url}/create-customer`, {
+                        name: name,
+                        phone: phone,
+                        email: email,
+                    })
+                    axios.post(`${props.api_url}/auth/register/worker`, 
                         {
                             name: user.displayName,
                             phone: "",
@@ -190,7 +204,11 @@ const AuthWorker = (props) => {
                             regioes: [],
                             trabalhos: [],
                             type: 1,
-                            state: 0
+                            state: 0,
+                            stripe_id: obj.data.customer.id,
+                            entity: 0,
+                            entity_name: "",
+                            plan: -1
                         }).then(result => {
                             console.log(result);
                             props.setUser(result.data.ops[0])

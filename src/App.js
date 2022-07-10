@@ -20,7 +20,6 @@ import Loader from './general/loader';
 import Reserva from './main/reserva';
 import AuthWorker from './auth/authWorker';
 
-
 function App() {
   const api_url = "http://localhost:5000"
   
@@ -127,7 +126,6 @@ function App() {
               />
               <Route exact path="/user" 
                 element={
-                <ProtectedRoute user={user}>
                   <User
                     incompleteUser={incompleteUser}
                     notifications={notifications}
@@ -137,7 +135,6 @@ function App() {
                     loadingHandler={bool => setLoading(bool)}
                     updateUser={(val, what) => updateUser(val, what)}
                     />
-                </ProtectedRoute>
                 }
               />
               <Route exact path="/authentication/worker" 

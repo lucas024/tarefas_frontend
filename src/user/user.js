@@ -10,6 +10,10 @@ import Suporte from './suporte';
 import NoPage from './../general/noPage';
 import Messages from './messages';
 import Subscription from './subscription';
+import {Elements} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd');
 
 const User = (props) => {
 
@@ -17,6 +21,7 @@ const User = (props) => {
     const [reservations, setReservations] = useState([])
     const [nextReservation, setNextReservation] = useState(null)
     const navigate = useNavigate()
+    const publishableKey = "pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd"
 
 
     useEffect(() => {
@@ -48,8 +53,12 @@ const User = (props) => {
             return <Suporte user={props.user} api_url={props.api_url}/>
         else if(val === "messages")
             return <Messages user={props.user} api_url={props.api_url} updateNotification={not_id => props.updateNotification(not_id)}/>
-        else if(val === "subscription" ** props.user?.type!==1)
-            return <Subscription user={props.user} api_url={props.api_url}/>
+        else if(val === "subscription" && props.user?.type===1)
+            return (
+                <Elements stripe={stripePromise}>
+                    <Subscription user={props.user} api_url={props.api_url}/>
+                </Elements>
+            ) 
         return <NoPage object={"página"}/>
     }
 
