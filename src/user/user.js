@@ -56,7 +56,7 @@ const User = (props) => {
         else if(val === "subscription" && props.user?.type===1)
             return (
                 <Elements stripe={stripePromise}>
-                    <Subscription user={props.user} api_url={props.api_url}/>
+                    <Subscription user={props.user} api_url={props.api_url} refreshWorker={() => props.refreshWorker()}/>
                 </Elements>
             ) 
         return <NoPage object={"página"}/>

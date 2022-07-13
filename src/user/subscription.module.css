@@ -30,6 +30,7 @@
     background-color: white;
     box-sizing: border-box;
     overflow-x: scroll;
+    position: relative;
 }
 .mid_content{
     width: 600px;
@@ -64,6 +65,8 @@
     font-weight: 400;
     align-self: flex-start;
     color: #ccc;
+    display: flex;
+    align-items: center;
 }
 .divider{
     width: 100%;
@@ -71,6 +74,14 @@
     background-color: #ccc;
     border-radius: 5px;
     margin: 5px 0;
+}
+.divider_abs{
+    position: absolute;
+    left: 0;
+    top: 100px;
+    height: 1px;
+    background-color: #ccc;
+    width: 100%;
 }
 .display_user{
     display: flex;
@@ -128,6 +139,11 @@
     margin-top: 15px;
     align-self: flex-start;
     flex-direction: column;
+}
+.changing_plan{
+    border: 2px solid var(--action);
+    padding: 2px;
+    text-align: center;
 }
 .selected_plan_title{
     font-weight: 600;

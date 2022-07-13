@@ -103,7 +103,6 @@ const AuthWorker = (props) => {
                             stripe_id: obj.data.customer.id,
                             entity: 0,
                             entity_name: "",
-                            plan: -1
                         })
                         .then(res => {
                             console.log(res.data)
@@ -208,7 +207,6 @@ const AuthWorker = (props) => {
                             stripe_id: obj.data.customer.id,
                             entity: 0,
                             entity_name: "",
-                            plan: -1
                         }).then(result => {
                             console.log(result);
                             props.setUser(result.data.ops[0])

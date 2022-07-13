@@ -89,6 +89,23 @@ function App() {
     }
   }, [userGoogle])
 
+  const refreshWorker = () => {
+    axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
+      if(res.data !== null){
+        setUser(res.data)
+        setNotifications(res.data.notifications)
+        if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
+          setIncompleteUser(true)
+        }
+        setUserLoadAttemp(true)
+        setLoading(false)
+      }
+      else{
+        setLoading(false)
+      }
+    })
+  }
+
   const updateUser = (val, what) => {
     console.log(val, what);
     let userAux = user
@@ -127,6 +144,7 @@ function App() {
               <Route exact path="/user" 
                 element={
                   <User
+                    refreshWorker={() => refreshWorker()}
                     incompleteUser={incompleteUser}
                     notifications={notifications}
                     updateNotification={not_id => updateLocalNotifications(not_id)}

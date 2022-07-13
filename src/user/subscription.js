@@ -13,6 +13,8 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import visa from '../assets/visa.png'
 import mastercard from '../assets/mastercard_2.jpg'
 import american from '../assets/american-express.png'
+import {CSSTransition}  from 'react-transition-group';
+import Sessao from './../transitions/sessao';
 
 import { 
     CardNumberElement, 
@@ -21,7 +23,8 @@ import {
     useStripe,
     useElements
 } from '@stripe/react-stripe-js';
-
+import Loader from '../general/loader';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const Subscription = props => {
 
@@ -37,45 +40,33 @@ const Subscription = props => {
     const [selectedMenu, setSelectedMenu] = useState(0)
     const [selectedPlan, setSelectedPlan] = useState(null)
     const [cardIssuer, setCardIssuer] = useState(null)
-    const [activePaymentMethod, setActivePaymentMethod] = useState({})
     const [alterarPlano, setAlterarPlano] = useState(false)
     const [alterarPagamento, setAlterarPagamento] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [successPopin, setSuccessPopin] = useState(false)
+    const [failPopin, setFailPopin] = useState(false)
+    const [successPlanPopin, setSuccessPlanPopin] = useState(false)
+    const [failPlanPopin, setFailPlanPopin] = useState(false)
 
+    const [subscriptionStatus, setSubscriptionStatus] = useState(null)
+    const [schedule, setSchedule] = useState(null)
 
     const stripe = useStripe();
     const elements = useElements();
 
     useEffect(() => {
-        if(cardNumber.length>=13) setCardNumberDisplay(`${cardNumber.slice(0,4)} ${cardNumber.slice(4,8)} ${cardNumber.slice(8,12)} ${cardNumber.slice(12)}`)
-        else if(cardNumber.length>=9) setCardNumberDisplay(`${cardNumber.slice(0,4)} ${cardNumber.slice(4,8)} ${cardNumber.slice(8)}`)
-        else if(cardNumber.length>=5) setCardNumberDisplay(`${cardNumber.slice(0,4)} ${cardNumber.slice(4)}`)
-        else{
-            setCardNumberDisplay(`${cardNumber.slice(0,4)}`)
+        if(props.user.subscription){
+            axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
+                subscription_id: props.user.subscription.id,
+                schedule_id: props.user.subscription.sub_schedule
+            })
+            .then(res => {
+                console.log(res.data);
+                setSubscriptionStatus(res.data.subscription.status)
+                setSchedule(res.data.schedule)
+            })
         }
-        if(cardNumber.length>1){
-            if(cardNumber.slice(0,1)==="4"){
-                setCardIssuer("visa")
-            }
-            else if(2721>=parseInt(cardNumber.slice(0,4))&&parseInt(cardNumber.slice(0,4))>=2221||55>=parseInt(cardNumber.slice(0,2))&&parseInt(cardNumber.slice(0,2))>=51){
-                setCardIssuer("mastercard")
-            }
-            else if(cardNumber.slice(0,2)==="34"||cardNumber.slice(0,2)==="37"){
-                setCardIssuer("american")
-            }
-        }
-        else{
-            setCardIssuer(null)
-        }
-        if(validator.isCreditCard(cardNumber)){
-            setCardNumberValid(true)
-        }
-        else{
-            setCardNumberValid(false)
-        }
-        if(cardNumberValid&&cardDateValid&&cardCVV.length===3&&cardName.length>2){
-
-        }
-    }, [cardNumber])
+    }, [])
 
     useEffect(() => {
         if(cardDate.length>=3) setCardDateDisplay(`${cardDate.slice(0,2)}/${cardDate.slice(2)}`)
@@ -98,59 +89,141 @@ const Subscription = props => {
         }
     }, [cardDate])
 
+    const getDateToString = date => {
+        console.log(date);
+        let val = new Date(date*1000).toISOString()
+        let string = val.split("T")[0]
+        return `${string.slice(-2)}/${string.slice(5,7)}/${string.slice(0,4)}`
+    }
+
     useEffect(() => {
-        if(props.user.payment_methods.length>0){
-            setActivePaymentMethod(props.user.payment_methods[0])
-            setSelectedPlan(props.user.plan)
+        if(props.user.subscription){
+            setDisplay(0)
+            setSelectedPlan(props.user.subscription.plan)
+        }
+        else{
+            setDisplay(1)
         }
     }, [props.user])
 
     const handlePayment = async () => {
+        setLoading(true)
         if (!stripe || !elements) {
+            setLoading(false)
             return;
         }
-        const res = await axios.post(`${props.api_url}/create-payment-intent`, {
-            stripe_id: props.user.stripe_id,
-            amount: selectedPlan&&selectedPlan===1?1299:selectedPlan===2?6889:11989
-        })
-        const {paymentIntent} = await stripe.confirmCardPayment(
-            res.data.clientSecret, {
-                payment_method: {
-                    card: elements.getElement(CardNumberElement)
-                }
-            }
-        )
 
-        switch (paymentIntent.status) {
-            case 'succeeded':
-                const obj = await axios.post(`${props.api_url}/get-payment-methods-customer`, {
-                    stripe_id: props.user.stripe_id
-                })
-                console.log(obj);
-                if(obj.data.paymentMethods.data.length>0){
-                    const final = await axios.post(`${props.api_url}/worker/set_payment_methods`, {
-                        _id: props.user._id,
-                        paymentMethods: obj.data.paymentMethods.data,
-                        plan: selectedPlan,
-                    })
-                    console.log(final);
+        // const res = await axios.post(`${props.api_url}/create-setup-intent`, {
+        //     stripe_id: props.user.stripe_id
+        // })
+
+        // const {setupIntent} = await stripe.confirmCardSetup(
+        //     res.data.clientSecret, {
+        //         payment_method: {
+        //             card: elements.getElement(CardNumberElement),
+        //             billing_details: {
+        //                 name: cardName
+        //             }
+        //         }
+        //     }
+        // )
+
+        let sub_obj = await axios.post(`${props.api_url}/create-subscription`, {
+            stripe_id: props.user.stripe_id,
+            amount: selectedPlan&&selectedPlan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":selectedPlan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj"
+        })
+
+        const paymentConfirmation = await stripe.confirmCardPayment(
+                sub_obj.data.clientSecret, {
+                    payment_method: {
+                        card: elements.getElement(CardNumberElement),
+                        billing_details: {
+                            name: cardName
+                        }
+                    }
                 }
+            )
+        console.log(paymentConfirmation);
+
+        switch (paymentConfirmation.paymentIntent.status) {
+            case "succeeded":
+                await axios.post(`${props.api_url}/confirm-subscription`, {
+                    pm_id: paymentConfirmation.paymentIntent.payment_method,
+                    plan: selectedPlan,
+                    _id: props.user._id,
+                    name: cardName,
+                    sub_id: sub_obj.data.subscriptionId
+                })
+                props.refreshWorker()
+                setSuccessPopin()
+                setLoading(false)
+                setDisplay(0)
+                setSuccessPopin(true)
+                setTimeout(() => setSuccessPopin(false), 4000)
                 break;
   
             // case 'processing':
             //   setMessage("Payment processing. We'll update you when payment is received.");
             //   break;
   
-            // case 'requires_payment_method':
-            //   setMessage('Payment failed. Please try another payment method.');
-            //   break;
+            case 'requires_payment_method':
+                setLoading(false)
+                setFailPopin(true)
+                setTimeout(() => setFailPopin(false), 4000)
+                break;
   
-            // default:
-            //   setMessage('Something went wrong.');
-            //   break;
+            default:
+                setLoading(false)
+                break;
           }
+    }
 
-        console.log(paymentIntent);
+    const getPlanFromPriceId = priceId => {
+        if(priceId === "price_1LKQUyKC1aov6F9pTpM3gn0l") return 2
+        else if(priceId === "price_1LKQVEKC1aov6F9p4RgyXAqj") return 3
+        else return 1
+    }
+
+    const updatePlan = async () => {
+        setLoading(true)
+        if (!stripe || !elements) {
+            return;
+        }
+
+        let val = await axios.post(`${props.api_url}/update-subscription-plan`, {
+            subscription: props.user.subscription,
+            current_amount: props.user.subscription.plan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":props.user.subscription.plan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
+            new_amount: selectedPlan&&selectedPlan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":selectedPlan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
+            plan: selectedPlan,
+            _id: props.user._id,
+            start_time: parseInt((new Date().getTime() + 30000)/1000)
+        })
+
+        console.log(val);
+        switch (val.status) {
+            case 200:
+                props.refreshWorker()
+                setDisplay(0)
+                setSelectedMenu(0)
+                setLoading(false)
+                setSuccessPlanPopin(true)
+                setTimeout(() => setSuccessPlanPopin(false), 4000)
+                break;
+  
+        //     // case 'processing':
+        //     //   setMessage("Payment processing. We'll update you when payment is received.");
+        //     //   break;
+  
+            case 'requires_payment_method':
+                setLoading(false)
+                setFailPlanPopin(true)
+                setTimeout(() => setFailPlanPopin(false), 4000)
+                break;
+  
+            default:
+                setLoading(false)
+                break;
+        }
     }
 
     return (
@@ -159,6 +232,19 @@ const Subscription = props => {
                 <span className={styles.top_title} onClick={() => setDisplay(display===0?1:display===1?0:1)}>Subscrição</span>
             </div>
             <div className={styles.mid}>
+            <Loader loading={loading}/>
+            <CSSTransition 
+                in={successPopin||failPopin||successPlanPopin||failPlanPopin}
+                timeout={1000}
+                classNames="transition"
+                unmountOnExit
+                >
+                <Sessao text={successPopin?"Subscricação ativada com sucesso!"
+                                :failPopin?"Cartão inválido. Experimente outro!"
+                                :successPlanPopin?"Plano da subscrição alterado com sucesso!"
+                                :failPlanPopin?"Erro ao alterar plano":""}/>
+            </CSSTransition>
+                {/* <div className={styles.divider_abs}/> */}
                 <div className={styles.mid_content}>
                     <div className={styles.display}>
                         <div className={styles.display_top}>
@@ -171,7 +257,7 @@ const Subscription = props => {
                         </div>
                     </div>
                     {
-                        display===0?
+                        display===0&&props.user.subscription?
                         <div className={display===0?styles.display_zero:`${styles.display_zero} ${styles.display_zero_hide}`}>
                             <span className={styles.subtitle}>Plano</span>
                             <div className={styles.divider}/>
@@ -190,26 +276,40 @@ const Subscription = props => {
                                             <span className={styles.info_text}>Cobranças mensais (30 a 30 dias)</span>
                                         </div>
                                     </div>
-                                    <div style={{marginTop:"10px"}}>
-                                        <span className={styles.prox_cobr}>Data da próxima cobrança: </span><span className={styles.prox_cobr_val}> 27/07/2022</span>
-                                    </div>
+                                        {
+                                            schedule&&schedule.phases.length>1?
+                                            <div style={{marginTop:"5px"}}>
+                                            <span className={styles.prox_cobr}>Data da próxima cobrança e <span style={{fontWeight:600}}>alteração de plano</span>:</span><span className={styles.prox_cobr_val}> {schedule&&getDateToString(schedule.current_phase.end_date)}</span></div>
+                                            :
+                                            <div style={{marginTop:"5px"}}>
+                                            <span className={styles.prox_cobr}>Data da próxima cobrança: </span><span className={styles.prox_cobr_val}>{schedule&&getDateToString(schedule.current_phase.end_date)}</span></div>
+
+                                        }
+                                    {
+                                        schedule&&schedule.phases.length>1?
+                                        <div className={styles.changing_plan} style={{marginTop:"10px"}}>
+                                            <span className={styles.prox_cobr}>Alteração de plano encaminhada - </span><span className={styles.prox_cobr_val}>{getPlanFromPriceId(schedule.phases[1].plans[0].price)===1?"PLANO MENSAL":getPlanFromPriceId(schedule.phases[1].plans[0].price)===2?"PLANO SEMESTRAL":"PLANO ANUAL"}</span>
+                                        </div>
+                                        :null
+                                    }
                                     <span className={styles.cancel} style={{marginTop:"10px", color:"#ccc"}}>O cancelamento da subscrição pode ser feito a <span style={{fontWeight:"500"}}>qualquer altura</span></span>
                                 </div>
                             </div>
                             <span className={styles.subtitle}>Método de Pagamento</span>
                             <div className={styles.divider}/>
-                            <span className={styles.subtitle_sub}><span style={{fontWeight:"500"}}>Cartão Ativo</span></span>
+                            <span className={styles.subtitle_sub}><span style={{fontWeight:"500"}}>Cartão</span> <span style={{marginLeft:"5px"}}>-</span> <span style={{color:subscriptionStatus==="active"?"#6EB241":"#ff3b30", marginLeft:"5px"}}>{subscriptionStatus==="active"?<span style={{display:"flex", alignItems:"center"}}>ATIVO <Check style={{width:"15px !important", height:"15px !important", marginLeft:"3px"}}/></span>:<span style={{display:"flex", alignItems:"center"}}>ERRO <ClearIcon style={{width:"15px !important", height:"15px !important", marginLeft:"3px"}}/></span>}</span></span>
                             <div className={styles.initial}>
-                                <div className={styles.card} style={{marginTop:"10px"}}>
+
+                                <div className={styles.card} style={{marginTop:"10px", border:subscriptionStatus==="active"?"6px solid #6EB241":"6px solid #ff3b30"}}>
                                     <div className={styles.card_top}>
                                         {
-                                            activePaymentMethod.card?.brand==="visa"?
+                                            props.user.subscription.payment_method.card.brand==="visa"?
                                             <img src={visa} className={styles.brand}/>
                                             :
-                                            activePaymentMethod.card?.brand==="mastercard"?
+                                            props.user.subscription.payment_method.card.brand==="mastercard"?
                                             <img src={mastercard} className={styles.brand_master}/>
                                             :
-                                            activePaymentMethod.card?.brand==="american"?
+                                            props.user.subscription.payment_method.card.brand==="american"?
                                             <img src={american} className={styles.brand_american}/>
                                             :null
                                         }
@@ -218,16 +318,16 @@ const Subscription = props => {
                                         <img src={chip} className={styles.chip}/>
                                     </div>
                                     <div className={styles.card_number}>
-                                        <span className={styles.card_number_value}>**** **** **** {activePaymentMethod.card?.last4}</span>
+                                        <span className={styles.card_number_value}>**** **** **** {props.user.subscription.payment_method.card.last4}</span>
                                     </div>
                                     <div className={styles.card_name_date}>
                                         <div className={styles.card_name}>
                                             <span className={styles.name_helper}>Nome</span>
-                                            <span className={styles.name_val}>{cardName}</span>
+                                            <span className={styles.name_val}>{props.user.subscription.payment_method.billing_details.name}</span>
                                         </div>
                                         <div className={styles.card_name}>
                                             <span className={styles.name_helper}>Data</span>
-                                            <span className={styles.name_val}>{activePaymentMethod.card?.exp_month}/{activePaymentMethod.card?.exp_year}</span>
+                                            <span className={styles.name_val}>{props.user.subscription.payment_method.card.exp_month}/{props.user.subscription.payment_method.card.exp_year}</span>
                                         </div>
                                     </div>
                                 </div>                                
@@ -257,6 +357,7 @@ const Subscription = props => {
                         </div>
                         :display===1?
                         <div className={styles.display_one}>
+                            
                             <span className={styles.subtitle_sub} style={{marginTop:"-20px"}}><span style={{fontWeight:"500"}}>
                                 {
                                     alterarPagamento?
@@ -363,21 +464,26 @@ const Subscription = props => {
                                     <div style={{display:"flex", alignItems:"center"}}>
                                         {
                                             alterarPlano?
-                                            props.user.plan===1?
+                                            props.user.subscription.plan===1?
                                             <span className={styles.selected_plan_value}><span className={styles.sub_val_date}>Plano Mensal</span> - 30 DIAS</span>
-                                            :props.user.plan===2?
+                                            :props.user.subscription.plan===2?
                                             <span className={styles.selected_plan_value}><span className={styles.sub_val_date}>Plano Semestral</span> - 180 DIAS</span>   
                                             :<span className={styles.selected_plan_value}><span className={styles.sub_val_date}>Plano Anual</span> - 360 DIAS</span>
                                             :null
                                         }
-                                        <ArrowRightAltIcon className={styles.arrow}/>
                                         {
                                             alterarPlano?
-                                            selectedPlan===1&&props.user.plan!==1?
+                                            <ArrowRightAltIcon className={styles.arrow}/>
+                                            :null
+                                        }
+                                        
+                                        {
+                                            alterarPlano?
+                                            selectedPlan===1&&props.user.subscription.plan!==1?
                                             <span className={styles.selected_plan_value}><span className={styles.sub_val_date}>Plano Mensal</span> - 30 DIAS</span>
-                                            :selectedPlan===2&&props.user.plan!==2?
+                                            :selectedPlan===2&&props.user.subscription.plan!==2?
                                             <span className={styles.selected_plan_value}><span className={styles.sub_val_date}>Plano Semestral</span> - 180 DIAS</span>   
-                                            :selectedPlan===3&&props.user.plan!==3?
+                                            :selectedPlan===3&&props.user.subscription.plan!==3?
                                             <span className={styles.selected_plan_value}><span className={styles.sub_val_date}>Plano Anual</span> - 360 DIAS</span>
                                             :<span className={styles.selected_plan_no_value}>Selecione um plano diferente</span>
                                             :null
@@ -387,28 +493,38 @@ const Subscription = props => {
                                 </div>
                                 {
                                     alterarPlano?
-                                    <span className={styles.alterar_plano}>O alteramento do plano terá efeito imediato, mas <span style={{fontWeight:"600"}}>apenas será cobrado no fim do plano corrente <span style={{color:"#FF785A"}}>(27/07/2022)</span></span>.</span>
+                                    <div>
+                                        <span className={styles.alterar_plano}>O alteramento do plano terá efeito imediato, mas <span style={{fontWeight:"600"}}>apenas será cobrado na data da próxima cobrança. </span></span>
+                                        <p className={styles.alterar_plano} style={{fontSize:"0.7rem"}}>Próx. cobrança <span style={{color:"#FF785A"}}>{schedule&&getDateToString(schedule.current_phase.end_date)}</span>)</p>
+                                    </div>
                                     :null
                                 }
-                                <div className={styles.buttons}>
-                                    <span className={selectedPlan&&props.user.plan!==selectedPlan?styles.button_add:styles.button_add_disabled} onClick={() => {
-                                        if(props.user.plan===-1){
+                                {
+                                    alterarPlano?
+                                    <div className={styles.buttons}>
+                                        <span className={selectedPlan&&props.user.subscription.plan!==selectedPlan?styles.button_add:styles.button_add_disabled} onClick={() => {
+                                            selectedPlan&&props.user.subscription.plan!==selectedPlan&&updatePlan()
+                                            }}>Alterar</span>
+                                        <span className={styles.button_cancel} onClick={() => {
+                                            setDisplay(0)
+                                            setSelectedMenu(0)
+                                            setSelectedPlan(props.user.subscription.plan)
+                                            setAlterarPlano(false)
+                                            }}>CANCELAR</span>
+                                    </div>
+                                    :
+                                    <div className={styles.buttons}>
+                                        <span className={selectedPlan?styles.button_add:styles.button_add_disabled} onClick={() => {
                                             selectedPlan&&setSelectedMenu(1)
-                                        }
-                                        else if(selectedPlan&&props.user.plan!==selectedPlan){
-                                            //handle tings
-                                            console.log("osid");
-                                        }
-                                        }}>{
-                                        props.user.plan!==-1?
-                                        "Alterar"
-                                        :"Continuar"}</span>
-                                    <span className={styles.button_cancel} onClick={() => {
-                                        setDisplay(0)
-                                        setSelectedMenu(0)
-                                        setSelectedPlan(props.user.plan)
-                                        setAlterarPlano(false)}}>CANCELAR</span>
-                                </div>
+                                            }}>Continuar"</span>
+                                        <span className={styles.button_cancel} onClick={() => {
+                                            setDisplay(0)
+                                            setSelectedMenu(0)
+                                            }}>CANCELAR</span>
+                                    </div>
+                                }
+                                
+                                
                             </div>
                             {/* CARTAO */}
                             <div className={selectedMenu?styles.details:`${styles.details} ${styles.details_hide}`}>
@@ -492,7 +608,7 @@ const Subscription = props => {
                                 <div className={styles.selected_plan} style={{height:alterarPagamento?"30px":"90px"}}>
                                     {
                                         alterarPagamento?
-                                        <span className={styles.alterar_plano}>O alteramento do cartão terá efeito imediato, mas <span style={{fontWeight:"600"}}>apenas será cobrado no fim do plano corrente <span style={{color:"#FF785A"}}>(27/07/2022)</span></span>.</span>
+                                        <span className={styles.alterar_plano}>O alteramento do cartão terá efeito imediato, mas <span style={{fontWeight:"600"}}>apenas será cobrado na data da próxima cobrança. <span style={{color:"#FF785A"}}>(Próx. cobrança{schedule&&getDateToString(schedule.current_phase.end_date)})</span></span>.</span>
                                         :null
                                     }
                                     {
@@ -574,14 +690,15 @@ const Subscription = props => {
                                 </div>
                                 <div className={styles.buttons}>
                                     <span className={styles.button_add} onClick={() => handlePayment()}>{
-                                    activePaymentMethod?
+                                    props.user.subscription?
                                     "Alterar Cartão"
                                     :"ADICIONAR CARTÃO E PAGAR"}</span>
                                     <span className={styles.button_cancel} onClick={() => {
                                         setDisplay(0)
                                         setSelectedMenu(0)
-                                        setSelectedPlan(props.user.plan)
-                                        setAlterarPagamento(false)}}>CANCELAR</span>
+                                        // setSelectedPlan(props.user.subscription.plan)
+                                        // setAlterarPagamento(false)
+                                        }}>CANCELAR</span>
                                 </div>
                             </div>
                             <div className={styles.indicator_div} style={{top:alterarPlano?"450px":alterarPagamento?"360px":""}}>
