@@ -87,13 +87,83 @@
 .button{
     background-color: #ffffff20;
 }
-
-.drop_div_notification{
-    max-height: 15px !important;
-    max-width: 15px !important;
-    color: var(--action);
-    align-self: center;
+.thing{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    right: 0px;
+    top: 5px;
+    align-items: center;
+    justify-content: center;
 }
+.drop_div_notification{
+    color: var(--action);
+    right: 30px;
+    top: 0;
+    font-size: 0.6rem;
+    text-decoration: underline;
+}
+.status{
+    background-color: white;
+    width: 100%;
+    border-radius: 5px;
+    width: 90%;
+    margin: 10px auto;
+}
+.status_top{
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #ccc;
+    padding: 5px;
+}
+.status_top_val{
+    margin: 0 auto;
+    color: var(--yellow);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.status_div{
+    display: flex;
+    flex-direction: column;
+    background-color: var(--yellow);
+    border-bottom: 1px solid white;
+    cursor: pointer;
+}
+.status_div_title{
+    color: white;
+    margin: 5px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+.status_div_flex{
+    display: flex;
+    margin: 5px auto;
+    align-items: center;
+}
+.status_div_val{
+    text-transform: uppercase;
+    font-weight: 600;
+    color: white;
+}
+.status_icon{
+    color: white;
+    margin-left: 5px;
+}
+.status_icon_rotate{
+    color: white;
+    margin-left: 5px;
+    animation: rotation 2s infinite linear;
+}
+
+@keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+}
+
 @media (max-width: 1200px){
     .prox{
         font-size: 0.9rem;

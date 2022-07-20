@@ -17,6 +17,9 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from './../transitions/sessao';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import RotateRightIcon from '@mui/icons-material/RotateRight';
 
 const Personal = (props) => {
     
@@ -161,7 +164,7 @@ const Personal = (props) => {
     const mapRegioes = () => {
         return regioes.map((trab, i) => {
             return (
-                <div key={i} className={styles.container} onClick={() => setCheckedReg(trab.value)}>
+                <div key={i} style={{cursor:editBottom?"pointer":"default"}} className={styles.container} onClick={() => setCheckedReg(trab.value)}>
                     <input type="checkbox" readOnly checked={getCheckedReg(trab.value)}/>
                     <span className={editBottom?styles.checkmark:styles.checkmark_disabled}></span>
                     <span className={editBottom?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.label}</span>
@@ -280,11 +283,11 @@ const Personal = (props) => {
 
     const getPercentagem = () => {
         let val = 0
-        if(phone!=="") val += 1
+        if(phone!==""&&!edit) val += 1
         if(photo!=="") val += 1
-        if(selectedProf.length>0) val += 1
-        if(selectedReg.length>0) val += 1
-        if(radioSelected!==null) val += 1
+        if(selectedProf.length>0&&!editBottom) val += 1
+        if(selectedReg.length>0&&!editBottom) val += 1
+        if(radioSelected!==null&&!editBottom) val += 1
         return Math.ceil((val/5)*100)
     }
 
@@ -324,7 +327,7 @@ const Personal = (props) => {
                         {/* <div className={styles.divider_max}></div> */}
                         {
                             displayTop?
-                            <span className={styles.top_desc}>Assim que tiveres o perfil <span className={styles.action}>100% completo</span> e este for <span className={styles.action}>processado</span> pela equipa do Arranja, poderás ver <span className={styles.special}>detalhes de contacto</span>, enviar <span className={styles.special}>mensagens</span> e aparecerás nas <span className={styles.special}>pesquisas</span> feitas pelos nossos utilizadores!</span>
+                            <span className={styles.top_desc}>Assim que tiveres o perfil <span className={styles.action}>100% completo</span>, este será verificado pela pela equipa do Arranja.</span>
                             :null
                         }
                         
@@ -425,9 +428,8 @@ const Personal = (props) => {
                         }
                         
                         </div>
-                        <div className={styles.divider_max}></div>
                     </div>
-                <span className={styles.personal_subtitle}>Fotografia e Dados</span>
+                <span className={styles.personal_subtitle} style={{marginTop:"20px"}}>Fotografia e Dados</span>
                 <div className={styles.flex}>
                     <div>
                         <div className={styles.image_wrapper}>
@@ -491,7 +493,29 @@ const Personal = (props) => {
                             </div>
                         </div>
                     </div>
+                    <div className={styles.status_div} style={{backgroundColor:!props.incompleteUser&&props.user?.verified?"#6EB241":!props.incompleteUser?"#6EB241bb":"#fdd835bb"}}>
+                        <span className={styles.status_div_title}>Estado do Perfil</span>
+                        <div className={styles.status_div_flex}>
+                            <span className={styles.status_div_flex_title}>
+                                {
+                                    !props.incompleteUser&&props.user?.verified?
+                                    "VERIFICADO"
+                                    :!props.incompleteUser?
+                                    "A VERIFICAR"
+                                    :"INCOMPLETO"
+                                }
+                            </span>
+                            {
+                                !props.incompleteUser&&props.user?.verified?
+                                <CheckBoxIcon className={styles.status_icon}/>
+                                :!props.incompleteUser?
+                                <RotateRightIcon className={styles.status_icon_rotate}/>
+                                :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
+                            }
+                        </div>
+                    </div>
                 </div>
+                <div className={styles.divider_max} style={{marginTop:"30px"}}></div>
                 <div className={styles.title_flex}>
                     <span className={styles.personal_subtitle}>Detalhes Trabalhador</span>
                     {   

@@ -54,7 +54,7 @@ const Popup = (props) => {
                         <span className={styles.cancel_text} onClick={() => props.cancelHandler()}>Cancelar</span>
                     </div>
                 </CSSTransition>
-            :
+            :  props.type === 'error_to_many'?
                 <CSSTransition 
                 in={transition}
                 timeout={1200}
@@ -79,6 +79,27 @@ const Popup = (props) => {
                         </span>
                     </div>
                 </CSSTransition>
+            : props.type === "cancel_subscription"?
+                <CSSTransition 
+                    in={transition}
+                    timeout={1200}
+                    classNames="transition"
+                    unmountOnExit
+                    >
+                    <div className={styles.popup}>
+                            <span className={styles.value}>Cancelar Subscrição</span>
+                            <div className={styles.divider}></div>
+                            <div className={styles.help_text}>
+                                    <p className={styles.help_text_val}>
+                                        O cancelamento da subscrição terá efeito imediato, mas manterá os privilégios de conta ativa até <span style={{color:"#FF785A"}}>{props.date}</span>.
+                                    </p>
+                            </div>
+                            <span className={styles.confirm_button} onClick={() => props.confirm()}>
+                                CONFIRMAR
+                            </span>
+                    </div>
+                </CSSTransition>
+            :null
             }
             
         </div>

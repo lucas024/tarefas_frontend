@@ -72,6 +72,12 @@ const Navbar = (props) => {
                                             >
  
                                         <div className={styles.user}>
+                                            {
+                                                props.incompleteUser?
+                                                <span className={styles.drop_div_notification_big}/>
+                                                :null
+                                            }
+                                            
                                             <p className={styles.user_text}>Àrea Pessoal</p>
                                             <KeyboardArrowDownIcon sx={{fontSize: "30px"}} className={styles.user_arrow}/>
                                         </div>
@@ -108,7 +114,17 @@ const Navbar = (props) => {
                                                 setDropdown(false)
                                                 navigate('/user?t=personal')}} className={styles.drop_div_main}>
                                                 <div className={styles.drop_div}>
-                                                    <span className={styles.drop_div_text}>Perfil</span>
+                                                    <div className={styles.drop_div_special}>
+                                                            <div style={{display:"flex"}}>
+                                                                <span className={styles.drop_div_text}>Perfil</span>
+                                                            </div>
+                                                            {
+                                                                props.incompleteUser?
+                                                                <span className={styles.drop_div_incomplete}>Incompleto</span>
+                                                                :null
+                                                            }
+                                                            
+                                                    </div>  
                                                 </div>
                                             </div>
                                             <div className={styles.drop_div_main} onClick={() => {

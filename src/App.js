@@ -30,8 +30,6 @@ function App() {
   const [userLoadAttempt, setUserLoadAttemp] = useState(false)
   const [incompleteUser, setIncompleteUser] = useState(false)
 
-  
-
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUserGoogle(user)
@@ -42,13 +40,14 @@ function App() {
   });
 
   const updateLocalNotifications = notification_id => {
-    let arr = [...notifications]
-    arr.splice(arr.indexOf(notification_id), 1)
-    setNotifications(arr)
+    
+    if(notifications?.length>0){
+      let arr = [...notifications]
+      arr.splice(arr.indexOf(notification_id), 1)
+      setNotifications(arr)
+    }
   }
 
-
-  
 
   useEffect(() => {
     setLoading(true)
@@ -92,6 +91,7 @@ function App() {
   const refreshWorker = () => {
     axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
       if(res.data !== null){
+        console.log(res.data);
         setUser(res.data)
         setNotifications(res.data.notifications)
         if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
@@ -111,8 +111,10 @@ function App() {
     let userAux = user
     userAux[what] = val
     setUser(userAux)
+    if(user.regioes?.length>0&&user.trabalhos?.length>0&&user.phone!==""&&user.photoUrl!==""){
+      setIncompleteUser(false)
+    }
   }
-
 
   return (
     <div className="App">
@@ -123,8 +125,10 @@ function App() {
           <Routes>
               <Route exact path="/main/publications/publication" 
                 element={<Reserva
+                  refreshWorker={() => refreshWorker()}
                   user={user}
                   api_url={api_url}
+                  incompleteUser={incompleteUser}
                   />}
               />
               <Route exact path="/main/publications/*" 

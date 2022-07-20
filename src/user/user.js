@@ -20,6 +20,7 @@ const User = (props) => {
     const [searchParams] = useSearchParams()
     const [reservations, setReservations] = useState([])
     const [nextReservation, setNextReservation] = useState(null)
+    const [isLoaded, setIsLoaded] = useState(false)
     const navigate = useNavigate()
     const publishableKey = "pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd"
 
@@ -28,6 +29,9 @@ const User = (props) => {
         props.loadingHandler(true)
         if(props.user){
             updateReservations()
+        }
+        else{
+            setIsLoaded(true)
         }
     }, [props.user])
 
@@ -40,6 +44,7 @@ const User = (props) => {
             }
             setReservations(res.data)
             props.loadingHandler(false)
+            setIsLoaded(true)
             })
     }
 
@@ -59,21 +64,25 @@ const User = (props) => {
                     <Subscription user={props.user} api_url={props.api_url} refreshWorker={() => props.refreshWorker()}/>
                 </Elements>
             ) 
-        return <NoPage object={"página"}/>
+        return isLoaded&&<NoPage object={"página"}/>
     }
 
     return (
         <div className={styles.worker}>
             <div className={styles.flex}>
                 <div className={styles.left}>
-                    <UserSidebar incompleteUser={props.incompleteUser} user={props.user} nextReservation={nextReservation} notifications={props.notifications}/>
+                    <UserSidebar api_url={props.api_url} incompleteUser={props.incompleteUser} user={props.user} nextReservation={nextReservation} notifications={props.notifications}/>
                 </div>
                 <div className={styles.right}>
-                    <div className={styles.worker_area}>
-                        <div className={styles.area}>
-                            {displayCurrentArea()}
+                    {
+                        isLoaded?
+                        <div className={styles.worker_area}>
+                            <div className={styles.area}>
+                                {displayCurrentArea()}
+                            </div>
                         </div>
-                    </div>
+                        :null
+                    }
                 </div>
             </div>
         </div>

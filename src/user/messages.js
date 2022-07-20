@@ -10,10 +10,17 @@ import CircleIcon from '@mui/icons-material/Circle';
 import FaceIcon from '@mui/icons-material/Face';
 import NoPage from '../general/noPage';
 import Loader from './../general/loader';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+
+//const socket = io.connect("http://localhost:5500")
+
+const URL = "http://localhost:5500";
+const socket = io(URL, { autoConnect: false });
 
 const Messages = (props) => {
     
-    //const socket = useRef()
+    
     const [messages, setMessages] = useState([])
     const [currentText, setCurrentText] = useState("")
     const [adminOn, setAdminOn] = useState(false)
@@ -23,8 +30,15 @@ const Messages = (props) => {
     const [onlineUsers, setOnlineUsers] = useState([])
     const [loadingChats, setLoadingChats] = useState(false)
 
+    const [s, setS] = useState()
+
     const textareaRef = useRef(null)
     const chatareaRef = useRef(null)
+
+    const location = useLocation()
+    const navigate = useNavigate()
+
+
 
 
     const override = css`
@@ -43,17 +57,6 @@ const Messages = (props) => {
         }
     }, [selectedChat])
 
-    useEffect(() => {
-        //socket.current = io("ws://localhost:5500")
-        // socket.current.on("getMessage", data => {
-        //     handleMessageUpdate(data)
-        // })
-        // socket.current.on("getUsers", data => {
-        //     setOnlineUsers(data)
-        // })
-    }, [])
-
-
 
     useEffect(() => {
         setLoading(true)
@@ -61,8 +64,20 @@ const Messages = (props) => {
             setLoadingChats(true)
             axios.get(`${props.api_url}/chats/get_user_chats`, { params: {user_id: props.user._id} }).then(res => {
                 if(res.data !== null && res.data !== "" && res.data.length>0){
-                    console.log(res.data);
-                    setSelectedChat(res.data[0])
+                    if(location.state&&location.state.from_page){
+                        for(let el of res.data){
+                            console.log(el[`${location.state.user_id}_user_id`]===location.state.user_id);
+                            if(el[`${location.state.worker_id}_user_id`]===location.state.worker_id&&el[`${location.state.user_id}_user_id`]===location.state.user_id){
+                                console.log("yaya");
+                                setSelectedChat(el)
+                                break
+                            }
+                        }
+                    }
+                    else{
+                        setSelectedChat(res.data[0])
+                    }
+                    
                     setMessages(res.data[0].texts)
                     let arr = res.data
                     arr[0][`${props.user._id}_read`] = true
@@ -88,11 +103,56 @@ const Messages = (props) => {
         
     }, [props.user])
 
-
+    useEffect(() => {
+        if(props.user){
+            console.log(props.user._id);
+            const newSocket = io(
+                'http://localhost:5500',
+                { query: {id: props.user._id} }
+            )
+            setS(newSocket)
+        }
+        
+        return () => s&&s.close()
+        
+    }, [props.user])
 
     useEffect(() => {
-        //props.user&&socket.current.emit("add_user", props.user._id)
-    }, [props.user])
+        if(!s) return
+
+        s.on('receive-message', data => {
+            console.log(data);
+        })
+
+        return () => s.off('receive-message')
+    }, [s])
+
+    const sendHandler = () => {
+        s.emit("send-message", {
+            recipient: getOtherUserId(),
+            text: currentText,
+            time: new Date().getTime()
+        })
+    }
+
+
+
+    // useEffect(() => {
+    //     if(props.user){
+    //         socket.emit("add_user", props.user._id)
+    //     }
+    // }, [props.user])
+
+    // useEffect(() => {
+    //     socket.on("getMessage", data => {
+    //         console.log(data);
+    //         handleMessageUpdate(data)
+    //     })
+    //     socket.on("getUsers", data => {
+    //         console.log(data);
+    //         setOnlineUsers(data)
+    //     })
+    // }, [socket])
 
     useEffect(() => {
         if(textareaRef&&selectedChat!==null){
@@ -105,8 +165,10 @@ const Messages = (props) => {
     const handleMessageUpdate = data => {
         console.log(data);
         let arrChats = [...chats]
+        console.log(chats);
         for(let el of arrChats){
             if(el[`${data.sender_id}_user_id`] === data.sender_id){
+                console.log("teste");
                 let text = {
                     origin_id : data.sender_id,
                     timestamp : data.timestamp,
@@ -129,16 +191,6 @@ const Messages = (props) => {
         }
     }
 
-    const sendHandler = () => {
-        console.log(getOtherUserId());
-        // socket.current.emit("sendMessage", {
-        //     sender_id: props.user._id,
-        //     receiver_id: getOtherUserId(),
-        //     text: currentText,
-        //     timestamp: new Date().getTime()
-        // })
-    }
-
     const messageHandler = () => {
         if(currentText !== ""){
             let val = [...messages]
@@ -158,7 +210,6 @@ const Messages = (props) => {
             }
             setChats(arr)
 
-            // sendHandler()
 
             setCurrentText("")
             if(selectedChat){
@@ -174,6 +225,7 @@ const Messages = (props) => {
                     other_user_id: getOtherUserId()
                 }).then(() => {
                     chatareaRef.current.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'start'})
+                    
                 })
 
                 if(selectedChat[`${getOtherUserId()}_user_type`]===0){
@@ -188,6 +240,8 @@ const Messages = (props) => {
                         _id: getOtherUserId()
                     })
                 }
+
+                sendHandler()
                 
             }
             
@@ -383,6 +437,16 @@ const Messages = (props) => {
                                         <FaceIcon style={{marginLeft:"5px"}} className={styles.chatbox_user_img}/>
                                     }
                                     <span className={styles.top_left_name}>{selectedChat[`${getOtherUserId()}_user_name`]}</span>
+
+                                    {
+                                        props.user.type===1?
+                                        <div className={styles.post}>
+                                            <span className={styles.post_title}>{selectedChat.reservation_title}</span>
+                                            <span className={styles.post_link} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>ver publicação</span>
+                                        </div>
+                                        :null
+                                    }
+                                    
                                 </div>
                             </div>
                             <div className={styles.chat_area}>
@@ -405,8 +469,10 @@ const Messages = (props) => {
                             </div>
                         </div>
                     </div>
-                    :chats.length===0?
+                    :chats.length===0&&props.user?.type===1?
                     <NoPage object={"mensagens"}/>
+                    :chats.length===0&&props.user?.type===0?
+                    <NoPage object={"mensagens_user"}/>
                     :null
                 }
                 

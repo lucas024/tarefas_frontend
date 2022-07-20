@@ -15,11 +15,17 @@ import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
 import CircleIcon from '@mui/icons-material/Circle';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import RotateRightIcon from '@mui/icons-material/RotateRight';
+import axios from 'axios'
 
 const UserSidebar = (props) => {
 
     const [searchParams] = useSearchParams()
     const [selectedSidebar, setSelectedSidebar] = useState("pedidos")
+    const [schedule, setSchedule] = useState(null)
+    const [subscriptionIsActive, setSubscriptionIsActive] = useState(false)
 
     const navigate = useNavigate()
 
@@ -29,6 +35,22 @@ const UserSidebar = (props) => {
             setSelectedSidebar(val)
         } 
     }, [searchParams])
+
+    useEffect(() => {
+        if(props.user?.subscription){
+            axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
+                subscription_id: props.user.subscription.id,
+                schedule_id: props.user.subscription.sub_schedule
+            })
+            .then(res => {
+                if(res.data.schedule){
+                    if(new Date().getTime() < new Date(res.data.schedule.current_phase.end_date*1000)){
+                        setSubscriptionIsActive(true)
+                    }
+                }
+            })
+        }
+    }, [props.user])
 
     const sidebarNavigate = (val) => {
         navigate({
@@ -60,6 +82,7 @@ const UserSidebar = (props) => {
             </div>
             <div style={{marginTop:"10px"}}></div>
             <div className={styles.sidebar_flex}>
+                <div>
                 <List
                     component="nav" className={styles.sidebar_list}
                 >
@@ -79,9 +102,13 @@ const UserSidebar = (props) => {
                         <AccessibilityIcon sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
                         <ListItemText primary={
-                            <span style={{display:"flex"}}>
+                            <span style={{display:"flex", position:"relative"}}>
                                 <span className={styles.prox}>Perfil</span>
-                                {props.incompleteUser? <CircleIcon className={styles.drop_div_notification}></CircleIcon>:null}
+                                {props.incompleteUser?
+                                <div className={styles.thing}>
+                                    {/* <span className={styles.drop_div_notification}>Perfil</span> */}
+                                    <span className={styles.drop_div_notification}>Incompleto</span>
+                                </div> :null}
                             </span>
                             } sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
@@ -107,6 +134,58 @@ const UserSidebar = (props) => {
                         } sx={{color:selectedSidebar==="messages"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                 </List>
+                <div className={styles.status}>
+                    <div className={styles.status_top}>
+                        <span className={styles.status_top_val} style={{color:!props.incompleteUser&&props.user?.verified&&subscriptionIsActive?"#6EB241":"#fdd835"}}>
+                            {
+                                !props.incompleteUser&&props.user?.verified&&subscriptionIsActive?
+                                "CONTA ATIVA"
+                                :"CONTA INATIVA"
+                            }
+                        </span>
+                    </div>
+                    <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:!props.incompleteUser&&props.user?.verified?"#6EB241":!props.incompleteUser?"#6EB241bb":"#fdd835bb"}}>
+                        <span className={styles.status_div_title}>Perfil</span>
+                        <div className={styles.status_div_flex}>
+                            <span className={styles.status_div_val}>
+                            {
+                                !props.incompleteUser&&props.user?.verified?
+                                "VERIFICADO"
+                                :!props.incompleteUser?
+                                "A VERIFICAR"
+                                :"INCOMPLETO"
+                            }
+                            </span>
+                            {
+                                !props.incompleteUser&&props.user?.verified?
+                                <CheckBoxIcon className={styles.status_icon}/>
+                                :!props.incompleteUser?
+                                <RotateRightIcon className={styles.status_icon_rotate}/>
+                                :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
+                            }
+                        </div>
+                    </div>
+                    <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:subscriptionIsActive?"#6EB241":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
+                        <span className={styles.status_div_title}>Subscrição</span>
+                        <div className={styles.status_div_flex}>
+                            <span className={styles.status_div_val}>
+                            {
+                                subscriptionIsActive?
+                                "ATIVADA"
+                                :"DESATIVADA"
+                            }
+                            </span>
+                            {
+                                subscriptionIsActive?
+                                <CheckBoxIcon className={styles.status_icon}/>
+                                :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+                
                 <List
                     component="nav" className={styles.sidebar_list_bottom}
                 >
@@ -123,8 +202,7 @@ const UserSidebar = (props) => {
                         <ListItemText primary={<span className={styles.prox}>Logout</span>} sx={{color:selectedSidebar===""?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                 </List>
-            </div>
-            
+            </div>            
         </div>
     )
 }

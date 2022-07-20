@@ -17,7 +17,7 @@
     width: 550px;
     padding-bottom: 15px;
     left: calc(50% - 275px);
-    top: calc(50% - 350px);
+    top: 100px;
     background-color: white;
     border-radius: 2px;
     display: flex;
@@ -143,7 +143,7 @@
 .confirm_button{
     margin: 10px auto 0 auto;
     width: 90%;
-    background-color: var(--brand);
+    background-color: var(--action);
     border: 2px solid var(--action);
     padding: 10px 0;
     text-align: center;
@@ -151,6 +151,7 @@
     cursor: pointer;
     font-weight: 600;
     align-items: center;
+    color: white;
 }
 .confirm_button:hover{
     background-color: var(--action);

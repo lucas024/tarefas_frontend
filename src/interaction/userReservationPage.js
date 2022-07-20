@@ -14,7 +14,6 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao';
 import Popup from '../transitions/popup';
 import axios from 'axios'
-import Sad from '@mui/icons-material/SentimentVeryDissatisfied';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { storage } from '../firebase/firebase'

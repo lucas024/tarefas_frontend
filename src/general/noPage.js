@@ -19,6 +19,30 @@ const NoPage = (props) => {
                         Procurar <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/trabalhos')}>trabalhos</span>
                     </span>
                 </div>
+                :props.object==="mensagens_user"?
+                <div className={styles.blank_flex}>
+                    <span className={styles.blank_text}>Ainda não tens mensagens</span>
+                    <ChatIcon className={styles.blank_face}/>
+                    <span className={styles.blank_request}>
+                        Procurar <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/trabalhadores')}>trabalhadores</span>
+                    </span>
+                </div>
+                :props.object==="no_subscritption"?
+                <div className={styles.blank_flex} style={{marginTop:"20px"}}>
+                    <span className={styles.blank_text}>Não tens uma subscrição ativa</span>
+                    <Sad className={styles.blank_face_small}/>
+                    <span className={styles.button} onClick={() => props.activateSub()}>
+                        Ativar Subscrição
+                    </span>
+                </div>
+                :props.object==="re_subscritption"?
+                <div className={styles.blank_flex} style={{marginTop:"20px"}}>
+                    <span className={styles.blank_text}>Desativaste a tua subscrição</span>
+                    <Sad className={styles.blank_face_small}/>
+                    <span className={styles.button} onClick={() => props.activateSub()}>
+                        Re-ativar Subscrição
+                    </span>
+                </div>
                 :
                 <div className={styles.blank_flex}>
                     <span className={styles.blank_text}>Esta {props.object} não existe</span>

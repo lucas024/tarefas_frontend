@@ -291,7 +291,30 @@
     height: 10px !important;
     color: var(--action);
 }
-
+.post{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+    border-bottom: 3px solid var(--action);
+}
+.post_title{
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+.post_link{
+    color: var(--action);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin: 2px auto;
+    font-weight: 500;
+}
+.post_link:hover{
+    opacity: 0.8;
+}
 
 @media (max-width: 1024px){
     .top_title{

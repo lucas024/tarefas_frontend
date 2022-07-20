@@ -23,7 +23,8 @@ import { Loader } from '@googlemaps/js-api-loader'
 import blurredMap from '../assets/blurredMap.png'
 import arrow from '../assets/curve-down-arrow.png'
 import WorkerBanner from '../general/workerBanner';
-
+import {CSSTransition}  from 'react-transition-group';
+import Sessao from './../transitions/sessao';
 
 const ObjectID = require("bson-objectid");
 
@@ -34,11 +35,19 @@ const Reserva = (props) => {
     const [images, setImages] = useState(null)
     const [text, setText] = useState("")
     const [more, setMore] = useState(false)
-    const [userView, setUserView] = useState(false)
     const [eliminationPopup, setEliminationPopup] = useState(false)
     const [publicationUser, setPublicationUser] = useState({})
     const [workerBanner, setWorkerBanner] = useState(false)
     const [loadingChat, setLoadingChat] = useState(false)
+    const [successPopin, setSuccessPopin] = useState(false)
+
+    const [userView, setUserView] = useState(false)
+    const [noAccountView, setNoAccountView] = useState(false)
+    const [noSubView, setNoSubView] = useState(false)
+    const [noProfileView, setNoProfileView] = useState(false)
+    const [noneView, setNoneView] = useState(false)
+
+    const [noRepeatedChats, setNoRepeatedChats] = useState(false)
 
     const [isMapApiLoaded, setIsMapApiLoaded] = useState(false)
 
@@ -68,7 +77,7 @@ const Reserva = (props) => {
         }
     }, [])
 
-    useEffect(() => {
+    useEffect( () => {
         setLoading(true)
         const paramsAux = Object.fromEntries([...searchParams])
         setParams(paramsAux)
@@ -88,21 +97,55 @@ const Reserva = (props) => {
                     })
                 }
                 setImages(arr)
-                axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: res.data.user_id} })
+                if(props.user){
+                    axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: res.data.user_id} })
                     .then(res2 => {
                         setPublicationUser(res2.data)
                         if(props.user?._id === res.data.user_id){
                             setUserView(true)
                         }
+                        else if(!(props.user.subscription&&!props.incompleteUser)){
+                            setNoneView(true)
+                        }
+                        else if(props.user.subscription){
+                            axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
+                                subscription_id: props.user.subscription.id,
+                                schedule_id: props.user.subscription.sub_schedule
+                            })
+                            .then(res => {
+                                if(!isActiveSub(res.data.schedule.current_phase.end_date)){
+                                    setNoSubView(true)
+                                }
+                                else if(props.incompleteUser){
+                                    setNoProfileView(true)
+                                }
+                            })
+                            
+                        }
+                        else if(props.incompleteUser){
+                            setNoProfileView(true)
+                        }
                         setLoading(false)
-                    })
-            }
+                        })
+
+                        if(props.user.chats.includes(res.data.user_id)){
+                            console.log("teste");
+                            setNoRepeatedChats(true)
+                        }
+                    }
+                }
             else{
                 setReservation(null)
             }
         })
 
-    }, [searchParams, props.user])
+    }, [searchParams, props.user, props.incompleteUser])
+
+    const isActiveSub = date => {
+        if(new Date().getTime() < new Date(date*1000)){
+            return true
+        }
+    }
 
     useEffect(() => {
         if(eliminationPopup){
@@ -154,7 +197,7 @@ const Reserva = (props) => {
         navigate(-1)
     }
 
-    const sendMessageHandler = () => {
+    const sendMessageHandler = async () => {
         if(text!==""&&reservation.user_id!==props.user._id){
             setLoadingChat(true)
 
@@ -165,7 +208,7 @@ const Reserva = (props) => {
             }
             let objID = ObjectID()
 
-            axios.post(`${props.api_url}/chats/update_user_chat`, {
+            await axios.post(`${props.api_url}/chats/update_user_chat`, {
                 user_name: props.user.name,
                 user_photoUrl: props.user.photoUrl,
                 user_phone: props.user.phone,
@@ -178,19 +221,26 @@ const Reserva = (props) => {
                 other_user_type: publicationUser.type,
                 text: text_object,
                 updated: new Date().getTime(),
-                chat_id: objID
+                chat_id: objID,
+                reservation_id: reservation._id,
+                reservation_title: reservation.title
             })
             .then(() => {
-                setLoadingChat(false)
-                //navigate('/user?t=messages')
-                //aquela cena que desce
+                
             })
-            axios.post(`${props.api_url}/user/update_user_notifications`, {
+            await axios.post(`${props.api_url}/user/update_user_notifications`, {
                 _id: reservation.user_id,
                 notification_id: objID
             })
+            setText("")
+            setLoadingChat(false)
+            setSuccessPopin(true)
+            setTimeout(() => setSuccessPopin(false), 4000)
+            setNoRepeatedChats(true)
+            props.refreshWorker()
+            
+            //navigate('/user?t=messages')
         }
-        
     }
 
     return (
@@ -200,6 +250,15 @@ const Reserva = (props) => {
                 <WorkerBanner cancel={() => setWorkerBanner(false)}/>
                 :null
             }
+
+            <CSSTransition 
+                in={successPopin}
+                timeout={1000}
+                classNames="transition"
+                unmountOnExit
+                >
+                <Sessao text="Mensagem enviada com sucesso!"/>
+            </CSSTransition>
             
             {
                 reservation?.user_id?
@@ -315,20 +374,41 @@ const Reserva = (props) => {
                                     }
                                     <div className={styles.user_info}>
                                         {
-                                            props.user?
-                                            null
-                                            :
+                                            noAccountView?
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Gostava de contacar <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span>?</span>
-                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                                                <span className={styles.market_text}>Gostava de contacar <span style={{color:"white", textTransform:"uppercase"}}>{reservation.user_name.split(" ")[0]}</span>?</span>
+                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
                                             </div>
+                                            :
+                                            noneView?
+                                            <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
+                                                <img src={arrow} className={styles.market_arrow}/>
+                                                <span className={styles.market_text}>Completa o teu <span style={{color:"white", textTransform:"uppercase"}}>perfil</span> e <span style={{color:"white", textTransform:"uppercase"}}>subscreve</span> para contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => navigate('/user?t=personal')}>Ir para Utilizador</span>
+                                            </div>
+                                            :
+                                            noSubView?
+                                            <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
+                                                <img src={arrow} className={styles.market_arrow}/>
+                                                <span className={styles.market_text}>Só falta completares a tua <span style={{color:"white", textTransform:"uppercase"}}>subscrição</span> para poderes contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => navigate('/user?t=subscription')}>Ir para Subscrição</span>
+                                            </div>
+                                            :
+                                            noProfileView?
+                                            <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
+                                                <img src={arrow} className={styles.market_arrow}/>
+                                                <span className={styles.market_text}>Só falta completares o teu <span style={{color:"white", textTransform:"uppercase"}}>perfil</span> para poderes contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => navigate('/user?t=personal')}>Ir para Perfil</span>
+                                            </div>
+                                            :null
+                                            
                                         }
                                         <span className={styles.user_info_name}>{reservation.user_name}</span>
                                         <span style={{display:"flex", alignItems:"center", marginTop:"5px"}}>
                                             <PhoneOutlinedIcon className={styles.user_info_number_symbol}/>
                                             {
-                                                props.user?
+                                                !noAccountView&&!noneView&&!noSubView&&!noProfileView?
                                                 <span className={styles.user_info_number}>{getNumberDisplay(publicationUser?.phone)}</span> 
                                                 :<span className={styles.user_info_number_blur}>123 456 789</span> 
                                             }
@@ -340,13 +420,13 @@ const Reserva = (props) => {
                                 <div className={styles.location_div}>
                                     <LocationOnIcon className={styles.location_pin}/>
                                     {
-                                            props.user?
+                                            !noAccountView&&!noneView&&!noSubView&&!noProfileView?
                                             <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}, ${reservation.andar}`}</span>
                                             :<span className={styles.location_blur}>R. Abcdefg Hijklmonpqrstuvxyz 99, Porta 99</span> 
                                         }
                                 </div>
                                 {
-                                    props.user?
+                                    !noAccountView&&!noneView&&!noSubView&&!noProfileView?
                                     <div className={styles.map_div}>
                                         <GoogleMapReact 
                                             bootstrapURLKeys={{ key:"AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk", libraries: ["places"]}}
@@ -392,14 +472,64 @@ const Reserva = (props) => {
                                     <span style={{display:"flex", alignItems:"center", marginTop:"5px"}}>
                                         <PhoneOutlinedIcon className={styles.user_info_number_symbol}/>
                                         {
-                                            props.user?
+                                            !noAccountView&&!noneView&&!noSubView&&!noProfileView?
                                             <span className={styles.user_info_number}>{getNumberDisplay(publicationUser?.phone)}</span> 
                                             :<span className={styles.user_info_number_blur}>123 456 789</span> 
                                         }
                                     </span>
                                 </div>
                                 {
-                                    props.user?
+                                    noAccountView&&noneView&&noSubView&&noProfileView?
+                                    <div className={styles.textarea_wrapper}>
+                                        <textarea 
+                                            className={styles.message_textarea_disabled}
+                                            placeholder="Escrever mensagem..."
+                                        />
+                                        <div className={styles.frontdrop}>
+                                            <span className={styles.frontdrop_text}>Para enviar mensagem à/ao <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span>,</span>
+                                            {
+                                                noAccountView?
+                                                <span className={styles.frontdrop_text}>torne-se um trabalhador Arranja.</span>
+                                                :noneView?
+                                                <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>PERFIL</span> e <span style={{color:"white"}}>SUBSCRIÇÃO</span>.</span>
+                                                :noSubView?
+                                                <span className={styles.frontdrop_text}>complete a sua <span style={{color:"white"}}>SUBSCRIÇÃO</span>.</span>
+                                                :noProfileView?
+                                                <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>PERFIL</span>.</span>
+                                                :null
+                                            }
+                                            {
+                                                noAccountView?
+                                                <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                                                :noneView?
+                                                <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=personal')}>Ir para Utilizador</span>
+                                                :noSubView?
+                                                <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=subscription')}>Ir para Subscrição</span>
+                                                :noProfileView?
+                                                <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=personal')}>Ir para Perfil</span>
+                                                :null
+                                            }
+                                        </div>
+                                    </div>
+                                    :noRepeatedChats?
+                                    <div className={styles.textarea_wrapper}>
+                                        <textarea 
+                                            className={styles.message_textarea_disabled}
+                                            style={{backgroundColor:"#ddd"}}
+                                            placeholder="Escrever mensagem..."
+                                        />
+                                        <div className={styles.frontdrop}>
+                                            <span className={styles.frontdrop_text}>Mensagem Enviada.</span>
+                                            <span className={styles.frontdrop_text_action} onClick={() => 
+                                            navigate('/user?t=messages', {
+                                                state: {
+                                                    from_page: true,
+                                                    worker_id: props.user._id,
+                                                    user_id: reservation.user_id
+                                                }})}>Ir para Conversa</span>
+                                        </div>
+                                    </div>
+                                    :
                                     <div style={{position:"relative"}}>
                                         <Loader2 loading={loadingChat}/>
                                         <textarea 
@@ -408,22 +538,11 @@ const Reserva = (props) => {
                                         value={text}
                                         onChange={e => setText(e.target.value)} />
                                     </div>
-                                    :
-                                    <div className={styles.textarea_wrapper}>
-                                        <textarea 
-                                            className={styles.message_textarea_disabled}
-                                            placeholder="Escrever mensagem..."
-                                        />
-                                        <div className={styles.frontdrop}>
-                                            <span className={styles.frontdrop_text}>Para enviar mensagem à/ao <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span>,</span>
-                                            <span className={styles.frontdrop_text}>torne-se um trabalhador Arranja.</span>
-                                            <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
-                                        </div>
-                                    </div>
+                                    
                                 }
                                 
-                                <div className={styles.message_enviar_div} ref={messageRef} onClick={() => sendMessageHandler()}>
-                                    <span className={text!==""?styles.message_enviar:styles.message_enviar_disabled}>
+                                <div className={styles.message_enviar_div} ref={messageRef} onClick={() => !noRepeatedChats&&sendMessageHandler()}>
+                                    <span className={!noRepeatedChats&&text!==""?styles.message_enviar:styles.message_enviar_disabled}>
                                         Enviar
                                     </span>
                                 </div>

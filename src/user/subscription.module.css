@@ -6,6 +6,7 @@
     width: 100%;
     height: 100%;
     background-color: var(--background);
+    position: relative;
 }
 .subscription_title{
     width: 100%;
@@ -26,7 +27,7 @@
     margin: auto;
     padding: 20px;
     padding-top: 20px;
-    width: 90%;
+    width: 100%;
     background-color: white;
     box-sizing: border-box;
     overflow-x: scroll;
@@ -41,7 +42,7 @@
 }
 .display{
     width: 100%;
-    background-color: #6EB24190;
+    background-color: var(--check);
     border-radius: 5px;
 }
 .display_top{
@@ -56,6 +57,11 @@
     display: inline-block;
     text-transform: uppercase;
     font-weight: 600;
+}
+.ya{
+    font-size: 0.9rem;
+    color: var(--action);
+    margin-left: 5px;
 }
 .subtitle_sub{
     margin: 10px 0 5px 0;
@@ -104,12 +110,23 @@
     font-size: 1.2rem;
     color: black;
 }
+.user_desc_top{
+    color: white;
+    font-weight: 400;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
 .user_desc{
     color: white;
     font-weight: 600;
     font-size: 1.5rem;
     text-transform: uppercase;
-    opacity: 0.7;
+}
+.user_desc_dark{
+    color: white;
+    font-weight: 600;
+    font-size: 1.5rem;
+    text-transform: uppercase;
 }
 .user_desc_helper{
     color: white;
@@ -141,9 +158,12 @@
     flex-direction: column;
 }
 .changing_plan{
-    border: 2px solid var(--action);
-    padding: 2px;
+    border: 1px solid var(--action);
+    padding: 5px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 .selected_plan_title{
     font-weight: 600;
@@ -159,7 +179,7 @@
 .selected_plan_info{
     display: flex;
     flex-direction: column;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 .info_div{
     display: flex;
@@ -167,14 +187,18 @@
     margin-left: 10px;
 }
 .info_icon{
-    width: 8px !important;
-    height: 8px !important;
+    width: 4px !important;
+    height: 4px !important;
     color: var(--action);
 }
 .info_subdiv{
     display: flex;
     align-items: center;
     margin-left: 5px;
+}
+.future_end{
+    color: white;
+    font-size: 0.8rem;
 }
 .info_text_helper{
     font-weight: 400;
@@ -183,8 +207,7 @@
     width: 74px;
 }
 .info_text{
-    font-weight: 600;
-    margin-left: 5px;
+    font-size: 0.8rem;
 }
 .display_sub{
     display: flex;
@@ -193,13 +216,45 @@
     align-self: flex-start;
     height: 90px;
 }
+.helper_two{
+    font-size: 0.7rem;
+    margin-left: 5px;
+    opacity: 1;
+    flex-wrap: nowrap;
+    word-wrap: break-word;
+}
+.prox_cobr{
+    font-size: 0.8rem;
+    margin: 0 auto;
+    width: fit-content;
+    color: white;
+    opacity: 0.8;
+    text-decoration: underline;
+}
 .prox_cobr_val{
     color: var(--action);
-    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 10px;
 }
 .cancel{
     font-size: 0.8rem;
-    margin-top: 5px;
+    margin-top: 15px;
+    opacity: 0.8;
+}
+.resub{
+    font-size: 0.8rem;
+    margin-top: 15px;
+    font-weight: 600;
+}
+.plan_meio{
+    margin: 15px auto;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border: 1px solid var(--action);
+    padding: 10px;
+    border-radius: 5px;
+    background-color: var(--action);
 }
 .sub_pre{
     color: white;
@@ -276,6 +331,9 @@
     align-items: flex-end;
     justify-content: flex-end;
     width: 100%;
+}
+.main_page{
+    background-color: white;
 }
 .brand{
     height: 20px;
@@ -412,7 +470,7 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 .buttons_plan{
 
@@ -460,7 +518,7 @@
 
 .indicator_div{
     position: absolute;
-    top: 420px;
+    top: 450px;
     width: 100%;
     display: flex;
     justify-content: space-around;
@@ -554,6 +612,17 @@
     font-weight: 500;
     padding: 2px 4px;
 }
+.ativo{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-size: 0.6rem;
+    color: white;
+    border-radius: 5px;
+    background-color: var(--check);
+    font-weight: 500;
+    padding: 2px 4px;
+}
 .section{
     height: 100%;
     border-radius: 5px;
@@ -563,6 +632,8 @@
     flex-direction: column;
     padding-bottom: 5px;
     position: relative;
+    box-sizing: border-box;
+    border: 3px solid transparent;
 }
 .section_selected{
     height: 100%;
@@ -573,9 +644,10 @@
     display: flex;
     flex-direction: column;
     transform: scale(1.05);
-    border-bottom: 3px solid var(--brand);
+    border: 3px solid var(--brand);
     cursor: pointer;
     position: relative;
+    transition: ease-in-out 200ms transform;
 }
 .section:hover{
     cursor: pointer;
@@ -628,8 +700,15 @@
 .section_button{
     color: var(--action);
     margin: auto;
-    border-radius: 20px;
+    border-radius: 5px;
     background-color: white;
+    padding: 1px 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.section_button_active{
+    color: white;
+    margin: auto;
     padding: 1px 5px;
     font-size: 0.9rem;
     font-weight: 500;
@@ -713,6 +792,28 @@
 }
 .card_right_button_remove:hover{
     background-color: white;
+    color: var(--brand);
+    transition: 200ms;
+    cursor: pointer;
+}
+.card_right_button_remove_plan{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    text-align: center;
+    border-radius: 5px;
+    border: 2px solid var(--action);
+    background-color: white;
+    color: var(--brand);
+    font-weight: 600;
+    height: 48%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+.card_right_button_remove_plan:hover{
     color: var(--brand);
     transition: 200ms;
     cursor: pointer;
