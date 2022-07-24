@@ -14,7 +14,6 @@ import { onAuthStateChanged } from 'firebase/auth';
 import {auth} from './firebase/firebase'
 import axios from 'axios'
 import User from './user/user';
-import ProtectedRoute from './protectedRoute';
 import Main from './main/main';
 import Loader from './general/loader';
 import Reserva from './main/reserva';
@@ -29,6 +28,8 @@ function App() {
   const [notifications, setNotifications] = useState([])
   const [userLoadAttempt, setUserLoadAttemp] = useState(false)
   const [incompleteUser, setIncompleteUser] = useState(false)
+  const [hasTexts, setHasTexts] = useState(false)
+
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -39,12 +40,35 @@ function App() {
     }
   });
 
-  const updateLocalNotifications = notification_id => {
-    
-    if(notifications?.length>0){
-      let arr = [...notifications]
-      arr.splice(arr.indexOf(notification_id), 1)
-      setNotifications(arr)
+  const updateChatReadLocal = chat_id => {
+    console.log("sim")
+    let has = false
+    if(user.chats.length>0){
+      let arr = user.chats
+      for(let el of arr){
+        if(el.chat_id === chat_id){
+          if(user.type===1){
+            el.worker_read = true
+          }
+          else{
+            el.user_read = true
+          }
+        }
+        else{
+          if(user.type===1&&!el.worker_read){
+            console.log(chat_id);
+            console.log(el)
+            console.log(el.worker_read);
+            has=true
+          }
+          else if(user.type===0&&!el.user_read){
+            has=true
+          }
+        }
+      }
+      console.log(has);
+      setHasTexts(has)
+      setUser(user)
     }
   }
 
@@ -55,7 +79,14 @@ function App() {
       axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
         if(res.data !== null){
           setUser(res.data)
-          setNotifications(res.data.notifications)
+          if(res.data.chats.length>0){
+            for(const el of res.data.chats){
+              if(el.user_read){
+                setHasTexts(true)
+                break
+              }
+            }
+          }
           if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
             setIncompleteUser(true)
           }
@@ -66,7 +97,14 @@ function App() {
           axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
             if(res.data !== null){
               setUser(res.data)
-              setNotifications(res.data.notifications)
+              if(res.data.chats.length>0){
+                for(const el of res.data.chats){
+                  if(!el.worker_read){
+                    setHasTexts(true)
+                    break
+                  }
+                }
+              }
               if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
                 setIncompleteUser(true)
               }
@@ -107,7 +145,6 @@ function App() {
   }
 
   const updateUser = (val, what) => {
-    console.log(val, what);
     let userAux = user
     userAux[what] = val
     setUser(userAux)
@@ -121,7 +158,7 @@ function App() {
       <div>
         <Loader loading={loading}/>        
         <BrowserRouter>
-          <Navbar user={user} notifications={notifications} incompleteUser={incompleteUser} userLoadAttempt={userLoadAttempt}/>
+          <Navbar user={user} hasTexts={hasTexts} incompleteUser={incompleteUser} userLoadAttempt={userLoadAttempt}/>
           <Routes>
               <Route exact path="/main/publications/publication" 
                 element={<Reserva
@@ -150,8 +187,7 @@ function App() {
                   <User
                     refreshWorker={() => refreshWorker()}
                     incompleteUser={incompleteUser}
-                    notifications={notifications}
-                    updateNotification={not_id => updateLocalNotifications(not_id)}
+                    updateChatReadLocal={chat_id => updateChatReadLocal(chat_id)}
                     user={user}
                     api_url={api_url}
                     loadingHandler={bool => setLoading(bool)}

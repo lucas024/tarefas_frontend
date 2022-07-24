@@ -11,8 +11,8 @@ import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import FilterSelect from './filterSelect';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
-import Loader from './../general/loader';
 import Row from './row';
+import Loader from './../general/loader';
 
 require('dayjs/locale/pt')
 
@@ -32,15 +32,25 @@ const Trabalhos = (props) => {
     dayjs.locale('pt')
     const [allItems, setAllItems] = useState([])
     const [locationActive, setLocationActive] = useState(false)
+    const [locationDisplayActive, setLocationDisplayActive] = useState(false)
     const [workerActive, setWorkerActive] = useState(false)
+    const [workerDisplayActive, setWorkerDisplayActive] = useState(false)
+    const [listAnim, setListAnim] = useState(true)
+
 
     const myRef = useRef(null)
+
+    
+    const monthNames = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
+    "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
     useEffect(() => {
         fetchPublications()
         setClear(!clear)
         setLocationActive(false)
+        setLocationDisplayActive(false)
         setWorkerActive(false)
+        setWorkerDisplayActive(false)
             
     //eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [])
@@ -80,22 +90,35 @@ const Trabalhos = (props) => {
         axios.get(`${props.api_url}/reservations`).then(res => {
             if(res.data!==null){
                 let arr = res.data
-                arr = fisher_yates_shuffle(arr)
                 setAllItems(arr)
             }
             setLoading(false)
         })
     }
 
-    const fisher_yates_shuffle = arr => {
-        let i = arr.length;
-        while (--i > 0) {
-          let randIndex = Math.floor(Math.random() * (i + 1));
-          [arr[randIndex], arr[i]] = [arr[i], arr[randIndex]];
+    useEffect(() => {
+        if(locationActive||workerActive){
+            fetchJobsByFilter()
         }
-        return arr;
-    }
+    }, [locationActive, workerActive])
 
+    const fetchJobsByFilter = () => {
+            setListAnim(true)
+            setLoading(true)
+            axios.post(`${props.api_url}/reservations/get_reservations_by_filter`, {
+                region: locationActive,
+                trabalho: workerActive,
+                search: searchVal
+            }).then(res => {
+                console.log(res.data);
+                if(res.data!=='non_existing'){
+                    let arr = res.data
+                    setAllItems(arr)
+                }
+                setLoading(false)
+            }).catch(err => console.log(err))
+    }
+    
     const navigatePubHandler = (id) => {
         navigate(`/main/publications/publication?id=${id}&prevpage=${currPage}`, 
                 {
@@ -106,10 +129,31 @@ const Trabalhos = (props) => {
             )
     }
 
+    const extenseDate = timestamp => {
+        let iso_date = new Date(timestamp)
+        let day = iso_date.toISOString().split("T")[0].slice(-2)
+        let month = monthNames[parseInt(iso_date.toISOString().split("T")[0].slice(5,7))]
+        let year = iso_date.toISOString().split("T")[0].slice(0,4)
+        return `${day} de ${month}, ${year}`
+    }
+
+    const getDiffDate = (prevDate, currDate) => {
+        const prev = new Date(prevDate)
+        const curr = new Date(currDate)
+        return prev.getDate() !== curr.getDate()
+    }
+
     const mapRowsToDisplay = () => {
         return items?.map((item, i) => {
             return(
-                <div key={i} className={styles.row} onClick={() => navigatePubHandler(item._id)}> 
+                <div key={i} className={styles.row} onClick={() => navigatePubHandler(item._id)}>
+                    {
+                        i>0&&getDiffDate(items[i-1].timestamp, item.timestamp)?
+                        <div className={styles.day_splitter}>
+                            <span className={styles.day_value}>{extenseDate(item.timestamp)}</span>
+                        </div>
+                        :null
+                    }
                     <Row
                         id={id}
                         item={item}
@@ -145,27 +189,49 @@ const Trabalhos = (props) => {
         setSearchVal(val.target.value)
         handleScrollTop()
     }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault()
+            fetchJobsByFilter()
+        }
+    }
+
+    const limparPesquisa = () => {
+        setLocationActive(false)
+        setWorkerActive(false)
+        setWorkerDisplayActive(false)
+        setLocationDisplayActive(false)
+        setClear(!clear)
+        setSearchVal("")
+        fetchPublications()
+    }
+
     return (
         <div className={styles.servicos}>
-            <Loader loading={loading}/>   
             <div className={styles.main} onScroll={handleScroll}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_input_div}>
-                        <input onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Pesquisar trabalhos...`}></input>
+                        <input value={searchVal} onKeyDown={handleKeyDown} onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Pesquisar trabalhos...`}></input>
                         <PersonSearchIcon className={styles.search_input_div_icon}/>
-                        <SearchIcon className={styles.search_final_icon}/>
+                        <SearchIcon className={styles.search_final_icon} onClick={() => fetchJobsByFilter()}/>
                     </div>
                     <div className={styles.search_filter_div_wrapper}>
                         <div className={styles.search_filter_div}>
-                            <FilterSelect type="zona" clear={clear} valueChanged={bool => setLocationActive(bool)}/>
+                            <FilterSelect 
+                                type="zona" 
+                                clear={clear} 
+                                valueChanged={bool => setLocationActive(bool)}
+                                valueDisplayChanged={val => setLocationDisplayActive(val)}/>
                             <div style={{marginLeft:"10px"}}>
-                                <FilterSelect type="worker" clear={clear} valueChanged={bool => setWorkerActive(bool)}/>
+                                <FilterSelect 
+                                    type="worker" 
+                                    clear={clear} 
+                                    valueChanged={bool => setWorkerActive(bool)}
+                                    valueDisplayChanged={val => setWorkerDisplayActive(val)}/>
                             </div>
                         </div>
-                        <span className={styles.search_clear} onClick={() =>{
-                            setLocationActive(false)
-                            setWorkerActive(false)
-                            setClear(!clear)}}>
+                        <span className={styles.search_clear} onClick={() => limparPesquisa()}>
                             Limpar Pesquisa
                         </span>
                     </div>
@@ -174,6 +240,7 @@ const Trabalhos = (props) => {
                 {
                     items.length>0?
                     <div>
+                        <Loader loading={loading}/>
                         <div className={styles.top_info}>
                             
                             {
@@ -187,9 +254,9 @@ const Trabalhos = (props) => {
                                     <span  className={styles.top_info_filter_text}>região:</span>
                                 </div>
                                 {
-                                    locationActive?
+                                    locationDisplayActive?
                                     <span  className={styles.top_info_filter_value_on}>
-                                        {locationActive}
+                                        {locationDisplayActive}
                                     </span>
                                     :
                                     <span  className={styles.top_info_filter_value}>
@@ -203,9 +270,9 @@ const Trabalhos = (props) => {
                                     <span  className={styles.top_info_filter_text}>Tipo de Trabalhador:</span>
                                 </div>
                                 {
-                                    workerActive?
+                                    workerDisplayActive?
                                     <span  className={styles.top_info_filter_value_on}>
-                                        {workerActive}
+                                        {workerDisplayActive}
                                     </span>
                                     :
                                     <span  className={styles.top_info_filter_value}>
@@ -213,9 +280,23 @@ const Trabalhos = (props) => {
                                     </span>
                                 }
                             </div>
-                        </div>
-                        <div className={styles.list}>
-                            {mapRowsToDisplay()}
+                    </div>
+                        <div className={listAnim?styles.animList:styles.list} 
+                                    onAnimationEnd={() =>{
+                                        setListAnim(false)
+                                    }}>
+                            {
+                                !loading?
+                                mapRowsToDisplay()
+                                :
+                                <div>
+                                    <div className={styles.loading_skeleton}/>
+                                    <div className={styles.loading_skeleton}/>
+                                    <div className={styles.loading_skeleton}/>
+                                    <div className={styles.loading_skeleton}/>
+                                    <div className={styles.loading_skeleton}/>
+                                </div>
+                            }
                         </div>
                         <div className={styles.num}>
                             {

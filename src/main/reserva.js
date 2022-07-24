@@ -51,6 +51,8 @@ const Reserva = (props) => {
 
     const [isMapApiLoaded, setIsMapApiLoaded] = useState(false)
 
+    const [chatId, setChatId] = useState("")
+
     const scrollRef = useRef(null)
     const messageRef = useRef(null)
 
@@ -128,9 +130,14 @@ const Reserva = (props) => {
                         setLoading(false)
                         })
 
-                        if(props.user.chats.includes(res.data.user_id)){
-                            console.log("teste");
-                            setNoRepeatedChats(true)
+                        if(props.user.chats){
+                            for(let el of props.user.chats){
+                                if(el.user_id === res.data.user_id){
+                                    setNoRepeatedChats(true)
+                                    setChatId(el.chat_id)
+                                    break
+                                }
+                            }
                         }
                     }
                 }
@@ -155,8 +162,8 @@ const Reserva = (props) => {
     }, [eliminationPopup])
 
     const getPublicationDate = () => {
-        if(reservation.publication_time){
-            let date = new Date(reservation.publication_time)
+        if(reservation.timestamp){
+            let date = new Date(reservation.timestamp)
             return <span>{`Publicado a ${date.getDate()} de ${monthNames[date.getMonth()]} de ${date.getFullYear()}`}</span>
         }
         else{
@@ -201,46 +208,43 @@ const Reserva = (props) => {
         if(text!==""&&reservation.user_id!==props.user._id){
             setLoadingChat(true)
 
+            let time = new Date().getTime()
             let text_object = {
-                origin_id : props.user._id,
-                timestamp : new Date().getTime(),
+                origin_type : props.user.type,
+                timestamp : time,
                 text: text
             }
-            let objID = ObjectID()
+            let chatId = ObjectID()
 
-            await axios.post(`${props.api_url}/chats/update_user_chat`, {
-                user_name: props.user.name,
-                user_photoUrl: props.user.photoUrl,
-                user_phone: props.user.phone,
-                user_id: props.user._id,
-                user_type: props.user.type,
-                other_user_name: publicationUser.name,
-                other_user_photoUrl: publicationUser.photoUrl,
-                other_user_phone: publicationUser.phone,
-                other_user_id: publicationUser._id,
-                other_user_type: publicationUser.type,
+            await axios.post(`${props.api_url}/chats/create_user_chat_from_worker`, {
+                worker_name: props.user.name,
+                worker_photoUrl: props.user.photoUrl,
+                worker_phone: props.user.phone,
+                worker_id: props.user._id,
+                user_name: publicationUser.name,
+                user_photoUrl: publicationUser.photoUrl,
+                user_phone: publicationUser.phone,
+                user_id: publicationUser._id,
                 text: text_object,
-                updated: new Date().getTime(),
-                chat_id: objID,
+                updated: time,
+                chat_id: chatId,
                 reservation_id: reservation._id,
                 reservation_title: reservation.title
             })
             .then(() => {
                 
             })
-            await axios.post(`${props.api_url}/user/update_user_notifications`, {
-                _id: reservation.user_id,
-                notification_id: objID
-            })
+            // await axios.post(`${props.api_url}/user/update_user_notifications`, {
+            //     _id: publicationUser._id,
+            //     notification_id: chatId
+            // })
             setText("")
             setLoadingChat(false)
             setSuccessPopin(true)
             setTimeout(() => setSuccessPopin(false), 4000)
             setNoRepeatedChats(true)
             props.refreshWorker()
-            
-            //navigate('/user?t=messages')
-        }
+            }
     }
 
     return (
@@ -521,7 +525,7 @@ const Reserva = (props) => {
                                         <div className={styles.frontdrop}>
                                             <span className={styles.frontdrop_text}>Mensagem Enviada.</span>
                                             <span className={styles.frontdrop_text_action} onClick={() => 
-                                            navigate('/user?t=messages', {
+                                            navigate(`/user?t=messages&id=${chatId}`, {
                                                 state: {
                                                     from_page: true,
                                                     worker_id: props.user._id,

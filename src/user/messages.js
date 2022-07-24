@@ -3,7 +3,6 @@ import styles from './messages.module.css'
 import axios from 'axios';
 import {io} from "socket.io-client"
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import ClipLoader from "react-spinners/BounceLoader";
 import { css } from "@emotion/react";
 import CheckIcon from '@mui/icons-material/Check';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -11,106 +10,103 @@ import FaceIcon from '@mui/icons-material/Face';
 import NoPage from '../general/noPage';
 import Loader from './../general/loader';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import TextareaAutosize from 'react-textarea-autosize';
+import ScrollToBottom, { useScrollToBottom, useSticky } from 'react-scroll-to-bottom';
 
-
-//const socket = io.connect("http://localhost:5500")
 
 const URL = "http://localhost:5500";
-const socket = io(URL, { autoConnect: false });
 
 const Messages = (props) => {
     
     
-    const [messages, setMessages] = useState([])
     const [currentText, setCurrentText] = useState("")
     const [adminOn, setAdminOn] = useState(false)
     const [loading, setLoading] = useState(false)
     const [chats, setChats] = useState([])
-    const [selectedChat, setSelectedChat] = useState(null)
+    const [selectedChat, setSelectedChat] = useState()
+    const [selectedChatId, setSelectedChatId] = useState()
+    const [selectedChatTexts, setSelectedChatTexts] = useState()
     const [onlineUsers, setOnlineUsers] = useState([])
     const [loadingChats, setLoadingChats] = useState(false)
+    const [loadingChatBox, setLoadingChatBox] = useState(false)
+
+    const [isLoaded, setIsLoaded] = useState(false)
+
+    const scrollToBottom = useScrollToBottom()
+    const [sticky] = useSticky()
 
     const [s, setS] = useState()
 
-    const textareaRef = useRef(null)
     const chatareaRef = useRef(null)
+    const chatbubbleRef = useRef(null)
 
     const location = useLocation()
     const navigate = useNavigate()
 
+    const [searchParams] = useSearchParams()
 
-
-
-    const override = css`
-    display: block;
-    margin: 0 auto;
-    border-color: red;
-    position: absolute;
-    z-index: 11;
-    left: calc(50% - 75px);
-    top: calc(50% - 75px);
-    `;
-
-    useEffect(() => {
-        if(selectedChat){
-            chatareaRef.current?.scrollIntoView({ block: 'nearest', inline: 'start'})
-        }
-    }, [selectedChat])
+    const monthNames = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
+    "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
 
     useEffect(() => {
-        setLoading(true)
+        setLoadingChatBox(true)
+        const paramsAux = Object.fromEntries([...searchParams])
+
+        axios.get(`${props.api_url}/chats/get_chat`, { params: {chat_id: paramsAux.id} })
+            .then(res => {
+                if(res.data!==''){
+                    setSelectedChat(res.data)
+                    setSelectedChatTexts(res.data.texts)
+                    scrollToBottom()
+                } 
+                setLoadingChatBox(false)
+            })
+        setSelectedChatId(paramsAux.id)
+
+    }, [searchParams])
+
+    const sortByTimestamp = (a, b) => {
+        return a.last_text.timestamp + b.last_text.timestamp
+    }
+
+    useEffect(() => {
         if(props.user){
+            setLoading(true)
             setLoadingChats(true)
-            axios.get(`${props.api_url}/chats/get_user_chats`, { params: {user_id: props.user._id} }).then(res => {
-                if(res.data !== null && res.data !== "" && res.data.length>0){
-                    if(location.state&&location.state.from_page){
-                        for(let el of res.data){
-                            console.log(el[`${location.state.user_id}_user_id`]===location.state.user_id);
-                            if(el[`${location.state.worker_id}_user_id`]===location.state.worker_id&&el[`${location.state.user_id}_user_id`]===location.state.user_id){
-                                console.log("yaya");
-                                setSelectedChat(el)
-                                break
-                            }
-                        }
-                    }
-                    else{
-                        setSelectedChat(res.data[0])
-                    }
-                    
-                    setMessages(res.data[0].texts)
-                    let arr = res.data
-                    arr[0][`${props.user._id}_read`] = true
-                    setChats(arr)
-                    if(res.data[0].user_one===props.user._id){
-                        props.updateNotification(res.data[0]._id)
-                        removeNotificationHandler(res.data[0]._id, res.data[0].user_two, false)
-                    }
-                    else{
-                        props.updateNotification(res.data[0]._id)
-                        removeNotificationHandler(res.data[0]._id, res.data[0].user_one)
-                    }
-                    
-                    chatareaRef.current.scrollIntoView({block: 'nearest', inline: 'start'})
-                }
-                setLoadingChats(false)
-                setLoading(false)
-              }).catch(err => {
-                setLoadingChats(false)
-                setLoading(false)
-              })
-        }
-        
-    }, [props.user])
+            if(props.user.type===1){
+                axios.get(`${props.api_url}/worker/get_worker_by_mongo_id`, { params: {_id: props.user._id} })
+                .then(res => {
+                    console.log(res);
+                    if(res.data!==''){
+                        console.log(res.data);
+                        setChats(res.data.chats)
+                        setIsLoaded(true)
+                        setLoadingChats(false)
+                        setLoading(false)
+                    } 
+                })
+            }
+            else{
+                axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: props.user._id} })
+                .then(res => {
+                    if(res.data!==''){
+                        setChats(res.data.chats)
+                        setIsLoaded(true)
+                        setLoadingChats(false)
+                        setLoading(false)
+                    } 
+                })
+            }         
 
-    useEffect(() => {
-        if(props.user){
-            console.log(props.user._id);
             const newSocket = io(
                 'http://localhost:5500',
                 { query: {id: props.user._id} }
             )
             setS(newSocket)
+            
+            
         }
         
         return () => s&&s.close()
@@ -121,161 +117,228 @@ const Messages = (props) => {
         if(!s) return
 
         s.on('receive-message', data => {
-            console.log(data);
+            handleReceiveSocketMessageUpdate(data, selectedChatId, selectedChatTexts, chats)
         })
 
         return () => s.off('receive-message')
-    }, [s])
+    }, [s, selectedChatId, selectedChatTexts, chats])
 
-    const sendHandler = () => {
+    const sendSynchronousAndUpdateDatabaseHandler = async (new_text) => {
+        const sent_timestamp = new Date().getTime()
+        const text = {
+            origin_type : props.user.type,
+            timestamp : sent_timestamp,
+            text: new_text
+        }
+        await axios.post(`${props.api_url}/chats/update_common_chat`, {
+            worker_read: props.user.type===1?true:false,
+            user_read: props.user.type===0?true:false,
+            chat_id: selectedChatId,
+            text: text,
+            updated: sent_timestamp
+        })
+
         s.emit("send-message", {
             recipient: getOtherUserId(),
-            text: currentText,
-            time: new Date().getTime()
-        })
+            text: new_text,
+            time: new Date().getTime(),
+            chat_id: selectedChatId,
+            type: props.user.type
+        })        
     }
 
+    const extenseDate = timestamp => {
+        let iso_date = new Date(timestamp)
+        let day = iso_date.toISOString().split("T")[0].slice(-2)
+        let month = monthNames[parseInt(iso_date.toISOString().split("T")[0].slice(5,7))]
+        let year = iso_date.toISOString().split("T")[0].slice(0,4)
+        return `${day} de ${month}, ${year}`
+    }
 
+    const handleReceiveSocketMessageUpdate = (data, selected_chat_id, selected_chat_texts) => {
+        //updates user/woker chats
+        //updates common chat
+        //all local
+    
+        console.log(data)
 
-    // useEffect(() => {
-    //     if(props.user){
-    //         socket.emit("add_user", props.user._id)
-    //     }
-    // }, [props.user])
-
-    // useEffect(() => {
-    //     socket.on("getMessage", data => {
-    //         console.log(data);
-    //         handleMessageUpdate(data)
-    //     })
-    //     socket.on("getUsers", data => {
-    //         console.log(data);
-    //         setOnlineUsers(data)
-    //     })
-    // }, [socket])
-
-    useEffect(() => {
-        if(textareaRef&&selectedChat!==null){
-            textareaRef.current.style.height = "0px";
-            const scrollHeight = textareaRef.current.scrollHeight;
-            textareaRef.current.style.height = scrollHeight + "px";
-        }
-    }, [currentText])
-
-    const handleMessageUpdate = data => {
-        console.log(data);
         let arrChats = [...chats]
-        console.log(chats);
-        for(let el of arrChats){
-            if(el[`${data.sender_id}_user_id`] === data.sender_id){
-                console.log("teste");
-                let text = {
-                    origin_id : data.sender_id,
-                    timestamp : data.timestamp,
-                    text: data.text
+        const text = {
+            origin_type : data.type,
+            timestamp : data.time,
+            text: data.text
+        }
+        for(let chat of arrChats){
+            if(chat.chat_id === data.chat_id){
+                chat.last_text = text
+                if(data.type===0){
+                    chat.user_read = true
+                    chat.worker_read = false
                 }
-                el.texts.push(text)
-                setChats(arrChats)
+                else{
+                    chat.user_read = false
+                    chat.worker_read = true
+                }
                 break
             }
         }
-        let val = [...messages]
-        if(selectedChat&&selectedChat[`${data.sender_id}_user_id`] === data.sender_id){
-            let text = {
-                origin_id : data.sender_id,
-                timestamp : data.timestamp,
-                text: data.text
-            }
-            val.push(text)
-            setMessages(val)
+        setChats(arrChats)
+
+
+        //common
+        if(selected_chat_id === data.chat_id){
+            let updatedTexts = [...selected_chat_texts, text]
+            setSelectedChatTexts(updatedTexts)
+            scrollToBottom()
         }
     }
 
     const messageHandler = () => {
         if(currentText !== ""){
-            let val = [...messages]
             let text = {
-                origin_id : props.user._id,
+                origin_type : props.user.type,
                 timestamp : new Date().getTime(),
                 text: currentText
             }
-            val.push(text)
-            setMessages(val)
+            let updatedTexts = [...selectedChatTexts, text]
+            setSelectedChatTexts(updatedTexts)
+
             let arr = [...chats]
-            for(let el of arr){
-                if(el._id === selectedChat._id){
-                    el.texts = val
+            for(let chat of arr){
+                if(chat.chat_id === selectedChat._id){
+                    chat.last_text = text
+                    if(props.user.type===1){
+                        chat.user_read = false
+                        chat.worker_read = true
+                    }
+                    else{
+                        chat.user_read = true
+                        chat.worker_read = false
+                    }
                     break
                 }
             }
             setChats(arr)
 
+            sendSynchronousAndUpdateDatabaseHandler(currentText)
 
-            setCurrentText("")
-            if(selectedChat){
-                axios.post(`${props.api_url}/chats/update_user_chat_sender`, {
-                    user_name: props.user.name,
-                    user_photoUrl: props.user.photoUrl,
-                    user_phone: props.user.phone,
-                    user_id: props.user._id,
-                    user_type : props.user.type,
-                    text: text,
-                    updated: new Date().getTime(),
-                    chat_id: selectedChat._id,
-                    other_user_id: getOtherUserId()
-                }).then(() => {
-                    chatareaRef.current.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'start'})
-                    
-                })
+            scrollToBottom()
 
-                if(selectedChat[`${getOtherUserId()}_user_type`]===0){
-                    axios.post(`${props.api_url}/user/update_user_notifications`, {
-                        notification_id: selectedChat._id,
-                        _id: getOtherUserId()
-                    })
-                }
-                else{
-                    axios.post(`${props.api_url}/worker/update_user_notifications`, {
-                        notification_id: selectedChat._id,
-                        _id: getOtherUserId()
-                    })
-                }
-
-                sendHandler()
-                
-            }
-            
+            setCurrentText("")   
         }
     }
-    const messageDisplay = () => {
-        return messages?.map((msg, i) => {
+
+    const getDiffDate = (prevDate, currDate) => {
+        const prev = new Date(prevDate)
+        const curr = new Date(currDate)
+        return prev.getDate() !== curr.getDate()
+    }
+    const workerMessageDisplay = () => {
+        return selectedChatTexts?.map((msg, i) => {
             return (
-                <div key={i} className={msg.origin_id===props.user?._id?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
-                    <div className={msg.origin_id===props.user?._id?styles.send:styles.receive}>
+                <div key={i}>
+                    {
+                        i===0?
+                        <div className={styles.day_splitter}>
+                            <span className={styles.day_value}>{extenseDate(msg.timestamp)}</span>
+                        </div>
+                        :i>0&&getDiffDate(selectedChatTexts[i-1].timestamp, msg.timestamp)?
+                        <div className={styles.day_splitter}>
+                            <span className={styles.day_value}>{extenseDate(msg.timestamp)}</span>
+                        </div>
+                        :null
+                    }
+                    
+                    <div className={msg.origin_type===1?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
+                        <div className={msg.origin_type===1?styles.send:styles.receive}>
+                            {
+                                (selectedChatTexts[i+1])&&(selectedChatTexts[i+1].origin_type!==msg.origin_type)
+                                ||(!selectedChatTexts[i+1])? 
+                                <div className={styles.chatbox_user}>
+                                    {
+                                        msg.origin_type===1?
+                                            selectedChat.worker_photoUrl!==""?
+                                            <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
+                                            :
+                                            <FaceIcon className={styles.chatbox_user_img}/>
+                                        :
+                                            selectedChat.user_photoUrl!==""?
+                                            <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
+                                            :
+                                            <FaceIcon className={styles.chatbox_user_img}/>
+                                    }
+                                    <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
+                                </div>
+                                :<div className={styles.chatbox_user_opacity}>
+                                    {
+                                        msg.origin_type===1?
+                                        selectedChat.worker_photoUrl!==""?
+                                        <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
+                                        :
+                                        <FaceIcon className={styles.chatbox_user_img}/>
+                                    :
+                                        selectedChat.user_photoUrl!==""?
+                                        <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
+                                        :
+                                        <FaceIcon className={styles.chatbox_user_img}/>
+                                    }
+                                    <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
+                                </div>
+
+                            }
+                            <div className={msg.origin_type===1?styles.chatbox_text_send:styles.chatbox_text_receive}>
+                                <span className={styles.chatbox_text_value}>{msg.text}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            )
+        })
+    }
+
+    const userMessageDisplay = () => {
+        return selectedChatTexts?.map((msg, i) => {
+            return (
+                <div key={i} className={msg.origin_type===0?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
+                    <div className={msg.origin_type===0?styles.send:styles.receive}>
                         {
-                            (messages[i+1])&&(messages[i+1].origin_id!==msg.origin_id)
-                            ||(!messages[i+1])? 
+                            (selectedChatTexts[i+1])&&(selectedChatTexts[i+1].origin_type!==msg.origin_type)
+                            ||(!selectedChatTexts[i+1])? 
                             <div className={styles.chatbox_user}>
                                 {
-                                    selectedChat[`${msg.origin_id}_user_photoUrl`]!==""?
-                                    <img src={selectedChat[`${msg.origin_id}_user_photoUrl`]} className={styles.chatbox_user_img}/>
+                                    msg.origin_type===0?
+                                        selectedChat.user_photoUrl!==""?
+                                        <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
+                                        :
+                                        <FaceIcon className={styles.chatbox_user_img}/>
                                     :
-                                    <FaceIcon className={styles.chatbox_user_img}/>
+                                        selectedChat.worker_photoUrl!==""?
+                                        <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
+                                        :
+                                        <FaceIcon className={styles.chatbox_user_img}/>
                                 }
-                                <span ref={i+1===messages.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
+                                <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
                             </div>
                             :<div className={styles.chatbox_user_opacity}>
                                 {
-                                    selectedChat[`${msg.origin_id}_user_photoUrl`]!==""?
-                                    <img src={selectedChat[`${msg.origin_id}_user_photoUrl`]} className={styles.chatbox_user_img}/>
+                                    msg.origin_type===0?
+                                    selectedChat.user_photoUrl!==""?
+                                    <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
+                                    :
+                                    <FaceIcon className={styles.chatbox_user_img}/>
+                                :
+                                    selectedChat.worker_photoUrl!==""?
+                                    <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
                                     :
                                     <FaceIcon className={styles.chatbox_user_img}/>
                                 }
-                                <span ref={i+1===messages.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
+                                <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
                             </div>
 
                         }
-                        <div className={msg.origin_id===props.user?._id?styles.chatbox_text_send:styles.chatbox_text_receive}>
+                        <div className={msg.origin_type===0?styles.chatbox_text_send:styles.chatbox_text_receive}>
                             <span className={styles.chatbox_text_value}>{msg.text}</span>
                         </div>
                     </div>
@@ -291,98 +354,159 @@ const Messages = (props) => {
     }
 
     const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault()
             messageHandler()
         }
     }
 
     const getOtherUserId = () => {
-        if(selectedChat?.user_one===props.user._id){
-            return selectedChat.user_two
+        if(selectedChat&&props.user?.type===1){
+            return selectedChat.user_id
         }
-        else{
-            return selectedChat?.user_one
+        else if(selectedChat){
+            return selectedChat.worker_id
         }
     }
     
-    const removeNotificationHandler = (chat_id, other_user_id, bool) => {
-        let val = []
-        if(props.user.notifications){
-            val = [...props.user.notifications]
-        }
-        if(val.length>0) val?.splice(val.indexOf(chat_id), 1)
+    // const removeNotificationHandler = (chat_id, other_user_id, bool) => {
+    //     let val = []
+    //     if(props.user.notifications){
+    //         val = [...props.user.notifications]
+    //     }
+    //     if(val.length>0) val?.splice(val.indexOf(chat_id), 1)
 
-        if(props.user.type===0){
-            axios.post(`${props.api_url}/user/set_user_notifications`, {
-                notification_array: val,
-                _id: props.user._id
-            })
-        }
-        else{
-            axios.post(`${props.api_url}/worker/set_worker_notifications`, {
-                notification_array: val,
-                _id: props.user._id
-            })
-        }
+    //     if(props.user.type===0){
+    //         axios.post(`${props.api_url}/user/set_user_notifications`, {
+    //             notification_array: val,
+    //             _id: props.user._id
+    //         })
+    //     }
+    //     else{
+    //         axios.post(`${props.api_url}/worker/set_worker_notifications`, {
+    //             notification_array: val,
+    //             _id: props.user._id
+    //         })
+    //     }
         
-        axios.post(`${props.api_url}/chats/update_user_notifications`, {
-            user_id: props.user._id,
-            other_user_id: other_user_id,
-            chat_id: chat_id
+    //     axios.post(`${props.api_url}/chats/update_user_notifications`, {
+    //         user_id: props.user._id,
+    //         other_user_id: other_user_id,
+    //         chat_id: chat_id
+    //     })
+    //     if(bool){
+    //         let arr = [...chats]
+    //         for(let el of arr){
+    //             if(el._id === chat_id){
+    //                 el[`${props.user._id}_read`] = true
+    //                 break
+    //             }
+    //         }
+    //         setChats(arr)
+    //     }
+        
+    // }
+
+    const updateReadDatabaseAndNavigate = async (chat_id, type) => {
+        await axios.post(`${props.api_url}/chats/update_text_read`, {
+            chat_id: chat_id,
+            type: type
         })
-        if(bool){
-            let arr = [...chats]
-            for(let el of arr){
-                if(el._id === chat_id){
-                    el[`${props.user._id}_read`] = true
-                    break
-                }
-            }
-            setChats(arr)
-        }
-        
+        navigate({
+            pathname: `/user`,
+            search: `?t=messages&id=${chat_id}`
+        })
     }
 
-    const chatsDisplay = () => {
+    const updateReadLocal = async (chat_id, type) => {
+        let arrChats = [...chats]
+        for(let chat of arrChats){
+            if(chat.chat_id === chat_id){
+                if(type===1){
+                    chat.worker_read = true
+                }
+                else{
+                    chat.user_read = true
+                }
+                break
+            }
+        }
+        let sorted = arrChats.sort(sortByTimestamp)
+        setChats(sorted)
+        props.updateChatReadLocal(chat_id)
+    }
+
+    const workerChatsDisplay = () => {
         return chats?.map((item, i) => {
-            let other_user = null
-            let user = null
-            if(item.user_one===props.user._id){
-                user = item.user_one
-                other_user = item.user_two
-            }
-            else{
-                user = item.user_two
-                other_user = item.user_one
-            }
             return (
                 <div onClick={() => {
-                    setMessages(item.texts)
-                    setSelectedChat(item)
-                    props.updateNotification(item._id)
-                    removeNotificationHandler(item._id, other_user, true)
-                    }} key={i} className={selectedChat?._id===item._id?styles.row_selected:styles.row}>
+                    updateReadDatabaseAndNavigate(item.chat_id, 1)
+                    updateReadLocal(item.chat_id, 1)
+                    //props.updateNotification(item._id)
+                    //removeNotificationHandler(item._id, other_user, true)
+                    }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
                     {
-                        item[`${other_user}_user_photoUrl`]!==""?
-                        <img className={styles.row_img} src={item[`${other_user}_user_photoUrl`]}/>
+                        item.user_photoUrl!==""?
+                        <img className={styles.row_img} src={item.user_photoUrl}/>
                         :
                         <FaceIcon className={styles.chatbox_user_img}/>
                     }
                     <div className={styles.row_main}>
                         <div className={styles.main_top}>
-                            <span className={styles.top_name}>{item[`${other_user}_user_name`]}</span>
-                            <span className={styles.top_hour} style={{color:selectedChat?._id===item._id?"black":"#ccc"}}>{getDisplayTime(item?.texts.at(-1).timestamp)}</span>
+                            <span className={styles.top_name}>{item.user_name}</span>
+                            <span className={styles.top_hour} style={{color:selectedChat?._id===item._id?"black":"#ccc"}}>{getDisplayTime(item.last_text.timestamp)}</span>
                         </div>
                         <div className={styles.main_bottom}>
-                            <span className={styles.bot_text} style={{fontWeight:item.texts.at(-1).origin_id===other_user&&!item[`${user}_read`]?600:400, color:item.texts.at(-1).origin_id===other_user&&!item[`${user}_read`]?"#FF785A":"#ccc"}}>{item.texts?.at(-1).text}</span>
+                            <span className={styles.bot_text} style={{fontWeight:item.last_text.origin_type==0&&!item.worker_read?600:400, color:item.last_text.origin_type==0&&!item.worker_read?"#FF785A":"#ccc"}}>{item.last_text.text}</span>
                             {
-                                item.texts.at(-1).origin_id===other_user&&!item[`${user}_read`]?
+                                item.last_text.origin_type==0&&!item.worker_read?
                                 <div className={styles.bot_not}>
                                     <CircleIcon className={styles.bot_not_icon}/>
                                 </div>
                                 :
-                                item.texts.at(-1).origin_id===user&&item[`${other_user}_read`]?
+                                item.last_text.origin_type===1&&item.user_read?
+                                <div className={styles.bot_not}>
+                                    <CheckIcon className={styles.bot_not_icon}/>
+                                </div>
+                                :null
+                                
+                            }
+                        </div>
+                    </div>
+                </div>
+            )
+        })
+    }
+
+    const userChatsDisplay = () => {
+        return chats?.map((item, i) => {
+            return (
+                <div onClick={() => {
+                    updateReadDatabaseAndNavigate(item.chat_id, 0)
+                    updateReadLocal(item.chat_id, 0)
+                    //props.updateNotification(item._id)
+                    //removeNotificationHandler(item._id, other_user, true)
+                    }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
+                    {
+                        item.worker_photoUrl!==""?
+                        <img className={styles.row_img} src={item.worker_photoUrl}/>
+                        :
+                        <FaceIcon className={styles.chatbox_user_img}/>
+                    }
+                    <div className={styles.row_main}>
+                        <div className={styles.main_top}>
+                            <span className={styles.top_name}>{item.worker_name}</span>
+                            <span className={styles.top_hour} style={{color:selectedChat?._id===item._id?"black":"#ccc"}}>{getDisplayTime(item.last_text.timestamp)}</span>
+                        </div>
+                        <div className={styles.main_bottom}>
+                            <span className={styles.bot_text} style={{fontWeight:item.last_text.origin_type===1&&!item.user_read?600:400, color:item.last_text.origin_type===1&&!item.user_read?"#FF785A":"#ccc"}}>{item.last_text.text}</span>
+                            {
+                                item.last_text.origin_type===1&&!item.user_read?
+                                <div className={styles.bot_not}>
+                                    <CircleIcon className={styles.bot_not_icon}/>
+                                </div>
+                                :
+                                item.last_text.origin_type==0&&item.worker_read?
                                 <div className={styles.bot_not}>
                                     <CheckIcon className={styles.bot_not_icon}/>
                                 </div>
@@ -409,75 +533,100 @@ const Messages = (props) => {
 
     return (
         <div className={styles.suporte}>
-            <div className={styles.suporte_title}>
-                <span className={styles.top_title}>Mensagens</span>
-            </div>
-            <div className={styles.main}>
-                <div className={styles.users}>
-                    <Loader loading={loadingChats}/>
-                    {chatsDisplay()}
-                </div>
-                {
-                    selectedChat?
-                    <div className={styles.chat}>
-                        <ClipLoader color={"#FF785A"} css={override} loading={loading} size={150} />
+            <Loader loading={loading}/>
+            {
+                isLoaded?
+                <div style={{height:"100%"}}>
+                    <div className={styles.suporte_title}>
+                        <span className={styles.top_title}>Mensagens</span>
+                    </div>
+                    <div className={styles.main}>
+                        <div className={styles.users}>
+                            <Loader loading={loadingChats}/>
                             {
-                            loading?
-                            <div className="frontdrop"></div>
-                            :null
-                        }
-                        <div className={styles.chat_wrapper}>
-                            <div className={styles.top}>
-                                <div className={styles.top_left_flex}>
-                                    <span className={styles.top_left_indicator} style={{backgroundColor:isUserOnline()?"#6EB241":"white", border:!isUserOnline()?"1px solid #F40009":"1px solid transparent"}}></span>
-                                    {
-                                        selectedChat[`${getOtherUserId()}_user_photoUrl`]!==""?
-                                        <img style={{marginLeft:"5px"}} className={styles.chatbox_user_img} src={selectedChat[`${getOtherUserId()}_user_photoUrl`]}/>
-                                        :
-                                        <FaceIcon style={{marginLeft:"5px"}} className={styles.chatbox_user_img}/>
-                                    }
-                                    <span className={styles.top_left_name}>{selectedChat[`${getOtherUserId()}_user_name`]}</span>
+                                props.user?.type===1?
+                                workerChatsDisplay()
+                                :
+                                userChatsDisplay()
+                            }
+                        </div>
+                        {
+                            selectedChat?
+                            <div className={styles.chat}>
+                                <Loader loading={loading}/>
+                                <div className={styles.chat_wrapper}>
+                                    <div className={styles.top}>
+                                        <div className={styles.top_left_flex}>
+                                            {/* <span className={styles.top_left_indicator} style={{backgroundColor:isUserOnline()?"#6EB241":"white", border:!isUserOnline()?"1px solid #F40009":"1px solid transparent"}}></span> */}
+                                            {/* drena do ultima vez online */}
+                                            {
+                                                props.user?.type===1?
+                                                    selectedChat.user_photoUrl!==""?
+                                                    <img style={{marginLeft:"5px"}} className={styles.chatbox_user_img} src={selectedChat.user_photoUrl}/>
+                                                    :
+                                                    <FaceIcon style={{marginLeft:"5px"}} className={styles.chatbox_user_img}/>
+                                                :
+                                                selectedChat.worker_photoUrl!==""?
+                                                <img style={{marginLeft:"5px"}} className={styles.chatbox_user_img} src={selectedChat.worker_photoUrl}/>
+                                                :
+                                                <FaceIcon style={{marginLeft:"5px"}} className={styles.chatbox_user_img}/>
 
-                                    {
-                                        props.user.type===1?
-                                        <div className={styles.post}>
-                                            <span className={styles.post_title}>{selectedChat.reservation_title}</span>
-                                            <span className={styles.post_link} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>ver publicação</span>
+                                            }
+                                            {
+                                                props.user?.type===1?
+                                                <span className={styles.top_left_name}>{selectedChat.user_name}</span>
+                                                :
+                                                <span className={styles.top_left_name}>{selectedChat.worker_name}</span>
+                                            }
+                                            
+                                            {/* {
+                                                props.user?.type===1?
+                                                <div className={styles.post}>
+                                                    <span className={styles.post_title}>{selectedChat.reservation_title}</span>
+                                                    <span className={styles.post_link} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>ver publicação</span>
+                                                </div>
+                                                :null
+                                            } */}
+                                            
                                         </div>
-                                        :null
-                                    }
-                                    
-                                </div>
-                            </div>
-                            <div className={styles.chat_area}>
-                                {messageDisplay()}
-                            </div>
-                            <div className={styles.bot}>
-                                <div className={styles.bot_flex}>
-                                    <textarea 
-                                        onKeyDown={handleKeyDown}
-                                        ref={textareaRef}
-                                        style={{}} 
-                                        value={currentText} 
-                                        onChange={e => setCurrentText(e.target.value)} 
-                                        className={styles.bot_input} 
-                                        placeholder="Escreva a sua mensagem..."></textarea>
-                                    <div className={styles.bot_right_flex}>
-                                        <SendOutlinedIcon className={styles.send_icon} onClick={() => messageHandler()}/>
+                                    </div>
+                                        <ScrollToBottom className={styles.chat_area}>
+                                            <Loader loading={loadingChatBox}/>
+                                            {
+                                                props.user?.type===1?
+                                                workerMessageDisplay()
+                                                :userMessageDisplay()
+                                            }
+                                            <div ref={chatareaRef}></div>
+                                        </ScrollToBottom>
+                                    <div className={styles.bot}>
+                                        <div className={styles.bot_flex}>
+                                            <TextareaAutosize 
+                                                className={styles.bot_input}
+                                                placeholder="Escreva a sua mensagem..."
+                                                onKeyDown={handleKeyDown}
+                                                value={currentText} 
+                                                onChange={e => setCurrentText(e.target.value)} 
+                                                />
+                                            <div className={styles.bot_right_flex}>
+                                                <SendOutlinedIcon className={styles.send_icon} onClick={() => messageHandler()}/>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            :(!chats||chats?.length===0)&&props.user?.type===1?
+                            <NoPage object={"mensagens"}/>
+                            :(!chats||chats?.length===0)&&props.user?.type===0?
+                            <NoPage object={"mensagens_user"}/>
+                            :null
+                        }
+                        
                     </div>
-                    :chats.length===0&&props.user?.type===1?
-                    <NoPage object={"mensagens"}/>
-                    :chats.length===0&&props.user?.type===0?
-                    <NoPage object={"mensagens_user"}/>
-                    :null
-                }
-                
-            </div>
-            
+                </div>
+                :
+                null
+            }
         </div>
     )
 }

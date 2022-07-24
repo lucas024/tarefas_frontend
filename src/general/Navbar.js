@@ -13,7 +13,6 @@ const Navbar = (props) => {
     const [dropdown, setDropdown] = useState(false)
     const [skeleton, setSkeleton] = useState(true)
 
-
     useEffect(() => {
         if(props.userLoadAttempt){
             setSkeleton(false)
@@ -25,6 +24,7 @@ const Navbar = (props) => {
         logout()
         navigate('/authentication')
     }
+
     return (
         <div className={styles.navbar}>
             <div className={styles.flex}>
@@ -50,7 +50,7 @@ const Navbar = (props) => {
                                 props.user?
                                 <div className={styles.chat_div} onClick={() => navigate('/user?t=messages')}>
                                     {
-                                        props.notifications?.length>0?
+                                        props.hasTexts?
                                         <span className={styles.chat_notification}></span>
                                         :null
                                     }   
@@ -127,6 +127,23 @@ const Navbar = (props) => {
                                                     </div>  
                                                 </div>
                                             </div>
+                                            {
+                                                props.user?.type===1?
+                                                <div className={styles.drop_div_main} onClick={() => {
+                                                    navigate('/user?t=subscription')
+                                                    setDropdown(false)}
+                                                    }>
+                                                    <div className={styles.drop_div}>
+                                                        <div className={styles.drop_div_special}>
+                                                            <div style={{display:"flex"}}>
+                                                                <span className={styles.drop_div_text}>Subscrição</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                :null
+                                                
+                                            }
                                             <div className={styles.drop_div_main} onClick={() => {
                                                     navigate('/user?t=messages')
                                                     setDropdown(false)}

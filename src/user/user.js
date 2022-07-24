@@ -33,6 +33,8 @@ const User = (props) => {
         else{
             setIsLoaded(true)
         }
+
+        return () => setIsLoaded(false)
     }, [props.user])
 
     const updateReservations = () => {
@@ -57,34 +59,39 @@ const User = (props) => {
         else if(val === "support")
             return <Suporte user={props.user} api_url={props.api_url}/>
         else if(val === "messages")
-            return <Messages user={props.user} api_url={props.api_url} updateNotification={not_id => props.updateNotification(not_id)}/>
+            return <Messages user={props.user} api_url={props.api_url} updateChatReadLocal={chat_id => props.updateChatReadLocal(chat_id)}/>
         else if(val === "subscription" && props.user?.type===1)
             return (
                 <Elements stripe={stripePromise}>
                     <Subscription user={props.user} api_url={props.api_url} refreshWorker={() => props.refreshWorker()}/>
                 </Elements>
             ) 
-        return isLoaded&&<NoPage object={"página"}/>
+        return null
     }
 
     return (
         <div className={styles.worker}>
-            <div className={styles.flex}>
-                <div className={styles.left}>
-                    <UserSidebar api_url={props.api_url} incompleteUser={props.incompleteUser} user={props.user} nextReservation={nextReservation} notifications={props.notifications}/>
-                </div>
-                <div className={styles.right}>
-                    {
-                        isLoaded?
-                        <div className={styles.worker_area}>
-                            <div className={styles.area}>
-                                {displayCurrentArea()}
+            {
+                isLoaded?
+                <div className={styles.flex}>
+                    <div className={styles.left}>
+                        <UserSidebar api_url={props.api_url} incompleteUser={props.incompleteUser} user={props.user} nextReservation={nextReservation} notifications={props.notifications}/>
+                    </div>
+                    <div className={styles.right}>
+                        {
+                            isLoaded?
+                            <div className={styles.worker_area}>
+                                <div className={styles.area}>
+                                    {displayCurrentArea()}
+                                </div>
                             </div>
-                        </div>
-                        :null
-                    }
+                            :null
+                        }
+                    </div>
                 </div>
-            </div>
+                :null
+            }
+            
         </div>
     )
 }

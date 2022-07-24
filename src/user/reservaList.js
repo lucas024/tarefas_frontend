@@ -124,7 +124,7 @@ const ReservaList = (props) => {
                                         setRemoveArray(val)}}/>
                                 </div>
                                 <div className={styles.item_flex}>
-                                    <div className={styles.item_time}>{getTime(res.publication_time)}</div>
+                                    <div className={styles.item_time}>{getTime(res.timestamp)}</div>
                                 </div>
                                 <div className={styles.item_flex}>
                                     <span className={styles.item_flex_worker_text}>{res.workerType}</span>

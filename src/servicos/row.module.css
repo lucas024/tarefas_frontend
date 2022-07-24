@@ -3,7 +3,7 @@
     height: 150px;
     background-color: white;
     border-radius: 5px;
-    border-bottom: 3px solid transparent !important;
+    border-bottom: 3px solid var(--brand) !important;
     margin-top: 10px;
 }
 .row:hover{

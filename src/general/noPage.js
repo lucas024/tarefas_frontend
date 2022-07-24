@@ -9,7 +9,7 @@ const NoPage = (props) => {
     const navigate = useNavigate()
 
     return (
-        <div className={styles.blank}>
+        <div className={styles.blank} style={{borderTop:props.object==="no_search"?"none":""}}>
             {
                 props.object==="mensagens"?
                 <div className={styles.blank_flex}>
@@ -41,6 +41,14 @@ const NoPage = (props) => {
                     <Sad className={styles.blank_face_small}/>
                     <span className={styles.button} onClick={() => props.activateSub()}>
                         Re-ativar Subscrição
+                    </span>
+                </div>
+                :props.object==="no_search"?
+                <div className={styles.blank_flex} style={{marginTop:"50px"}}>
+                    <span className={styles.blank_text}>Sem resultados para esta pesquisa</span>
+                    <Sad className={styles.blank_face_small}/>
+                    <span className={styles.button} onClick={() => props.limparPesquisa()}>
+                        Limpar Pesquisa
                     </span>
                 </div>
                 :

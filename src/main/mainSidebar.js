@@ -25,21 +25,19 @@ const MainSidebar = (props) => {
             pathname: `/main/publication/${props.selected}`,
             search: `?page=${val}`
         })
-
-        //
     }
 
     const handleSelectedSidebar = val => {
         navigate(`/main/publications/${val}`)
     }
     return (
-        <div className={styles.sidebar}>
+        <div className={props.selected==="trabalhadores"?styles.sidebar_workers:styles.sidebar_jobs}>
             <div className={styles.sidebar_icon_wrapper}>
                 {
                     props.selected==="trabalhadores"?
                     <div className={styles.sidebar_top}>
                         <span className={styles.sidebar_top_text}>TRABALHADORES</span>
-                        <PersonSearchIcon className={styles.sidebar_top_icon}/>
+                        <PersonSearchIcon className={styles.sidebar_top_icon} style={{color:"#161F28"}}/>
                     </div>
                     :
                     <div className={styles.sidebar_top}>
@@ -52,19 +50,25 @@ const MainSidebar = (props) => {
             
             <div className={styles.sidebar_flex}>
                 <List
-                    component="nav" className={styles.sidebar_list}
+                    component="nav" className={styles.sidebar_list} style={{borderBottom:"none", background:"transparent"}}
                 >
-                    <ListItemButton style={{borderTop:"3px solid #71848d"}} onClick={() => handleSelectedSidebar("trabalhos")} className={props.selected==="trabalhos"?styles.button:""}>
+                    <ListItemButton 
+                        onClick={() => handleSelectedSidebar("trabalhos")} 
+                        className={styles.button_main_trabalhos}
+                        style={{borderTop:props.selected==="trabalhos"?"2px solid white":"", borderLeft:props.selected==="trabalhos"?"2px solid white":"", background:props.selected==="trabalhos"?"#ffffff20":""}}>
                         <ListItemIcon>
-                        <ManageSearchIcon sx={{color:props.selected==="trabalhos"?"#FF785A":"#fff"}}/>
+                        <ManageSearchIcon sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa", fontSize:props.selected==="trabalhos"?"2rem":"1.3rem"}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Trabalhos</span>} sx={{color:props.selected==="trabalhos"?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={<span className={styles.prox} style={{fontSize:props.selected==="trabalhos"?"1rem":""}}>Trabalhos</span>} sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa"}}/>
                     </ListItemButton >
-                    <ListItemButton onClick={() => handleSelectedSidebar("trabalhadores")}  className={props.selected==="trabalhadores"?styles.button:""}>
+                    <ListItemButton 
+                        onClick={() => handleSelectedSidebar("trabalhadores")} 
+                        className={styles.button_main_trabalhadores}
+                        style={{borderBottom:props.selected==="trabalhadores"?"2px solid white":"", borderLeft:props.selected==="trabalhadores"?"2px solid white":"", background:props.selected==="trabalhadores"?"ffffff20":""}}>
                         <ListItemIcon>
-                        <PersonSearchIcon sx={{color:props.selected==="trabalhadores"?"#FF785A":"#fff"}}/>
+                        <PersonSearchIcon sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa", fontSize:props.selected==="trabalhadores"?"2rem":"1.3rem"}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Trabalhadores</span>} sx={{color:props.selected==="trabalhadores"?"#FF785A":"#fff"}}/>
+                        <ListItemText primary={<span className={styles.prox} style={{fontSize:props.selected==="trabalhadores"?"1rem":""}}>Trabalhadores</span>} sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa"}}/>
                     </ListItemButton >
                 </List>
                 

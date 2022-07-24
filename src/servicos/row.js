@@ -3,6 +3,7 @@ import styles from './row.module.css'
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import PersonIcon from '@mui/icons-material/Person';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import {regioesOptions, profissoesOptions} from '../general/util'
 
 const Row = (props) => {
 
@@ -10,13 +11,13 @@ const Row = (props) => {
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
     const getDate = () => {
-        let date = new Date(props.item.publication_time)
+        let date = new Date(props.item.timestamp)
         return `${date.getDate()} de ${monthNames[date.getMonth()]}`
     }
 
     const getTime = () => {
-        let date = props.item.publication_time
-        return `${date?.split("T")[1].slice(0, 5)}`
+        let date = new Date(props.item.timestamp).toISOString()
+        return `${date.split("T")[1].slice(0, 5)}`
     }
 
     const getTypeColor = type => {
@@ -29,7 +30,7 @@ const Row = (props) => {
     return (
         <div className={styles.row} style={{border:props.item.user_id===props.user?._id?`3px solid ${getTypeColor(props.item.type)}`:"none"}}>
             <div className={styles.row_time}>
-                <span className={styles.row_time_date}>{props?.item?.publication_time&&getDate()}</span>
+                <span className={styles.row_time_date}>{props?.item?.timestamp&&getDate()}</span>
                 <span className={styles.row_time_hour}>{getTime()}</span>
             </div>
             <div className={styles.row_right}>
@@ -64,11 +65,11 @@ const Row = (props) => {
                     <div>
                         <div className={styles.right_flex}>
                             <LocationOnIcon className={styles.right_type_icon} style={{color:props.locationActive?"#FF785A":"#71848d"}}/>
-                            <span className={styles.right_type} style={{color:props.locationActive?"#FF785A":"#71848d"}}>Lisboa</span>
+                            <span className={styles.right_type} style={{color:props.locationActive?"#FF785A":"#71848d"}}>{regioesOptions[props.item.district]}</span>
                         </div>
                         <div className={styles.right_flex}>
                             <PersonIcon className={styles.right_type_icon} style={{color:props.workerActive?"#FF785A":"#71848d"}}/>
-                            <span className={styles.right_type} style={{color:props.workerActive?"#FF785A":"#71848d"}}>{props.item.workerType}</span>
+                            <span className={styles.right_type} style={{color:props.workerActive?"#FF785A":"#71848d"}}>{profissoesOptions[props.item.workerType]}</span>
                         </div>
                     </div>
                     

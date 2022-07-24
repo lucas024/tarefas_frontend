@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react'
 import styles from './carta.module.css'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
+import {regioesOptions, profissoesOptions} from '../general/util'
 
 const Carta = (props) => {
     
     const [worker, setWorker] = useState(null)
-    const [availPoints, setAvailPoints] = useState(50)
-    const [availColor, setAvailColor] = useState('')
 
     useEffect(() => {
         if(props.worker!==null){
@@ -15,26 +14,35 @@ const Carta = (props) => {
         } 
     }, [props.worker])
 
-    const starColorStyle = (rating) => {
-        return ({
-                color: rating<2.5?"red"
-                :rating<3.5?"orange"
-                :"yellow",
-                fontSize: 20
+    const displayRegioesExtense = () => {
+        let arrRegioes = [...worker.regioes]
+        if(props.locationActive){
+            if(arrRegioes.includes(props.locationActive)){
+                arrRegioes.splice(arrRegioes.indexOf(props.locationActive), 1)
+                arrRegioes = [props.locationActive, ...arrRegioes]
+            }
+        }
+        return arrRegioes.map((val, i) => {
+            return (
+                <span key={i} className={props.locationActive===val?styles.options_selected:styles.options}> {regioesOptions[val]}<span>{i+1<worker.regioes.length?",":null}</span></span>
+            )
         })
     }
 
-    useEffect(() => {
-        if(availPoints > 30){
-            setAvailColor("#FF785A")
+    const displayTrabalhosExtense = () => {
+        let arrTrabalhos = [...worker.trabalhos]
+        if(props.workerActive){
+            if(arrTrabalhos.includes(props.workerActive)){
+                arrTrabalhos.splice(arrTrabalhos.indexOf(props.workerActive), 1)
+                arrTrabalhos = [props.workerActive, ...arrTrabalhos]
+            }
         }
-        else if(availPoints > 15){
-            setAvailColor("#BA8376")
-        }
-        else{
-            setAvailColor("#d50000")
-        }
-    }, [availPoints])
+        return arrTrabalhos.map((val, i) => {
+            return (
+                <span key={i} className={props.workerActive===val?styles.options_selected:styles.options}> {profissoesOptions[val]}<span>{i+1<worker.trabalhos.length?",":null}</span></span>
+            )
+        })
+    }
 
     return(
         <div className={styles.box}
@@ -44,11 +52,17 @@ const Carta = (props) => {
                 worker?
                 <div className={styles.top_flex}>
                     <img className={styles.worker_img} 
-                        src={worker.img!==""?worker.img:""}/>
+                        src={worker.img!==""?worker.photoUrl:""}/>
                     <div className={styles.worker_info_div}>
-                        <span className={styles.worker_info_name}>{worker.name?.first} {worker.name?.first}</span>
+                        <span className={styles.worker_info_name}>{worker.name}</span>
                         <span className={styles.worker_info_type}>
-                            Particular
+                            {
+                                worker?.entity?
+                                <span>Empresa <span style={{textTransform:"capitalize", color:"black"}}>{worker.entity_name}</span></span>
+                                :
+                                'Particular'
+                            }
+                            
                         </span>
                     </div>
                 </div>
@@ -56,17 +70,21 @@ const Carta = (props) => {
                 }
                 <div className={styles.middle}>
                     <span className={styles.middle_desc}>
-                        asdwoqkd sadqwokdosakd sadokasodkowqdsad kasdasdpwqdosap daspdoqpwoesad Sdasdasd
+                        {worker?.description}
                     </span>
                 </div>
                 <div className={styles.bottom}>
                     <div className={styles.bottom_div}>
-                        <LocationOnIcon className={styles.bottom_div_icon} style={{color:props.locationActive?"#FF785A":"#71848d"}}/>
-                        <span className={styles.bottom_div_text}>Lisboa, Setúbal</span>
+                        <LocationOnIcon className={styles.bottom_div_icon} style={{color:worker?.regioes.includes(props.locationActive)?"#FF785A":"#71848d"}}/>
+                        <div className={styles.bottom_div_text}>
+                            {worker&&displayRegioesExtense()}
+                        </div>
                     </div>
                     <div className={styles.bottom_div}>
-                        <PersonIcon className={styles.bottom_div_icon} style={{color:props.workerActive?"#FF785A":"#71848d"}}/>
-                        <span className={styles.bottom_div_text}>Eletricista, Carpinteiro, Jardins</span>
+                        <PersonIcon className={styles.bottom_div_icon} style={{color:worker?.trabalhos.includes(props.workerActive)?"#FF785A":"#71848d"}}/>
+                        <div className={styles.bottom_div_text}>
+                            {worker&&displayTrabalhosExtense()}
+                        </div>
                     </div>
                 </div>
             </div>

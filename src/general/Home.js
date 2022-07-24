@@ -15,7 +15,6 @@ const Home = (props) => {
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
     const [loginPopup, setLoginPopup] = useState(false)
-    const [skeleton, setSkeleton] = useState(true)
 
     const location = useLocation()
 
@@ -30,11 +29,6 @@ const Home = (props) => {
         }
     }, [props.notifications, props.notificationsUpd, location])
 
-    useEffect(() => {
-        if(props.userLoadAttempt){
-            setSkeleton(false)
-        }
-    }, [props.userLoadAttempt])
 
     const navigate = useNavigate()
     
@@ -66,24 +60,18 @@ const Home = (props) => {
                 :null
             }
             {
-                skeleton?
-                <span className={styles.skeleton_worker_botbanner}></span>
-                :
-                props.user?.type===1?
+                props.user?.type===0?
+                <span className={styles.worker_button} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                :props.user?.type===1?
                 null
                 :
-                <span className={styles.worker_button} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                <span className={styles.skeleton_worker_botbanner}></span>
+                
             }
             <div className={styles.home_back}>
                 <div className={styles.section_one} onClick={() => navigate('/main/publications/trabalhos')}>
                     {
-                        skeleton?
-                        <div className={styles.section_content}>
-                            <span className={styles.skeleton_content_in_img}></span>
-                            <p className={styles.skeleton_content_in}></p>
-                            <p className={styles.skeleton_content_in}></p>
-                        </div>
-                        :
+                        props.user?
                         <div className={styles.section_content}>
                             <div className={styles.section_image_wrapper}>
                                 <ManageSearchIcon className={styles.section_img}/>
@@ -95,19 +83,17 @@ const Home = (props) => {
                                 <span style={{textDecoration:"underline"}}>TRABALHOS</span>
                             </p>
                             <a className={styles.link}/>
-                        </div>                       
-                    }
-                </div>
-                {
-                    skeleton?
-                    <div className={styles.section_two}>
+                        </div> 
+                        :
                         <div className={styles.section_content}>
                             <span className={styles.skeleton_content_in_img}></span>
                             <p className={styles.skeleton_content_in}></p>
                             <p className={styles.skeleton_content_in}></p>
                         </div>
-                    </div>
-                    :
+                                              
+                    }
+                </div>
+                {
                     props.user?.type===1?
                     <div className={styles.section_two} onClick={() => navigate('/user?t=personal')}>
                         <div className={styles.section_content}>
@@ -124,6 +110,7 @@ const Home = (props) => {
                         <a className={styles.link2}/>
                     </div>
                     :
+                    props.user?.type===0?
                     <div className={styles.section_two} onClick={() => navigate('/main/publications/trabalhadores')}>
                         <div className={styles.section_content}>
                             <div className={styles.section_image_wrapper}>
@@ -138,17 +125,20 @@ const Home = (props) => {
                         </div>
                         <a className={styles.link2}/>
                     </div>
+                    :
+                    <div className={styles.section_two}>
+                        <div className={styles.section_content}>
+                            <span className={styles.skeleton_content_in_img}></span>
+                            <p className={styles.skeleton_content_in}></p>
+                            <p className={styles.skeleton_content_in}></p>
+                        </div>
+                    </div>
                     
                     
                 }
             </div>
-            {
-                skeleton?
-                <span className={styles.skeleton_publish}></span>
-                :
-                props.user?.type===1?
-                null                
-                :
+            {               
+                props.user?.type===0?
                 <div className={styles.publish} onClick={() => navigate('/reserva?w=eletricista')}>
                     <span className={styles.publish_or}>OU</span>
                     <div className={styles.publish_main}>
@@ -158,19 +148,23 @@ const Home = (props) => {
                         <PostAddIcon className={styles.publish_icon}/>
                     </div>
                 </div>
+                :props.user?.type===1?
+                null                
+                :
+                <span className={styles.skeleton_publish}></span>
             }
             {
-                skeleton?
-                <span className={styles.skeleton_tag}></span>
-                :
-                props.user?.type===1?
-                null
-                :
+                props.user?.type===0?
                 <div className={styles.tag}>
                     <p className={styles.tag_text}>
                         Do que precisas hoje?
                     </p>
                 </div>
+                :
+                props.user?.type===1?
+                null
+                :
+                <span className={styles.skeleton_tag}></span>
             }
         </div>
     )

@@ -20,12 +20,15 @@ import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
+import {regioes, profissoes} from '../general/util'
 
 const Personal = (props) => {
     
     const [name, setName] = useState("")
     const [surname, setSurname] = useState("")
     const [phone, setPhone] = useState("")
+    const [description, setDescription] = useState("")
+    const [descriptionWrong, setDescriptionWrong] = useState(false)
     const [phoneVisual, setPhoneVisual] = useState("")
     const [phoneWrong, setPhoneWrong] = useState(false)
     const [email, setEmail] = useState("")
@@ -55,6 +58,7 @@ const Personal = (props) => {
             setName(props.user.name)
             setPhone(props.user.phone)
             setEmail(props.user.email)
+            setDescription(props.user.description)
             setSurname(props.user.surname)
             setSelectedProf(props.user.trabalhos)
             setSelectedReg(props.user.regioes)
@@ -78,40 +82,6 @@ const Personal = (props) => {
             setPhoneVisual(`${phone.slice(0,3)}`)
         }
     }, [phone])
-
-    const regioes = [
-        { value: 'acores', label: 'Açores' },
-        { value: 'aveiro', label: 'Aveiro' },
-        { value: 'beja', label: 'Beja' },
-        { value: 'braga', label: 'Braga' },
-        { value: 'braganca', label: 'Bragança' },
-        { value: 'castelo_branco', label: 'Castelo Branco' },
-        { value: 'coimbra', label: 'Coimbra' },
-        { value: 'evora', label: 'Évora' },
-        { value: 'faro', label: 'Faro' },
-        { value: 'guarda', label: 'Guarda' },
-        { value: 'leiria', label: 'Leiria' },
-        { value: 'lisboa', label: 'Lisboa' },
-        { value: 'madeira', label: 'Madeira' },
-        { value: 'portalegre', label: 'Portalegre' },
-        { value: 'porto', label: 'Porto' },
-        { value: 'santarem', label: 'Santarém' },
-        { value: 'setubal', label: 'Setúbal' },
-        { value: 'viana_do_castelo', label: 'Viana do Castelo' },
-        { value: 'vila_real', label: 'Vila Real' },
-        { value: 'viseu', label: 'Viseu' }
-    ]
-
-    const profissoes = [
-        { value: 'carpinteiro', label: 'Carpinteiro' },
-        { value: 'canalizador', label: 'Canalizador' },
-        { value: 'eletricista', label: 'Eletricista' },
-        { value: 'empreiteiro', label: 'Empreiteiro' },
-        { value: 'mudancas', label: 'Mudanças' },
-        { value: 'pintor', label: 'Pintor' },
-        { value: 'piscinas', label: 'Piscinas' },
-        { value: 'jardins', label: 'Jardins' },
-    ]
 
     const getCheckedProf = trab => {
         if(selectedProf.includes(trab)) return true
@@ -182,10 +152,14 @@ const Personal = (props) => {
         if(!validator.isMobilePhone(phone, "pt-PT")){
             setPhoneWrong(true)
         }
+        else if(description.length===0){
+            setDescriptionWrong(true)
+        }
         else{
             setPhoneWrong(false)
+            setDescriptionWrong(false)
             setEdit(false)
-            if(phone!==props.user.phone){
+            if(phone!==props.user.phone || description!==props.user.description){
                 setLoadingRight(true)
                 if(props.user.type===0){
                     axios.post(`${props.api_url}/user/update_phone`, {
@@ -199,11 +173,13 @@ const Personal = (props) => {
                     })
                 }
                 else {
-                    axios.post(`${props.api_url}/worker/update_phone`, {
+                    axios.post(`${props.api_url}/worker/update_phone_and_description`, {
                         user_id : props.user._id,
-                        phone: phone
+                        phone: phone,
+                        description: description
                     }).then(() => {
                         props.updateUser(phone, "phone")
+                        props.updateUser(description, "description")
                         setLoadingRight(false)
                         setRightPop(true)
                         setTimeout(() => setRightPop(false), 4000)
@@ -310,7 +286,7 @@ const Personal = (props) => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text={"Número de telefone atualizado com sucesso!"}/>
+                <Sessao text={"Número de telefone e descrição atualizados com sucesso!"}/>
             </CSSTransition>
             <CSSTransition 
                 in={bottomPop}
@@ -446,76 +422,103 @@ const Personal = (props) => {
                             
                         </div>
                     </div>
-                    <div className={styles.top_right}>
-                        <Loader loading={loadingRight}/>
-                        <div className={edit?styles.input_flex_edit:styles.input_flex}>
-                            {
-                                !edit?
-                                    <span className={styles.edit_top}  onClick={() => setEdit(true)}>
-                                        EDITAR
-                                    </span>
-                                    :
-                                    <span className={styles.save_top} onClick={() => editDoneHandler()}>
-                                        GUARDAR
-                                    </span>
-                            }
-                            <div className={styles.input_div}>
-                                <span className={styles.input_title}>Nome</span>
-                                <div className={styles.input_div_wrapper}>
-                                    <FaceIcon className={styles.input_icon}/>
-                                    <span className={styles.input_email}>{name} {surname}</span>
-                                </div>
-                            </div>
-                            <div className={styles.input_div}>
-                                <span className={styles.input_title}>E-mail</span>
-                                <div className={styles.input_div_wrapper}>
-                                    <AlternateEmailIcon className={styles.input_icon}/>
-                                    <span className={styles.input_email}>{email}</span>
-                                </div>
-                            </div>
-                            <div className={styles.input_div}>
-                                <span className={styles.input_title}>Telefone</span>
-                                <div className={styles.input_div_wrapper}>
-                                    <PhoneIcon className={styles.input_icon}/>
-                                    <input className={phoneWrong?styles.input_wrong
-                                                        :edit?styles.input_input_edit
-                                                        :styles.input_input}
-                                            value={phoneVisual}
-                                            maxLength={11} 
-                                            onChange={e => setPhoneHandler(e.target.value)}
-                                            disabled={!edit}></input>
-                                </div>
-                                {
-                                    edit&&phone.length===0?
-                                    <span className={styles.helper}>Introduz o teu número de contacto!</span>
-                                    :null
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div className={styles.status_div} style={{backgroundColor:!props.incompleteUser&&props.user?.verified?"#6EB241":!props.incompleteUser?"#6EB241bb":"#fdd835bb"}}>
-                        <span className={styles.status_div_title}>Estado do Perfil</span>
-                        <div className={styles.status_div_flex}>
-                            <span className={styles.status_div_flex_title}>
+                    <div className={styles.top_right_flex}>
+                        <div className={styles.status_div} style={{backgroundColor:!props.incompleteUser&&props.user?.verified?"#6EB241":!props.incompleteUser?"#6EB241bb":"#fdd835bb"}}>
+                            <span className={styles.status_div_title}>Estado do Perfil</span>
+                            <div className={styles.status_div_flex}>
+                                <span className={styles.status_div_flex_title}>
+                                    {
+                                        !props.incompleteUser&&props.user?.verified?
+                                        "VERIFICADO"
+                                        :!props.incompleteUser?
+                                        "A VERIFICAR"
+                                        :"INCOMPLETO"
+                                    }
+                                </span>
                                 {
                                     !props.incompleteUser&&props.user?.verified?
-                                    "VERIFICADO"
+                                    <CheckBoxIcon className={styles.status_icon}/>
                                     :!props.incompleteUser?
-                                    "A VERIFICAR"
-                                    :"INCOMPLETO"
+                                    <RotateRightIcon className={styles.status_icon_rotate}/>
+                                    :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
                                 }
-                            </span>
-                            {
-                                !props.incompleteUser&&props.user?.verified?
-                                <CheckBoxIcon className={styles.status_icon}/>
-                                :!props.incompleteUser?
-                                <RotateRightIcon className={styles.status_icon_rotate}/>
-                                :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
-                            }
+                            </div>
                         </div>
+                        <div className={styles.top_right}>
+                            
+                            <div className={edit?styles.input_flex_edit:styles.input_flex}>
+                                {
+                                    !edit?
+                                        <span className={styles.edit_top}  onClick={() => setEdit(true)}>
+                                            EDITAR
+                                        </span>
+                                        :
+                                        <span className={styles.save_top} onClick={() => editDoneHandler()}>
+                                            GUARDAR
+                                        </span>
+                                }
+                                <div className={styles.input_div_top}>
+                                    <div className={styles.input_div}>
+                                        <span className={styles.input_title}>Nome</span>
+                                        <div className={styles.input_div_wrapper}>
+                                            {/* <FaceIcon className={styles.input_icon}/> */}
+                                            <span className={styles.input_email}>{name} {surname}</span>
+                                        </div>
+                                    </div>
+                                    <div className={styles.input_div}>
+                                        <span className={styles.input_title}>E-mail</span>
+                                        <div className={styles.input_div_wrapper}>
+                                            {/* <AlternateEmailIcon className={styles.input_icon}/> */}
+                                            <span className={styles.input_email}>{email}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={styles.top_edit_area}>
+                                    <div className={styles.edit_area_left}>
+                                        <span className={styles.input_title} style={{marginTop:"3px"}}>Telefone</span>
+                                        <span className={styles.input_title} style={{marginTop:"10px"}}>Descrição</span>
+                                    </div>
+                                    <div className={styles.edit_area_right}>
+                                        <input className={phoneWrong?styles.input_wrong
+                                                            :edit?styles.input_input_edit
+                                                            :styles.input_input}
+                                                value={phoneVisual}
+                                                maxLength={11} 
+                                                onChange={e => setPhoneHandler(e.target.value)}
+                                                disabled={!edit}>
+                                        </input>
+                                        <textarea  
+                                                style={{marginTop:"5px", resize:"none"}}
+                                                className={descriptionWrong?styles.textarea_wrong
+                                                            :edit?styles.textarea_input_edit
+                                                            :styles.textarea_input}
+                                                value={description}
+                                                maxLength={150}
+                                                rows={5}
+                                                onChange={e => setDescription(e.target.value)}
+                                                disabled={!edit}
+                                                placeholder="Uma breve descrição sobre si/a sua empresa...">
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div className={styles.input_div}>
+                                    {
+                                        edit&&phone.length!==9?
+                                            <span className={styles.helper}>Introduza o seu número de contacto!</span>
+                                        :
+                                        edit&&description.length===0?
+                                            <span className={styles.helper}>Introduza uma breve descrição!</span>
+                                        :null
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
+                    
+                    
                 </div>
-                <div className={styles.divider_max} style={{marginTop:"30px"}}></div>
+                <div className={styles.divider_max} style={{margin:"40px 0"}}></div>
                 <div className={styles.title_flex}>
                     <span className={styles.personal_subtitle}>Detalhes Trabalhador</span>
                     {   

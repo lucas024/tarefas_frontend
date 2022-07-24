@@ -8,11 +8,11 @@
     width: 100%;
     border-radius: 5px;
     cursor: pointer;
-    border-bottom: 3px solid transparent;
+    border-bottom: 3px solid var(--action);
     box-sizing: border-box;
 }
 .box:hover{
-    border-bottom: 3px solid var(--action);
+    border-bottom: 3px solid var(--brand);
 }
 .box_underline{
     
@@ -50,7 +50,7 @@
 }
 .middle{}
 .middle_desc{
-    width: fit-content; 
+    width: 90%; 
     max-width: 90%;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -83,4 +83,9 @@
     max-width: 180px;
     overflow: hidden;
     
+}
+
+.options_selected{
+    color: var(--action);
+    font-weight: 500;
 }

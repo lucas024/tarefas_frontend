@@ -58,6 +58,7 @@ const UserReservationPage = (props) => {
     const [inPropFoto, setInPropFoto] = useState(false)
     const [lat, setLat] = useState("")
     const [lng, setLng] = useState("")
+    const [district, setDistrict] = useState(null)
 
     const maxFiles = 6
     const inputRef = useRef(null);
@@ -67,6 +68,29 @@ const UserReservationPage = (props) => {
     const location = useLocation()
 
     const [searchParams] = useSearchParams()
+
+    const regioes = [
+        { value: 'acores', label: 'Açores' },
+        { value: 'aveiro', label: 'Aveiro' },
+        { value: 'beja', label: 'Beja' },
+        { value: 'braga', label: 'Braga' },
+        { value: 'braganca', label: 'Bragança' },
+        { value: 'castelo_branco', label: 'Castelo Branco' },
+        { value: 'coimbra', label: 'Coimbra' },
+        { value: 'evora', label: 'Évora' },
+        { value: 'faro', label: 'Faro' },
+        { value: 'guarda', label: 'Guarda' },
+        { value: 'leiria', label: 'Leiria' },
+        { value: 'lisboa', label: 'Lisboa' },
+        { value: 'madeira', label: 'Madeira' },
+        { value: 'portalegre', label: 'Portalegre' },
+        { value: 'porto', label: 'Porto' },
+        { value: 'santarem', label: 'Santarém' },
+        { value: 'setubal', label: 'Setúbal' },
+        { value: 'viana_do_castelo', label: 'Viana do Castelo' },
+        { value: 'vila_real', label: 'Vila Real' },
+        { value: 'viseu', label: 'Viseu' }
+    ]
 
     useEffect(() => {
         if(window.google){
@@ -168,24 +192,28 @@ const UserReservationPage = (props) => {
     const setAddressHandler = (val) => {
         Geocode.fromAddress(val.label).then(
             (response) => {
-              const { lat, lng } = response.results[0].geometry.location;
-              setLat(lat)
-              setLng(lng)
-              setAddress(val.label)
-              setBadAddress(false)
-              setWrongAddress(false)
-
-            //   if(38.84>=lat && lat>=38.68 && -9.06>lng && lng>-9.34){
-            //       setBadAddress(false)
-            //       setWrongAddress(false)
-            //       setLat(lat)
-            //       setLng(lng)
-            //       setAddress(val.label)
-            //   }
-            //   else{
-            //       setBadAddress(true)
-            //       setAddress('')
-            //   }
+                let longDistrict = null
+                console.log(response.results[0].address_components);
+                for(let el of response.results[0].address_components){
+                    if(el.types.includes("administrative_area_level_1")){
+                        console.log(el.long_name);
+                        longDistrict = el.long_name
+                        break
+                    }
+                }
+                if(longDistrict){
+                    for(let obj of regioes){
+                        if(obj.label === longDistrict){
+                            setDistrict(obj.value)
+                        }
+                    }
+                }
+                const { lat, lng } = response.results[0].geometry.location
+                setLat(lat)
+                setLng(lng)
+                setAddress(val.label)
+                setBadAddress(false)
+                setWrongAddress(false)
             })
     }
 
@@ -203,13 +231,13 @@ const UserReservationPage = (props) => {
         const arr = []
         const postId = ObjectID()
         await Promise.all(imageFiles.map((file, i) => uploadImageFileHanlder(file, postId, i, arr)))
+        let time = new Date()
         let reserva = {
             _id: postId,
             user_id: props.user._id,
             user_name: props.user.name,
             user_phone: phone,
             user_email: props.user.email,
-            publication_time: new Date(),
             title: titulo,
             desc: description,
             localizacao: address,
@@ -221,7 +249,9 @@ const UserReservationPage = (props) => {
             photos: arr,
             lat: lat,
             lng: lng,
-            photoUrl: props.user.photoUrl
+            photoUrl: props.user.photoUrl,
+            timestamp: time.getTime(),
+            district: district
         }
         axios.post(`${props.api_url}/reservations/add`, reserva).then(() => {
             setConfirmationPopup(false)
@@ -276,7 +306,6 @@ const UserReservationPage = (props) => {
     }
 
     const handleClick = () => {
-        // 👇️ open file input box on click of other element
         inputRef.current.click();
       };
     

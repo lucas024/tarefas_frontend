@@ -133,7 +133,8 @@ const FilterSelect = (props) => {
             value={options.filter(option => option.value === selectedValue)}
             isSearchable={true}
             onChange={value => {
-                props.valueChanged(value.label)
+                props.valueDisplayChanged(value.label)
+                props.valueChanged(value.value)
                 setSelectedValue(value.value)
             }}
             placeholder={

@@ -13,6 +13,7 @@ import FilterSelect from './filterSelect';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import Loader from './../general/loader';
+import NoPage from '../general/noPage';
 
 require('dayjs/locale/pt')
 
@@ -33,7 +34,9 @@ const Servicos = (props) => {
     const [allItems, setAllItems] = useState([])
     const [gridAnim, setGridAnim] = useState(true)
     const [locationActive, setLocationActive] = useState(false)
+    const [locationDisplayActive, setLocationDisplayActive] = useState(false)
     const [workerActive, setWorkerActive] = useState(false)
+    const [workerDisplayActive, setWorkerDisplayActive] = useState(false)
 
     const myRef = useRef(null)
 
@@ -41,8 +44,9 @@ const Servicos = (props) => {
         fetchWorkers()
         setClear(!clear)
         setLocationActive(false)
+        setLocationDisplayActive(false)
         setWorkerActive(false)
-            
+        setWorkerDisplayActive(false)
     //eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [])
     
@@ -76,6 +80,29 @@ const Servicos = (props) => {
         
     }, [allItems, searchParams])
 
+    useEffect(() => {
+        if(locationActive||workerActive){
+            fetchWorkersByFilter()
+        }
+    }, [locationActive, workerActive])
+
+    const fetchWorkersByFilter = () => {
+            setGridAnim(true)
+            setLoading(true)
+            axios.post(`${props.api_url}/worker/get_workers_by_filter`, {
+                region: locationActive,
+                trabalho: workerActive,
+                search: searchVal
+            }).then(res => {
+                if(res.data!=='non_existing'){
+                    let arr = res.data
+                    arr = fisher_yates_shuffle(arr)
+                    setAllItems(arr)
+                }
+                setLoading(false)
+            }).catch(err => console.log(err))
+    }
+
     const fetchWorkers = () => {
         setLoading(true)
         axios.get(`${props.api_url}/workers`).then(res => {
@@ -87,7 +114,6 @@ const Servicos = (props) => {
             setLoading(false)
         })
     }
-
     const fisher_yates_shuffle = arr => {
         let i = arr.length;
         while (--i > 0) {
@@ -103,12 +129,14 @@ const Servicos = (props) => {
                 <div key={i} className={styles.box_case} onClick={() => navigate({
                                                                     pathname: `/reserva`,
                                                                     search: `?worker=worker_id`
-                                                                })}> 
+                                                                })}>
                     <Carta
                         id={id}
                         worker={worker}
                         locationActive={locationActive}
+                        locationDisplayActive={locationDisplayActive}
                         workerActive={workerActive}
+                        workerDisplayActive={workerDisplayActive}
                     />
                 </div>
             )
@@ -139,81 +167,120 @@ const Servicos = (props) => {
         setSearchVal(val.target.value)
         handleScrollTop()
     }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault()
+            fetchWorkersByFilter()
+        }
+    }
+
+    const limparPesquisa = () => {
+        setLocationActive(false)
+        setLocationDisplayActive(false)
+        setWorkerActive(false)
+        setWorkerDisplayActive(false)
+        setClear(!clear)
+        setSearchVal("")
+        fetchWorkers()
+    }
+
     return (
         <div className={styles.servicos}>
-            <Loader loading={loading}/>   
             <div className={styles.main} onScroll={handleScroll}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_input_div}>
-                        <input onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Pesquisar trabalhadores...`}></input>
+                        <input onKeyDown={handleKeyDown} value={searchVal} onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Pesquisar trabalhadores...`}></input>
                         <PersonSearchIcon className={styles.search_input_div_icon}/>
-                        <SearchIcon className={styles.search_final_icon}/>
+                        <SearchIcon className={styles.search_final_icon} onClick={() => fetchWorkersByFilter()}/>
                     </div>
                     <div className={styles.search_filter_div_wrapper}>
                         <div className={styles.search_filter_div}>
-                            <FilterSelect type="zona" clear={clear} valueChanged={bool => setLocationActive(bool)}/>
+                            <FilterSelect 
+                                    type="zona" 
+                                    clear={clear}
+                                    valueDisplayChanged={val => setLocationDisplayActive(val)} 
+                                    valueChanged={val => setLocationActive(val)}/>
                             <div style={{marginLeft:"10px"}}>
-                                <FilterSelect type="worker" clear={clear} valueChanged={bool => setWorkerActive(bool)}/>
+                                <FilterSelect 
+                                    type="worker" 
+                                    clear={clear} 
+                                    valueChanged={val => setWorkerActive(val)}
+                                    valueDisplayChanged={val => setWorkerDisplayActive(val)}/>
                             </div>
                         </div>
-                        <span className={styles.search_clear} onClick={() =>{
-                            setLocationActive(false)
-                            setWorkerActive(false)
-                            setClear(!clear)}}>
+                        <span className={styles.search_clear} onClick={() => limparPesquisa()}>
                             Limpar Pesquisa
                         </span>
                     </div>
                 </div>
                 <div className={styles.divider}></div>
-                {
+                    <div className={styles.top_info}>
+                        
+                        {
+                            allItems.length===1?
+                            <span className={styles.top_info_numbers}>1 TRABALHADOR</span>
+                            :<span className={styles.top_info_numbers}>{allItems.length} trabalhadores</span>
+                        }
+                        <div className={styles.top_info_filter}>
+                            <div className={styles.top_info_filter_flex}>
+                                <LocationOnIcon className={styles.top_info_filter_icon}/>
+                                <span  className={styles.top_info_filter_text}>região:</span>
+                            </div>
+                            {
+                                locationDisplayActive?
+                                <span  className={styles.top_info_filter_value_on}>
+                                    {locationDisplayActive}
+                                </span>
+                                :
+                                <span  className={styles.top_info_filter_value}>
+                                    Todas
+                                </span>
+                            }
+                        </div>
+                        <div className={styles.top_info_filter}>
+                            <div className={styles.top_info_filter_flex}>
+                                <PersonIcon className={styles.top_info_filter_icon}/>
+                                <span  className={styles.top_info_filter_text}>Tipo de Trabalhador:</span>
+                            </div>
+                            {
+                                workerDisplayActive?
+                                <span  className={styles.top_info_filter_value_on}>
+                                    {workerDisplayActive}
+                                </span>
+                                :
+                                <span  className={styles.top_info_filter_value}>
+                                    Todos
+                                </span>
+                            }
+                        </div>
+                    </div>
+                    {
                     items.length>0?
                     <div>
-                        <div className={styles.top_info}>
-                            
-                            {
-                                allItems.length===1?
-                                <span className={styles.top_info_numbers}>1 TRABALHADOR</span>
-                                :<span className={styles.top_info_numbers}>{allItems.length} trabalhadores</span>
-                            }
-                            <div className={styles.top_info_filter}>
-                                <div className={styles.top_info_filter_flex}>
-                                    <LocationOnIcon className={styles.top_info_filter_icon}/>
-                                    <span  className={styles.top_info_filter_text}>região:</span>
-                                </div>
-                                {
-                                    locationActive?
-                                    <span  className={styles.top_info_filter_value_on}>
-                                        {locationActive}
-                                    </span>
-                                    :
-                                    <span  className={styles.top_info_filter_value}>
-                                        Todas
-                                    </span>
-                                }
-                            </div>
-                            <div className={styles.top_info_filter}>
-                                <div className={styles.top_info_filter_flex}>
-                                    <PersonIcon className={styles.top_info_filter_icon}/>
-                                    <span  className={styles.top_info_filter_text}>Tipo de Trabalhador:</span>
-                                </div>
-                                {
-                                    workerActive?
-                                    <span  className={styles.top_info_filter_value_on}>
-                                        {workerActive}
-                                    </span>
-                                    :
-                                    <span  className={styles.top_info_filter_value}>
-                                        Todos
-                                    </span>
-                                }
-                            </div>
-                        </div>
-                        <div className={gridAnim?styles.animGrid:styles.grid}
+                        <Loader loading={loading}/>
+                        {
+                            !loading?
+                            <div className={gridAnim?styles.animGrid:styles.grid}
                             onAnimationEnd={() =>{
                                 setGridAnim(false)
                             }}>
                                 {mapBoxesToDisplay()}
-                        </div>
+                            </div>
+                            :
+                            <div className={gridAnim?styles.animGrid:styles.grid}>
+                                <Loader loading={loading}/>
+                                <div className={styles.loading_skeleton}/>
+                                <div className={styles.loading_skeleton}/>
+                                <div className={styles.loading_skeleton}/>
+                                <div className={styles.loading_skeleton}/>
+                                <div className={styles.loading_skeleton}/>
+                                <div className={styles.loading_skeleton}/>
+                                <div style={{marginTop:"30px"}} className={styles.loading_skeleton}/>
+                                <div style={{marginTop:"30px"}} className={styles.loading_skeleton}/>
+                                <div style={{marginTop:"30px"}} className={styles.loading_skeleton}/>
+                            </div>
+                        }
                         <div className={styles.num}>
                             {
                                 currDisplay === "solo"?
@@ -256,7 +323,7 @@ const Servicos = (props) => {
                             }
                         </div>
                     </div>
-                    :null //nopage
+                    :<NoPage object="no_search" limparPesquisa={() => limparPesquisa()}/>
                 }
             </div>
         </div>

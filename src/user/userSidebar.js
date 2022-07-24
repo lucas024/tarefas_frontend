@@ -19,13 +19,14 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 import axios from 'axios'
+import Loader from '../general/loader';
 
 const UserSidebar = (props) => {
 
     const [searchParams] = useSearchParams()
     const [selectedSidebar, setSelectedSidebar] = useState("pedidos")
-    const [schedule, setSchedule] = useState(null)
     const [subscriptionIsActive, setSubscriptionIsActive] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
 
@@ -38,6 +39,7 @@ const UserSidebar = (props) => {
 
     useEffect(() => {
         if(props.user?.subscription){
+            setLoading(true)
             axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
                 subscription_id: props.user.subscription.id,
                 schedule_id: props.user.subscription.sub_schedule
@@ -46,6 +48,7 @@ const UserSidebar = (props) => {
                 if(res.data.schedule){
                     if(new Date().getTime() < new Date(res.data.schedule.current_phase.end_date*1000)){
                         setSubscriptionIsActive(true)
+                        setLoading(false)
                     }
                 }
             })
@@ -73,7 +76,9 @@ const UserSidebar = (props) => {
                     {
                         props.user&&props.user.photoUrl?
                         <img className={styles.sidebar_img} src={props.user.photoUrl}/>
-                        :<FaceIcon className={styles.sidebar_img_icon}/>
+                        :!loading?
+                        <FaceIcon className={styles.sidebar_img_icon}/>
+                        :null
                     }
                 </div>
                 <div className={styles.align}>
@@ -135,6 +140,7 @@ const UserSidebar = (props) => {
                     </ListItemButton >
                 </List>
                 <div className={styles.status}>
+                    <Loader loading={loading}/>
                     <div className={styles.status_top}>
                         <span className={styles.status_top_val} style={{color:!props.incompleteUser&&props.user?.verified&&subscriptionIsActive?"#6EB241":"#fdd835"}}>
                             {
