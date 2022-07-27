@@ -22,6 +22,29 @@ input:-webkit-autofill:active {
   --skeleton: #f3f3f330;
 }
 
+.interesse{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background-color: white;
+  box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+  border-radius: 5px;
+  width: 50%;
+  cursor: pointer;
+}
+.interesse_title{
+  font-size: 0.8rem;
+}
+.interesse_val{
+  text-align: center;
+  font-weight: 600;
+  margin: 5px 0;
+}
+.interesse_link{
+  text-align: center;
+  margin: 5px 0;
+  color: var(--action);
+}
 
 .image-gallery-thumbnail.active, .image-gallery-thumbnail:focus {
   outline: none;
