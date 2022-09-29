@@ -175,6 +175,7 @@
 .item_flex{
     display: flex;
     justify-content: flex-end;
+    flex-direction: column;
 }
 .item_indicator{
     background-color: white;
@@ -277,6 +278,24 @@
     padding: 5px;
     align-items: center;
 }
+.publicar{
+    background-color: var(--brand);
+    padding: 7px;
+    box-sizing: border-box;
+    color: white;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 3px solid var(--brand);
+    text-align: center;
+    margin-top: 10px;
+}
+.publicar:hover{
+    background-color: white;
+    transition: 150ms;
+    color: var(--brand);
+}
+
 
 @media (max-width: 1024px){
     .top_title{

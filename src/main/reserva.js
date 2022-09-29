@@ -41,12 +41,6 @@ const Reserva = (props) => {
     const [loadingChat, setLoadingChat] = useState(false)
     const [successPopin, setSuccessPopin] = useState(false)
 
-    const [userView, setUserView] = useState(false)
-    const [noAccountView, setNoAccountView] = useState(false)
-    const [noSubView, setNoSubView] = useState(false)
-    const [noProfileView, setNoProfileView] = useState(false)
-    const [noneView, setNoneView] = useState(false)
-
     const [noRepeatedChats, setNoRepeatedChats] = useState(false)
 
     const [isMapApiLoaded, setIsMapApiLoaded] = useState(false)
@@ -64,8 +58,58 @@ const Reserva = (props) => {
 
     const [searchParams] = useSearchParams()
     const [params, setParams] = useState([])
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [page, setPage] = useState(null)
+
+    const [userView, setUserView] = useState(false)
+    const [noAccountView, setNoAccountView] = useState(false)
+    const [noSubView, setNoSubView] = useState(false)
+    const [noProfileView, setNoProfileView] = useState(false)
+    const [noneView, setNoneView] = useState(false)
+    const [showFull, setShowFull] = useState(false)
+
+    const setViewTo = (view) => {
+        if(view !== "none")
+        {
+            setNoneView(false)
+        }
+        else
+        {
+            setNoneView(true)
+        }
+        if(view !== "noProfile")
+        {
+            setNoProfileView(false)
+        }
+        else
+        {
+            setNoProfileView(true)
+        }
+        if(view !== "noSub")
+        {
+            setNoSubView(false)
+        }
+        else
+        {
+            setNoSubView(true)
+        }
+        if(view !== "noAccount")
+        {
+            setNoAccountView(false)
+        }
+        else
+        {
+            setNoAccountView(true)
+        }
+        if(view !== "user")
+        {
+            setUserView(false)
+        }
+        else
+        {
+            setUserView(true)
+        }
+    }
 
     useEffect(() => {
         if(isMapApiLoaded || window.google){
@@ -81,10 +125,12 @@ const Reserva = (props) => {
 
     useEffect( () => {
         setLoading(true)
+        console.log(props.user);
         const paramsAux = Object.fromEntries([...searchParams])
         setParams(paramsAux)
         setPage(paramsAux.prevpage)
         axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
+            console.log("teste");
             if(res.data){
                 setReservation(res.data)
                 let arr = []
@@ -104,10 +150,12 @@ const Reserva = (props) => {
                     .then(res2 => {
                         setPublicationUser(res2.data)
                         if(props.user?._id === res.data.user_id){
-                            setUserView(true)
+                            setViewTo('user')
+                            setLoading(false)
                         }
                         else if(!(props.user.subscription&&!props.incompleteUser)){
-                            setNoneView(true)
+                            setViewTo('none')
+                            setLoading(false)
                         }
                         else if(props.user.subscription){
                             axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
@@ -116,23 +164,33 @@ const Reserva = (props) => {
                             })
                             .then(res => {
                                 if(!isActiveSub(res.data.schedule.current_phase.end_date)){
-                                    setNoSubView(true)
+                                    setViewTo('noSub')
                                 }
-                                else if(props.incompleteUser){
-                                    setNoProfileView(true)
+                                else if(isActiveSub(res.data.schedule.current_phase.end_date)&&props.user.state===1)
+                                {
+                                    setShowFull(true)
                                 }
+                                else if(props.incompleteUser || props.user.state===0){
+                                    setViewTo('noProfile')
+                                }
+                                setLoading(false)
                             })
                             
                         }
-                        else if(props.incompleteUser){
-                            setNoProfileView(true)
+                        else if(props.incompleteUser || props.user.state===0){
+                            setViewTo('noProfile')
+                            setLoading(false)
                         }
-                        setLoading(false)
+                        else
+                        {
+                            setViewTo('noAccount')
+                            setLoading(false)
+                        }
                         })
 
                         if(props.user.chats){
                             for(let el of props.user.chats){
-                                if(el.user_id === res.data.user_id){
+                                if(el.reservation_id === res.data._id){
                                     setNoRepeatedChats(true)
                                     setChatId(el.chat_id)
                                     break
@@ -140,13 +198,17 @@ const Reserva = (props) => {
                             }
                         }
                     }
+                else if(props)
+                {
+                    setLoading(false)
+                }
                 }
             else{
                 setReservation(null)
             }
         })
 
-    }, [searchParams, props.user, props.incompleteUser])
+    }, [searchParams, props])
 
     const isActiveSub = date => {
         if(new Date().getTime() < new Date(date*1000)){
@@ -186,7 +248,6 @@ const Reserva = (props) => {
         const obj = {
             _id:reservation._id
         }
-        console.log(obj);
         await Promise.all(reservation.photos.map((photo, key) => {
             const deleteRef = ref(storage, `/posts/${reservation._id}/${key}`)
             return deleteObject(deleteRef)
@@ -212,7 +273,8 @@ const Reserva = (props) => {
             let text_object = {
                 origin_type : props.user.type,
                 timestamp : time,
-                text: text
+                text: text,
+                starter: true
             }
             let chatId = ObjectID()
 
@@ -285,7 +347,7 @@ const Reserva = (props) => {
                         <div className={styles.normal_back}>
                             <div className={styles.normal_back_left} onClick={() => navigate(-1)}>
                                 <ArrowBackIosIcon className={styles.normal_back_left_symbol}/>
-                                <span className={styles.normal_back_left_text}>TRABALHOS</span>
+                                <span className={styles.normal_back_left_text}>VOLTAR</span>
                             </div>
                             <div className={styles.normal_back_right} onClick={() => navigate(-1)}>
                                 <span className={styles.normal_back_right_dir}>Trabalhos</span>
@@ -378,6 +440,9 @@ const Reserva = (props) => {
                                     }
                                     <div className={styles.user_info}>
                                         {
+                                            showFull||userView?
+                                            null
+                                            :
                                             noAccountView?
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
@@ -405,15 +470,18 @@ const Reserva = (props) => {
                                                 <span className={styles.market_text}>Só falta completares o teu <span style={{color:"white", textTransform:"uppercase"}}>perfil</span> para poderes contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
                                                 <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => navigate('/user?t=personal')}>Ir para Perfil</span>
                                             </div>
-                                            :null
+                                            :
+                                            <div className={styles.market_skeleton} style={{width:"200px", bottom:"-95px"}}>
+                                                <img src={arrow} className={styles.market_arrow}/>
+                                            </div>
                                             
                                         }
                                         <span className={styles.user_info_name}>{reservation.user_name}</span>
-                                        <span style={{display:"flex", alignItems:"center", marginTop:"5px"}}>
+                                        <span style={{display:"flex", alignItems:"center", marginTop:"10px"}}>
                                             <PhoneOutlinedIcon className={styles.user_info_number_symbol}/>
                                             {
-                                                !noAccountView&&!noneView&&!noSubView&&!noProfileView?
-                                                <span className={styles.user_info_number}>{getNumberDisplay(publicationUser?.phone)}</span> 
+                                                showFull||userView?
+                                                <span className={styles.user_info_number}>{getNumberDisplay(publicationUser?.phone)}</span>                                                 
                                                 :<span className={styles.user_info_number_blur}>123 456 789</span> 
                                             }
                                               
@@ -424,13 +492,13 @@ const Reserva = (props) => {
                                 <div className={styles.location_div}>
                                     <LocationOnIcon className={styles.location_pin}/>
                                     {
-                                            !noAccountView&&!noneView&&!noSubView&&!noProfileView?
-                                            <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}, ${reservation.andar}`}</span>
-                                            :<span className={styles.location_blur}>R. Abcdefg Hijklmonpqrstuvxyz 99, Porta 99</span> 
+                                        showFull||userView?
+                                        <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}, ${reservation.andar}`}</span>
+                                        :<span className={styles.location_blur}>R. Abcdefg Hijklmonpqrstuvxyz 99, Porta 99</span> 
                                         }
                                 </div>
                                 {
-                                    !noAccountView&&!noneView&&!noSubView&&!noProfileView?
+                                    showFull||userView?
                                     <div className={styles.map_div}>
                                         <GoogleMapReact 
                                             bootstrapURLKeys={{ key:"AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk", libraries: ["places"]}}
@@ -476,7 +544,7 @@ const Reserva = (props) => {
                                     <span style={{display:"flex", alignItems:"center", marginTop:"5px"}}>
                                         <PhoneOutlinedIcon className={styles.user_info_number_symbol}/>
                                         {
-                                            !noAccountView&&!noneView&&!noSubView&&!noProfileView?
+                                            showFull?
                                             <span className={styles.user_info_number}>{getNumberDisplay(publicationUser?.phone)}</span> 
                                             :<span className={styles.user_info_number_blur}>123 456 789</span> 
                                         }
@@ -492,7 +560,9 @@ const Reserva = (props) => {
                                         <div className={styles.frontdrop}>
                                             <span className={styles.frontdrop_text}>Para enviar mensagem à/ao <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span>,</span>
                                             {
-                                                noAccountView?
+                                                showFull?
+                                                null
+                                                :noAccountView?
                                                 <span className={styles.frontdrop_text}>torne-se um trabalhador Arranja.</span>
                                                 :noneView?
                                                 <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>PERFIL</span> e <span style={{color:"white"}}>SUBSCRIÇÃO</span>.</span>
@@ -503,7 +573,9 @@ const Reserva = (props) => {
                                                 :null
                                             }
                                             {
-                                                noAccountView?
+                                                showFull?
+                                                null
+                                                :noAccountView?
                                                 <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
                                                 :noneView?
                                                 <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=personal')}>Ir para Utilizador</span>

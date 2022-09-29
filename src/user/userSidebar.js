@@ -53,7 +53,10 @@ const UserSidebar = (props) => {
                 }
             })
         }
+
+        console.log(props.incompleteUser);
     }, [props.user])
+    
 
     const sidebarNavigate = (val) => {
         navigate({
@@ -109,7 +112,7 @@ const UserSidebar = (props) => {
                         <ListItemText primary={
                             <span style={{display:"flex", position:"relative"}}>
                                 <span className={styles.prox}>Perfil</span>
-                                {props.incompleteUser?
+                                {props.incompleteUser===true&&props.user?.type?
                                 <div className={styles.thing}>
                                     {/* <span className={styles.drop_div_notification}>Perfil</span> */}
                                     <span className={styles.drop_div_notification}>Incompleto</span>
@@ -139,56 +142,61 @@ const UserSidebar = (props) => {
                         } sx={{color:selectedSidebar==="messages"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                 </List>
-                <div className={styles.status}>
-                    <Loader loading={loading}/>
-                    <div className={styles.status_top}>
-                        <span className={styles.status_top_val} style={{color:!props.incompleteUser&&props.user?.verified&&subscriptionIsActive?"#6EB241":"#fdd835"}}>
-                            {
-                                !props.incompleteUser&&props.user?.verified&&subscriptionIsActive?
-                                "CONTA ATIVA"
-                                :"CONTA INATIVA"
-                            }
-                        </span>
-                    </div>
-                    <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:!props.incompleteUser&&props.user?.verified?"#6EB241":!props.incompleteUser?"#6EB241bb":"#fdd835bb"}}>
-                        <span className={styles.status_div_title}>Perfil</span>
-                        <div className={styles.status_div_flex}>
-                            <span className={styles.status_div_val}>
-                            {
-                                !props.incompleteUser&&props.user?.verified?
-                                "VERIFICADO"
-                                :!props.incompleteUser?
-                                "A VERIFICAR"
-                                :"INCOMPLETO"
-                            }
+                {
+                    props.user?.type?
+                    <div className={styles.status}>
+                        <Loader loading={loading}/>
+                        <div className={styles.status_top}>
+                            <span className={styles.status_top_val} style={{color:!props.incompleteUser&&props.user?.state===1&&subscriptionIsActive?"#6EB241":"#fdd835"}}>
+                                {
+                                    !props.incompleteUser&&props.user?.state===1&&subscriptionIsActive?
+                                    "CONTA ATIVA"
+                                    :"CONTA INATIVA"
+                                }
                             </span>
-                            {
-                                !props.incompleteUser&&props.user?.verified?
-                                <CheckBoxIcon className={styles.status_icon}/>
-                                :!props.incompleteUser?
-                                <RotateRightIcon className={styles.status_icon_rotate}/>
-                                :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
-                            }
+                        </div>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:!props.incompleteUser&&props.user?.state===1?"#6EB241":props.incompleteUser===false?"#6EB241bb":"#fdd835bb"}}>
+                            <span className={styles.status_div_title}>Perfil</span>
+                            <div className={styles.status_div_flex}>
+                                <span className={styles.status_div_val}>
+                                {
+                                    !props.incompleteUser&&props.user?.state===1?
+                                    "VERIFICADO"
+                                    :props.incompleteUser===false?
+                                    "A VERIFICAR"
+                                    :"INCOMPLETO"
+                                }
+                                </span>
+                                {
+                                    !props.incompleteUser&&props.user?.state===1?
+                                    <CheckBoxIcon className={styles.status_icon}/>
+                                    :props.incompleteUser===false?
+                                    <RotateRightIcon className={styles.status_icon_rotate}/>
+                                    :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
+                                }
+                            </div>
+                        </div>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:subscriptionIsActive?"#6EB241":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
+                            <span className={styles.status_div_title}>Subscrição</span>
+                            <div className={styles.status_div_flex}>
+                                <span className={styles.status_div_val}>
+                                {
+                                    subscriptionIsActive?
+                                    "ATIVADA"
+                                    :"DESATIVADA"
+                                }
+                                </span>
+                                {
+                                    subscriptionIsActive?
+                                    <CheckBoxIcon className={styles.status_icon}/>
+                                    :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
+                                }
+                            </div>
                         </div>
                     </div>
-                    <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:subscriptionIsActive?"#6EB241":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
-                        <span className={styles.status_div_title}>Subscrição</span>
-                        <div className={styles.status_div_flex}>
-                            <span className={styles.status_div_val}>
-                            {
-                                subscriptionIsActive?
-                                "ATIVADA"
-                                :"DESATIVADA"
-                            }
-                            </span>
-                            {
-                                subscriptionIsActive?
-                                <CheckBoxIcon className={styles.status_icon}/>
-                                :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
-                            }
-                        </div>
-                    </div>
-                </div>
+                    :null
+                }
+                
 
                 </div>
                 

@@ -164,9 +164,12 @@ const ReservaList = (props) => {
                         activeReservations?
                             displayReservations(0, 1)
                         :
-                        <div className={styles.item_none}>
+                        <div className={styles.item_none} style={{padding:"20px"}}>
                             <div className={styles.item_flex}>
                                 <span className={styles.item_type_tbd}>Sem publicações activas</span>
+                                <span className={styles.publicar} onClick={() => {navigate('/reserva?t=eletricista')}}>
+                                    PUBLICAR
+                                </span>
                             </div>
                         </div>
                     }

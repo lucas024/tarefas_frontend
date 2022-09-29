@@ -68,8 +68,10 @@ const Messages = (props) => {
     }, [searchParams])
 
     const sortByTimestamp = (a, b) => {
-        return a.last_text.timestamp + b.last_text.timestamp
+        console.log(a.last_text.timestamp)
+        return a.last_text.timestamp < b.last_text.timestamp ? 1 : -1
     }
+
 
     useEffect(() => {
         if(props.user){
@@ -80,8 +82,7 @@ const Messages = (props) => {
                 .then(res => {
                     console.log(res);
                     if(res.data!==''){
-                        console.log(res.data);
-                        setChats(res.data.chats)
+                        setChats(res.data.chats?.sort(sortByTimestamp))
                         setIsLoaded(true)
                         setLoadingChats(false)
                         setLoading(false)
@@ -92,7 +93,7 @@ const Messages = (props) => {
                 axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: props.user._id} })
                 .then(res => {
                     if(res.data!==''){
-                        setChats(res.data.chats)
+                        setChats(res.data.chats?.sort(sortByTimestamp))
                         setIsLoaded(true)
                         setLoadingChats(false)
                         setLoading(false)
@@ -286,9 +287,23 @@ const Messages = (props) => {
                                 </div>
 
                             }
-                            <div className={msg.origin_type===1?styles.chatbox_text_send:styles.chatbox_text_receive}>
-                                <span className={styles.chatbox_text_value}>{msg.text}</span>
-                            </div>
+                            {
+                                msg.starter?
+                                <div className={styles.chatbox_text_starter} style={{borderBottomRightRadius:0}}>
+                                    <span className={styles.chatbox_starter}>
+                                        <span className={styles.chatbot_template}>Interesse no trabalho!</span>
+                                        <div className={styles.chatbox_template_title_wrapper}>
+                                            <p className={styles.chatbox_template_title}>{selectedChat.reservation_title}</p>
+                                        </div>
+                                        <p className={styles.chatbot_template}>Mensagem</p>
+                                        <span className={styles.chatbox_text_value}>{msg.text}</span>
+                                    </span>
+                                </div>
+                                :
+                                <div className={msg.origin_type===1?styles.chatbox_text_send:styles.chatbox_text_receive}>
+                                    <span className={styles.chatbox_text_value}>{msg.text}</span>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -301,14 +316,42 @@ const Messages = (props) => {
     const userMessageDisplay = () => {
         return selectedChatTexts?.map((msg, i) => {
             return (
-                <div key={i} className={msg.origin_type===0?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
-                    <div className={msg.origin_type===0?styles.send:styles.receive}>
-                        {
-                            (selectedChatTexts[i+1])&&(selectedChatTexts[i+1].origin_type!==msg.origin_type)
-                            ||(!selectedChatTexts[i+1])? 
-                            <div className={styles.chatbox_user}>
-                                {
-                                    msg.origin_type===0?
+                <div key={i}>
+                    {
+                        i===0?
+                        <div className={styles.day_splitter}>
+                            <span className={styles.day_value}>{extenseDate(msg.timestamp)}</span>
+                        </div>
+                        :i>0&&getDiffDate(selectedChatTexts[i-1].timestamp, msg.timestamp)?
+                        <div className={styles.day_splitter}>
+                            <span className={styles.day_value}>{extenseDate(msg.timestamp)}</span>
+                        </div>
+                        :null
+                    }
+
+                    <div key={i} className={msg.origin_type===0?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
+                        <div className={msg.origin_type===0?styles.send:styles.receive}>
+                            {
+                                (selectedChatTexts[i+1])&&(selectedChatTexts[i+1].origin_type!==msg.origin_type)
+                                ||(!selectedChatTexts[i+1])? 
+                                <div className={styles.chatbox_user}>
+                                    {
+                                        msg.origin_type===0?
+                                            selectedChat.user_photoUrl!==""?
+                                            <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
+                                            :
+                                            <FaceIcon className={styles.chatbox_user_img}/>
+                                        :
+                                            selectedChat.worker_photoUrl!==""?
+                                            <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
+                                            :
+                                            <FaceIcon className={styles.chatbox_user_img}/>
+                                    }
+                                    <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
+                                </div>
+                                :<div className={styles.chatbox_user_opacity}>
+                                    {
+                                        msg.origin_type===0?
                                         selectedChat.user_photoUrl!==""?
                                         <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
                                         :
@@ -318,32 +361,32 @@ const Messages = (props) => {
                                         <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
                                         :
                                         <FaceIcon className={styles.chatbox_user_img}/>
-                                }
-                                <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
-                            </div>
-                            :<div className={styles.chatbox_user_opacity}>
-                                {
-                                    msg.origin_type===0?
-                                    selectedChat.user_photoUrl!==""?
-                                    <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
-                                    :
-                                    <FaceIcon className={styles.chatbox_user_img}/>
-                                :
-                                    selectedChat.worker_photoUrl!==""?
-                                    <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
-                                    :
-                                    <FaceIcon className={styles.chatbox_user_img}/>
-                                }
-                                <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
-                            </div>
+                                    }
+                                    <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
+                                </div>
 
-                        }
-                        <div className={msg.origin_type===0?styles.chatbox_text_send:styles.chatbox_text_receive}>
-                            <span className={styles.chatbox_text_value}>{msg.text}</span>
+                            }
+                            {
+                                msg.starter?
+                                <div className={styles.chatbox_text_starter} style={{borderBottomLeftRadius:0}}>
+                                    <span className={styles.chatbox_starter}>
+                                        <span className={styles.chatbot_template}>Interesse no trabalho!</span>
+                                        <div className={styles.chatbox_template_title_wrapper}>
+                                            <p className={styles.chatbox_template_title} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>{selectedChat.reservation_title}</p>
+                                        </div>
+                                        <p className={styles.chatbot_template}>Mensagem</p>
+                                        <span className={styles.chatbox_text_value}>{msg.text}</span>
+                                    </span>
+                                </div>
+                                :
+                                <div className={msg.origin_type===0?styles.chatbox_text_send:styles.chatbox_text_receive}>
+                                    <span className={styles.chatbox_text_value}>{msg.text}</span>
+                                </div>
+                            }
+                            
                         </div>
                     </div>
                 </div>
-                
             )
         })
     }
@@ -574,31 +617,42 @@ const Messages = (props) => {
                                             }
                                             {
                                                 props.user?.type===1?
-                                                <span className={styles.top_left_name}>{selectedChat.user_name}</span>
+                                                <div className={styles.name_indicator}>
+                                                    <span className={styles.top_left_name}>{selectedChat.user_name}</span>
+                                                    <span className={styles.type_indicator}>CLIENTE</span>
+                                                </div>
                                                 :
-                                                <span className={styles.top_left_name}>{selectedChat.worker_name}</span>
+                                                <div className={styles.name_indicator}>
+                                                    <span className={styles.top_left_name}>{selectedChat.worker_name}</span>
+                                                    <span className={styles.type_indicator}>TRABALHADOR</span>
+                                                </div>
+                                                
                                             }
-                                            
                                             {/* {
                                                 props.user?.type===1?
-                                                <div className={styles.post}>
-                                                    <span className={styles.post_title}>{selectedChat.reservation_title}</span>
-                                                    <span className={styles.post_link} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>ver publicação</span>
-                                                </div>
-                                                :null
+                                                <span className={styles.type_indicator}>CLIENTE</span>
+                                                :
+                                                <span className={styles.type_indicator}>TRABALHADOR</span>
                                             } */}
+                                            {
+                                                <div className={styles.post} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>
+                                                    <span className={styles.post_title}>{selectedChat.reservation_title}</span>
+                                                    <span className={styles.post_link} >ver trabalho</span>
+                                                </div>
+                                                
+                                            }
                                             
                                         </div>
                                     </div>
-                                        <ScrollToBottom className={styles.chat_area}>
-                                            <Loader loading={loadingChatBox}/>
-                                            {
-                                                props.user?.type===1?
-                                                workerMessageDisplay()
-                                                :userMessageDisplay()
-                                            }
-                                            <div ref={chatareaRef}></div>
-                                        </ScrollToBottom>
+                                    <ScrollToBottom className={styles.chat_area}>
+                                        <Loader loading={loadingChatBox}/>
+                                        {
+                                            props.user?.type===1?
+                                            workerMessageDisplay()
+                                            :userMessageDisplay()
+                                        }
+                                        <div ref={chatareaRef}></div>
+                                    </ScrollToBottom>
                                     <div className={styles.bot}>
                                         <div className={styles.bot_flex}>
                                             <TextareaAutosize 

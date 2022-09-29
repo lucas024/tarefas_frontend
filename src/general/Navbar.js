@@ -73,7 +73,7 @@ const Navbar = (props) => {
  
                                         <div className={styles.user}>
                                             {
-                                                props.incompleteUser?
+                                                props.incompleteUser&&props.user.type?
                                                 <span className={styles.drop_div_notification_big}/>
                                                 :null
                                             }
@@ -91,9 +91,7 @@ const Navbar = (props) => {
                                                 <span className={styles.drop_user_text}>{props.user.name} {props.user.surname}</span>
                                             </div>
                                             {
-                                                props.user?.type===1?
-                                                null
-                                                :
+                                                props.user?.type===0?
                                                 <div className={styles.drop_div_main} onClick={() => {
                                                     navigate('/user?t=publications')
                                                     setDropdown(false)}
@@ -102,13 +100,15 @@ const Navbar = (props) => {
                                                         <div className={styles.drop_div_special}>
                                                             <div style={{display:"flex"}}>
                                                                 <span className={styles.drop_div_text}>Publicações</span>
-                                                                <span className={styles.drop_div_number}>
+                                                                {/* <span className={styles.drop_div_number}>
                                                                     <span className={styles.drop_div_number_text}>1</span>
-                                                                </span>
+                                                                </span> */}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                :
+                                                null                                                
                                             }
                                             <div onClick={() =>{ 
                                                 setDropdown(false)
@@ -119,7 +119,7 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
-                                                                props.incompleteUser?
+                                                                props.incompleteUser&&props.user.type?
                                                                 <span className={styles.drop_div_incomplete}>Incompleto</span>
                                                                 :null
                                                             }

@@ -84,7 +84,7 @@ const Personal = (props) => {
     }, [phone])
 
     const getCheckedProf = trab => {
-        if(selectedProf.includes(trab)) return true
+        if(selectedProf?.includes(trab)) return true
         return false
     }
     
@@ -102,7 +102,7 @@ const Personal = (props) => {
     }
 
     const getCheckedReg = reg => {
-        if(selectedReg.includes(reg)) return true
+        if(selectedReg?.includes(reg)) return true
         return false
     }
     
@@ -161,7 +161,7 @@ const Personal = (props) => {
             setEdit(false)
             if(phone!==props.user.phone || description!==props.user.description){
                 setLoadingRight(true)
-                if(props.user.type===0){
+                if(props.user?.type===0){
                     axios.post(`${props.api_url}/user/update_phone`, {
                         user_id : props.user._id,
                         phone: phone
@@ -229,7 +229,7 @@ const Personal = (props) => {
 
         uploadBytes(storageRef, img).then(() => {
             getDownloadURL(storageRef).then(url => {
-                if(props.user.type===0){
+                if(props.user?.type===0){
                     axios.post(`${props.api_url}/user/update_photo`, {
                         user_id : props.user._id,
                         photoUrl: url
@@ -261,8 +261,8 @@ const Personal = (props) => {
         let val = 0
         if(phone!==""&&!edit) val += 1
         if(photo!=="") val += 1
-        if(selectedProf.length>0&&!editBottom) val += 1
-        if(selectedReg.length>0&&!editBottom) val += 1
+        if(selectedProf?.length>0&&!editBottom) val += 1
+        if(selectedReg?.length>0&&!editBottom) val += 1
         if(radioSelected!==null&&!editBottom) val += 1
         return Math.ceil((val/5)*100)
     }
@@ -270,7 +270,13 @@ const Personal = (props) => {
     return (
         <div className={styles.personal}>
             <div className={styles.personal_title}>
-                <span className={styles.top_title}>Perfil Trabalhador</span>
+                {
+                    props.user?.type===1?
+                    <span className={styles.top_title}>Perfil Trabalhador</span>
+                    :
+                    <span className={styles.top_title}>Perfil</span>
+                }
+                
             </div>
             <CSSTransition 
                 in={photoPop}
@@ -297,115 +303,115 @@ const Personal = (props) => {
                 <Sessao text={"Detalhes trabalhador atualizados com sucesso!"}/>
             </CSSTransition>
             <div className={styles.mid}>
-                <div className={styles.top}>
-                    {/* <p className={styles.top_title_two}>trabalhador</p> */}
-                    <div className={styles.top_info}  onClick={() => setDisplayTop(!displayTop)}>
-                        {/* <div className={styles.divider_max}></div> */}
-                        {
-                            displayTop?
-                            <span className={styles.top_desc}>Assim que tiveres o perfil <span className={styles.action}>100% completo</span>, este será verificado pela pela equipa do Arranja.</span>
-                            :null
-                        }
-                        
-                        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-                            <span className={styles.top_complete}>O teu perfil está <span className={styles.action}>{getPercentagem()}%</span> completo:</span>
-                            <ArrowForwardIosIcon className={!displayTop?styles.top_complete_arrow:styles.top_complete_arrow_show}/>
-                        </div>
-                        {
-                            displayTop?
-                                <div>
-                                    <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                    <FaceIcon className={styles.line_icon}/>
-                                    {
-                                        photo!==""?
-                                        <div style={{display:"flex", alignItems:"center"}}>
-                                            <span className={styles.line_text_complete}>Fotografia</span>
-                                            <CheckIcon className={styles.line_val_complete}></CheckIcon>
-                                        </div>
-                                        
-                                        :
-                                        <div style={{display:"flex", alignItems:"center"}}>
-                                            <span className={styles.line_text}>Fotografia</span>
-                                            <ClearIcon className={styles.line_val}></ClearIcon>
-                                        </div>
-
-                                    }
-                                </div>
-                                <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                    <PhoneIcon className={styles.line_icon}/>
-                                    {
-                                        phone!==""?
-                                        <div style={{display:"flex", alignItems:"center"}}>
-                                            <span className={styles.line_text_complete}>telefone</span>
-                                            <CheckIcon className={styles.line_val_complete}></CheckIcon>
-                                        </div>
-                                        
-                                        :
-                                        <div style={{display:"flex", alignItems:"center"}}>
-                                            <span className={styles.line_text}>telefone</span>
-                                            <ClearIcon className={styles.line_val}></ClearIcon>
-                                        </div>
-
-                                    }
-                                </div>
-                                <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                    <CorporateFareIcon className={styles.line_icon}/>
-                                    {
-                                        radioSelected!==""?
-                                        <div style={{display:"flex", alignItems:"center"}}>
-                                            <span className={styles.line_text_complete}>particular ou empresa</span>
-                                            <CheckIcon className={styles.line_val_complete}></CheckIcon>
-                                        </div>
-                                        
-                                        :
-                                        <div style={{display:"flex", alignItems:"center"}}>
-                                            <span className={styles.line_text}>particular ou empresa</span>
-                                            <ClearIcon className={styles.line_val}></ClearIcon>
-                                        </div>
-
-                                    }
-                                </div>
-                                <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                    <HandymanIcon className={styles.line_icon}/>
-                                    {
-                                        selectedProf.length>0?
-                                        <div style={{display:"flex", alignItems:"center"}}>
-                                            <span className={styles.line_text_complete}>Trabalhos que exerço</span>
-                                            <CheckIcon className={styles.line_val_complete}></CheckIcon>
-                                        </div>
-                                        
-                                        :
-                                        <div style={{display:"flex", alignItems:"center"}}>
-                                            <span className={styles.line_text}>Trabalhos que exerço</span>
-                                            <ClearIcon className={styles.line_val}></ClearIcon>
-                                        </div>
-
-                                    }
-                                </div>
-                                <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                    <LocationOnIcon className={styles.line_icon}/>
-                                    {
-                                        selectedReg.length>0?
-                                        <div style={{display:"flex", alignItems:"center"}}>
-                                            <span className={styles.line_text_complete}>Regiões onde trabalho</span>
-                                            <CheckIcon className={styles.line_val_complete}></CheckIcon>
-                                        </div>
-                                        
-                                        :
-                                        <div style={{display:"flex", alignItems:"center"}}>
-                                            <span className={styles.line_text}>Regiões onde trabalho</span>
-                                            <ClearIcon className={styles.line_val}></ClearIcon>
-                                        </div>
-
-                                    }
-                                </div>
+                {
+                    props.user?.type===1?
+                    <div className={styles.top}>
+                        <div className={styles.top_info}  onClick={() => setDisplayTop(!displayTop)}>
+                            {
+                                displayTop?
+                                <span className={styles.top_desc}>Assim que tiveres o perfil <span className={styles.action}>100% completo</span>, este será verificado pela pela equipa do Arranja.</span>
+                                :null
+                            }
+                            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+                                <span className={styles.top_complete}>O teu perfil está <span className={styles.action}>{getPercentagem()}%</span> completo:</span>
+                                <ArrowForwardIosIcon className={!displayTop?styles.top_complete_arrow:styles.top_complete_arrow_show}/>
                             </div>
-                            :null
-                        }
-                        
+                            {
+                                displayTop?
+                                    <div>
+                                        <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        <FaceIcon className={styles.line_icon}/>
+                                        {
+                                            photo!==""?
+                                            <div style={{display:"flex", alignItems:"center"}}>
+                                                <span className={styles.line_text_complete}>Fotografia</span>
+                                                <CheckIcon className={styles.line_val_complete}></CheckIcon>
+                                            </div>
+                                            
+                                            :
+                                            <div style={{display:"flex", alignItems:"center"}}>
+                                                <span className={styles.line_text}>Fotografia</span>
+                                                <ClearIcon className={styles.line_val}></ClearIcon>
+                                            </div>
+
+                                        }
+                                    </div>
+                                    <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        <PhoneIcon className={styles.line_icon}/>
+                                        {
+                                            phone!==""?
+                                            <div style={{display:"flex", alignItems:"center"}}>
+                                                <span className={styles.line_text_complete}>telefone</span>
+                                                <CheckIcon className={styles.line_val_complete}></CheckIcon>
+                                            </div>
+                                            
+                                            :
+                                            <div style={{display:"flex", alignItems:"center"}}>
+                                                <span className={styles.line_text}>telefone</span>
+                                                <ClearIcon className={styles.line_val}></ClearIcon>
+                                            </div>
+
+                                        }
+                                    </div>
+                                    <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        <CorporateFareIcon className={styles.line_icon}/>
+                                        {
+                                            radioSelected!==""?
+                                            <div style={{display:"flex", alignItems:"center"}}>
+                                                <span className={styles.line_text_complete}>particular ou empresa</span>
+                                                <CheckIcon className={styles.line_val_complete}></CheckIcon>
+                                            </div>
+                                            
+                                            :
+                                            <div style={{display:"flex", alignItems:"center"}}>
+                                                <span className={styles.line_text}>particular ou empresa</span>
+                                                <ClearIcon className={styles.line_val}></ClearIcon>
+                                            </div>
+
+                                        }
+                                    </div>
+                                    <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        <HandymanIcon className={styles.line_icon}/>
+                                        {
+                                            selectedProf?.length>0?
+                                            <div style={{display:"flex", alignItems:"center"}}>
+                                                <span className={styles.line_text_complete}>Trabalhos que exerço</span>
+                                                <CheckIcon className={styles.line_val_complete}></CheckIcon>
+                                            </div>
+                                            
+                                            :
+                                            <div style={{display:"flex", alignItems:"center"}}>
+                                                <span className={styles.line_text}>Trabalhos que exerço</span>
+                                                <ClearIcon className={styles.line_val}></ClearIcon>
+                                            </div>
+
+                                        }
+                                    </div>
+                                    <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        <LocationOnIcon className={styles.line_icon}/>
+                                        {
+                                            selectedReg?.length>0?
+                                            <div style={{display:"flex", alignItems:"center"}}>
+                                                <span className={styles.line_text_complete}>Regiões onde trabalho</span>
+                                                <CheckIcon className={styles.line_val_complete}></CheckIcon>
+                                            </div>
+                                            
+                                            :
+                                            <div style={{display:"flex", alignItems:"center"}}>
+                                                <span className={styles.line_text}>Regiões onde trabalho</span>
+                                                <ClearIcon className={styles.line_val}></ClearIcon>
+                                            </div>
+
+                                        }
+                                    </div>
+                                </div>
+                                :null
+                            }
                         </div>
                     </div>
-                <span className={styles.personal_subtitle} style={{marginTop:"20px"}}>Fotografia e Dados</span>
+                    :null
+                }
+                <span className={styles.personal_subtitle} style={{marginTop:props.user?.type===1?"20px":""}}>Fotografia e Dados</span>
                 <div className={styles.flex}>
                     <div>
                         <div className={styles.image_wrapper}>
@@ -423,29 +429,32 @@ const Personal = (props) => {
                         </div>
                     </div>
                     <div className={styles.top_right_flex}>
-                        <div className={styles.status_div} style={{backgroundColor:!props.incompleteUser&&props.user?.verified?"#6EB241":!props.incompleteUser?"#6EB241bb":"#fdd835bb"}}>
-                            <span className={styles.status_div_title}>Estado do Perfil</span>
-                            <div className={styles.status_div_flex}>
-                                <span className={styles.status_div_flex_title}>
+                        {
+                            props.user?.type===1?
+                            <div className={styles.status_div} style={{backgroundColor:!props.incompleteUser&&props.user?.verified?"#6EB241":props.incompleteUser===false?"#6EB241bb":"#fdd835bb"}}>
+                                <span className={styles.status_div_title}>Estado do Perfil</span>
+                                <div className={styles.status_div_flex}>
+                                    <span className={styles.status_div_flex_title}>
+                                        {
+                                            !props.incompleteUser&&props.user?.state===1?
+                                            "VERIFICADO"
+                                            :!props.incompleteUser?
+                                            "A VERIFICAR"
+                                            :"INCOMPLETO"
+                                        }
+                                    </span>
                                     {
-                                        !props.incompleteUser&&props.user?.verified?
-                                        "VERIFICADO"
-                                        :!props.incompleteUser?
-                                        "A VERIFICAR"
-                                        :"INCOMPLETO"
+                                        !props.incompleteUser&&props.user?.state===1?
+                                        <CheckBoxIcon className={styles.status_icon}/>
+                                        :props.incompleteUser===false?
+                                        <RotateRightIcon className={styles.status_icon_rotate}/>
+                                        :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
                                     }
-                                </span>
-                                {
-                                    !props.incompleteUser&&props.user?.verified?
-                                    <CheckBoxIcon className={styles.status_icon}/>
-                                    :!props.incompleteUser?
-                                    <RotateRightIcon className={styles.status_icon_rotate}/>
-                                    :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
-                                }
+                                </div>
                             </div>
-                        </div>
+                            :null
+                        }
                         <div className={styles.top_right}>
-                            
                             <div className={edit?styles.input_flex_edit:styles.input_flex}>
                                 {
                                     !edit?
@@ -476,7 +485,11 @@ const Personal = (props) => {
                                 <div className={styles.top_edit_area}>
                                     <div className={styles.edit_area_left}>
                                         <span className={styles.input_title} style={{marginTop:"3px"}}>Telefone</span>
-                                        <span className={styles.input_title} style={{marginTop:"10px"}}>Descrição</span>
+                                        {
+                                            props.user?.type===1?
+                                            <span className={styles.input_title} style={{marginTop:"10px"}}>Descrição</span>
+                                            :null
+                                        }
                                     </div>
                                     <div className={styles.edit_area_right}>
                                         <input className={phoneWrong?styles.input_wrong
@@ -487,7 +500,9 @@ const Personal = (props) => {
                                                 onChange={e => setPhoneHandler(e.target.value)}
                                                 disabled={!edit}>
                                         </input>
-                                        <textarea  
+                                        {
+                                            props.user?.type===1?
+                                            <textarea
                                                 style={{marginTop:"5px", resize:"none"}}
                                                 className={descriptionWrong?styles.textarea_wrong
                                                             :edit?styles.textarea_input_edit
@@ -498,7 +513,10 @@ const Personal = (props) => {
                                                 onChange={e => setDescription(e.target.value)}
                                                 disabled={!edit}
                                                 placeholder="Uma breve descrição sobre si/a sua empresa...">
-                                        </textarea>
+                                            </textarea>
+                                            :null
+                                        }
+                                        
                                     </div>
                                 </div>
                                 <div className={styles.input_div}>
@@ -513,89 +531,90 @@ const Personal = (props) => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                {
+                    props.user?.type===1?
+                    <div>
+                        <div className={styles.divider_max} style={{margin:"40px 0"}}></div>
+                        <div className={styles.title_flex}>
+                            <span className={styles.personal_subtitle}>Detalhes Trabalhador</span>
+                            {   
+                                !editBottom?
+                                <span className={styles.edit} onClick={() => setEditBottom(true)}>
+                                    EDITAR
+                                </span>
+                                :
+                                <span className={styles.save} onClick={() => bottomEditDoneHandler()}>
+                                    GUARDAR
+                                </span>
+                            }
+                        </div>
+                        <Loader loading={loadingBottom}/>
+                        <div className={styles.radio_div}>
+                            <div style={{cursor:!editBottom?"default":"pointer"}} className={styles.radio_area} onClick={() =>{ 
+                                editBottom&&setRadioSelected(0)
+                                setEntityWrong(false)}}>
+                                <input readOnly type="radio" value="particular" name="tipo" checked={radioSelected===0}/>
+                                <span className={editBottom?styles.fake_radio_button:styles.fake_radio_button_disabled}/>
+                                <span className={editBottom?styles.radio_text:styles.radio_text_disabled}>Particular</span>
+                            </div>
+                            <div style={{display:"flex", alignItems:"center"}}>
+                                <div style={{cursor:!editBottom?"default":"pointer"}} className={styles.radio_area} onClick={() => {
+                                    editBottom&&setRadioSelected(1)
+                                    setEntityWrong(false)}
+                                    }>
+                                    <input readOnly type="radio" value="empresa" name="tipo" checked={radioSelected===1}/>
+                                    <span className={editBottom?styles.fake_radio_button:styles.fake_radio_button_disabled}/>
+                                    <span className={editBottom?styles.radio_text:styles.radio_text_disabled}>Empresa</span>
+                                </div>
+                                {
+                                    radioSelected===1?
+                                    <input maxLength={30} disabled={!editBottom} value={entityName} onChange={e => setEntityName(e.target.value)} placeholder='Nome da empresa...' className={styles.radio_button_input} />
+                                    :
+                                    null
+                                }
+                            </div>
+                            {
+                                entityWrong?
+                                <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor defina a sua situação de trabalho!</span>
+                                :null
+                            }
+                        </div>  
                         
-                    </div>
-                    
-                    
-                </div>
-                <div className={styles.divider_max} style={{margin:"40px 0"}}></div>
-                <div className={styles.title_flex}>
-                    <span className={styles.personal_subtitle}>Detalhes Trabalhador</span>
-                    {   
-                        !editBottom?
-                        <span className={styles.edit} onClick={() => setEditBottom(true)}>
-                            EDITAR
-                        </span>
-                        :
-                        <span className={styles.save} onClick={() => bottomEditDoneHandler()}>
-                            GUARDAR
-                        </span>
-                    }
-                    
-                </div>
-                <Loader loading={loadingBottom}/>
-                <div className={styles.radio_div}>
-                    <div style={{cursor:!editBottom?"default":"pointer"}} className={styles.radio_area} onClick={() =>{ 
-                        editBottom&&setRadioSelected(0)
-                        setEntityWrong(false)}}>
-                        <input readOnly type="radio" value="particular" name="tipo" checked={radioSelected===0}/>
-                        <span className={editBottom?styles.fake_radio_button:styles.fake_radio_button_disabled}/>
-                        <span className={editBottom?styles.radio_text:styles.radio_text_disabled}>Particular</span>
-                    </div>
-                    <div style={{display:"flex", alignItems:"center"}}>
-                        <div style={{cursor:!editBottom?"default":"pointer"}} className={styles.radio_area} onClick={() => {
-                            editBottom&&setRadioSelected(1)
-                            setEntityWrong(false)}
-                            }>
-                            <input readOnly type="radio" value="empresa" name="tipo" checked={radioSelected===1}/>
-                            <span className={editBottom?styles.fake_radio_button:styles.fake_radio_button_disabled}/>
-                            <span className={editBottom?styles.radio_text:styles.radio_text_disabled}>Empresa</span>
-                        </div>
-                        {
-                            radioSelected===1?
-                            <input maxLength={30} disabled={!editBottom} value={entityName} onChange={e => setEntityName(e.target.value)} placeholder='Nome da empresa...' className={styles.radio_button_input} />
-                            :
-                            null
-                        }
-                    </div>
-                    {
-                        entityWrong?
-                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor defina a sua situação de trabalho!</span>
-                        :null
-                    }
-                </div>  
-                
-                <div className={styles.flex_bottom}>
-                    <div className={styles.flex_left}>
-                        <span className={styles.flex_title}>Trabalhos que exerço</span>
-                        <span className={editBottom?styles.divider_active:styles.divider}></span>
-                        {
-                            editBottom&&selectedProf.length===0?
-                            <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um trabalho!</span>
-                            :null
-                        }
-                        <div className={styles.flex_select_div}>
-                            <div>
-                                {mapTrabalhos()}
+                        <div className={styles.flex_bottom}>
+                            <div className={styles.flex_left}>
+                                <span className={styles.flex_title}>Trabalhos que exerço</span>
+                                <span className={editBottom?styles.divider_active:styles.divider}></span>
+                                {
+                                    editBottom&&selectedProf.length===0?
+                                    <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um trabalho!</span>
+                                    :null
+                                }
+                                <div className={styles.flex_select_div}>
+                                    <div>
+                                        {mapTrabalhos()}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={styles.flex_left}>
+                                <span className={styles.flex_title}>Regiões onde trabalho</span>
+                                <span className={editBottom?styles.divider_active:styles.divider}></span>
+                                {
+                                    editBottom&&selectedReg.length===0?
+                                    <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos uma região!</span>
+                                    :null
+                                }
+                                <div className={styles.flex_select_div}>
+                                    <div>
+                                        {mapRegioes()}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className={styles.flex_left}>
-                        <span className={styles.flex_title}>Regiões onde trabalho</span>
-                        <span className={editBottom?styles.divider_active:styles.divider}></span>
-                        {
-                            editBottom&&selectedReg.length===0?
-                            <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos uma região!</span>
-                            :null
-                        }
-                        <div className={styles.flex_select_div}>
-                            <div>
-                                {mapRegioes()}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                    :null
+                }
             </div>
         </div>
     )

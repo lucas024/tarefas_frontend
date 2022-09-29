@@ -27,7 +27,7 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [userLoadAttempt, setUserLoadAttemp] = useState(false)
-  const [incompleteUser, setIncompleteUser] = useState(false)
+  const [incompleteUser, setIncompleteUser] = useState(true)
   const [hasTexts, setHasTexts] = useState(false)
 
 
@@ -41,7 +41,6 @@ function App() {
   });
 
   const updateChatReadLocal = chat_id => {
-    console.log("sim")
     let has = false
     if(user.chats.length>0){
       let arr = user.chats
@@ -56,9 +55,6 @@ function App() {
         }
         else{
           if(user.type===1&&!el.worker_read){
-            console.log(chat_id);
-            console.log(el)
-            console.log(el.worker_read);
             has=true
           }
           else if(user.type===0&&!el.user_read){
@@ -66,7 +62,6 @@ function App() {
           }
         }
       }
-      console.log(has);
       setHasTexts(has)
       setUser(user)
     }
@@ -90,6 +85,9 @@ function App() {
           if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
             setIncompleteUser(true)
           }
+          else{
+            setIncompleteUser(false)
+          }
           setUserLoadAttemp(true)
           setLoading(false)
         }
@@ -97,7 +95,7 @@ function App() {
           axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
             if(res.data !== null){
               setUser(res.data)
-              if(res.data.chats.length>0){
+              if(res.data.chats?.length>0){
                 for(const el of res.data.chats){
                   if(!el.worker_read){
                     setHasTexts(true)
@@ -107,6 +105,9 @@ function App() {
               }
               if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
                 setIncompleteUser(true)
+              }
+              else{
+                setIncompleteUser(false)
               }
               setUserLoadAttemp(true)
               setLoading(false)
@@ -121,6 +122,7 @@ function App() {
       })
     }
     else{
+      console.log("teste");
       setLoading(false)
       setUserLoadAttemp(true)
     }
@@ -129,11 +131,13 @@ function App() {
   const refreshWorker = () => {
     axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
       if(res.data !== null){
-        console.log(res.data);
         setUser(res.data)
         setNotifications(res.data.notifications)
         if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
           setIncompleteUser(true)
+        }
+        else{
+          setIncompleteUser(false)
         }
         setUserLoadAttemp(true)
         setLoading(false)
@@ -150,6 +154,9 @@ function App() {
     setUser(userAux)
     if(user.regioes?.length>0&&user.trabalhos?.length>0&&user.phone!==""&&user.photoUrl!==""){
       setIncompleteUser(false)
+    }
+    else{
+      setIncompleteUser(true)
     }
   }
 

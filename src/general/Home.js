@@ -60,7 +60,7 @@ const Home = (props) => {
                 :null
             }
             {
-                props.user?.type===0?
+                props.user?.type===0 || props.userLoadAttempt?
                 <span className={styles.worker_button} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
                 :props.user?.type===1?
                 null
@@ -71,7 +71,7 @@ const Home = (props) => {
             <div className={styles.home_back}>
                 <div className={styles.section_one} onClick={() => navigate('/main/publications/trabalhos')}>
                     {
-                        props.user?
+                        props.user || props.userLoadAttempt?
                         <div className={styles.section_content}>
                             <div className={styles.section_image_wrapper}>
                                 <ManageSearchIcon className={styles.section_img}/>
@@ -110,7 +110,7 @@ const Home = (props) => {
                         <a className={styles.link2}/>
                     </div>
                     :
-                    props.user?.type===0?
+                    props.user?.type===0 || props.userLoadAttempt?
                     <div className={styles.section_two} onClick={() => navigate('/main/publications/trabalhadores')}>
                         <div className={styles.section_content}>
                             <div className={styles.section_image_wrapper}>
@@ -138,7 +138,7 @@ const Home = (props) => {
                 }
             </div>
             {               
-                props.user?.type===0?
+                props.user?.type===0 || props.userLoadAttempt?
                 <div className={styles.publish} onClick={() => navigate('/reserva?w=eletricista')}>
                     <span className={styles.publish_or}>OU</span>
                     <div className={styles.publish_main}>
@@ -154,10 +154,10 @@ const Home = (props) => {
                 <span className={styles.skeleton_publish}></span>
             }
             {
-                props.user?.type===0?
+                props.user?.type===0 || props.userLoadAttempt?
                 <div className={styles.tag}>
                     <p className={styles.tag_text}>
-                        Do que precisas hoje?
+                        Do que precisa hoje?
                     </p>
                 </div>
                 :

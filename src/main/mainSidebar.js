@@ -37,7 +37,7 @@ const MainSidebar = (props) => {
                     props.selected==="trabalhadores"?
                     <div className={styles.sidebar_top}>
                         <span className={styles.sidebar_top_text}>TRABALHADORES</span>
-                        <PersonSearchIcon className={styles.sidebar_top_icon} style={{color:"#161F28"}}/>
+                        <PersonSearchIcon className={styles.sidebar_top_icon} style={{color:"#fff"}}/>
                     </div>
                     :
                     <div className={styles.sidebar_top}>
@@ -55,20 +55,20 @@ const MainSidebar = (props) => {
                     <ListItemButton 
                         onClick={() => handleSelectedSidebar("trabalhos")} 
                         className={styles.button_main_trabalhos}
-                        style={{borderTop:props.selected==="trabalhos"?"2px solid white":"", borderLeft:props.selected==="trabalhos"?"2px solid white":"", background:props.selected==="trabalhos"?"#ffffff20":""}}>
+                        style={{border:props.selected==="trabalhos"?"2px solid white":"", background:props.selected==="trabalhos"?"#ffffff20":""}}>
                         <ListItemIcon>
-                        <ManageSearchIcon sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa", fontSize:props.selected==="trabalhos"?"2rem":"1.3rem"}}/>
+                        <ManageSearchIcon sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa"}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox} style={{fontSize:props.selected==="trabalhos"?"1rem":""}}>Trabalhos</span>} sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa"}}/>
+                        <ListItemText primary={<span className={styles.prox}>Trabalhos</span>} sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa"}}/>
                     </ListItemButton >
                     <ListItemButton 
                         onClick={() => handleSelectedSidebar("trabalhadores")} 
                         className={styles.button_main_trabalhadores}
-                        style={{borderBottom:props.selected==="trabalhadores"?"2px solid white":"", borderLeft:props.selected==="trabalhadores"?"2px solid white":"", background:props.selected==="trabalhadores"?"ffffff20":""}}>
+                        style={{border:props.selected==="trabalhadores"?"2px solid white":"", background:props.selected==="trabalhadores"?"#ffffff20":""}}>
                         <ListItemIcon>
-                        <PersonSearchIcon sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa", fontSize:props.selected==="trabalhadores"?"2rem":"1.3rem"}}/>
+                        <PersonSearchIcon sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa"}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox} style={{fontSize:props.selected==="trabalhadores"?"1rem":""}}>Trabalhadores</span>} sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa"}}/>
+                        <ListItemText primary={<span className={styles.prox}>Trabalhadores</span>} sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa"}}/>
                     </ListItemButton >
                 </List>
                 
