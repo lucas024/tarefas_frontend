@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import Select from 'react-select'
-import styles from './servicos.module.css'
+import styles from './trabalhadores.module.css'
 import PersonIcon from '@mui/icons-material/Person';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
@@ -55,6 +55,11 @@ const FilterSelect = (props) => {
     useEffect(() => {
         setSelectedValue(null)
     }, [props.clear])
+
+    useEffect(() => {
+        props.urlVal&&setSelectedValue(props.urlVal)
+    }, [props.urlVal])
+    
  
     const stylesSelect = {
         control: (base, state) => ({
@@ -133,7 +138,6 @@ const FilterSelect = (props) => {
             value={options.filter(option => option.value === selectedValue)}
             isSearchable={true}
             onChange={value => {
-                props.valueDisplayChanged(value.label)
                 props.valueChanged(value.value)
                 setSelectedValue(value.value)
             }}

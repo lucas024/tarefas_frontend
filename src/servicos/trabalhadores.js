@@ -1,19 +1,21 @@
-import React, { useEffect, useState, useRef } from 'react';
-import styles from './servicos.module.css'
-import { useParams, useSearchParams } from 'react-router-dom';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import React, { useEffect, useState, useRef } from 'react'
+import styles from './trabalhadores.module.css'
+import { useParams, useSearchParams, useLocation } from 'react-router-dom'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { useNavigate } from 'react-router-dom'
-import dayjs from 'dayjs';
-import Carta from './carta';
-import axios from 'axios';
-import SearchIcon from '@mui/icons-material/Search';
-import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import FilterSelect from './filterSelect';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import PersonIcon from '@mui/icons-material/Person';
-import Loader from './../general/loader';
-import NoPage from '../general/noPage';
+import dayjs from 'dayjs'
+import Carta from './carta'
+import axios from 'axios'
+import SearchIcon from '@mui/icons-material/Search'
+import PersonSearchIcon from '@mui/icons-material/PersonSearch'
+import FilterSelect from './filterSelect'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import PersonIcon from '@mui/icons-material/Person'
+import Loader from '../general/loader'
+import NoPage from '../general/noPage'
+import clearIcon from '../assets/search_clear.png'
+import {regioesOptions, profissoesOptions} from '../general/util'
 
 require('dayjs/locale/pt')
 
@@ -34,9 +36,9 @@ const Servicos = (props) => {
     const [allItems, setAllItems] = useState([])
     const [gridAnim, setGridAnim] = useState(true)
     const [locationActive, setLocationActive] = useState(false)
-    const [locationDisplayActive, setLocationDisplayActive] = useState(false)
     const [workerActive, setWorkerActive] = useState(false)
-    const [workerDisplayActive, setWorkerDisplayActive] = useState(false)
+
+    const location = useLocation()
 
     const myRef = useRef(null)
 
@@ -44,15 +46,21 @@ const Servicos = (props) => {
         fetchWorkers()
         setClear(!clear)
         setLocationActive(false)
-        setLocationDisplayActive(false)
         setWorkerActive(false)
-        setWorkerDisplayActive(false)
     //eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [])
     
 
     useEffect(() => {
-        let page = parseInt(Object.fromEntries([...searchParams]).p)
+        console.log(window.history);
+        if(window.history?.state?.usr?.from_page)
+        {
+            setGridAnim(false)
+        }
+        const paramsAux = Object.fromEntries([...searchParams])
+        paramsAux.region&&setLocationActive(paramsAux.region)
+        paramsAux.work&&setWorkerActive(paramsAux.work)
+        let page = parseInt(paramsAux.p)
         if(allItems!==null){
             if(allItems.length >= page*24 && page>1){
                 setCurrPage(page)
@@ -87,20 +95,35 @@ const Servicos = (props) => {
     }, [locationActive, workerActive])
 
     const fetchWorkersByFilter = () => {
-            setGridAnim(true)
             setLoading(true)
-            axios.post(`${props.api_url}/worker/get_workers_by_filter`, {
-                region: locationActive,
-                trabalho: workerActive,
-                search: searchVal
-            }).then(res => {
-                if(res.data!=='non_existing'){
-                    let arr = res.data
-                    arr = fisher_yates_shuffle(arr)
-                    setAllItems(arr)
+            if(searchVal===""&&!workerActive&&!locationActive)
+            {
+                limparPesquisa()
+            }
+            else
+            {
+                var searchValFinal = ""
+                if(searchVal!=="")
+                {
+                    for(let el of searchVal.split(' '))
+                    {
+                        searchValFinal += `\"${el}\" `
+                    }
                 }
-                setLoading(false)
-            }).catch(err => console.log(err))
+                axios.post(`${props.api_url}/worker/get_workers_by_filter`, {
+                    region: locationActive,
+                    trabalho: workerActive,
+                    search: searchValFinal
+                }).then(res => {
+                    if(res.data!=='non_existing'){
+                        let arr = res.data
+                        arr = fisher_yates_shuffle(arr)
+                        setAllItems(arr)
+                    }
+                    setLoading(false)
+                }).catch(err => console.log(err))
+            }
+
     }
 
     const fetchWorkers = () => {
@@ -123,20 +146,33 @@ const Servicos = (props) => {
         return arr;
       }
 
+    const getSearchParams = worker_id => {
+        if(workerActive&&locationActive){
+            return `?id=${worker_id}&page=${currPage}&work=${workerActive}&region=${locationActive}`
+        }
+        else if(workerActive){
+            return `?id=${worker_id}&page=${currPage}&work=${workerActive}`
+        }
+        else if(locationActive){
+            return `?id=${worker_id}&page=${currPage}&region=${locationActive}`
+        }
+        else{
+            return `?id=${worker_id}&page=${currPage}`
+        }
+    }
+
     const mapBoxesToDisplay = () => {
         return items?.map((worker, i) => {
             return(
                 <div key={i} className={styles.box_case} onClick={() => navigate({
-                                                                    pathname: `/reserva`,
-                                                                    search: `?worker=worker_id`
+                                                                    pathname: `/main/publications/trabalhador`,
+                                                                    search: getSearchParams(worker._id)
                                                                 })}>
                     <Carta
                         id={id}
                         worker={worker}
                         locationActive={locationActive}
-                        locationDisplayActive={locationDisplayActive}
                         workerActive={workerActive}
-                        workerDisplayActive={workerDisplayActive}
                     />
                 </div>
             )
@@ -177,9 +213,10 @@ const Servicos = (props) => {
 
     const limparPesquisa = () => {
         setLocationActive(false)
-        setLocationDisplayActive(false)
         setWorkerActive(false)
-        setWorkerDisplayActive(false)
+        searchParams.delete("work")
+        searchParams.delete("region")
+        setSearchParams(searchParams)
         setClear(!clear)
         setSearchVal("")
         fetchWorkers()
@@ -187,6 +224,7 @@ const Servicos = (props) => {
 
     return (
         <div className={styles.servicos}>
+            <Loader loading={loading}/>
             <div className={styles.main} onScroll={handleScroll}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_input_div}>
@@ -199,19 +237,28 @@ const Servicos = (props) => {
                             <FilterSelect 
                                     type="zona" 
                                     clear={clear}
-                                    valueDisplayChanged={val => setLocationDisplayActive(val)} 
-                                    valueChanged={val => setLocationActive(val)}/>
+                                    urlVal={locationActive}
+                                    valueChanged={val => {
+                                        workerActive&&setSearchParams({'work': workerActive, 'region': val})
+                                        !workerActive&&setSearchParams({'region': val})
+                                        setLocationActive(val)}}/>
                             <div style={{marginLeft:"10px"}}>
                                 <FilterSelect 
                                     type="worker" 
-                                    clear={clear} 
-                                    valueChanged={val => setWorkerActive(val)}
-                                    valueDisplayChanged={val => setWorkerDisplayActive(val)}/>
+                                    clear={clear}
+                                    urlVal={workerActive}
+                                    valueChanged={val => {
+                                        locationActive&&setSearchParams({'work': val, 'region': locationActive})
+                                        !locationActive&&setSearchParams({'work': val})
+                                        setWorkerActive(val)}}/>
                             </div>
                         </div>
-                        <span className={styles.search_clear} onClick={() => limparPesquisa()}>
-                            Limpar Pesquisa
-                        </span>
+                        <div className={styles.search_clear_wrapper} onClick={() => limparPesquisa()}>
+                            <span className={styles.search_clear}>
+                                Limpar Pesquisa
+                            </span>
+                            <img src={clearIcon} className={styles.search_clear_icon}/>
+                        </div>
                     </div>
                 </div>
                 <div className={styles.divider}></div>
@@ -228,9 +275,9 @@ const Servicos = (props) => {
                                 <span  className={styles.top_info_filter_text}>região:</span>
                             </div>
                             {
-                                locationDisplayActive?
+                                locationActive?
                                 <span  className={styles.top_info_filter_value_on}>
-                                    {locationDisplayActive}
+                                    {regioesOptions[locationActive]}
                                 </span>
                                 :
                                 <span  className={styles.top_info_filter_value}>
@@ -244,9 +291,9 @@ const Servicos = (props) => {
                                 <span  className={styles.top_info_filter_text}>Tipo de Trabalhador:</span>
                             </div>
                             {
-                                workerDisplayActive?
+                                workerActive?
                                 <span  className={styles.top_info_filter_value_on}>
-                                    {workerDisplayActive}
+                                    {profissoesOptions[workerActive]}
                                 </span>
                                 :
                                 <span  className={styles.top_info_filter_value}>
@@ -258,7 +305,6 @@ const Servicos = (props) => {
                     {
                     items.length>0?
                     <div>
-                        <Loader loading={loading}/>
                         {
                             !loading?
                             <div className={gridAnim?styles.animGrid:styles.grid}
@@ -269,7 +315,6 @@ const Servicos = (props) => {
                             </div>
                             :
                             <div className={gridAnim?styles.animGrid:styles.grid}>
-                                <Loader loading={loading}/>
                                 <div className={styles.loading_skeleton}/>
                                 <div className={styles.loading_skeleton}/>
                                 <div className={styles.loading_skeleton}/>

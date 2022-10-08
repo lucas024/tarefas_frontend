@@ -8,7 +8,7 @@ import {
 import Home from './general/home'
 import Navbar from './general/navbar'
 import './app.css'
-import UserReservationPage from './interaction/userReservationPage'
+import UserReservationPage from './user/userReservationPage'
 import Auth from './auth/auth';
 import { onAuthStateChanged } from 'firebase/auth';
 import {auth} from './firebase/firebase'
@@ -16,8 +16,9 @@ import axios from 'axios'
 import User from './user/user';
 import Main from './main/main';
 import Loader from './general/loader';
-import Reserva from './main/reserva';
+import Trabalho from './main/trabalho';
 import AuthWorker from './auth/authWorker';
+import Trabalhador from './main/trabalhador';
 
 function App() {
   const api_url = "http://localhost:5000"
@@ -122,7 +123,6 @@ function App() {
       })
     }
     else{
-      console.log("teste");
       setLoading(false)
       setUserLoadAttemp(true)
     }
@@ -168,11 +168,17 @@ function App() {
           <Navbar user={user} hasTexts={hasTexts} incompleteUser={incompleteUser} userLoadAttempt={userLoadAttempt}/>
           <Routes>
               <Route exact path="/main/publications/publication" 
-                element={<Reserva
+                element={<Trabalho
                   refreshWorker={() => refreshWorker()}
                   user={user}
                   api_url={api_url}
                   incompleteUser={incompleteUser}
+                  />}
+              />
+              <Route exact path="/main/publications/trabalhador" 
+                element={<Trabalhador
+                  user={user}
+                  api_url={api_url}
                   />}
               />
               <Route exact path="/main/publications/*" 

@@ -38,7 +38,6 @@ const Auth = (props) => {
     const [nameWrong, setNameWrong] = useState(false)
     const [surname, setSurname] = useState("")
     const [surnameWrong, setSurnameWrong] = useState(false)
-    const [surnameFocused, setSurnameFocused] = useState(false)
     const [nameFocused, setNameFocused] = useState(false)
     const [phone, setPhone] = useState("")
     const [phoneVisual, setPhoneVisual] = useState('')
@@ -64,6 +63,12 @@ const Auth = (props) => {
             setNameWrong(false)
         }
     }, [name])
+
+    useEffect(() => {
+        if(surname.length>1){
+            setSurnameWrong(false)
+        }
+    }, [surname])
 
     useEffect(() => {
         if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
@@ -227,8 +232,7 @@ const Auth = (props) => {
     }
 
     const validateSurnameHandler = () => {
-        setSurnameFocused(false)
-        if(name.length<2){
+        if(surname.length<2){
             setSurnameWrong(true)
         }
         else{
@@ -497,13 +501,12 @@ const Auth = (props) => {
                                 <div className={styles.login} style={{marginTop:"10px"}}>
                                     <p className={styles.login_title}>Apelido</p>
                                     <input 
-                                        maxLength={24}
+                                        maxLength={12}
                                         onChange={e => setSurname(e.target.value)} 
                                         className={styles.login_input} 
                                         placeholder="Apelido" 
                                         value={surname}
                                         onBlur={() => validateSurnameHandler()}
-                                        onFocus={() => setSurnameFocused(true)}
                                         style={{borderBottom:surnameWrong?"3px solid red":!surnameWrong&&surname.length>1?"3px solid #6EB241":""}}></input>
                                     {
                                         surnameWrong?

@@ -36,7 +36,8 @@ const AuthWorker = (props) => {
     const [passwordFocused, setPasswordFocused] = useState(false)
     const [name, setName] = useState("")
     const [nameWrong, setNameWrong] = useState(false)
-    const [nameFocused, setNameFocused] = useState(false)
+    const [surname, setSurname] = useState("")
+    const [surnameWrong, setSurnameWrong] = useState(false)
     const [phone, setPhone] = useState("")
     const [phoneVisual, setPhoneVisual] = useState('')
     const [phoneWrong, setPhoneWrong] = useState(false)
@@ -49,6 +50,12 @@ const AuthWorker = (props) => {
             setNameWrong(false)
         }
     }, [name])
+
+    useEffect(() => {
+        if(surname.length>1){
+            setSurnameWrong(false)
+        }
+    }, [surname])
 
     useEffect(() => {
         if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
@@ -77,6 +84,7 @@ const AuthWorker = (props) => {
         props.loadingHandler(true)
         if(validator.isMobilePhone(phone, "pt-PT")
             && name.length>1
+            && surname.length>1
             && validator.isEmail(email)
             && validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
                 
@@ -91,6 +99,7 @@ const AuthWorker = (props) => {
                         axios.post(`${props.api_url}/auth/register/worker`, 
                         {
                             name: name,
+                            surname: surname,
                             phone: phone,
                             email: email,
                             google_uid: res.user.uid,
@@ -140,12 +149,20 @@ const AuthWorker = (props) => {
     }
 
     const validateNameHandler = () => {
-        setNameFocused(false)
         if(name.length<2){
             setNameWrong(true)
         }
         else{
             setNameWrong(false)
+        }
+    }
+
+    const validateSurnameHandler = () => {
+        if(surname.length<2){
+            setSurnameWrong(true)
+        }
+        else{
+            setSurnameWrong(false)
         }
     }
 
@@ -303,16 +320,32 @@ const AuthWorker = (props) => {
                             <div className={styles.login}>
                                 <p className={styles.login_title}>Nome</p>
                                 <input 
-                                    maxLength={26}
+                                    maxLength={12}
                                     onChange={e => setName(e.target.value)} 
                                     className={styles.login_input} 
                                     placeholder="Nome" 
                                     value={name}
                                     onBlur={() => validateNameHandler()}
-                                    onFocus={() => setNameFocused(true)}
                                     style={{borderBottom:nameWrong?"3px solid black":!nameWrong&&name.length>1?"3px solid #6EB241":""}}></input>
                                 {
                                     nameWrong?
+                                    <span className={styles.field_error} style={{color:"black"}}>Por favor, escreva pelo menos 2 caracteres.</span>
+                                    :null
+                                }
+                                
+                            </div>
+                            <div className={styles.login} style={{marginTop:"10px"}}>
+                                <p className={styles.login_title}>Apelido</p>
+                                <input 
+                                    maxLength={12}
+                                    onChange={e => setSurname(e.target.value)} 
+                                    className={styles.login_input} 
+                                    placeholder="Apelido" 
+                                    value={surname}
+                                    onBlur={() => validateSurnameHandler()}
+                                    style={{borderBottom:surnameWrong?"3px solid black":!surnameWrong&&surname.length>1?"3px solid #6EB241":""}}></input>
+                                {
+                                    surnameWrong?
                                     <span className={styles.field_error} style={{color:"black"}}>Por favor, escreva pelo menos 2 caracteres.</span>
                                     :null
                                 }

@@ -457,16 +457,15 @@ const UserReservationPage = (props) => {
                     </CSSTransition>
                     <div className={styles.reservar}>
                         <div className={styles.reservar_upper}>
-                            <p className={styles.reservar_upper_title}>PUBLICAR</p>
+                            <p className={styles.reservar_upper_title}>TRABALHO</p>
                             <p className={styles.reservar_upper_desc}>
-                                Nesta página pode criar uma <span className={styles.action}>trabalho</span> para o serviço 
-                                de que precisa.<br/>
+                                Nesta página pode criar e publicar o seu <span className={styles.action}>trabalho</span>!<br/>
                                 <br></br>
                             </p>
                         </div>
                         <div className={styles.bot_title_wrapper}>
                             <span className={styles.bot_title_indicator}>1</span>
-                            <span className={styles.bot_title}>Detalhes da Publicação</span>
+                            <span className={styles.bot_title}>Detalhes do Trabalho</span>
                         </div>
                         
                         <div className={styles.top}>

@@ -5,10 +5,12 @@
     border-radius: 5px;
     border-bottom: 3px solid var(--brand) !important;
     margin-top: 10px;
+    cursor: pointer;
 }
 .row:hover{
     border-bottom: 3px solid var(--action) !important;
-    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 150ms;
 }
 .row_time{
     width: 20%;

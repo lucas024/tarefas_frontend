@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import Reserva from '../main/reserva'
 import styles from './user.module.css'
 import UserSidebar from './userSidebar'
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -7,7 +6,6 @@ import axios from 'axios';
 import ReservaList from './reservaList';
 import Personal from './personal';
 import Suporte from './suporte';
-import NoPage from './../general/noPage';
 import Messages from './messages';
 import Subscription from './subscription';
 import {Elements} from '@stripe/react-stripe-js';

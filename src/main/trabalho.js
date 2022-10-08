@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react'
-import styles from './reserva.module.css'
-import { useNavigate, useLocation } from 'react-router-dom';
+import styles from './trabalho.module.css'
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FaceIcon from '@mui/icons-material/Face';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
@@ -24,12 +24,12 @@ import blurredMap from '../assets/blurredMap.png'
 import arrow from '../assets/curve-down-arrow.png'
 import WorkerBanner from '../general/workerBanner';
 import {CSSTransition}  from 'react-transition-group';
-import Sessao from './../transitions/sessao';
+import Sessao from '../transitions/sessao';
 
 const ObjectID = require("bson-objectid");
 
 
-const Reserva = (props) => {
+const Trabalho = (props) => {
 
     const [reservation, setReservation] = useState({})
     const [images, setImages] = useState(null)
@@ -49,6 +49,7 @@ const Reserva = (props) => {
 
     const scrollRef = useRef(null)
     const messageRef = useRef(null)
+    const messageAreaRef = useRef(null)
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -57,7 +58,6 @@ const Reserva = (props) => {
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
     const [searchParams] = useSearchParams()
-    const [params, setParams] = useState([])
     const [loading, setLoading] = useState(true)
     const [page, setPage] = useState(null)
 
@@ -67,8 +67,11 @@ const Reserva = (props) => {
     const [noProfileView, setNoProfileView] = useState(false)
     const [noneView, setNoneView] = useState(false)
     const [showFull, setShowFull] = useState(false)
+    const [locationActive, setLocationActive] = useState(false)
+    const [workerActive, setWorkerActive] = useState(false)
 
     const setViewTo = (view) => {
+        console.log(view);
         if(view !== "none")
         {
             setNoneView(false)
@@ -125,10 +128,11 @@ const Reserva = (props) => {
 
     useEffect( () => {
         setLoading(true)
-        console.log(props.user);
         const paramsAux = Object.fromEntries([...searchParams])
-        setParams(paramsAux)
-        setPage(paramsAux.prevpage)
+        console.log(paramsAux);
+        paramsAux.region&&setLocationActive(paramsAux.region)
+        paramsAux.work&&setWorkerActive(paramsAux.work)
+        setPage(paramsAux.page)
         axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
             console.log("teste");
             if(res.data){
@@ -145,64 +149,63 @@ const Reserva = (props) => {
                     })
                 }
                 setImages(arr)
-                if(props.user){
-                    axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: res.data.user_id} })
-                    .then(res2 => {
-                        setPublicationUser(res2.data)
-                        if(props.user?._id === res.data.user_id){
-                            setViewTo('user')
-                            setLoading(false)
-                        }
-                        else if(!(props.user.subscription&&!props.incompleteUser)){
-                            setViewTo('none')
-                            setLoading(false)
-                        }
-                        else if(props.user.subscription){
-                            axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
-                                subscription_id: props.user.subscription.id,
-                                schedule_id: props.user.subscription.sub_schedule
-                            })
-                            .then(res => {
-                                if(!isActiveSub(res.data.schedule.current_phase.end_date)){
-                                    setViewTo('noSub')
-                                }
-                                else if(isActiveSub(res.data.schedule.current_phase.end_date)&&props.user.state===1)
-                                {
-                                    setShowFull(true)
-                                }
-                                else if(props.incompleteUser || props.user.state===0){
-                                    setViewTo('noProfile')
-                                }
-                                setLoading(false)
-                            })
-                            
-                        }
-                        else if(props.incompleteUser || props.user.state===0){
-                            setViewTo('noProfile')
-                            setLoading(false)
-                        }
-                        else
-                        {
-                            setViewTo('noAccount')
-                            setLoading(false)
-                        }
+                
+                axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: res.data.user_id} })
+                .then(res2 => {
+                    setPublicationUser(res2.data)
+                    if(!props.user){
+                        setViewTo('noAccount')
+                        setLoading(false)
+                    }
+                    else if(props.user?._id === res.data.user_id){
+                        setViewTo('user')
+                        setLoading(false)
+                    }
+                    else if(!(props.user?.subscription&&!props.incompleteUser)){
+                        setViewTo('none')
+                        setLoading(false)
+                    }
+                    else if(props.user?.subscription){
+                        axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
+                            subscription_id: props.user.subscription.id,
+                            schedule_id: props.user.subscription.sub_schedule
                         })
+                        .then(res => {
+                            if(!isActiveSub(res.data.schedule.current_phase.end_date)){
+                                setViewTo('noSub')
+                            }
+                            else if(isActiveSub(res.data.schedule.current_phase.end_date)&&props.user.state===1)
+                            {
+                                setShowFull(true)
+                            }
+                            else if(props.incompleteUser || props.user.state===0){
+                                setViewTo('noProfile')
+                            }
+                            setLoading(false)
+                        })
+                        
+                    }
+                    else if(props.incompleteUser || props.user?.state===0){
+                        setViewTo('noProfile')
+                        setLoading(false)
+                    }
+                    else
+                    {
+                        setViewTo('noAccount')
+                        setLoading(false)
+                    }
+                    })
 
-                        if(props.user.chats){
-                            for(let el of props.user.chats){
-                                if(el.reservation_id === res.data._id){
-                                    setNoRepeatedChats(true)
-                                    setChatId(el.chat_id)
-                                    break
-                                }
+                    if(props.user?.chats){
+                        for(let el of props.user.chats){
+                            if(el.reservation_id === res.data._id){
+                                setNoRepeatedChats(true)
+                                setChatId(el.chat_id)
+                                break
                             }
                         }
                     }
-                else if(props)
-                {
-                    setLoading(false)
-                }
-                }
+            }
             else{
                 setReservation(null)
             }
@@ -309,6 +312,21 @@ const Reserva = (props) => {
             }
     }
 
+    const getSearchParams = () => {
+        if(workerActive&&locationActive){
+            return `?page=${page}&work=${workerActive}&region=${locationActive}`
+        }
+        else if(workerActive){
+            return `?page=${page}&work=${workerActive}`
+        }
+        else if(locationActive){
+            return `?page=${page}&region=${locationActive}`
+        }
+        else{
+            return `?page=${page}`
+        }
+    }
+
     return (
         <div style={{position:"relative"}}>
             {
@@ -344,17 +362,32 @@ const Reserva = (props) => {
                             <span className={styles.previous_voltar_text}>VOLTAR ÀS <span className={styles.action}>MINHAS PUBLICAÇÕES</span></span>
                         </div>
                         :
-                        <div className={styles.normal_back}>
-                            <div className={styles.normal_back_left} onClick={() => navigate(-1)}>
-                                <ArrowBackIosIcon className={styles.normal_back_left_symbol}/>
-                                <span className={styles.normal_back_left_text}>VOLTAR</span>
-                            </div>
-                            <div className={styles.normal_back_right} onClick={() => navigate(-1)}>
-                                <span className={styles.normal_back_right_dir}>Trabalhos</span>
-                                <span className={styles.normal_back_right_sep}>/</span>
-                                <span className={styles.normal_back_right_dir}>Página {page}</span>
+                        <div>
+                            <p className={styles.reservar_upper_title}>TRABALHO</p>
+                            <div className={styles.normal_back}>
+                                <Link className={styles.normal_back_left} 
+                                    to={-1}
+                                    state={{from_page: true}}>
+                                    <ArrowBackIosIcon className={styles.normal_back_left_symbol}/>
+                                    <span className={styles.normal_back_left_text}>VOLTAR</span>
+                                </Link>
+                                <div className={styles.normal_back_right}>
+                                    <span className={styles.normal_back_right_dir} onClick={() => navigate({
+                                    pathname: '/main/publications/trabalhos',
+                                    state: {from_page: true}
+                                    })}>Trabalhos</span>
+                                    <div className={styles.normal_back_right_sep_wrapper}>
+                                        <div className={styles.normal_back_right_sep}>|</div>
+                                    </div>
+                                    <span className={styles.normal_back_right_dir} onClick={() => navigate({
+                                    pathname: '/main/publications/trabalhos',
+                                    search: `?page=${page}`,
+                                    state: {from_page: true}
+                                    })}>Página {page}</span>
+                                </div>
                             </div>
                         </div>
+                        
                     }
                     
                     <div className={styles.reserva} onClick={() => more&&setMore(false)} >
@@ -425,7 +458,10 @@ const Reserva = (props) => {
                             <div className={styles.top_right}>
                                 {
                                     !userView?
-                                    <span className={styles.top_right_message} onClick={() => messageRef.current.scrollIntoView() }>
+                                    <span className={styles.top_right_message} onClick={() => {
+                                        if(showFull) messageAreaRef.current.focus()
+                                        messageRef.current.scrollIntoView()
+                                    }}>
                                         Enviar Mensagem
                                     </span>
                                     :null
@@ -446,28 +482,28 @@ const Reserva = (props) => {
                                             noAccountView?
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Gostava de contacar <span style={{color:"white", textTransform:"uppercase"}}>{reservation.user_name.split(" ")[0]}</span>?</span>
+                                                <span className={styles.market_text}>Gostava de contacar <span className={styles.text_special} className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span>?</span>
                                                 <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
                                             </div>
                                             :
                                             noneView?
                                             <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Completa o teu <span style={{color:"white", textTransform:"uppercase"}}>perfil</span> e <span style={{color:"white", textTransform:"uppercase"}}>subscreve</span> para contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.market_text}>Completa o teu <span className={styles.text_special}>perfil</span> e <span  className={styles.text_special}>subscreve</span> para contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
                                                 <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => navigate('/user?t=personal')}>Ir para Utilizador</span>
                                             </div>
                                             :
                                             noSubView?
                                             <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Só falta completares a tua <span style={{color:"white", textTransform:"uppercase"}}>subscrição</span> para poderes contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.market_text}>Só falta completares a tua <span className={styles.text_special}>subscrição</span> para poderes contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
                                                 <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => navigate('/user?t=subscription')}>Ir para Subscrição</span>
                                             </div>
                                             :
                                             noProfileView?
                                             <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Só falta completares o teu <span style={{color:"white", textTransform:"uppercase"}}>perfil</span> para poderes contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.market_text}>Só falta completares o teu <span className={styles.text_special}>perfil</span> para poderes contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
                                                 <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => navigate('/user?t=personal')}>Ir para Perfil</span>
                                             </div>
                                             :
@@ -541,29 +577,22 @@ const Reserva = (props) => {
                                         }
                                         <span className={styles.message_left_user_name}>{reservation.user_name}</span>
                                     </div>
-                                    <span style={{display:"flex", alignItems:"center", marginTop:"5px"}}>
-                                        <PhoneOutlinedIcon className={styles.user_info_number_symbol}/>
-                                        {
-                                            showFull?
-                                            <span className={styles.user_info_number}>{getNumberDisplay(publicationUser?.phone)}</span> 
-                                            :<span className={styles.user_info_number_blur}>123 456 789</span> 
-                                        }
-                                    </span>
+                                    <span className={styles.user_info_number} style={{opacity:"0.6"}}>Mensagem</span> 
                                 </div>
                                 {
-                                    noAccountView&&noneView&&noSubView&&noProfileView?
+                                    noAccountView||noneView||noSubView||noProfileView?
                                     <div className={styles.textarea_wrapper}>
                                         <textarea 
                                             className={styles.message_textarea_disabled}
                                             placeholder="Escrever mensagem..."
                                         />
                                         <div className={styles.frontdrop}>
-                                            <span className={styles.frontdrop_text}>Para enviar mensagem à/ao <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span>,</span>
+                                            <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"white", textTransform:"capitalize"}}>{reservation.user_name.split(" ")[0]}</span>,</span>
                                             {
                                                 showFull?
                                                 null
                                                 :noAccountView?
-                                                <span className={styles.frontdrop_text}>torne-se um trabalhador Arranja.</span>
+                                                <span className={styles.frontdrop_text}>registe ou entre numa conta TRABALHADOR!</span>
                                                 :noneView?
                                                 <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>PERFIL</span> e <span style={{color:"white"}}>SUBSCRIÇÃO</span>.</span>
                                                 :noSubView?
@@ -609,6 +638,7 @@ const Reserva = (props) => {
                                     <div style={{position:"relative"}}>
                                         <Loader2 loading={loadingChat}/>
                                         <textarea 
+                                        ref={messageAreaRef}
                                         className={styles.message_textarea}
                                         placeholder="Escrever mensagem..."
                                         value={text}
@@ -637,4 +667,4 @@ const Reserva = (props) => {
     )
 }
 
-export default Reserva
+export default Trabalho

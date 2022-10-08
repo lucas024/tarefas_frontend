@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import styles from './servicos.module.css'
-import { useParams, useSearchParams } from 'react-router-dom';
+import styles from './trabalhadores.module.css'
+import { useLocation, useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs';
 import axios from 'axios';
 import SearchIcon from '@mui/icons-material/Search';
@@ -13,9 +12,11 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import Row from './row';
 import Loader from './../general/loader';
+import NoPage from '../general/noPage';
+import clearIcon from '../assets/search_clear.png'
+import {regioesOptions, profissoesOptions} from '../general/util'
 
 require('dayjs/locale/pt')
-
 
 const Trabalhos = (props) => {
 
@@ -32,10 +33,10 @@ const Trabalhos = (props) => {
     dayjs.locale('pt')
     const [allItems, setAllItems] = useState([])
     const [locationActive, setLocationActive] = useState(false)
-    const [locationDisplayActive, setLocationDisplayActive] = useState(false)
     const [workerActive, setWorkerActive] = useState(false)
-    const [workerDisplayActive, setWorkerDisplayActive] = useState(false)
     const [listAnim, setListAnim] = useState(true)
+
+    const location = useLocation()
 
 
     const myRef = useRef(null)
@@ -45,29 +46,30 @@ const Trabalhos = (props) => {
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
     useEffect(() => {
-        fetchPublications()
-        setClear(!clear)
-        setLocationActive(false)
-        setLocationDisplayActive(false)
-        setWorkerActive(false)
-        setWorkerDisplayActive(false)
-            
-    //eslint-disable-next-line react-hooks/exhaustive-deps 
-    }, [])
-    
+        const paramsAux = Object.fromEntries([...searchParams])
+        console.log(paramsAux);
+        paramsAux.region&&setLocationActive(paramsAux.region)
+        paramsAux.work&&setWorkerActive(paramsAux.work)
+        if(paramsAux.region||paramsAux.work)
+        {
+            fetchJobsByFilter()
+        }
+        else
+        {
+            fetchPublications()
+        }
+        setCurrPage(paramsAux.page)  
+    }, [searchParams])
 
     useEffect(() => {
-        let page = parseInt(Object.fromEntries([...searchParams]).p)
         if(allItems!==null){
-            if(allItems.length >= page*24 && page>1){
-                setCurrPage(page)
-                if(allItems.length > (page*24 + 24)) setItems(allItems.slice((page-1)*24,(page-1)*24+24))
-                else setItems(allItems.slice((page-1)*24, (page)*24 + 24 - (page-1)*24 + 24 - allItems.length))
+            if(allItems.length >= currPage*24 && currPage>1){
+                if(allItems.length > (currPage*24 + 24)) setItems(allItems.slice((currPage-1)*24,(currPage-1)*24+24))
+                else setItems(allItems.slice((currPage-1)*24, (currPage)*24 + 24 - (currPage-1)*24 + 24 - allItems.length))
                 setCurrDisplay("middle")
             }
-            else if(allItems.length < page*24 && page>1){
-                setCurrPage(page)
-                setItems(allItems.slice((page-1)*24))
+            else if(allItems.length < currPage*24 && currPage>1){
+                setItems(allItems.slice((currPage-1)*24))
                 setCurrDisplay("last")
             }
             else{
@@ -82,8 +84,7 @@ const Trabalhos = (props) => {
                 }
             }
         }
-        
-    }, [allItems, searchParams])
+    }, [allItems])
 
     const fetchPublications = () => {
         setLoading(true)
@@ -105,26 +106,54 @@ const Trabalhos = (props) => {
     const fetchJobsByFilter = () => {
             setListAnim(true)
             setLoading(true)
-            axios.post(`${props.api_url}/reservations/get_reservations_by_filter`, {
-                region: locationActive,
-                trabalho: workerActive,
-                search: searchVal
-            }).then(res => {
-                console.log(res.data);
-                if(res.data!=='non_existing'){
-                    let arr = res.data
-                    setAllItems(arr)
+            if(searchVal===""&&!workerActive&&!locationActive)
+            {
+                fetchPublications()
+            }
+            else
+            {
+                var searchValFinal = ""
+                if(searchVal!=="")
+                {
+                    for(let el of searchVal.split(' '))
+                    {
+                        searchValFinal += `\"${el}\" `
+                    }
                 }
-                setLoading(false)
-            }).catch(err => console.log(err))
+                axios.post(`${props.api_url}/reservations/get_reservations_by_filter`, {
+                    region: locationActive,
+                    trabalho: workerActive,
+                    search: searchValFinal
+                }).then(res => {
+                    if(res.data!=='non_existing'){
+                        let arr = res.data
+                        setAllItems(arr)
+                    }
+                    setLoading(false)
+                }).catch(err => console.log(err))
+            }
     }
     
+    const getSearchParams = id => {
+        if(workerActive&&locationActive){
+            return `?id=${id}&page=${currPage}&work=${workerActive}&region=${locationActive}`
+        }
+        else if(workerActive){
+            return `?id=${id}&page=${currPage}&work=${workerActive}`
+        }
+        else if(locationActive){
+            return `?id=${id}&page=${currPage}&region=${locationActive}`
+        }
+        else{
+            return `?id=${id}&page=${currPage}`
+        }
+    }
+
     const navigatePubHandler = (id) => {
-        navigate(`/main/publications/publication?id=${id}&prevpage=${currPage}`, 
-                {
-                state: {
-                    fromUserPage: false,
-                }
+        navigate(`/main/publications/publication${getSearchParams(id)}`, {
+                    state: {
+                        fromUserPage: false,
+                    }
                 }
             )
     }
@@ -200,8 +229,9 @@ const Trabalhos = (props) => {
     const limparPesquisa = () => {
         setLocationActive(false)
         setWorkerActive(false)
-        setWorkerDisplayActive(false)
-        setLocationDisplayActive(false)
+        searchParams.delete("work")
+        searchParams.delete("region")
+        setSearchParams(searchParams)
         setClear(!clear)
         setSearchVal("")
         fetchPublications()
@@ -209,10 +239,11 @@ const Trabalhos = (props) => {
 
     return (
         <div className={styles.servicos}>
+            <Loader loading={loading}/>
             <div className={styles.main} onScroll={handleScroll}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_input_div}>
-                        <input value={searchVal} onKeyDown={handleKeyDown} onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Pesquisar trabalhos...`}></input>
+                        <input value={searchVal} onKeyDown={handleKeyDown} onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Eletricista, Porto...`}></input>
                         <PersonSearchIcon className={styles.search_input_div_icon}/>
                         <SearchIcon className={styles.search_final_icon} onClick={() => fetchJobsByFilter()}/>
                     </div>
@@ -220,67 +251,75 @@ const Trabalhos = (props) => {
                         <div className={styles.search_filter_div}>
                             <FilterSelect 
                                 type="zona" 
-                                clear={clear} 
-                                valueChanged={bool => setLocationActive(bool)}
-                                valueDisplayChanged={val => setLocationDisplayActive(val)}/>
+                                clear={clear}
+                                urlVal={locationActive}
+                                valueChanged={val => {
+                                    workerActive&&setSearchParams({'work': workerActive, 'region': val})
+                                    !workerActive&&setSearchParams({'region': val})
+                                    setLocationActive(val)}}/>
                             <div style={{marginLeft:"10px"}}>
-                                <FilterSelect 
+                                <FilterSelect
                                     type="worker" 
-                                    clear={clear} 
-                                    valueChanged={bool => setWorkerActive(bool)}
-                                    valueDisplayChanged={val => setWorkerDisplayActive(val)}/>
+                                    clear={clear}
+                                    urlVal={workerActive}
+                                    valueChanged={val => {
+                                        locationActive&&setSearchParams({'work': val, 'region': locationActive})
+                                        !locationActive&&setSearchParams({'work': val})
+                                        setWorkerActive(val)}}/>
                             </div>
                         </div>
-                        <span className={styles.search_clear} onClick={() => limparPesquisa()}>
-                            Limpar Pesquisa
-                        </span>
+                        <div className={styles.search_clear_wrapper} onClick={() => limparPesquisa()}>
+                            <span className={styles.search_clear}>
+                                Limpar Pesquisa
+                            </span>
+                            <img src={clearIcon} className={styles.search_clear_icon}/>
+                        </div>
                     </div>
                 </div>
-                <div className={styles.divider}></div>
-                {
+                <div className={styles.divider}></div>          
+                    <div className={styles.top_info}>
+                        
+                        {
+                            allItems.length===1?
+                            <span className={styles.top_info_numbers}>1 TRABALHO</span>
+                            :<span className={styles.top_info_numbers}>{allItems.length} trabalhos</span>
+                        }
+                        <div className={styles.top_info_filter}>
+                            <div className={styles.top_info_filter_flex}>
+                                <LocationOnIcon className={styles.top_info_filter_icon}/>
+                                <span  className={styles.top_info_filter_text}>região:</span>
+                            </div>
+                            {
+                                locationActive?
+                                <span  className={styles.top_info_filter_value_on}>
+                                    {regioesOptions[locationActive]}
+                                </span>
+                                :
+                                <span  className={styles.top_info_filter_value}>
+                                    Todas
+                                </span>
+                            }
+                        </div>
+                        <div className={styles.top_info_filter}>
+                            <div className={styles.top_info_filter_flex}>
+                                <PersonIcon className={styles.top_info_filter_icon}/>
+                                <span  className={styles.top_info_filter_text}>Tipo de Trabalhador:</span>
+                            </div>
+                            {
+                                workerActive?
+                                <span  className={styles.top_info_filter_value_on}>
+                                    {profissoesOptions[workerActive]}
+                                </span>
+                                :
+                                <span  className={styles.top_info_filter_value}>
+                                    Todos
+                                </span>
+                            }
+                        </div>
+                    </div>
+                    {
                     items.length>0?
                     <div>
-                        <Loader loading={loading}/>
-                        <div className={styles.top_info}>
-                            
-                            {
-                                allItems.length===1?
-                                <span className={styles.top_info_numbers}>1 TRABALHO</span>
-                                :<span className={styles.top_info_numbers}>{allItems.length} trabalhos</span>
-                            }
-                            <div className={styles.top_info_filter}>
-                                <div className={styles.top_info_filter_flex}>
-                                    <LocationOnIcon className={styles.top_info_filter_icon}/>
-                                    <span  className={styles.top_info_filter_text}>região:</span>
-                                </div>
-                                {
-                                    locationDisplayActive?
-                                    <span  className={styles.top_info_filter_value_on}>
-                                        {locationDisplayActive}
-                                    </span>
-                                    :
-                                    <span  className={styles.top_info_filter_value}>
-                                        Todas
-                                    </span>
-                                }
-                            </div>
-                            <div className={styles.top_info_filter}>
-                                <div className={styles.top_info_filter_flex}>
-                                    <PersonIcon className={styles.top_info_filter_icon}/>
-                                    <span  className={styles.top_info_filter_text}>Tipo de Trabalhador:</span>
-                                </div>
-                                {
-                                    workerDisplayActive?
-                                    <span  className={styles.top_info_filter_value_on}>
-                                        {workerDisplayActive}
-                                    </span>
-                                    :
-                                    <span  className={styles.top_info_filter_value}>
-                                        Todos
-                                    </span>
-                                }
-                            </div>
-                    </div>
                         <div className={listAnim?styles.animList:styles.list} 
                                     onAnimationEnd={() =>{
                                         setListAnim(false)
@@ -340,7 +379,7 @@ const Trabalhos = (props) => {
                             }
                         </div>
                     </div>
-                    :null //nopage
+                    :<NoPage object="no_search" limparPesquisa={() => limparPesquisa()}/>
                 }
             </div>
         </div>

@@ -175,21 +175,34 @@
 .search_filter_div{
     width: 100%;
     display: flex;
+    justify-content: flex-start;
 }
 .search_input_div{
     width: 100%;
     position: relative;
 }
+.search_clear_wrapper{
+    display: flex;
+    width: fit-content;
+    align-self: flex-end;
+    align-items: center;
+    border-bottom: 1px solid transparent;
+    margin-right: 5px;
+}
+.search_clear_wrapper:hover{
+    cursor: pointer;
+    color: var(--brand);
+    border-bottom: 1px solid var(--grey);
+}
+.search_clear_icon{
+    width: 20px;
+    height: 20px;
+}
 .search_clear{
     font-size: 0.8rem;
     color: var(--grey);
+    width: 120px;
     font-style: italic;
-    width: 150px;
-}
-.search_clear:hover{
-    text-decoration: underline;
-    cursor: pointer;
-    color: var(--brand);
 }
 .search_input_div_icon{
     position: absolute;

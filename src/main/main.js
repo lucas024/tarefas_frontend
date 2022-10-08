@@ -3,7 +3,7 @@ import styles from './main.module.css'
 import stylesSidebar from '../user/user.module.css'
 import { useLocation, useSearchParams } from 'react-router-dom';
 import MainSidebar from './mainSidebar'
-import Servicos from '../servicos/servicos';
+import Servicos from '../servicos/trabalhadores';
 import Trabalhos from '../servicos/trabalhos';
 
 const Main = (props) => {

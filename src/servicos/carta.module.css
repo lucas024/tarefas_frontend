@@ -8,11 +8,13 @@
     width: 100%;
     border-radius: 5px;
     cursor: pointer;
-    border-bottom: 3px solid var(--action);
+    border-bottom: 3px solid var(--brand);
     box-sizing: border-box;
 }
 .box:hover{
-    border-bottom: 3px solid var(--brand);
+    border-bottom: 3px solid var(--action);
+    transform: scale(1.02);
+    transition: all 150ms;
 }
 .box_underline{
     

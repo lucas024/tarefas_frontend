@@ -152,7 +152,7 @@ const Personal = (props) => {
         if(!validator.isMobilePhone(phone, "pt-PT")){
             setPhoneWrong(true)
         }
-        else if(description.length===0){
+        else if(description?.length===0){
             setDescriptionWrong(true)
         }
         else{
@@ -292,7 +292,12 @@ const Personal = (props) => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text={"Número de telefone e descrição atualizados com sucesso!"}/>
+                {
+                    props.user?.type===1?
+                    <Sessao text={"Número de telefone e descrição atualizados com sucesso!"}/>
+                    :
+                    <Sessao text={"Número de telefone atualizado com sucesso!"}/>
+                }
             </CSSTransition>
             <CSSTransition 
                 in={bottomPop}
@@ -521,10 +526,10 @@ const Personal = (props) => {
                                 </div>
                                 <div className={styles.input_div}>
                                     {
-                                        edit&&phone.length!==9?
+                                        edit&&phone?.length!==9?
                                             <span className={styles.helper}>Introduza o seu número de contacto!</span>
                                         :
-                                        edit&&description.length===0?
+                                        edit&&description?.length===0?
                                             <span className={styles.helper}>Introduza uma breve descrição!</span>
                                         :null
                                     }
