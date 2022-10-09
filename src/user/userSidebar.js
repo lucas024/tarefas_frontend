@@ -15,18 +15,16 @@ import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
 import CircleIcon from '@mui/icons-material/Circle';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import RotateRightIcon from '@mui/icons-material/RotateRight';
-import axios from 'axios'
 import Loader from '../general/loader';
+import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 
 const UserSidebar = (props) => {
 
     const [searchParams] = useSearchParams()
     const [selectedSidebar, setSelectedSidebar] = useState("pedidos")
-    const [subscriptionIsActive, setSubscriptionIsActive] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [loadingSub, setLoadingSub] = useState(true)
 
     const navigate = useNavigate()
 
@@ -34,28 +32,33 @@ const UserSidebar = (props) => {
         let val = Object.fromEntries([...searchParams]).t
         if(val === "publications" || val === "support" ||  val === "personal" ||  val === "messages" || val === "subscription"){
             setSelectedSidebar(val)
-        } 
+        }
     }, [searchParams])
 
     useEffect(() => {
-        if(props.user?.subscription){
-            setLoading(true)
-            axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
-                subscription_id: props.user.subscription.id,
-                schedule_id: props.user.subscription.sub_schedule
-            })
-            .then(res => {
-                if(res.data.schedule){
-                    if(new Date().getTime() < new Date(res.data.schedule.current_phase.end_date*1000)){
-                        setSubscriptionIsActive(true)
-                        setLoading(false)
-                    }
-                }
-            })
+        if(props.hasSubscription!=null || props.hasSubscription===false)
+        {
+            setLoadingSub(false)
         }
+    }, [props.hasSubscription])
 
-        console.log(props.incompleteUser);
-    }, [props.user])
+    // useEffect(() => {
+    //     if(props.user?.subscription){
+    //         setLoading(true)
+    //         axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
+    //             subscription_id: props.user.subscription.id,
+    //             schedule_id: props.user.subscription.sub_schedule
+    //         })
+    //         .then(res => {
+    //             if(res.data.schedule){
+    //                 if(new Date().getTime() < new Date(res.data.schedule.current_phase.end_date*1000)){
+    //                     setSubscriptionIsActive(true)
+    //                     setLoading(false)
+    //                 }
+    //             }
+    //         })
+    //     }
+    // }, [props.user])
     
 
     const sidebarNavigate = (val) => {
@@ -105,19 +108,21 @@ const UserSidebar = (props) => {
                         </ListItemButton >
                     }
                     
-                    <ListItemButton style={{borderTop:props.user?.type?"3px solid #71848d":null}} onClick={() => sidebarNavigate("personal")} className={selectedSidebar==="personal"?styles.button:""}>
+                    <ListItemButton style={{borderTop:props.user?.type?"3px solid #71848d":null}} onClick={() => sidebarNavigate("personal")} 
+                        //className={selectedSidebar==="personal"?styles.button:""}
+                    >
                         <ListItemIcon>
                         <AccessibilityIcon sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
                         <ListItemText primary={
-                            <span style={{display:"flex", position:"relative"}}>
+                            <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
                                 <span className={styles.prox}>Perfil</span>
-                                {props.incompleteUser===true&&props.user?.type?
-                                <div className={styles.thing}>
-                                    {/* <span className={styles.drop_div_notification}>Perfil</span> */}
-                                    <span className={styles.drop_div_notification}>Incompleto</span>
-                                </div> :null}
-                            </span>
+                                {
+                                !props.incompleteUser&&props.user?.type?
+                                <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
+                                :<UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                }
+                            </div>
                             } sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
                     {
@@ -126,7 +131,20 @@ const UserSidebar = (props) => {
                             <ListItemIcon>
                             <CardMembershipIcon sx={{color:selectedSidebar==="subscription"?"#FF785A":"#fff"}}/>
                             </ListItemIcon>
-                            <ListItemText primary={<span className={styles.prox}>Subscrição</span>} sx={{color:selectedSidebar==="subscription"?"#FF785A":"#fff"}}/>
+                            <ListItemText primary={
+                                <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
+                                    <span className={styles.prox}>Subscrição</span>
+                                    {
+                                    props.hasSubscription?
+                                    <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
+                                    :
+                                    <div style={{position:"relative"}}>
+                                        <Loader small={true} loading={true}/>
+                                        <UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                    </div>
+                                    }
+                                </div>
+                            } sx={{color:selectedSidebar==="subscription"?"#FF785A":"#fff"}}/>
                         </ListItemButton >
                         :null
                     }
@@ -145,11 +163,11 @@ const UserSidebar = (props) => {
                 {
                     props.user?.type?
                     <div className={styles.status}>
-                        <Loader loading={loading}/>
+                        <Loader loading={loadingSub}/>
                         <div className={styles.status_top}>
-                            <span className={styles.status_top_val} style={{color:!props.incompleteUser&&props.user?.state===1&&subscriptionIsActive?"#6EB241":"#fdd835"}}>
+                            <span className={styles.status_top_val} style={{color:!props.incompleteUser&&props.user?.state===1&&props.hasSubscription?"#6EB241":"#fdd835"}}>
                                 {
-                                    !props.incompleteUser&&props.user?.state===1&&subscriptionIsActive?
+                                    !props.incompleteUser&&props.user?.state===1&&props.hasSubscription?
                                     "CONTA ATIVA"
                                     :"CONTA INATIVA"
                                 }
@@ -160,7 +178,7 @@ const UserSidebar = (props) => {
                             <div className={styles.status_div_flex}>
                                 <span className={styles.status_div_val}>
                                 {
-                                    !props.incompleteUser&&props.user?.state===1?
+                                    !props.incompleteUser?
                                     "VERIFICADO"
                                     :props.incompleteUser===false?
                                     "A VERIFICAR"
@@ -168,28 +186,26 @@ const UserSidebar = (props) => {
                                 }
                                 </span>
                                 {
-                                    !props.incompleteUser&&props.user?.state===1?
-                                    <CheckBoxIcon className={styles.status_icon}/>
-                                    :props.incompleteUser===false?
-                                    <RotateRightIcon className={styles.status_icon_rotate}/>
-                                    :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
+                                    !props.incompleteUser?
+                                    <CheckCircleOutlineOutlinedIcon className={styles.status_icon}/>
+                                    :<UnpublishedOutlinedIcon className={styles.status_icon}/>
                                 }
                             </div>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:subscriptionIsActive?"#6EB241":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:props.hasSubscription?"#6EB241":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
                             <span className={styles.status_div_title}>Subscrição</span>
                             <div className={styles.status_div_flex}>
                                 <span className={styles.status_div_val}>
                                 {
-                                    subscriptionIsActive?
+                                    props.hasSubscription?
                                     "ATIVADA"
                                     :"DESATIVADA"
                                 }
                                 </span>
                                 {
-                                    subscriptionIsActive?
-                                    <CheckBoxIcon className={styles.status_icon}/>
-                                    :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
+                                    props.hasSubscription?
+                                    <CheckCircleOutlineOutlinedIcon className={styles.status_icon}/>
+                                    :<UnpublishedOutlinedIcon className={styles.status_icon}/>
                                 }
                             </div>
                         </div>

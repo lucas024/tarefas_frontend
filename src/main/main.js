@@ -3,7 +3,7 @@ import styles from './main.module.css'
 import stylesSidebar from '../user/user.module.css'
 import { useLocation, useSearchParams } from 'react-router-dom';
 import MainSidebar from './mainSidebar'
-import Servicos from '../servicos/trabalhadores';
+import Trabalhadores from '../servicos/trabalhadores';
 import Trabalhos from '../servicos/trabalhos';
 
 const Main = (props) => {
@@ -14,8 +14,7 @@ const Main = (props) => {
     useEffect(() => {
         let arrPathnameAux = location.pathname.split('/')
         setArrPathname(arrPathnameAux)
-    }, [location])
-    
+    }, [location])    
 
     return (
         <div className={stylesSidebar.worker}>
@@ -28,8 +27,8 @@ const Main = (props) => {
                         <div className={styles.area}>
                             {
                                 arrPathname[3]==="trabalhos"?
-                                <Trabalhos api_url={props.api_url} user={props.user}/>
-                                :<Servicos api_url={props.api_url} user={props.user}/>
+                                <Trabalhos api_url={props.api_url} user={props.user} userLoadAttempt={props.userLoadAttempt}/>
+                                :<Trabalhadores api_url={props.api_url} user={props.user} userLoadAttempt={props.userLoadAttempt}/>
                             }
                             
                         </div>

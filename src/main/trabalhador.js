@@ -18,14 +18,14 @@ const Trabalhador = props => {
     const [searchParams] = useSearchParams()
     const [page, setPage] = useState()
     const [worker, setWorker] = useState({})
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [ownPost, setOwnPost] = useState(false)
     const [text, setText] = useState("")
     const [locationActive, setLocationActive] = useState(false)
     const [workerActive, setWorkerActive] = useState(false)
+    const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
-        setLoading(true)
         const paramsAux = Object.fromEntries([...searchParams])
         setPage(paramsAux.page)
         paramsAux.region&&setLocationActive(paramsAux.region)
@@ -36,6 +36,10 @@ const Trabalhador = props => {
             setLoading(false)
         })
     }, [searchParams, props])
+
+    useEffect(() => {
+        props.userLoadAttempt&&setLoaded(true)
+    }, [props.userLoadAttempt])
 
     const sendMessageHandler = () => {
         
@@ -79,6 +83,10 @@ const Trabalhador = props => {
             return `?page=${page}`
         }
     }
+
+    useEffect(() => {
+        props.userLoadAttempt&&setLoaded(true)
+    }, [props.userLoadAttempt])
 
     return(
         <div className={styles.worker}>
@@ -129,12 +137,14 @@ const Trabalhador = props => {
                         <span className={styles.description}>{worker.description}</span>
                     </div>
                     {
-                        !ownPost?
+                        !ownPost&&loaded?
                         <span className={styles.top_message} onClick={() => {
                             messageAreaRef.current.focus()
                             messageRef.current.scrollIntoView()
                             }}>Enviar Mensagem</span>
-                        :null
+                        :ownPost?
+                        null
+                        :<span className={`${styles.top_message} ${styles.skeleton}`} style={{height:"40px", width:"150px"}}></span>
                     }
                     
                 </div>
@@ -167,7 +177,7 @@ const Trabalhador = props => {
                     </div>
                 </div>
                 {
-                !ownPost?
+                !ownPost&&loaded?
                     <div className={styles.message}>
                         <div className={styles.message_top_flex}>
                             <div className={styles.message_left}>
@@ -212,7 +222,10 @@ const Trabalhador = props => {
                             </div>
                         </div>
                     </div>
-                    :null
+                    :ownPost?
+                    null
+                    :
+                    <div className={`${styles.message} ${styles.skeleton}`} style={{height:"280px"}}></div>
                 }
                 
             </div>

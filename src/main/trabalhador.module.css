@@ -377,11 +377,29 @@
     background-color: white;
     border-radius: 5px;
     padding: 4px;
-    -webkit-box-shadow: 0px 0px 9px -1px rgba(255,255,255,0.46); 
-    box-shadow: 0px 0px 9px -1px rgba(255,255,255,0.46);
+    text-transform: uppercase;
 }
 .frontdrop_text_action:hover{
     cursor: pointer;
     transform: scale(1.05);
     transition: transform 100ms ease-in-out;
+}
+
+.skeleton{
+    background-color: var(--skeleton);
+    animation-name: color;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes color {
+    0% {
+      background-color: var(--skeleton);
+    }
+    50% {
+      background-color: #ccc;
+    }
+    100% {
+      background-color: var(--skeleton);
+    }
 }

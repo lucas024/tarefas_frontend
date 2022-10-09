@@ -2,21 +2,20 @@ import React, { useEffect, useState } from 'react'
 import styles from './navbar.module.css'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import FaceIcon from '@mui/icons-material/Face';
 import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
+import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 
 const Navbar = (props) => {
 
     const navigate = useNavigate()
     const [dropdown, setDropdown] = useState(false)
-    const [skeleton, setSkeleton] = useState(true)
+    const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
-        if(props.userLoadAttempt){
-            setSkeleton(false)
-        }
+        setLoaded(props.userLoadAttempt)
     }, [props.userLoadAttempt])
 
     const logoutHandler = () => {
@@ -39,12 +38,14 @@ const Navbar = (props) => {
                                 <span className={styles.user_button} onClick={() => {navigate('/main/publications/trabalhos')}}>
                                         TRABALHOS
                                 </span>
-                                :skeleton?
-                                <span className={styles.skeleton_button}></span>
-                                :
+                                :loaded?
                                 <span className={styles.user_button} onClick={() => {navigate('/reserva?t=eletricista')}}>
-                                        PUBLICAR
+                                    PUBLICAR
                                 </span>
+                                :
+                                <span className={styles.skeleton_button}></span>
+                                
+                                
                             }
                             {
                                 props.user?
@@ -57,10 +58,10 @@ const Navbar = (props) => {
                                     
                                     <ChatIcon className={styles.chat}/>
                                 </div>
-                                :skeleton?
-                                <span className={styles.skeleton_message}></span>
-                                :
+                                :loaded?
                                 null
+                                :
+                                <span className={styles.skeleton_message}></span>
                             }
                             <div className={styles.flex_end}>
                                 {
@@ -73,7 +74,8 @@ const Navbar = (props) => {
  
                                         <div className={styles.user}>
                                             {
-                                                props.incompleteUser&&props.user.type?
+                                                props.hasSubscription!=null &&
+                                                (props.incompleteUser&&props.user.type || !props.hasSubscription&&props.user.type)?
                                                 <span className={styles.drop_div_notification_big}/>
                                                 :null
                                             }
@@ -119,8 +121,10 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
-                                                                props.incompleteUser&&props.user.type?
-                                                                <span className={styles.drop_div_incomplete}>Incompleto</span>
+                                                                !props.incompleteUser&&props.user.type?
+                                                                <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
+                                                                :props.user.type?
+                                                                <UnpublishedOutlinedIcon className={styles.off_icon}/>
                                                                 :null
                                                             }
                                                             
@@ -138,6 +142,13 @@ const Navbar = (props) => {
                                                             <div style={{display:"flex"}}>
                                                                 <span className={styles.drop_div_text}>Subscrição</span>
                                                             </div>
+                                                            {
+                                                                props.hasSubscription?
+                                                                <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
+                                                                :props.user.type?
+                                                                <UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                                                :null
+                                                            }
                                                         </div>
                                                     </div>
                                                 </div>
@@ -184,11 +195,11 @@ const Navbar = (props) => {
                                         </div>
                     
                                     </div>
-                                    :skeleton?
-                                    <span className={styles.skeleton_text}></span>
-                                    :<p className={styles.user_login} 
+                                    :loaded?
+                                    <p className={styles.user_login} 
                                     onClick={() => navigate('/authentication')}>
                                     Iniciar Sessão</p>
+                                    :<span className={styles.skeleton_text}></span>
                                 }
                             </div>
                             

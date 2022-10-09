@@ -2,6 +2,8 @@
     color: var(--brand);
     overflow-x: auto !important;
     min-width: 300px;
+    position: relative;
+    height: 100%;
 }
 .personal_title{
     width: 100%;
@@ -41,6 +43,7 @@
     font-size: 0.9rem;
     display: inline-block;
     text-transform: uppercase;
+    font-weight: 500;
 }
 .top_complete_arrow{
     width: 20px !important;
@@ -88,7 +91,7 @@
     color: var(--grey);
 }
 .line_text_complete{
-    color: var(--action);
+    color: var(--check);
     margin-left: 5px;
     text-transform: uppercase;
     font-size: 0.8rem;
@@ -96,11 +99,11 @@
 .line_val_complete{
     width: 18px !important;
     height: 18px !important;
-    color: var(--action);
+    color: var(--check);
     margin-left: 5px;
 }
 .top_desc{
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     margin-bottom: 20px;
     display: inline-block;
     color: white;

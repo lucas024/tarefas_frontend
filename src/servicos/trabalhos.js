@@ -32,11 +32,10 @@ const Trabalhos = (props) => {
     const [searchVal, setSearchVal] = useState('')
     dayjs.locale('pt')
     const [allItems, setAllItems] = useState([])
-    const [locationActive, setLocationActive] = useState(false)
-    const [workerActive, setWorkerActive] = useState(false)
+    const [locationActive, setLocationActive] = useState(null)
+    const [workerActive, setWorkerActive] = useState(null)
     const [listAnim, setListAnim] = useState(true)
-
-    const location = useLocation()
+    const [loaded, setLoaded] = useState(false)
 
 
     const myRef = useRef(null)
@@ -47,19 +46,26 @@ const Trabalhos = (props) => {
 
     useEffect(() => {
         const paramsAux = Object.fromEntries([...searchParams])
-        console.log(paramsAux);
-        paramsAux.region&&setLocationActive(paramsAux.region)
-        paramsAux.work&&setWorkerActive(paramsAux.work)
-        if(paramsAux.region||paramsAux.work)
-        {
-            fetchJobsByFilter()
-        }
-        else
-        {
-            fetchPublications()
-        }
+        paramsAux.region?setLocationActive(paramsAux.region):setLocationActive(false)
+        paramsAux.work?setWorkerActive(paramsAux.work):setWorkerActive(false)
         setCurrPage(paramsAux.page)  
     }, [searchParams])
+
+    
+    useEffect(() => {
+        console.log(locationActive, workerActive);
+        if(locationActive||workerActive){
+            fetchJobsByFilter()
+        }
+        else if(locationActive===false && workerActive===false){
+            fetchJobs()
+        }
+    }, [locationActive, workerActive])
+    
+
+    useEffect(() => {
+        setLoaded(props.userLoadAttempt)
+    }, [props.userLoadAttempt])
 
     useEffect(() => {
         if(allItems!==null){
@@ -86,7 +92,7 @@ const Trabalhos = (props) => {
         }
     }, [allItems])
 
-    const fetchPublications = () => {
+    const fetchJobs = () => {
         setLoading(true)
         axios.get(`${props.api_url}/reservations`).then(res => {
             if(res.data!==null){
@@ -97,41 +103,36 @@ const Trabalhos = (props) => {
         })
     }
 
-    useEffect(() => {
-        if(locationActive||workerActive){
-            fetchJobsByFilter()
-        }
-    }, [locationActive, workerActive])
 
     const fetchJobsByFilter = () => {
-            setListAnim(true)
-            setLoading(true)
-            if(searchVal===""&&!workerActive&&!locationActive)
+        setListAnim(true)
+        setLoading(true)
+        if(searchVal===""&&!workerActive&&!locationActive)
+        {
+            fetchJobs()
+        }
+        else
+        {
+            var searchValFinal = ""
+            if(searchVal!=="")
             {
-                fetchPublications()
-            }
-            else
-            {
-                var searchValFinal = ""
-                if(searchVal!=="")
+                for(let el of searchVal.split(' '))
                 {
-                    for(let el of searchVal.split(' '))
-                    {
-                        searchValFinal += `\"${el}\" `
-                    }
+                    searchValFinal += `\"${el}\" `
                 }
-                axios.post(`${props.api_url}/reservations/get_reservations_by_filter`, {
-                    region: locationActive,
-                    trabalho: workerActive,
-                    search: searchValFinal
-                }).then(res => {
-                    if(res.data!=='non_existing'){
-                        let arr = res.data
-                        setAllItems(arr)
-                    }
-                    setLoading(false)
-                }).catch(err => console.log(err))
             }
+            axios.post(`${props.api_url}/reservations/get_reservations_by_filter`, {
+                region: locationActive,
+                trabalho: workerActive,
+                search: searchValFinal
+            }).then(res => {
+                if(res.data!=='non_existing'){
+                    let arr = res.data
+                    setAllItems(arr)
+                }
+                setLoading(false)
+            }).catch(err => console.log(err))
+        }
     }
     
     const getSearchParams = id => {
@@ -234,7 +235,7 @@ const Trabalhos = (props) => {
         setSearchParams(searchParams)
         setClear(!clear)
         setSearchVal("")
-        fetchPublications()
+        fetchJobs()
     }
 
     return (
@@ -379,7 +380,9 @@ const Trabalhos = (props) => {
                             }
                         </div>
                     </div>
-                    :<NoPage object="no_search" limparPesquisa={() => limparPesquisa()}/>
+                    :loaded?
+                        <NoPage object="no_search" limparPesquisa={() => limparPesquisa()}/>
+                    :null
                 }
             </div>
         </div>

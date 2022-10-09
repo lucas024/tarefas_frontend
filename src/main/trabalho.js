@@ -70,6 +70,8 @@ const Trabalho = (props) => {
     const [locationActive, setLocationActive] = useState(false)
     const [workerActive, setWorkerActive] = useState(false)
 
+    const [loaded, setLoaded] = useState(false)
+
     const setViewTo = (view) => {
         console.log(view);
         if(view !== "none")
@@ -112,6 +114,14 @@ const Trabalho = (props) => {
         {
             setUserView(true)
         }
+        if(view !== "showFull")
+        {
+            setShowFull(false)
+        }
+        else
+        {
+            setShowFull(true)
+        }
     }
 
     useEffect(() => {
@@ -127,14 +137,12 @@ const Trabalho = (props) => {
     }, [])
 
     useEffect( () => {
-        setLoading(true)
         const paramsAux = Object.fromEntries([...searchParams])
         console.log(paramsAux);
         paramsAux.region&&setLocationActive(paramsAux.region)
         paramsAux.work&&setWorkerActive(paramsAux.work)
         setPage(paramsAux.page)
-        axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
-            console.log("teste");
+        paramsAux.id&&axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
             if(res.data){
                 setReservation(res.data)
                 let arr = []
@@ -148,70 +156,69 @@ const Trabalho = (props) => {
                         thumbnailWidth: "100px",
                     })
                 }
-                setImages(arr)
-                
-                axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: res.data.user_id} })
-                .then(res2 => {
-                    setPublicationUser(res2.data)
-                    if(!props.user){
-                        setViewTo('noAccount')
-                        setLoading(false)
-                    }
-                    else if(props.user?._id === res.data.user_id){
-                        setViewTo('user')
-                        setLoading(false)
-                    }
-                    else if(!(props.user?.subscription&&!props.incompleteUser)){
-                        setViewTo('none')
-                        setLoading(false)
-                    }
-                    else if(props.user?.subscription){
-                        axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
-                            subscription_id: props.user.subscription.id,
-                            schedule_id: props.user.subscription.sub_schedule
-                        })
-                        .then(res => {
-                            if(!isActiveSub(res.data.schedule.current_phase.end_date)){
-                                setViewTo('noSub')
-                            }
-                            else if(isActiveSub(res.data.schedule.current_phase.end_date)&&props.user.state===1)
-                            {
-                                setShowFull(true)
-                            }
-                            else if(props.incompleteUser || props.user.state===0){
-                                setViewTo('noProfile')
-                            }
-                            setLoading(false)
-                        })
-                        
-                    }
-                    else if(props.incompleteUser || props.user?.state===0){
-                        setViewTo('noProfile')
-                        setLoading(false)
-                    }
-                    else
-                    {
-                        setViewTo('noAccount')
-                        setLoading(false)
-                    }
-                    })
-
-                    if(props.user?.chats){
-                        for(let el of props.user.chats){
-                            if(el.reservation_id === res.data._id){
-                                setNoRepeatedChats(true)
-                                setChatId(el.chat_id)
-                                break
-                            }
-                        }
-                    }
+                setImages(arr) 
             }
             else{
                 setReservation(null)
             }
         })
 
-    }, [searchParams, props])
+    }, [searchParams])
+
+    useEffect(() => {
+        props.user!=null&&reservation&&axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: reservation.user_id} })
+            .then(res => {
+                setPublicationUser(res.data)
+                if(props.user?._id === reservation.user_id){
+                    setViewTo('user')
+                    setLoading(false)
+                }
+            })
+    }, [reservation, props.user])
+
+    useEffect(() => {
+        if(!props.user){
+            setViewTo('noAccount')
+            setLoading(false)
+        }
+        else if(!(props.user?.subscription&&!props.incompleteUser)){
+            setViewTo('none')
+            setLoading(false)
+        }
+        else if(props.user?.subscription){
+            axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
+                subscription_id: props.user.subscription.id,
+                schedule_id: props.user.subscription.sub_schedule
+            })
+            .then(res2 => {
+                if(!isActiveSub(res2.data.schedule.current_phase.end_date)){
+                    setViewTo('noSub')
+                }
+                else if(isActiveSub(res2.data.schedule.current_phase.end_date)&&props.user.state===1)
+                {
+                    setViewTo("showFull")
+                }
+                else if(props.incompleteUser || props.user.state===0){
+                    setViewTo('noProfile')
+                }
+                setLoading(false)
+            })
+            
+        }
+        else if(props.incompleteUser || props.user?.state===0){
+            setViewTo('noProfile')
+            setLoading(false)
+        }
+        else
+        {
+            setViewTo('noAccount')
+            setLoading(false)
+        }
+    }, [props.user, props.incompleteUser])
+
+    useEffect(() => {
+        props.userLoadAttempt&&setLoaded(true)
+    }, [props.userLoadAttempt, props.incompleteUser])
 
     const isActiveSub = date => {
         if(new Date().getTime() < new Date(date*1000)){
@@ -222,8 +229,7 @@ const Trabalho = (props) => {
     useEffect(() => {
         if(eliminationPopup){
             scrollRef.current.scrollIntoView()  
-        }
-        
+        } 
     }, [eliminationPopup])
 
     const getPublicationDate = () => {
@@ -457,54 +463,54 @@ const Trabalho = (props) => {
                                 </div>
                             <div className={styles.top_right}>
                                 {
-                                    !userView?
+                                    !userView&&loaded?
                                     <span className={styles.top_right_message} onClick={() => {
                                         if(showFull) messageAreaRef.current.focus()
                                         messageRef.current.scrollIntoView()
                                     }}>
                                         Enviar Mensagem
                                     </span>
-                                    :null
+                                    :<span className={`${styles.top_right_message} ${styles.skeleton}`} style={{height:"40px", width:"150px"}}></span>
                                 }
                                 
                                 <span className={styles.top_right_user}>Utilizador</span>
                                 <div className={styles.top_right_div}>
                                     {
-                                        publicationUser.photoUrl!==""?
+                                        publicationUser?.photoUrl!==""?
                                         <img src={publicationUser?.photoUrl} className={styles.top_right_img}></img>
                                         :<FaceIcon className={styles.top_right_img}/>
                                     }
                                     <div className={styles.user_info}>
                                         {
-                                            showFull||userView?
+                                            loaded&&(showFull||userView)?
                                             null
                                             :
-                                            noAccountView?
+                                            loaded&&noAccountView?
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Gostava de contacar <span className={styles.text_special} className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span>?</span>
-                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                                                <span className={styles.market_text}>Gostava de contacar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span>?</span>
+                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
                                             </div>
                                             :
-                                            noneView?
+                                            loaded&&noneView?
                                             <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Completa o teu <span className={styles.text_special}>perfil</span> e <span  className={styles.text_special}>subscreve</span> para contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
-                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => navigate('/user?t=personal')}>Ir para Utilizador</span>
+                                                <span className={styles.market_text}>Completa o teu <span className={styles.text_special}>PERFIL</span> e <span  className={styles.text_special}>SUBSCREVE</span> para contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=personal')}>Ir para Utilizador</span>
                                             </div>
                                             :
-                                            noSubView?
+                                            loaded&&noSubView?
                                             <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Só falta completares a tua <span className={styles.text_special}>subscrição</span> para poderes contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
-                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => navigate('/user?t=subscription')}>Ir para Subscrição</span>
+                                                <span className={styles.market_text}>Só falta completares a tua <span className={styles.text_special}>subscrição</span> para poderes contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=subscription')}>Ir para Subscrição</span>
                                             </div>
                                             :
-                                            noProfileView?
+                                            loaded&&noProfileView?
                                             <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Só falta completares o teu <span className={styles.text_special}>perfil</span> para poderes contactar o/a <span style={{color:"white"}}>{reservation.user_name.split(" ")[0]}</span></span>
-                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto", textTransform:"uppercase"}} onClick={() => navigate('/user?t=personal')}>Ir para Perfil</span>
+                                                <span className={styles.market_text}>Só falta completares o teu <span className={styles.text_special}>PERFIL</span> para poderes contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=personal')}>Ir para Perfil</span>
                                             </div>
                                             :
                                             <div className={styles.market_skeleton} style={{width:"200px", bottom:"-95px"}}>
@@ -518,7 +524,7 @@ const Trabalho = (props) => {
                                             {
                                                 showFull||userView?
                                                 <span className={styles.user_info_number}>{getNumberDisplay(publicationUser?.phone)}</span>                                                 
-                                                :<span className={styles.user_info_number_blur}>123 456 789</span> 
+                                                :<span className={`${styles.user_info_number_blur} ${styles.unselectable}`}>123 456 789</span> 
                                             }
                                               
                                         </span>
@@ -528,13 +534,15 @@ const Trabalho = (props) => {
                                 <div className={styles.location_div}>
                                     <LocationOnIcon className={styles.location_pin}/>
                                     {
-                                        showFull||userView?
+                                        loaded&&(showFull||userView)?
                                         <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}, ${reservation.andar}`}</span>
-                                        :<span className={styles.location_blur}>R. Abcdefg Hijklmonpqrstuvxyz 99, Porta 99</span> 
+                                        :loaded&&(!showFull&&!userView)?
+                                        <span className={`${styles.location_blur} ${styles.unselectable}`}>R. Abcdefg Hijklmonpqrstuvxyz 99, Porta 99</span> 
+                                        :<span className={styles.skeleton} style={{width:"490px", height:"20px", marginLeft:"10px", borderRadius:"5px"}}></span>
                                         }
                                 </div>
                                 {
-                                    showFull||userView?
+                                    loaded&&(showFull||userView)?
                                     <div className={styles.map_div}>
                                         <GoogleMapReact 
                                             bootstrapURLKeys={{ key:"AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk", libraries: ["places"]}}
@@ -544,9 +552,8 @@ const Trabalho = (props) => {
                                             <Marker lat={reservation.lat} lng={reservation.lng}/>
                                         </GoogleMapReact>
                                     </div>
-                                    :
-                                    <div className={styles.map_div}>
-                                        <img src={blurredMap} className={styles.blurred_map}/>
+                                    :<div className={styles.map_div}>
+                                        <img src={blurredMap} className={`${styles.blurred_map} ${styles.unselectable}`}/>
                                     </div>
 
                                 }
@@ -566,12 +573,12 @@ const Trabalho = (props) => {
                             
                         </div>
                         {
-                            !userView?
+                            loaded&&!userView?
                             <div className={styles.message}>
                                 <div className={styles.message_top_flex}>
                                     <div className={styles.message_left}>
                                         {
-                                            publicationUser.photoUrl!==""?
+                                            publicationUser?.photoUrl!==""?
                                             <img src={publicationUser?.photoUrl} className={styles.top_right_img}></img>
                                             :<FaceIcon className={styles.top_right_img}/>
                                         }
@@ -589,9 +596,7 @@ const Trabalho = (props) => {
                                         <div className={styles.frontdrop}>
                                             <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"white", textTransform:"capitalize"}}>{reservation.user_name.split(" ")[0]}</span>,</span>
                                             {
-                                                showFull?
-                                                null
-                                                :noAccountView?
+                                                noAccountView?
                                                 <span className={styles.frontdrop_text}>registe ou entre numa conta TRABALHADOR!</span>
                                                 :noneView?
                                                 <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>PERFIL</span> e <span style={{color:"white"}}>SUBSCRIÇÃO</span>.</span>
@@ -602,9 +607,7 @@ const Trabalho = (props) => {
                                                 :null
                                             }
                                             {
-                                                showFull?
-                                                null
-                                                :noAccountView?
+                                                noAccountView?
                                                 <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
                                                 :noneView?
                                                 <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=personal')}>Ir para Utilizador</span>
@@ -654,7 +657,7 @@ const Trabalho = (props) => {
                                 </div>
                             </div>
                             :
-                            <div style={{marginTop:"40px"}}></div>
+                            <div className={styles.skeleton} style={{marginTop:"10px", width:"100%", height:"200px", marginBottom:"20px", borderRadius:"5px"}}></div>
                         }
                         
                     </div>

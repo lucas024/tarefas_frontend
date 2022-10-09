@@ -27,9 +27,10 @@ function App() {
   const [userGoogle, setUserGoogle] = useState(null)
   const [loading, setLoading] = useState(false)
   const [notifications, setNotifications] = useState([])
-  const [userLoadAttempt, setUserLoadAttemp] = useState(false)
+  const [userLoadAttempt, setUserLoadAttempt] = useState(false)
   const [incompleteUser, setIncompleteUser] = useState(true)
   const [hasTexts, setHasTexts] = useState(false)
+  const [hasSubscription, setHasSubscription] = useState(null)
 
 
   onAuthStateChanged(auth, (user) => {
@@ -38,6 +39,7 @@ function App() {
     } else {
       setUserGoogle(null)
       setUser(null)
+      setUserLoadAttempt(true)
     }
   });
 
@@ -89,13 +91,30 @@ function App() {
           else{
             setIncompleteUser(false)
           }
-          setUserLoadAttemp(true)
+          setUserLoadAttempt(true)
           setLoading(false)
         }
         else{
           axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
             if(res.data !== null){
               setUser(res.data)
+              if(res.data.subscription){
+                setLoading(true)
+                axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
+                    subscription_id: res.data.subscription.id,
+                    schedule_id: res.data.subscription.sub_schedule
+                })
+                .then(res2 => {
+                    if(res2.data.schedule){
+                        if(new Date().getTime() < new Date(res2.data.schedule.current_phase.end_date*1000)){
+                          setHasSubscription(true)
+                        }
+                    }
+                })
+              }
+              else{
+                setHasSubscription(false)
+              }
               if(res.data.chats?.length>0){
                 for(const el of res.data.chats){
                   if(!el.worker_read){
@@ -110,7 +129,7 @@ function App() {
               else{
                 setIncompleteUser(false)
               }
-              setUserLoadAttemp(true)
+              setUserLoadAttempt(true)
               setLoading(false)
             }
             else{
@@ -124,7 +143,6 @@ function App() {
     }
     else{
       setLoading(false)
-      setUserLoadAttemp(true)
     }
   }, [userGoogle])
 
@@ -139,7 +157,7 @@ function App() {
         else{
           setIncompleteUser(false)
         }
-        setUserLoadAttemp(true)
+        setUserLoadAttempt(true)
         setLoading(false)
       }
       else{
@@ -163,9 +181,13 @@ function App() {
   return (
     <div className="App">
       <div>
-        <Loader loading={loading}/>        
         <BrowserRouter>
-          <Navbar user={user} hasTexts={hasTexts} incompleteUser={incompleteUser} userLoadAttempt={userLoadAttempt}/>
+          <Navbar 
+            user={user} 
+            hasTexts={hasTexts} 
+            hasSubscription={hasSubscription}
+            incompleteUser={incompleteUser} 
+            userLoadAttempt={userLoadAttempt}/>
           <Routes>
               <Route exact path="/main/publications/publication" 
                 element={<Trabalho
@@ -173,18 +195,21 @@ function App() {
                   user={user}
                   api_url={api_url}
                   incompleteUser={incompleteUser}
+                  userLoadAttempt={userLoadAttempt}
                   />}
               />
               <Route exact path="/main/publications/trabalhador" 
                 element={<Trabalhador
                   user={user}
                   api_url={api_url}
+                  userLoadAttempt={userLoadAttempt}
                   />}
               />
               <Route exact path="/main/publications/*" 
                 element={<Main
                   user={user}
                   api_url={api_url}
+                  userLoadAttempt={userLoadAttempt}
                   />}
               />
               <Route exact path="/reserva/*" 
@@ -200,6 +225,8 @@ function App() {
                   <User
                     refreshWorker={() => refreshWorker()}
                     incompleteUser={incompleteUser}
+                    hasSubscription={hasSubscription}
+                    userLoadAttempt={userLoadAttempt}
                     updateChatReadLocal={chat_id => updateChatReadLocal(chat_id)}
                     user={user}
                     api_url={api_url}
@@ -222,7 +249,12 @@ function App() {
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}/>}
               />
-              <Route path="/" element={<Home user={user} notifications={notifications} userLoadAttempt={userLoadAttempt}/>} />
+              <Route path="/" 
+                element={<Home 
+                  user={user} 
+                  notifications={notifications}
+                  incompleteUser={incompleteUser}
+                  userLoadAttempt={userLoadAttempt}/>} />
               <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

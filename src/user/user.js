@@ -10,6 +10,7 @@ import Messages from './messages';
 import Subscription from './subscription';
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
+import Loader from '../general/loader';
 
 const stripePromise = loadStripe('pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd');
 
@@ -18,24 +19,17 @@ const User = (props) => {
     const [searchParams] = useSearchParams()
     const [reservations, setReservations] = useState([])
     const [nextReservation, setNextReservation] = useState(null)
-    const [isLoaded, setIsLoaded] = useState(false)
-    const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
+    const [loaded, setLoaded] = useState(false)
+
     const publishableKey = "pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd"
 
-
     useEffect(() => {
-        props.loadingHandler(true)
-        if(props.user){
-            updateReservations()
-        }
-        else{
-            setIsLoaded(true)
-        }
-
-        return () => setIsLoaded(false)
-    }, [props.user])
+        props.userLoadAttempt&&setLoaded(true)
+    }, [props.userLoadAttempt])
 
     const updateReservations = () => {
+        setLoading(true)
         axios.get(`http://localhost:5000/reservations/get_by_id`, { params: {user_id: props.user._id} }).then(res => {
             for(let el of res.data){
                 if(el.type<2){
@@ -43,8 +37,7 @@ const User = (props) => {
                 }
             }
             setReservations(res.data)
-            props.loadingHandler(false)
-            setIsLoaded(true)
+            setLoading(false)
             })
     }
 
@@ -53,7 +46,7 @@ const User = (props) => {
         if(val === "publications" && props.user?.type!==1)
             return <ReservaList api_url={props.api_url} reservations={reservations} user={props.user} refreshPublications={() => updateReservations()}/>
         else if(val === "personal")
-            return <Personal user={props.user} api_url={props.api_url} incompleteUser={props.incompleteUser} updateUser={(val, what) => props.updateUser(val, what)} />
+            return <Personal loaded={loaded} user={props.user} api_url={props.api_url} incompleteUser={props.incompleteUser} updateUser={(val, what) => props.updateUser(val, what)} />
         else if(val === "support")
             return <Suporte user={props.user} api_url={props.api_url}/>
         else if(val === "messages")
@@ -69,27 +62,32 @@ const User = (props) => {
 
     return (
         <div className={styles.worker}>
-            {
-                isLoaded?
-                <div className={styles.flex}>
-                    <div className={styles.left}>
-                        <UserSidebar api_url={props.api_url} incompleteUser={props.incompleteUser} user={props.user} nextReservation={nextReservation} notifications={props.notifications}/>
-                    </div>
-                    <div className={styles.right}>
-                        {
-                            isLoaded?
-                            <div className={styles.worker_area}>
-                                <div className={styles.area}>
-                                    {displayCurrentArea()}
-                                </div>
-                            </div>
-                            :null
-                        }
+            <div className={styles.flex}>
+                <div className={styles.left}>
+                    {
+                        loaded?
+                        <UserSidebar
+                            api_url={props.api_url} 
+                            incompleteUser={props.incompleteUser}
+                            hasSubscription={props.hasSubscription}
+                            user={props.user} 
+                            nextReservation={nextReservation} 
+                            notifications={props.notifications}
+                            />
+                        :<div className={styles.sidebar_skeleton}>
+                            <Loader loading={loading}/>
+                        </div>
+                    }
+                    
+                </div>
+                <div className={styles.right}>
+                    <div className={styles.worker_area}>
+                        <div className={styles.area}>
+                            {displayCurrentArea()}
+                        </div>
                     </div>
                 </div>
-                :null
-            }
-            
+            </div>
         </div>
     )
 }

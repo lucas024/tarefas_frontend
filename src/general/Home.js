@@ -15,19 +15,25 @@ const Home = (props) => {
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
     const [loginPopup, setLoginPopup] = useState(false)
+    const [loaded, setLoaded] = useState(false)
 
     const location = useLocation()
 
     useEffect(() => {
-        if(props.notifications?.length>0){
+        if(props.incompleteUser){
+            console.log("yes");
             setMensagemPopup(true)
             setTimeout(() => setMensagemPopup(false), 4000)
         }
-        else if(props.notificationsUpd && location.state && location.state.carry){
+        else if(location.state?.carry){
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
         }
-    }, [props.notifications, props.notificationsUpd, location])
+    }, [props.incompleteUser, location])
+
+    useEffect(() => {
+        props.userLoadAttempt&&setLoaded(true)
+    }, [props.userLoadAttempt])
 
 
     const navigate = useNavigate()
@@ -48,10 +54,7 @@ const Home = (props) => {
                 classNames="transition"
                 unmountOnExit
                 >{
-                props.notifications?.length===1?
-                <Sessao text={"Tem 1 mensagem nova!"}/>
-                :
-                <Sessao text={`Tem ${props.notifications?.length} mensagens novas!`}/>
+                <Sessao text={"Complete o seu perfil!"}/>
                 }
             </CSSTransition>
             {
@@ -71,7 +74,7 @@ const Home = (props) => {
             <div className={styles.home_back}>
                 <div className={styles.section_one} onClick={() => navigate('/main/publications/trabalhos')}>
                     {
-                        props.user || props.userLoadAttempt?
+                        props.user || loaded?
                         <div className={styles.section_content}>
                             <div className={styles.section_image_wrapper}>
                                 <ManageSearchIcon className={styles.section_img}/>
@@ -80,7 +83,7 @@ const Home = (props) => {
                                 PROCURAR
                             </p>
                             <p className={styles.section_title}>
-                                <span style={{textDecoration:"underline"}}>TRABALHOS</span>
+                                <span>TRABALHOS</span>
                             </p>
                             <a className={styles.link}/>
                         </div> 
@@ -104,13 +107,13 @@ const Home = (props) => {
                                 EDITAR
                             </p>
                             <p className={styles.section_title}>
-                                <span style={{textDecoration:"underline"}}>PERFIL</span>
+                                <span>PERFIL</span>
                             </p>
                         </div>
                         <a className={styles.link2}/>
                     </div>
                     :
-                    props.user?.type===0 || props.userLoadAttempt?
+                    props.user?.type===0 || loaded?
                     <div className={styles.section_two} onClick={() => navigate('/main/publications/trabalhadores')}>
                         <div className={styles.section_content}>
                             <div className={styles.section_image_wrapper}>
@@ -120,7 +123,7 @@ const Home = (props) => {
                                 PROCURAR
                             </p>
                             <p className={styles.section_title}>
-                                <span style={{textDecoration:"underline"}}>TRABALHADORES</span>
+                                <span>TRABALHADORES</span>
                             </p>
                         </div>
                         <a className={styles.link2}/>
@@ -138,7 +141,7 @@ const Home = (props) => {
                 }
             </div>
             {               
-                props.user?.type===0 || props.userLoadAttempt?
+                props.user?.type===0 || loaded&&!props.user?
                 <div className={styles.publish} onClick={() => navigate('/reserva?w=eletricista')}>
                     <span className={styles.publish_or}>OU</span>
                     <div className={styles.publish_main}>
@@ -154,7 +157,7 @@ const Home = (props) => {
                 <span className={styles.skeleton_publish}></span>
             }
             {
-                props.user?.type===0 || props.userLoadAttempt?
+                props.user?.type===0 || loaded&&!props.user?
                 <div className={styles.tag}>
                     <p className={styles.tag_text}>
                         Do que precisa hoje?
