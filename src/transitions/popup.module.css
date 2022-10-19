@@ -24,6 +24,18 @@
     flex-direction: column;
     z-index: 6;
 }
+.popup_confirm{
+    position: absolute;
+    width: 550px;
+    padding-bottom: 15px;
+    left: calc(50% - 275px);
+    top: 100px;
+    background-color: white;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    z-index: 6;
+}
 .value{
     padding: 2px;
     width: 90%;
@@ -154,8 +166,9 @@
     color: white;
 }
 .confirm_button:hover{
-    background-color: var(--action);
+    background-color: white;
     transition: 100ms all;
+    color: var(--action);
 }
 .cancel_text{
     margin: auto;

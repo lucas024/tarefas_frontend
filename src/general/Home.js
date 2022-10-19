@@ -8,6 +8,8 @@ import WorkerBanner from './workerBanner';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import {CSSTransition}  from 'react-transition-group';
 import Sessao from './../transitions/sessao';
+import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
+import {auth} from '../firebase/firebase'
 
 const Home = (props) => {
 
@@ -18,25 +20,54 @@ const Home = (props) => {
     const [loaded, setLoaded] = useState(false)
 
     const location = useLocation()
+    const navigate = useNavigate()
 
     useEffect(() => {
-        if(props.incompleteUser){
-            console.log("yes");
+        if(loaded&&props.user?.type&&props.incompleteUser){
             setMensagemPopup(true)
             setTimeout(() => setMensagemPopup(false), 4000)
         }
         else if(location.state?.carry){
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
+            navigate(location.pathname, {}); 
         }
-    }, [props.incompleteUser, location])
+    }, [props.incompleteUser, location, props.user, loaded])
 
     useEffect(() => {
         props.userLoadAttempt&&setLoaded(true)
     }, [props.userLoadAttempt])
 
 
-    const navigate = useNavigate()
+    useEffect(() => {
+
+        // Confirm the link is a sign-in with email link.
+        if (isSignInWithEmailLink(auth, location.pathname)) {
+            console.log("yes");
+            let email = localStorage.getItem('emailForSignIn');
+            if (!email) {
+                // User opened the link on a different device. To prevent session fixation
+                // attacks, ask the user to provide the associated email again. For example:
+                email = prompt('Please provide your email for confirmation');
+            }
+            // The client SDK will parse the code from the link for you.
+            signInWithEmailLink(auth, email, window.location.href)
+            .then((result) => {
+                localStorage.removeItem('emailForSignIn');
+                console.log(result.user)
+                // You can access the new user via result.user
+                // Additional user info profile not available via:
+                // result.additionalUserInfo.profile == null
+                // You can check if the user is new or existing:
+                // result.additionalUserInfo.isNewUser
+            })
+            .catch((error) => {
+                // Some error occurred, you can inspect the code: error.code
+                // Common errors could be invalid email and invalid or expired OTPs.
+            });
+        }
+    }, [location])
+
     
     return(
         <div className={styles.home}>
@@ -63,7 +94,7 @@ const Home = (props) => {
                 :null
             }
             {
-                props.user?.type===0 || props.userLoadAttempt?
+                props.user?.type===0&&props.userLoadAttempt || !props.user&&props.userLoadAttempt?
                 <span className={styles.worker_button} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
                 :props.user?.type===1?
                 null
@@ -142,7 +173,7 @@ const Home = (props) => {
             </div>
             {               
                 props.user?.type===0 || loaded&&!props.user?
-                <div className={styles.publish} onClick={() => navigate('/reserva?w=eletricista')}>
+                <div className={styles.publish} onClick={() => navigate('/publicar?w=eletricista')}>
                     <span className={styles.publish_or}>OU</span>
                     <div className={styles.publish_main}>
                         <span className={styles.publish_text}>
@@ -157,17 +188,17 @@ const Home = (props) => {
                 <span className={styles.skeleton_publish}></span>
             }
             {
-                props.user?.type===0 || loaded&&!props.user?
-                <div className={styles.tag}>
-                    <p className={styles.tag_text}>
-                        Do que precisa hoje?
-                    </p>
-                </div>
-                :
-                props.user?.type===1?
-                null
-                :
-                <span className={styles.skeleton_tag}></span>
+                // props.user?.type===0 || loaded&&!props.user?
+                // <div className={styles.tag}>
+                //     <p className={styles.tag_text}>
+                //         Do que precisa hoje?
+                //     </p>
+                // </div>
+                // :
+                // props.user?.type===1?
+                // null
+                // :
+                // <span className={styles.skeleton_tag}></span>
             }
         </div>
     )

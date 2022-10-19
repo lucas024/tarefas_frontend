@@ -47,6 +47,7 @@
     border-bottom: 1px solid #ccc;
     display: flex;
     min-height: 80px;
+    justify-content: space-between;
 }
 .top_left_flex{
     display: flex;
@@ -234,8 +235,8 @@
 }
 .bot_right_flex{
     display: flex;
-    margin: auto auto;
-    width: fit-content;
+    margin: auto 10px;
+    width: 50px;
     align-self: flex-end;
 }
 .send_icon{
@@ -334,10 +335,13 @@
     display: flex;
     flex-direction: column;
     margin-left: 40px;
-    border-radius: 5px;
-    padding: 5px;
+    padding: 5px 20px;
     cursor: pointer;
     justify-content: center;
+    background-color: var(--brand);
+}
+.post:hover{
+    opacity: 0.8;
 }
 .post:hover > * {
     opacity: 0.8;
@@ -347,7 +351,7 @@
     font-size: 1.2rem;
     align-self: center;
     text-transform: uppercase;
-    font-style: italic;
+    color: white;
 }
 .post_link{
     color: var(--action);

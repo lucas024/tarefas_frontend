@@ -198,6 +198,7 @@
     font-weight: 400;
     font-size: 0.8rem;
     opacity: 0.5;
+    align-self: flex-end;
 }
 .item_type_tbd{
     margin-left: 5px;

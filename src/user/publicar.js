@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
-import styles from './userReservationPage.module.css'
+import styles from './publicar.module.css'
 import elec from '../assets/electrician.png'
 import cana from '../assets/worker.png'
 import carp from '../assets/driver.png'
@@ -24,7 +24,7 @@ Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
 dayjs.locale('pt')
 
-const UserReservationPage = (props) => {
+const Publicar = (props) => {
 
     const [selectedWorker, setSelectedWorker] = useState('eletricista')
     const [titulo, setTitulo] = useState('')
@@ -477,7 +477,7 @@ const UserReservationPage = (props) => {
                                     <TopSelect
                                         id={selectedWorker}
                                         changeWorker={val => {
-                                            navigate(`/reserva?w=${val}`)
+                                            navigate(`/publicar?w=${val}`)
                                             setSelectedWorker(val)}}
                                     />
                                 </div>
@@ -654,4 +654,4 @@ const UserReservationPage = (props) => {
     )
 }
 
-export default UserReservationPage
+export default Publicar

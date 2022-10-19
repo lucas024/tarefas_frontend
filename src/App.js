@@ -8,7 +8,7 @@ import {
 import Home from './general/home'
 import Navbar from './general/navbar'
 import './app.css'
-import UserReservationPage from './user/userReservationPage'
+import Publicar from './user/publicar'
 import Auth from './auth/auth';
 import { onAuthStateChanged } from 'firebase/auth';
 import {auth} from './firebase/firebase'
@@ -21,14 +21,15 @@ import AuthWorker from './auth/authWorker';
 import Trabalhador from './main/trabalhador';
 
 function App() {
-  const api_url = "http://localhost:5000"
+  const api_url = "http://localhost:5200" //"https://docker-image-fixed-v2-z4uucaddha-ew.a.run.app"
+  
   
   const [user, setUser] = useState(null)
   const [userGoogle, setUserGoogle] = useState(null)
   const [loading, setLoading] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [userLoadAttempt, setUserLoadAttempt] = useState(false)
-  const [incompleteUser, setIncompleteUser] = useState(true)
+  const [incompleteUser, setIncompleteUser] = useState(false)
   const [hasTexts, setHasTexts] = useState(false)
   const [hasSubscription, setHasSubscription] = useState(null)
 
@@ -77,19 +78,13 @@ function App() {
       axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
         if(res.data !== null){
           setUser(res.data)
-          if(res.data.chats.length>0){
+          if(res.data.chats?.length>0){
             for(const el of res.data.chats){
               if(el.user_read){
                 setHasTexts(true)
                 break
               }
             }
-          }
-          if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
-            setIncompleteUser(true)
-          }
-          else{
-            setIncompleteUser(false)
           }
           setUserLoadAttempt(true)
           setLoading(false)
@@ -212,8 +207,8 @@ function App() {
                   userLoadAttempt={userLoadAttempt}
                   />}
               />
-              <Route exact path="/reserva/*" 
-                element={<UserReservationPage
+              <Route exact path="/publicar/*" 
+                element={<Publicar
                   user={user}
                   api_url={api_url}
                   loading={loading}

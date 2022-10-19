@@ -120,7 +120,9 @@ const UserSidebar = (props) => {
                                 {
                                 !props.incompleteUser&&props.user?.type?
                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                :<UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                :props.user?.type?
+                                <UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                :null
                                 }
                             </div>
                             } sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>

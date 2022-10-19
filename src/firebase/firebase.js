@@ -3,14 +3,10 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
   getAuth,
-  signInWithRedirect,
-  getRedirectResult,
+  sendSignInLinkToEmail ,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
   signOut,
-  updateProfile,
-  updatePhoneNumber,
   fetchSignInMethodsForEmail
 } from "firebase/auth"
 import { getStorage } from "firebase/storage";
@@ -26,12 +22,28 @@ const firebaseConfig = {
     measurementId: "G-2H1BL2H0JL"
 }
 
-const app = initializeApp(firebaseConfig)
+const firebaseConfigMain = {
+  apiKey: "AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk",
+  authDomain: "vender-344408.firebaseapp.com",
+  projectId: "vender-344408",
+  storageBucket: "vender-344408.appspot.com",
+  messagingSenderId: "971638842606",
+  appId: "1:971638842606:web:edb4a3c8c0bc94f2567fff",
+  measurementId: "G-V3M0Y0WSQ1"
+};
+
+const app = initializeApp(firebaseConfigMain)
 const storage = getStorage(app)
 const auth = getAuth(app)
 auth.languageCode = 'pt';
 const provider = new GoogleAuthProvider();
 const providerFacebook = new FacebookAuthProvider();
+
+const actionCodeSettings = {
+  url: "http://localhost:3000",
+  // This must be true.
+  handleCodeInApp: true
+};
 
 const registerWithEmailAndPassword = async (email, password) => {
   var result = await createUserWithEmailAndPassword(auth, email, password)
@@ -43,6 +55,19 @@ const loginWithEmailAndPassword = async (email, password) => {
   return result
 }
 
+const sendSignInLinkToEmailHandler = (email) => {
+  console.log(email);
+  sendSignInLinkToEmail(auth, email, actionCodeSettings).then(() => {
+    console.log(email);
+    window.localStorage.setItem('emailForSignIn', email);
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+}
+  
+
 const logout = () => {
   signOut(auth)
 }
@@ -50,7 +75,6 @@ const logout = () => {
 const fetchSignInMethodsForEmailHandler = async (email) => {
   return await fetchSignInMethodsForEmail(auth, email)
 }
-
 
 
 export {
@@ -61,5 +85,6 @@ export {
   fetchSignInMethodsForEmailHandler,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
+  sendSignInLinkToEmailHandler,
   logout,
 }

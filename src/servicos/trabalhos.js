@@ -65,6 +65,8 @@ const Trabalhos = (props) => {
 
     useEffect(() => {
         setLoaded(props.userLoadAttempt)
+
+        return () => setLoaded(false)
     }, [props.userLoadAttempt])
 
     useEffect(() => {

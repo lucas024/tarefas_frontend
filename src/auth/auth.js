@@ -11,7 +11,8 @@ import {
     fetchSignInMethodsForEmailHandler,
     auth,
     provider,
-    providerFacebook
+    providerFacebook,
+    sendSignInLinkToEmailHandler
     } from '../firebase/firebase'
 import {
     GoogleAuthProvider,
@@ -94,7 +95,7 @@ const Auth = (props) => {
     }, [password])
 
     const navigateHandler = () => {
-        navigate(`/reserva?w=${location.state.worker}`,
+        navigate(`/publicar?w=${location.state.worker}`,
             {
                 state: {
                     carry: true,
@@ -164,7 +165,6 @@ const Auth = (props) => {
                 
                 registerWithEmailAndPassword(email, password)
                     .then(res => {
-                        console.log(res)
                         axios.post(`${props.api_url}/auth/register`, 
                         {
                             name: name,
@@ -174,12 +174,13 @@ const Auth = (props) => {
                             google_uid: res.user.uid,
                             address: "",
                             photoUrl: "",
-                            type: 0
+                            type: 0,
+                            email_verified: false
                         })
                         .then(res => {
-                            console.log(res.data)
                             props.setUser(res.data.ops[0])
                             props.loadingHandler(false)
+                            sendSignInLinkToEmailHandler(email)
                             if(location.state && location.state.carry)
                             {
                                 navigateHandler()
@@ -286,7 +287,8 @@ const Auth = (props) => {
                           google_uid: user.uid,
                           address: "",
                           photoUrl: user.photoURL,
-                          type: 0
+                          type: 0,
+                          email_verified: true
                       }).then(result => {
                             console.log(result);
                             props.setUser(result.data.ops[0])
@@ -335,7 +337,8 @@ const Auth = (props) => {
                           google_uid: user.uid,
                           address: "",
                           photoUrl: user.photoURL,
-                          type: 0
+                          type: 0,
+                          email_verified: true
                       }).then(result => {
                             console.log(result);
                             props.setUser(result.data.ops[0])

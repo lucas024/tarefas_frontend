@@ -392,6 +392,13 @@
     animation-iteration-count: infinite;
 }
 
+.divider {
+    width: 100%;
+    height: 1px;
+    background-color: var(--brand);
+    margin: 20px auto;
+}
+
 @keyframes color {
     0% {
       background-color: var(--skeleton);

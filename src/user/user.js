@@ -3,7 +3,7 @@ import styles from './user.module.css'
 import UserSidebar from './userSidebar'
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import ReservaList from './reservaList';
+import Publications from './publications';
 import Personal from './personal';
 import Suporte from './suporte';
 import Messages from './messages';
@@ -28,23 +28,32 @@ const User = (props) => {
         props.userLoadAttempt&&setLoaded(true)
     }, [props.userLoadAttempt])
 
+    useEffect(() => {
+        updateReservations()
+    }, [props.user])
+
     const updateReservations = () => {
         setLoading(true)
-        axios.get(`http://localhost:5000/reservations/get_by_id`, { params: {user_id: props.user._id} }).then(res => {
-            for(let el of res.data){
-                if(el.type<2){
-                    setNextReservation(el)
+        if(props.user?.type===0)
+        {
+            axios.get(`http://localhost:5000/reservations/get_by_id`, { params: {user_id: props.user._id} }).then(res => {
+                console.log(res.data)
+                for(let el of res.data){
+                    if(el.type<2){
+                        setNextReservation(el)
+                    }
                 }
-            }
-            setReservations(res.data)
-            setLoading(false)
+                setReservations(res.data)
+                setLoading(false)
             })
+        }
+        
     }
 
     const displayCurrentArea = () => {
         let val = Object.fromEntries([...searchParams]).t
         if(val === "publications" && props.user?.type!==1)
-            return <ReservaList api_url={props.api_url} reservations={reservations} user={props.user} refreshPublications={() => updateReservations()}/>
+            return <Publications api_url={props.api_url} reservations={reservations} user={props.user} refreshPublications={() => updateReservations()} loaded={loaded}/>
         else if(val === "personal")
             return <Personal loaded={loaded} user={props.user} api_url={props.api_url} incompleteUser={props.incompleteUser} updateUser={(val, what) => props.updateUser(val, what)} />
         else if(val === "support")

@@ -45,8 +45,7 @@ const Carta = (props) => {
     }
 
     return(
-        <div className={styles.box}
-           >
+        <div className={styles.box} style={{border:props.worker._id===props.user._id?"3px solid #FF785A":""}}>
             <div className={styles.box_mask}>
                 {
                 worker?

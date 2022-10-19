@@ -72,6 +72,133 @@ const Trabalho = (props) => {
 
     const [loaded, setLoaded] = useState(false)
 
+    useEffect(() => {
+        if(isMapApiLoaded || window.google){
+        }
+        else{
+            const loader = new Loader({
+                apiKey: "AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk",
+                libraries: ["places"]
+              });
+            loader.load().then(() => setIsMapApiLoaded(true))
+        }
+    }, [])
+
+    useEffect( () => {
+        const paramsAux = Object.fromEntries([...searchParams])
+        console.log(paramsAux);
+        paramsAux.region&&setLocationActive(paramsAux.region)
+        paramsAux.work&&setWorkerActive(paramsAux.work)
+        setPage(paramsAux.page)
+        paramsAux.id&&axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
+            if(res.data){
+                setReservation(res.data)
+                let arr = []
+                for(let img of res.data.photos){
+                    arr.push({
+                        original: img,
+                        thumbnail: img,
+                        originalHeight: "300px",
+                        originalWidth: "700px",
+                        thumbnailHeight: "50px",
+                        thumbnailWidth: "100px",
+                    })
+                }
+                setImages(arr) 
+            }
+            else{
+                setReservation(null)
+            }
+        })
+
+    }, [searchParams])
+
+    useEffect(() => {
+        props.user!=null&&reservation&&axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: reservation.user_id} })
+            .then(res => {
+                setPublicationUser(res.data)
+                if(props.user?._id === reservation.user_id){
+                    setViewTo('user')
+                    setLoading(false)
+                }
+            })
+        
+        if(props.user?.chats)
+        {
+            for(let chat of props.user.chats)
+            {
+                if(chat.reservation_id === reservation._id)
+                {
+                    setNoRepeatedChats(true)
+                    setChatId(chat.chat_id)
+                    break
+                }
+            }
+        }
+        
+    }, [reservation, props.user])
+
+    useEffect(() => {
+        if(loaded)
+        {
+            if(!props.user){
+                setViewTo('noAccount')
+                setLoading(false)
+            }
+            else if(!(props.user?.subscription&&!props.incompleteUser)){
+                setViewTo('none')
+                setLoading(false)
+            }
+            else if(props.user?.subscription){
+                axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
+                    subscription_id: props.user.subscription.id,
+                    schedule_id: props.user.subscription.sub_schedule
+                })
+                .then(res2 => {
+                    if(!isActiveSub(res2.data.schedule.current_phase.end_date)){
+                        setViewTo('noSub')
+                    }
+                    else if(isActiveSub(res2.data.schedule.current_phase.end_date)&&props.user.state===1)
+                    {
+                        setViewTo("showFull")
+                    }
+                    else if(props.incompleteUser || props.user.state===0){
+                        setViewTo('noProfile')
+                    }
+                    setLoading(false)
+                })
+                
+            }
+            else if(props.incompleteUser || props.user?.state===0){
+                setViewTo('noProfile')
+                setLoading(false)
+            }
+            else
+            {
+                setViewTo('noAccount')
+                setLoading(false)
+            }
+        }
+    }, [props.user, props.incompleteUser, loaded])
+
+    useEffect(() => {
+        props.userLoadAttempt&&setLoaded(true)
+
+        return () => setLoaded(false)
+    }, [props.userLoadAttempt])
+
+    const isActiveSub = date => {
+        if(new Date().getTime() < new Date(date*1000)){
+            return true
+        }
+    }
+
+    useEffect(() => {
+        if(eliminationPopup){
+            scrollRef.current.scrollIntoView()  
+        } 
+    }, [eliminationPopup])
+
     const setViewTo = (view) => {
         console.log(view);
         if(view !== "none")
@@ -123,114 +250,6 @@ const Trabalho = (props) => {
             setShowFull(true)
         }
     }
-
-    useEffect(() => {
-        if(isMapApiLoaded || window.google){
-        }
-        else{
-            const loader = new Loader({
-                apiKey: "AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk",
-                libraries: ["places"]
-              });
-            loader.load().then(() => setIsMapApiLoaded(true))
-        }
-    }, [])
-
-    useEffect( () => {
-        const paramsAux = Object.fromEntries([...searchParams])
-        console.log(paramsAux);
-        paramsAux.region&&setLocationActive(paramsAux.region)
-        paramsAux.work&&setWorkerActive(paramsAux.work)
-        setPage(paramsAux.page)
-        paramsAux.id&&axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
-            if(res.data){
-                setReservation(res.data)
-                let arr = []
-                for(let img of res.data.photos){
-                    arr.push({
-                        original: img,
-                        thumbnail: img,
-                        originalHeight: "300px",
-                        originalWidth: "700px",
-                        thumbnailHeight: "50px",
-                        thumbnailWidth: "100px",
-                    })
-                }
-                setImages(arr) 
-            }
-            else{
-                setReservation(null)
-            }
-        })
-
-    }, [searchParams])
-
-    useEffect(() => {
-        props.user!=null&&reservation&&axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: reservation.user_id} })
-            .then(res => {
-                setPublicationUser(res.data)
-                if(props.user?._id === reservation.user_id){
-                    setViewTo('user')
-                    setLoading(false)
-                }
-            })
-    }, [reservation, props.user])
-
-    useEffect(() => {
-        if(!props.user){
-            setViewTo('noAccount')
-            setLoading(false)
-        }
-        else if(!(props.user?.subscription&&!props.incompleteUser)){
-            setViewTo('none')
-            setLoading(false)
-        }
-        else if(props.user?.subscription){
-            axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
-                subscription_id: props.user.subscription.id,
-                schedule_id: props.user.subscription.sub_schedule
-            })
-            .then(res2 => {
-                if(!isActiveSub(res2.data.schedule.current_phase.end_date)){
-                    setViewTo('noSub')
-                }
-                else if(isActiveSub(res2.data.schedule.current_phase.end_date)&&props.user.state===1)
-                {
-                    setViewTo("showFull")
-                }
-                else if(props.incompleteUser || props.user.state===0){
-                    setViewTo('noProfile')
-                }
-                setLoading(false)
-            })
-            
-        }
-        else if(props.incompleteUser || props.user?.state===0){
-            setViewTo('noProfile')
-            setLoading(false)
-        }
-        else
-        {
-            setViewTo('noAccount')
-            setLoading(false)
-        }
-    }, [props.user, props.incompleteUser])
-
-    useEffect(() => {
-        props.userLoadAttempt&&setLoaded(true)
-    }, [props.userLoadAttempt, props.incompleteUser])
-
-    const isActiveSub = date => {
-        if(new Date().getTime() < new Date(date*1000)){
-            return true
-        }
-    }
-
-    useEffect(() => {
-        if(eliminationPopup){
-            scrollRef.current.scrollIntoView()  
-        } 
-    }, [eliminationPopup])
 
     const getPublicationDate = () => {
         if(reservation.timestamp){
@@ -287,12 +306,14 @@ const Trabalho = (props) => {
             }
             let chatId = ObjectID()
 
-            await axios.post(`${props.api_url}/chats/create_user_chat_from_worker`, {
+            await axios.post(`${props.api_url}/chats/create_chat`, {
                 worker_name: props.user.name,
+                worker_surname: props.user.surname,
                 worker_photoUrl: props.user.photoUrl,
                 worker_phone: props.user.phone,
                 worker_id: props.user._id,
                 user_name: publicationUser.name,
+                user_surname: publicationUser.surname,
                 user_photoUrl: publicationUser.photoUrl,
                 user_phone: publicationUser.phone,
                 user_id: publicationUser._id,
@@ -302,13 +323,8 @@ const Trabalho = (props) => {
                 reservation_id: reservation._id,
                 reservation_title: reservation.title
             })
-            .then(() => {
-                
-            })
-            // await axios.post(`${props.api_url}/user/update_user_notifications`, {
-            //     _id: publicationUser._id,
-            //     notification_id: chatId
-            // })
+
+            setChatId(chatId)
             setText("")
             setLoadingChat(false)
             setSuccessPopin(true)
@@ -470,6 +486,8 @@ const Trabalho = (props) => {
                                     }}>
                                         Enviar Mensagem
                                     </span>
+                                    :userView?
+                                    null
                                     :<span className={`${styles.top_right_message} ${styles.skeleton}`} style={{height:"40px", width:"150px"}}></span>
                                 }
                                 
@@ -560,7 +578,7 @@ const Trabalho = (props) => {
                                 
                             </div>
                         </div>
-                        <div className={styles.photos}>
+                        <div className={styles.photos} style={{marginBottom:userView?"20px":0}}>
                             <span className={styles.top_right_user}>Fotografias</span>
                             {
                                 images?.length>0?
@@ -656,6 +674,8 @@ const Trabalho = (props) => {
                                     </span>
                                 </div>
                             </div>
+                            :loaded&&userView?
+                            null
                             :
                             <div className={styles.skeleton} style={{marginTop:"10px", width:"100%", height:"200px", marginBottom:"20px", borderRadius:"5px"}}></div>
                         }

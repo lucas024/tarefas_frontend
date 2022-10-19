@@ -28,7 +28,7 @@ const Popup = (props) => {
                     classNames="transition"
                     unmountOnExit
                     >
-                <div className={styles.popup}>
+                <div className={props.type==='confirm'?styles.popup_confirm:styles.popup}>
                         <span className={styles.value}>Publicar</span>
                         <div className={styles.divider}></div>
                         <div className={styles.line}>
@@ -39,12 +39,12 @@ const Popup = (props) => {
 
                         <div className={styles.help_text}>
                                 <p className={styles.help_text_val}>
-                                    Após carregar em confirmar, a sua publicação será analisada, podendo seguir processo na sua  
-                                    <span className={styles.action}> Àrea Pessoal</span>.
-                                    <span style={{fontSize:"0.7rem", textAlign:"left", marginTop:"50px", fontStyle:"italic"}}>
+                                    Após carregar em confirmar, a sua publicação será analisada, podendo seguir o processo na sua  
+                                    <span className={styles.action}> Àrea Pessoal</span>.<br/><br/>
+                                    <p style={{fontSize:"0.7rem", textAlign:"left", fontStyle:"italic"}}>
                                         Receberá também um <span className={styles.action}>e-mail</span> a confirmar a publicação
                                         do seu pedido!
-                                    </span>
+                                    </p>
                                     
                                 </p>
                         </div>

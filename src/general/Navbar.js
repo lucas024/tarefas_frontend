@@ -7,6 +7,7 @@ import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
 import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import { sendSignInLinkToEmailHandler } from '../firebase/firebase'
 
 const Navbar = (props) => {
 
@@ -15,6 +16,7 @@ const Navbar = (props) => {
     const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
+        console.log(props.userLoadAttempt);
         setLoaded(props.userLoadAttempt)
     }, [props.userLoadAttempt])
 
@@ -25,7 +27,7 @@ const Navbar = (props) => {
     }
 
     return (
-        <div className={styles.navbar}>
+        <div className={styles.navbar} onClick={() => sendSignInLinkToEmailHandler(props.user.email)}>
             <div className={styles.flex}>
                 <div className={styles.flex_end}>
                     <p className={styles.title} 
@@ -39,7 +41,7 @@ const Navbar = (props) => {
                                         TRABALHOS
                                 </span>
                                 :loaded?
-                                <span className={styles.user_button} onClick={() => {navigate('/reserva?t=eletricista')}}>
+                                <span className={styles.user_button} onClick={() => {navigate('/publicar?t=eletricista')}}>
                                     PUBLICAR
                                 </span>
                                 :

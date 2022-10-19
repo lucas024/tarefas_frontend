@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import styles from './reservaList.module.css'
+import styles from './publications.module.css'
 import { useNavigate } from 'react-router-dom';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { storage } from '../firebase/firebase'
@@ -8,13 +8,14 @@ import axios from 'axios';
 import Loader from '../general/loader';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 
-const ReservaList = (props) => {
+const Publications = (props) => {
 
     const navigate = useNavigate()
     const [removeArray, setRemoveArray] = useState([])
     const [loading, setLoading] = useState(false)
     const [activeReservations, setActiveReservations] = useState(false)
     const [notActiveReservations, setNotActiveReservations] = useState(false)
+    const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
         for(let res of props.reservations){
@@ -25,7 +26,16 @@ const ReservaList = (props) => {
                 setNotActiveReservations(true)
             }
         }
+        if(props.reservations.length===0)
+        {
+            setActiveReservations(false)
+            setNotActiveReservations(false)
+        }
     }, [props.reservations])
+
+    useEffect(() => {
+        props.loaded&&setLoaded(true)
+    }, [props.loaded])
 
     const getTime = (val) => {
         let time = new Date(val)
@@ -164,14 +174,16 @@ const ReservaList = (props) => {
                         activeReservations?
                             displayReservations(0, 1)
                         :
-                        <div className={styles.item_none} style={{padding:"20px"}}>
+                        loaded?
+                        <div className={styles.item_none} style={{padding:"30px 0"}}>
                             <div className={styles.item_flex}>
                                 <span className={styles.item_type_tbd}>Sem publicações activas</span>
-                                <span className={styles.publicar} onClick={() => {navigate('/reserva?t=eletricista')}}>
+                                <span className={styles.publicar} onClick={() => {navigate('/publicar?t=eletricista')}}>
                                     PUBLICAR
                                 </span>
                             </div>
                         </div>
+                        :<div style={{height:"120px", width:"100%", backgroundColor:"white"}} />
                     }
                     </div>
                     <div className={styles.list_prox} style={{marginTop:0}}>
@@ -192,4 +204,4 @@ const ReservaList = (props) => {
     )
 }
 
-export default ReservaList
+export default Publications

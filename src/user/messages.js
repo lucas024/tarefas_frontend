@@ -13,6 +13,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
 import ScrollToBottom, { useScrollToBottom, useSticky } from 'react-scroll-to-bottom';
+import letter_t from '../assets/letter-t.png'
 
 
 const URL = "http://localhost:5500";
@@ -489,14 +490,16 @@ const Messages = (props) => {
                     //removeNotificationHandler(item._id, other_user, true)
                     }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
                     {
-                        item.user_photoUrl!==""?
+                        item.reservation_title?
+                        <img className={styles.row_img} style={{backgroundColor:"white"}} src={letter_t}/>
+                        :item.worker_photoUrl!==""?
                         <img className={styles.row_img} src={item.user_photoUrl}/>
                         :
                         <FaceIcon className={styles.chatbox_user_img}/>
                     }
                     <div className={styles.row_main}>
                         <div className={styles.main_top}>
-                            <span className={styles.top_name}>{item.user_name}</span>
+                            <span className={styles.top_name} style={{textTransform:item.reservation_title?"uppercase":""}}>{item.reservation_title?item.reservation_title:item.user_name}</span>
                             <span className={styles.top_hour} style={{color:selectedChat?._id===item._id?"black":"#ccc"}}>{getDisplayTime(item.last_text.timestamp)}</span>
                         </div>
                         <div className={styles.main_bottom}>
@@ -530,15 +533,17 @@ const Messages = (props) => {
                     //props.updateNotification(item._id)
                     //removeNotificationHandler(item._id, other_user, true)
                     }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
-                    {
-                        item.worker_photoUrl!==""?
+                    {   
+                        item.reservation_title?
+                        <img className={styles.row_img} style={{backgroundColor:"white"}} src={letter_t}/>
+                        :item.worker_photoUrl!==""?
                         <img className={styles.row_img} src={item.worker_photoUrl}/>
                         :
                         <FaceIcon className={styles.chatbox_user_img}/>
                     }
                     <div className={styles.row_main}>
                         <div className={styles.main_top}>
-                            <span className={styles.top_name}>{item.worker_name}</span>
+                            <span className={styles.top_name} style={{textTransform:item.reservation_title?"uppercase":""}}>{item.reservation_title?item.reservation_title:item.worker_name}</span>
                             <span className={styles.top_hour} style={{color:selectedChat?._id===item._id?"black":"#ccc"}}>{getDisplayTime(item.last_text.timestamp)}</span>
                         </div>
                         <div className={styles.main_bottom}>
@@ -633,16 +638,18 @@ const Messages = (props) => {
                                                 <span className={styles.type_indicator}>CLIENTE</span>
                                                 :
                                                 <span className={styles.type_indicator}>TRABALHADOR</span>
-                                            } */}
-                                            {
-                                                <div className={styles.post} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>
-                                                    <span className={styles.post_title}>{selectedChat.reservation_title}</span>
-                                                    <span className={styles.post_link} >ver trabalho</span>
-                                                </div>
-                                                
-                                            }
-                                            
+                                            } */}                                            
                                         </div>
+                                        {
+                                            selectedChat.reservation_title?
+
+                                            <div className={styles.post} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>
+                                                <span className={styles.post_title}>{selectedChat.reservation_title}</span>
+                                                <span className={styles.post_link} >ver trabalho</span>
+                                            </div>
+                                            :null
+                                            
+                                        }
                                     </div>
                                     <ScrollToBottom className={styles.chat_area}>
                                         <Loader loading={loadingChatBox}/>

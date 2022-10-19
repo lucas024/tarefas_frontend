@@ -9,6 +9,8 @@ import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import {regioesOptions, profissoesOptions} from '../general/util'
 
+const ObjectID = require("bson-objectid");
+
 const Trabalhador = props => {
     const navigate = useNavigate()
 
@@ -24,6 +26,10 @@ const Trabalhador = props => {
     const [locationActive, setLocationActive] = useState(false)
     const [workerActive, setWorkerActive] = useState(false)
     const [loaded, setLoaded] = useState(false)
+    const [loadingChat, setLoadingChat] = useState(false)
+    const [successPopin, setSuccessPopin] = useState(false)
+
+    const [noRepeatedChats, setNoRepeatedChats] = useState(false)
 
     useEffect(() => {
         const paramsAux = Object.fromEntries([...searchParams])
@@ -41,8 +47,67 @@ const Trabalhador = props => {
         props.userLoadAttempt&&setLoaded(true)
     }, [props.userLoadAttempt])
 
-    const sendMessageHandler = () => {
-        
+    const sendMessageHandler = async () => {
+        if(text!==""&&worker.type!==props.user.type&&worker._id!==props.user._id){
+            setLoadingChat(true)
+
+            let time = new Date().getTime()
+            let text_object = {
+                origin_type : props.user.type,
+                timestamp : time,
+                text: text,
+            }
+
+            var repeated = false
+
+            if(props.user.chats)
+            {
+                for(let chat of props.user.chats)
+                {
+                    if(chat.worker_id === worker._id && chat.reservation_id === null)
+                    {
+                        console.log("repeated chat")
+                        repeated=true
+                        await axios.post(`${props.api_url}/chats/update_common_chat`, {
+                            worker_read: props.user.type===1?true:false,
+                            user_read: props.user.type===0?true:false,
+                            chat_id: chat.chat_id,
+                            text: text_object,
+                            updated: time
+                        })
+                    }
+                }
+            }
+            
+
+            if(!repeated)
+            {
+                let chatId = ObjectID()
+
+                await axios.post(`${props.api_url}/chats/create_chat`, {
+                    worker_name: worker.name,
+                    worker_surname: worker.surname,
+                    worker_photoUrl: worker.photoUrl,
+                    worker_phone: worker.phone,
+                    worker_id: worker._id,
+                    user_name: props.user.name,
+                    user_surname: props.user.surname,
+                    user_photoUrl: props.user.photoUrl,
+                    user_phone: props.user.phone,
+                    user_id: props.user._id,
+                    text: text_object,
+                    updated: time,
+                    chat_id: chatId
+                })
+            }
+            
+
+            setText("")
+            setLoadingChat(false)
+            setSuccessPopin(true)
+            setTimeout(() => setSuccessPopin(false), 4000)
+            setNoRepeatedChats(true)
+            }
     }
 
     const mapTrabalhosList = list => {
@@ -67,21 +132,6 @@ const Trabalhador = props => {
 
     const getNumberDisplay = number => {
         return number&&`${number.slice(0,3)} ${number.slice(3,6)} ${number.slice(6)}`
-    }
-
-    const getSearchParams = () => {
-        if(workerActive&&locationActive){
-            return `?page=${page}&work=${workerActive}&region=${locationActive}`
-        }
-        else if(workerActive){
-            return `?page=${page}&work=${workerActive}`
-        }
-        else if(locationActive){
-            return `?page=${page}&region=${locationActive}`
-        }
-        else{
-            return `?page=${page}`
-        }
     }
 
     useEffect(() => {
@@ -205,13 +255,15 @@ const Trabalhador = props => {
                                 </div>
                             </div>
                             :
-                            <textarea 
+                            <div style={{position:"relative"}}>
+                                <Loader loading={loadingChat}/>
+                                <textarea 
                                 ref={messageAreaRef}
                                 className={styles.message_textarea}
                                 placeholder="Escrever mensagem..."
                                 value={text}
-                                onChange={e => setText(e.target.value)}
-                            />
+                                onChange={e => setText(e.target.value)} />
+                            </div>
                         }
                         <div>
                             

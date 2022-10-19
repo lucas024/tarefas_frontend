@@ -37,7 +37,8 @@ const Servicos = (props) => {
     const [gridAnim, setGridAnim] = useState(true)
     const [locationActive, setLocationActive] = useState(false)
     const [workerActive, setWorkerActive] = useState(false)
-
+    const [loaded, setLoaded] = useState(false)
+    
     const location = useLocation()
 
     const myRef = useRef(null)
@@ -50,6 +51,11 @@ const Servicos = (props) => {
     //eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [])
     
+    useEffect(() => {
+        setLoaded(props.userLoadAttempt)
+
+        return () => setLoaded(false)
+    }, [props.userLoadAttempt])
 
     useEffect(() => {
         console.log(window.history);
@@ -169,6 +175,7 @@ const Servicos = (props) => {
                                                                     search: getSearchParams(worker._id)
                                                                 })}>
                     <Carta
+                        user={props.user}
                         id={id}
                         worker={worker}
                         locationActive={locationActive}
@@ -368,7 +375,9 @@ const Servicos = (props) => {
                             }
                         </div>
                     </div>
-                    :<NoPage object="no_search" limparPesquisa={() => limparPesquisa()}/>
+                    :loaded?
+                        <NoPage object="no_search" limparPesquisa={() => limparPesquisa()}/>
+                    :null
                 }
             </div>
         </div>
