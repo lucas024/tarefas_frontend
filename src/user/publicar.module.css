@@ -324,11 +324,26 @@ input::placeholder{
     display: flex;
     flex-direction: column;
 }
+.diff_right_title_container{
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 5px;
+}
 .diff_right_title{
     font-weight: 600;
     font-size: 1.1rem;
     text-transform: uppercase;
     margin-bottom: 5px;
+}
+.diff_right_title_wrong_div{
+    margin-left: 10px;
+    color: var(--red);
+    margin-top: 1px;
+}
+.editar_tit{
+    text-decoration: underline;
+    font-weight: 500;
+    text-transform: uppercase;
 }
 .top_desc_area{
     width: 100%;

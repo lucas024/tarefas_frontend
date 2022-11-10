@@ -36,6 +36,21 @@
     flex-direction: column;
     z-index: 6;
 }
+.popup_admin_refuse{
+    position: absolute;
+    width: 550px;
+    padding-bottom: 15px;
+    left: calc(50% - 275px);
+    top: 20px;
+    background-color: white;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    z-index: 6;
+    max-height: 500px;
+    overflow: hidden;
+    overflow-y: auto;
+}
 .value{
     padding: 2px;
     width: 90%;
@@ -256,4 +271,87 @@
 .list_item_right{}
 .list_item_value{
     align-self: center;
+}
+
+.cancel{
+    text-align: center;
+    margin-top: 15px;
+    cursor: pointer;
+}
+.cancel:hover{
+    text-decoration: underline;
+}
+
+.top_desc_area{
+    width: 90%;
+    min-height: 100px;
+    margin: auto;
+    border-radius: 5px;
+    resize: none;
+    border: none;
+    font-size: 0.9rem;
+    padding: 5px;
+    font-family: inherit;
+    z-index: -1;
+    border-top-left-radius: 0;
+    font-weight: 600;
+    background-color: var(--background);
+    color: var(--brand);
+    border-bottom: 2px solid var(--brand);
+    box-sizing: border-box;
+}
+.top_desc_area:hover{
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 3px 3px rgba(0,0,0,0.12),
+    0 4px 4px rgba(0,0,0,0.12);
+    outline: none !important;
+}
+.top_desc_area:focus{
+    outline: none !important;
+}
+.top_desc_area::placeholder{
+    font-style: italic;
+}
+.refusal_div{
+    display: flex;
+    margin: 10px 28px;
+    width: fit-content;
+    position: relative;
+}
+.input{
+    margin-left: 10px;
+    border-radius: 5px;
+    outline: none;
+    width: 300px;
+    max-width: 300px;
+    height: 100px;
+    padding: 5px;
+}
+.add{
+    margin-left: 30px;
+    font-size: 30px;
+    padding: 0 10px;
+    border-radius: 10px;
+    background-color: var(--brand);
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.add:hover{
+    opacity: 0.7;
+}
+.remove{
+    position: absolute;
+    left: 0;
+    top: 45px;
+    font-size: 30px;
+    padding: 0 10px;
+    border-radius: 10px;
+    background-color: var(--red);
+    color: white;
+    cursor: pointer;
+}
+.remove:hover{
+    opacity: 0.7;
 }

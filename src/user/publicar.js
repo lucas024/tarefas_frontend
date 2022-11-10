@@ -59,6 +59,8 @@ const Publicar = (props) => {
     const [lat, setLat] = useState("")
     const [lng, setLng] = useState("")
     const [district, setDistrict] = useState(null)
+    const [edit, setEdit] = useState(false)
+    const [editReservation, setEditReservation] = useState(null)
 
     const maxFiles = 6
     const inputRef = useRef(null);
@@ -120,8 +122,6 @@ const Publicar = (props) => {
         }
     }, [location])
 
-
-
     useEffect(() => {
         if(props.user){
             setNome(`${props.user.name} ${props.user.surname}`)
@@ -136,13 +136,44 @@ const Publicar = (props) => {
 
     useEffect(() => {
         props.loadingHandler(true)
-        if(Object.fromEntries([...searchParams]).w){
-            setSelectedWorker(Object.fromEntries([...searchParams]).w)
+        const paramsAux = Object.fromEntries([...searchParams])
+        if(paramsAux){
+            setSelectedWorker(paramsAux.w)
         }
         else {
             setSelectedWorker('eletricista')
         }
-        props.loadingHandler(false)
+        if(paramsAux.editar && paramsAux.res_id)
+        {   
+            setEdit(true)
+            axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.res_id} }).then(res => {
+                if(res.data){
+                    setEditReservation(res.data)
+                    setTitulo(res.data.title)
+                    setDescription(res.data.desc)
+                    setAddress(res.data.localizacao)
+                    setSelectedWorker(res.data.workerType)
+                    setPorta(res.data.porta)
+                    let arr = []
+                    for(let img_url of res.data.photos){
+                        arr.push({
+                            from_edit:true,
+                            url:img_url
+                        })
+                    }
+                    setImages(arr)
+                    props.loadingHandler(false)
+                    console.log(res.data);
+                }
+                else{
+                    setEditReservation(null)
+                    props.loadingHandler(false)
+                }
+            })
+        }
+        else{
+            props.loadingHandler(false)
+        }
     }, [searchParams])
 
     useEffect(() => {
@@ -217,7 +248,7 @@ const Publicar = (props) => {
             })
     }
 
-    const uploadImageFileHanlder = (file, postId, it, arr) => {
+    const uploadImageFileHanlder = async (file, postId, it, arr) => {
         const storageRef = ref(storage, `posts/${postId}/${it}`);
         return uploadBytes(storageRef, file).then(() => {
             return getDownloadURL(storageRef).then(url => {
@@ -230,6 +261,14 @@ const Publicar = (props) => {
         props.loadingHandler(true)
         const arr = []
         const postId = ObjectID()
+        if(edit){
+            for(let img_obj of images)
+            {
+                if(img_obj.from_edit)
+                    arr.push(img_obj.url)
+            }
+            postId = editReservation._id
+        }
         await Promise.all(imageFiles.map((file, i) => uploadImageFileHanlder(file, postId, i, arr)))
         let time = new Date()
         let reserva = {
@@ -323,8 +362,12 @@ const Publicar = (props) => {
         for(let img of event.target.files){
 
             const objectUrl = URL.createObjectURL(img)
+            console.log(objectUrl, img);
             files_aux.push(img)
-            images_aux.push(objectUrl)
+            images_aux.push({
+                from_edit:false,
+                url:objectUrl
+            })
         }
         setImageFiles(files_aux)
         setImages(images_aux)
@@ -343,11 +386,11 @@ const Publicar = (props) => {
 
     const displayImages = () => {
         if(images.length===6){
-            return images.map((img, i) => {
+            return images.map((img_obj, i) => {
                 return (
-                    <div key={i} className={styles.foto_img_wrapper} onClick={() => deleteImageHandler(img)}>
+                    <div key={i} className={styles.foto_img_wrapper} onClick={() => deleteImageHandler(img_obj)}>
                         <DeleteIcon className={styles.foto_img_delete}/>
-                        <img key={i} src={img} className={styles.foto_img}></img>
+                        <img key={i} src={img_obj.url} className={styles.foto_img}></img>
                         <span className={styles.foto_img_number}>Fotografia {i+1}</span>
                     </div>
                     
@@ -357,14 +400,14 @@ const Publicar = (props) => {
         else {
             let arr = [...images]
             arr.push({blank:true})
-            return arr.map((img, i) => {
-                if(!img.blank){
+            return arr.map((img_obj, i) => {
+                if(!img_obj.blank){
                     return (
                         <div key={i} className={styles.helper_img_div}>
-                            <div className={styles.foto_img_wrapper} onClick={() => deleteImageHandler(img)}>
+                            <div className={styles.foto_img_wrapper} onClick={() => deleteImageHandler(img_obj)}>
                                 <span className={styles.frontdrop_helper}></span>
                                 <DeleteIcon className={styles.foto_img_delete}/>
-                                <img key={i} src={img} className={styles.foto_img}></img>
+                                <img key={i} src={img_obj.url} className={styles.foto_img}></img>
                             </div>
                             <span className={styles.foto_img_number}>Fotografia {i+1}</span>
                         </div>
@@ -385,6 +428,20 @@ const Publicar = (props) => {
             })
         }
         
+    }
+
+    const getFieldWrong = type => {
+        for(let el of editReservation.refusal_object)
+        {
+            if(el.type===type) return true
+        }
+    }
+
+    const getFieldWrongText = type => {
+        for(let el of editReservation.refusal_object)
+        {
+            if(el.type===type) return el.text
+        }
     }
 
     return (
@@ -409,35 +466,6 @@ const Publicar = (props) => {
                     :null
             }
             <div className={styles.flex}>
-                {/* <div className={styles.left}>
-                    <div className={styles.left_title_area}>
-                        <span className={styles.left_title}>Publicar</span>
-                    </div>
-                    <div className={styles.left_description_area}>
-                        <span className={styles.left_description}>
-                            <p>
-                            Nesta página pode criar uma <span className={styles.action}>publicação</span> para o serviço 
-                            de que precisa.<br/>
-                            <br></br>
-                            </p>
-                            
-
-                        </span>
-                    </div>
-                    
-                    <div className={styles.left_list}>
-                        <span className={styles.list_element_div}>
-                            <span className={styles.element_symbol}></span>
-                            <span className={styles.element_title}>
-                                
-                            </span>
-                            <span className={styles.element_desc}>
-
-                            </span>
-                            
-                        </span>
-                    </div>
-                </div> */}
                 <div className={styles.main}>
                     <CSSTransition 
                     in={inProp}
@@ -484,11 +512,38 @@ const Publicar = (props) => {
                             </div>
                             <div className={styles.top_right}>
                                 <div className={styles.diff_right}>
-                                    <span className={styles.diff_right_title}>Título<span className={styles.action}>*</span></span>
+                                        {
+                                            editReservation?.type===2&&getFieldWrong('titulo')?
+                                            <div className={styles.diff_right_title_container}>
+                                                <span className={styles.diff_right_title} 
+                                                    style={{color:"#ff3b30", marginBottom:0}}>Título<span className={styles.action}>*</span>
+                                                </span>
+                                                <span className={styles.diff_right_title_wrong_div}>
+                                                    <span className={styles.editar_tit}>editar</span> - {getFieldWrongText('titulo')}
+                                                </span>
+                                            </div>
+                                            :
+                                            <span className={styles.diff_right_title}>Título<span className={styles.action}>*</span>
+                                            </span>
+                                        }
+                                    
                                     <input onFocus={() => {setTituloFocused(true)}} placeholder="Título da publicação..." maxLength={40} onChange={e => setTitulo(e.target.value)} value={titulo} className={styles.top_input_short} style={{borderColor:tituloWrong&&titulo.length>0?"red":!tituloWrong&&tituloFocused&&titulo.length>0?"#26B282":""}}></input>
                                 </div>
                                 <div className={styles.diff_right}>
-                                    <span className={styles.diff_right_title}>Descrição</span>
+                                        {
+                                            editReservation?.type===2&&getFieldWrong('description')?
+                                            <div className={styles.diff_right_title_container}>
+                                                <span className={styles.diff_right_title} 
+                                                    style={{color:"#ff3b30", marginBottom:0}}>Descrição
+                                                </span>
+                                                <span className={styles.diff_right_title_wrong_div}>
+                                                <span className={styles.editar_tit}>editar</span> - {getFieldWrongText('description')}
+                                                </span>
+                                            </div>
+                                            :
+                                            <span className={styles.diff_right_title}>Descrição
+                                            </span>
+                                        }
                                     <div className={styles.top_desc}>
                                         <textarea className={styles.top_desc_area} placeholder="Descrição do problema..." value={description} onChange={e => setDescription(e.target.value)}>
                                         
@@ -499,7 +554,20 @@ const Publicar = (props) => {
                             </div>
                         </div>
                         <div className={styles.foto_div}>
-                            <span className={styles.diff_right_title}>Adicionar Fotografias</span>
+                            {
+                                editReservation?.type===2&&getFieldWrong('photos')?
+                                <div className={styles.diff_right_title_container}>
+                                    <span className={styles.diff_right_title} 
+                                        style={{color:"#ff3b30", marginBottom:0}}>Adicionar Fotografias
+                                    </span>
+                                    <span className={styles.diff_right_title_wrong_div}>
+                                    <span className={styles.editar_tit}>editar</span> - {getFieldWrongText('photos')}
+                                    </span>
+                                </div>
+                                :
+                                <span className={styles.diff_right_title}>Adicionar Fotografias
+                                </span>
+                            }
                             <input
                                 style={{display: 'none'}}
                                 ref={inputRef}
@@ -551,14 +619,27 @@ const Publicar = (props) => {
                                 
                             </div>
                             <div className={styles.bottom_area_second}>
-                                <div className={styles.bot_title_wrapper}>
+                                <div className={styles.bot_title_wrapper} style={{alignItems:editReservation?.type===2&&getFieldWrong('location')?'flex-start':""}}>
                                     <span className={styles.bot_title_indicator}>3</span>
-                                    <span className={styles.bot_title}>Localização</span>
+                                    {
+                                        editReservation?.type===2&&getFieldWrong('location')?
+                                        <div className={styles.diff_right_title_container}>
+                                            <span className={styles.bot_title} 
+                                                style={{color:"#ff3b30", marginBottom:0}}>Localização
+                                            </span>
+                                            <span className={styles.diff_right_title_wrong_div}>
+                                            <span className={styles.editar_tit}>editar</span> - {getFieldWrongText('location')}
+                                            </span>
+                                        </div>
+                                        :
+                                        <span className={styles.bot_title}>Localização
+                                        </span>
+                                    }
                                 </div>
                                 <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
                                     <div className={styles.bot_address_flex}>
                                         <div className={styles.bot_input_div_search} onClick={() => setAddressFocused(true)}>
-                                            <span  style={{borderColor:badAddress||wrongAddress?"red":!badAddress&&!wrongAddress&&addressFocused?"#26B282":"", borderRight:(badAddress||wrongAddress)?"red":!badAddress&&!wrongAddress&&addressFocused?"#26B282":""}} className={styles.area_label_inverse}>Morada<span className={styles.asterisc}>*</span></span>
+                                            <span style={{borderColor:badAddress||wrongAddress?"red":!badAddress&&!wrongAddress&&addressFocused?"#26B282":"", borderRight:(badAddress||wrongAddress)?"red":!badAddress&&!wrongAddress&&addressFocused?"#26B282":""}} className={styles.area_label_inverse}>Morada<span className={styles.asterisc}>*</span></span>
                                             <GooglePlacesAutocomplete
                                             apiKey="AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk"
                                             autocompletionRequest={{

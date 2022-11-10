@@ -19,7 +19,7 @@ const Publications = (props) => {
 
     useEffect(() => {
         for(let res of props.reservations){
-            if(res.type<2){
+            if(res.type<3){
                 setActiveReservations(true)
             } 
             else{
@@ -45,7 +45,8 @@ const Publications = (props) => {
     const getTypeColor = type => {
         if(type===0) return "#FDD835"
         if(type===1) return "#30A883"
-        if(type===2) return "#1EACAA"
+        if(type===2) return "#ff3b30"
+        if(type===3) return "#1EACAA"
         return "#FFFFFF"
     }
 
@@ -74,9 +75,9 @@ const Publications = (props) => {
         setRemoveArray(val)
     }
 
-    const displayReservations = (num1, num2) => {
+    const displayReservations = (num1, num2, num3) => {
         return props.reservations.map((res, i) => {
-            if(res.type===num1 || res.type===num2){
+            if(res.type===num1 || res.type===num2 || res.type===num3){
                 return (
                     <div key={i} className={styles.item_wrapper} onClick={() => navigatePubHandler(res._id)}>
                         {
@@ -96,7 +97,7 @@ const Publications = (props) => {
                                 </div>
                             :null
                         }
-                        <div className={styles.item} style={{borderColor:getTypeColor(res.type)}}>
+                        <div className={styles.item} style={{borderColor:getTypeColor(res.type), backgroundColor:`${getTypeColor(res.type)}30`}}>
                             <div className={styles.item_left}>
                                 {
                                     res?.photos[0]?
@@ -122,7 +123,8 @@ const Publications = (props) => {
                                         <span className={styles.item_type}>
                                             {
                                                 res.type===1?"Activo":
-                                                res.type===2?"Concluído":
+                                                res.type===2?"Incorreto":
+                                                res.type===3?"Concluído":
                                                     "Processar"
                                             }
                                         </span>
@@ -167,12 +169,12 @@ const Publications = (props) => {
 
             <div className={styles.list}>
                 <div className={styles.list_prox}>
-                    <span className={styles.list_prox_text}>Publicações Activas</span>
+                    <span className={styles.list_prox_text}>Publicações</span>
                 </div>
                     <div>
                     {
                         activeReservations?
-                            displayReservations(0, 1)
+                            displayReservations(0, 1, 2)
                         :
                         loaded?
                         <div className={styles.item_none} style={{padding:"30px 0"}}>
@@ -191,7 +193,7 @@ const Publications = (props) => {
                     </div>
                     {
                         notActiveReservations?
-                            displayReservations(2, 2)
+                            displayReservations(3, 3, 3)
                         :
                         <div className={styles.item_none}>
                             <div className={styles.item_flex}>

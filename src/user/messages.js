@@ -12,13 +12,13 @@ import Loader from './../general/loader';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
-import ScrollToBottom, { useScrollToBottom, useSticky } from 'react-scroll-to-bottom';
+import ScrollToBottom, { useScrollToBottom } from 'react-scroll-to-bottom';
 import letter_t from '../assets/letter-t.png'
 
 
 const URL = "http://localhost:5500";
 
-const Messages = (props) => {
+const AdminMessages = (props) => {
     
     
     const [currentText, setCurrentText] = useState("")
@@ -35,7 +35,6 @@ const Messages = (props) => {
     const [isLoaded, setIsLoaded] = useState(false)
 
     const scrollToBottom = useScrollToBottom()
-    const [sticky] = useSticky()
 
     const [s, setS] = useState()
 
@@ -69,7 +68,6 @@ const Messages = (props) => {
     }, [searchParams])
 
     const sortByTimestamp = (a, b) => {
-        console.log(a.last_text.timestamp)
         return a.last_text.timestamp < b.last_text.timestamp ? 1 : -1
     }
 
@@ -692,4 +690,4 @@ const Messages = (props) => {
     )
 }
 
-export default Messages
+export default AdminMessages

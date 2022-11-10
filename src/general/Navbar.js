@@ -36,13 +36,17 @@ const Navbar = (props) => {
                     <div className={styles.flex_end}>
                         <div className={styles.flex_right}>
                             {
-                                props.user?.type?
+                                props.user?.admin?
+                                <span className={styles.user_button} onClick={() => {navigate('/admin')}}>
+                                        ADMIN
+                                </span>
+                                :props.user?.type?
                                 <span className={styles.user_button} onClick={() => {navigate('/main/publications/trabalhos')}}>
                                         TRABALHOS
                                 </span>
                                 :loaded?
                                 <span className={styles.user_button} onClick={() => {navigate('/publicar?t=eletricista')}}>
-                                    PUBLICAR
+                                        PUBLICAR
                                 </span>
                                 :
                                 <span className={styles.skeleton_button}></span>

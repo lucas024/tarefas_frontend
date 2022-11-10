@@ -27,8 +27,8 @@
     display: flex;
 }
 .list_prox_text{
-    color: #00000082;
-    font-weight: 500;
+    color: #00000050;
+    font-style: italic;
     align-self: center;
     margin-left: 10px;
 }
@@ -295,6 +295,44 @@
     background-color: white;
     transition: 150ms;
     color: var(--brand);
+}
+.item_middle{
+    display: flex;
+}
+.item_middle_accept{
+    padding: 5px 10px;
+    background-color: var(--check);
+    cursor: pointer;
+    margin-right: 10px;
+    color: white;
+    border-radius: 5px;
+}
+.item_middle_accept:hover{
+    opacity: 0.8;
+}
+
+.item_middle_deny{
+    padding: 5px 10px;
+    background-color: var(--red);
+    cursor: pointer;
+    margin-right: 10px;
+    color: white;
+    border-radius: 5px;
+}
+.item_middle_deny:hover{
+    opacity: 0.8;
+}
+
+.item_middle_stop{
+    padding: 5px 10px;
+    background-color: var(--yellow);
+    cursor: pointer;
+    margin-right: 10px;
+    color: white;
+    border-radius: 5px;
+}
+.item_middle_stop:hover{
+    opacity: 0.8;
 }
 
 @media (max-width: 1024px){

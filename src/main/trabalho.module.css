@@ -637,6 +637,22 @@
     animation-iteration-count: infinite;
 }
 
+.admin_area{
+    display: flex;
+    align-items: center;
+    margin-left: 50px;
+}
+.admin_button{
+    background-color: var(--check);
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.admin_button:hover{
+    opacity: 0.8;
+}
+
 @keyframes color {
     0% {
       background-color: var(--skeleton);

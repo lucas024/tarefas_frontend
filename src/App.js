@@ -19,6 +19,7 @@ import Loader from './general/loader';
 import Trabalho from './main/trabalho';
 import AuthWorker from './auth/authWorker';
 import Trabalhador from './main/trabalhador';
+import Admin from './admin/admin';
 
 function App() {
   const api_url = "http://localhost:5200" //"https://docker-image-fixed-v2-z4uucaddha-ew.a.run.app"
@@ -244,6 +245,11 @@ function App() {
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}/>}
               />
+              <Route path="/admin/*" 
+                element={<Admin 
+                  api_url={api_url}
+                  user={user} 
+                  userLoadAttempt={userLoadAttempt}/>} />
               <Route path="/" 
                 element={<Home 
                   user={user} 

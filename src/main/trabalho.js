@@ -25,6 +25,8 @@ import arrow from '../assets/curve-down-arrow.png'
 import WorkerBanner from '../general/workerBanner';
 import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao';
+import EditIcon from '@mui/icons-material/Edit';
+import Popup from '../transitions/popup';
 
 const ObjectID = require("bson-objectid");
 
@@ -40,6 +42,9 @@ const Trabalho = (props) => {
     const [workerBanner, setWorkerBanner] = useState(false)
     const [loadingChat, setLoadingChat] = useState(false)
     const [successPopin, setSuccessPopin] = useState(false)
+    const [refusePopup, setRefusePopup] = useState(false)
+    const [refuseUserReservationId, setRefuseUserReservationId] = useState(null)
+    const [refuseReservation, setRefuseReservation] = useState(null)
 
     const [noRepeatedChats, setNoRepeatedChats] = useState(false)
 
@@ -267,7 +272,8 @@ const Trabalho = (props) => {
     const getTypeColor = type => {
         if(type===0) return "#FDD835"
         if(type===1) return "#30A883"
-        if(type===2) return "#1EACAA"
+        if(type===2) return "#ff3b30"
+        if(type===3) return "#1EACAA"
         return "#FFFFFF"
     }
 
@@ -349,12 +355,39 @@ const Trabalho = (props) => {
         }
     }
 
+    const refuseHandler = (e, user_id, reservation) => {
+        e.stopPropagation()
+        setRefusePopup(true)
+        setRefuseUserReservationId(user_id)
+        setRefuseReservation(reservation)
+    }
+
+    const editPublicationHandler = () => {
+        navigate({
+            pathname: `/publicar`,
+            search: `?editar=true&res_id=${reservation._id}`
+        })
+    }
+
     return (
         <div style={{position:"relative"}}>
             {
                 workerBanner?
                 <WorkerBanner cancel={() => setWorkerBanner(false)}/>
                 :null
+            }
+            {
+                refusePopup?
+                    <Popup
+                        type = 'refuse_publication'
+                        confirmHandler={() => setRefusePopup(false)}
+                        cancelHandler={() => setRefusePopup(false)}
+                        user_id={refuseUserReservationId}
+                        reservation={refuseReservation}
+                        api_url={props.api_url}
+                        user={props.user}
+                        />
+                    :null
             }
 
             <CSSTransition 
@@ -407,6 +440,17 @@ const Trabalho = (props) => {
                                     state: {from_page: true}
                                     })}>Página {page}</span>
                                 </div>
+                                {
+                                    props.user?.admin&&reservation?.type===0?
+                                    <div className={styles.admin_area}>
+                                        <span className={styles.admin_button}>ACEITAR</span>
+                                        <span className={styles.admin_button} 
+                                            style={{backgroundColor:"#ff3b30"}}
+                                            onClick={e => refuseHandler(e, reservation.user_id, reservation)}>RECUSAR</span>
+                                    </div>
+                                    :null
+                                }
+                                
                             </div>
                         </div>
                         
@@ -415,7 +459,7 @@ const Trabalho = (props) => {
                     <div className={styles.reserva} onClick={() => more&&setMore(false)} >
                         <Loader2 loading={loading}/>
                         <div className={styles.top_top} style={{marginTop:location.state&&location.state.fromUserPage&&userView?"80px":"10px"}}>
-                            <div className={styles.top_left} style={{borderColor:userView&&getTypeColor(reservation.type)}}>
+                            <div className={styles.top_left} style={{borderColor:userView&&getTypeColor(reservation.type), backgroundColor:userView&&`${getTypeColor(reservation.type)}30`}}>
                                 {
                                     /* Indicator + more */
                                     userView?
@@ -425,16 +469,23 @@ const Trabalho = (props) => {
                                             <span className={styles.item_type}>
                                                 {
                                                     reservation.type===1?"Activo":
-                                                    reservation.type===2?"Concluído":
+                                                    reservation.type===2?"Incorreto":
+                                                    reservation.type===3?"Concluído":
                                                         "Processar"
                                                 }
                                             </span>
                                         </div>
-                                        <MoreVertIcon className={styles.more} onClick={() => setMore(!more)}/>
+                                        <MoreVertIcon className={styles.more} onClick={() => setMore(!more)} style={{color:userView&&"white"}}/>
                                         
                                         <div className={styles.dropdown} hidden={!more}>
                                             <div className={styles.dropdown_top}>
                                                 <span className={styles.dropdown_top_text}>Publicação</span>
+                                            </div>
+                                            <div onClick={() => {}} className={styles.drop_div_main} style={{borderTop:"1px solid #ccc", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
+                                                <div className={styles.drop_div} onClick={() => editPublicationHandler()}>
+                                                    <EditIcon className={styles.drop_div_symbol}/>
+                                                    <span className={styles.drop_div_text} >Editar</span>
+                                                </div>
                                             </div>
                                             <div onClick={() => {}} className={styles.drop_div_main} style={{borderTop:"1px solid #ccc", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
                                                 <div className={styles.drop_div} onClick={() => setEliminationPopup(true)}>
@@ -448,32 +499,32 @@ const Trabalho = (props) => {
 
                                 }
                                 <div className={styles.top_left_top}>
-                                    <span className={styles.top_date}>{getPublicationDate()}</span>
+                                    <span className={styles.top_date} style={{color:userView&&"white"}}>{getPublicationDate()}</span>
                                     <div className={styles.top_title}>
                                         {
                                         <div className={styles.previous_wrapper}>
-                                            <span className={styles.previous_text}>{reservation.title}</span>
+                                            <span className={styles.previous_text} style={{color:userView&&"white"}}>{reservation.title}</span>
                                         </div>
                                         }
                                     </div>
-                                    <span className={styles.top_desc_text}>DESCRIÇÃO</span>
+                                    <span className={styles.top_desc_text} style={{color:userView&&"white"}}>DESCRIÇÃO</span>
                                     {   
                                         reservation.desc!==""?
-                                            <span className={styles.top_desc}>
+                                            <span className={styles.top_desc} style={{color:userView&&"white"}}>
                                                 {reservation.desc}
                                             </span>
                                         :
-                                        <span className={styles.top_desc_no}>
+                                        <span className={styles.top_desc_no} style={{color:userView&&"white"}}>
                                             Sem descrição
                                         </span>
                                     }
                                 </div>
                                 
                                 <div>
-                                    <div className={styles.divider}></div>
+                                    <div className={styles.divider} style={{backgroundColor:userView&&"white"}}></div>
                                         <div className={styles.details}>
-                                            <span className={styles.details_id}>ID: {reservation._id}</span>
-                                            <span className={styles.details_id}>Visualizações: {reservation.clicks}</span>
+                                            <span className={styles.details_id} style={{color:userView&&"white"}}>ID: {reservation._id}</span>
+                                            <span className={styles.details_id} style={{color:userView&&"white"}}>Visualizações: {reservation.clicks}</span>
                                         </div>
                                     </div>
                                 </div>
