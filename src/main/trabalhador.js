@@ -7,7 +7,7 @@ import axios from 'axios'
 import Loader from '../general/loader';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import {regioesOptions, profissoesOptions} from '../general/util'
+import {regioesOptions, profissoesOptions, profissoesPngs} from '../general/util'
 
 const ObjectID = require("bson-objectid");
 
@@ -138,6 +138,28 @@ const Trabalhador = props => {
         props.userLoadAttempt&&setLoaded(true)
     }, [props.userLoadAttempt])
 
+    const displayTrabalhosImages = () => {
+        let arrTrabalhos = [...worker.trabalhos]
+        arrTrabalhos.sort(function(a, b){
+            if(a < b) { return -1; }
+            if(a > b) { return 1; }
+            return 0;
+        })
+        return arrTrabalhos.map((val, i) => {
+            return (
+                <div className={styles.top_image_div}>
+                    <img key={i} className={workerActive===val?styles.top_image:styles.top_image} src={profissoesPngs[val]}/>
+                    {
+                        workerActive===val?
+                        <span className={styles.selected_worker}></span>
+                        :null
+                    }
+                </div>
+                
+            )
+        })
+    }
+
     return(
         <div className={styles.worker}>
             <p className={styles.reservar_upper_title}>TRABALHADOR</p>
@@ -173,7 +195,14 @@ const Trabalhador = props => {
                             :<FaceIcon className={styles.left_img}/>
                         }
                         <div className={styles.left_div}>
-                            <span className={styles.left_name}>{worker.name}</span>
+                            <div style={{display:"flex", alignItems:"flex-start"}}>
+                                <span className={styles.left_name}>{worker.name}</span>
+                                <div className={styles.middle_images}>
+                                    <div className={styles.middle_images_background}>
+                                        {worker&&displayTrabalhosImages()}
+                                    </div>
+                                </div>
+                            </div>
                             <span className={styles.left_type}>{worker.entity?"Empresa":"Particular"}</span>
                             {
                                 worker.entity?

@@ -70,8 +70,6 @@
     justify-content: center;
 }
 .section_img{
-    width: 215px !important;
-    height: 215px !important;
     display: block;
     transition: 0.3s ease-in-out;
     color: var(--action);

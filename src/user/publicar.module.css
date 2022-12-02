@@ -44,26 +44,75 @@
 .reservar_upper_desc{
     color: #ffffff90;
 }
+.top_abs_edit{
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    color: var(--action);
+    height: 17px !important;
+    width: 17px !important;
+}
 .top{
     display: flex;
     margin-top: 15px;
     background-color: white;
     padding: 20px;
     border-radius: 5px;
+    position: relative;
+}
+.nova_morada{
+    margin: 15px auto 0 auto;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: var(--action);
+    color: white;
+    justify-self: center;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+.nova_morada:hover{
+    opacity: 0.6;
+}
+.nova_morada_cancelar{
+    margin: auto;
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    justify-self: center;
+    width: 50%;
+    text-align: center;
+    cursor: pointer;
+    color: var(--action);
+}
+.nova_morada_cancelar:hover{
+    opacity: 0.6;
 }
 .top_left{
     display: flex;
     flex-direction: column;
     margin-right: 10px;
+    justify-content: flex-start;
+}
+.left_image_border{
+    width: 100px;
+    height: 100px;
+    border: 3px solid var(--brand);
+    border-radius: 50%;
+    margin: 0 auto;
+    position: relative;
 }
 .left_img{
-    width: 170px;
-    height: 170px;
-    margin: auto;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    position: absolute;
+    left: calc(50% - 35px);
+    top: calc(50% - 35px);
 }
 .left_select{
     z-index: 1;
-    margin: auto;
     margin-top: 5px;
 }
 .top_right{
@@ -309,10 +358,7 @@
     border-bottom: 2px solid var(--brand);
 }
 .top_input_short:hover{
-    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
-    0 2px 2px rgba(0,0,0,0.12), 
-    0 3px 3px rgba(0,0,0,0.12),
-    0 4px 4px rgba(0,0,0,0.12);
+    border-bottom: 2px solid var(--action);
 }
 .top_input_short:focus{
     outline: none !important;
@@ -326,7 +372,7 @@ input::placeholder{
 }
 .diff_right_title_container{
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 5px;
 }
 .diff_right_title{
@@ -337,13 +383,17 @@ input::placeholder{
 }
 .diff_right_title_wrong_div{
     margin-left: 10px;
-    color: var(--red);
-    margin-top: 1px;
+    background-color: var(--brand);
+    padding: 4px;
+    border-radius: 5px;
+    color: white;
+    font-size: 0.8rem;
 }
 .editar_tit{
-    text-decoration: underline;
     font-weight: 500;
     text-transform: uppercase;
+    color: var(--red);
+    font-size: 0.8rem;
 }
 .top_desc_area{
     width: 100%;
@@ -361,12 +411,12 @@ input::placeholder{
     color: var(--brand);
     border-bottom: 2px solid var(--brand);
     box-sizing: border-box;
+    max-height: 600px;
+    overflow: auto;
+    resize: none;
 }
 .top_desc_area:hover{
-    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
-    0 2px 2px rgba(0,0,0,0.12), 
-    0 3px 3px rgba(0,0,0,0.12),
-    0 4px 4px rgba(0,0,0,0.12);
+    border-bottom: 2px solid var(--action);
     outline: none !important;
 }
 .top_desc_area:focus{
@@ -376,10 +426,11 @@ input::placeholder{
     font-style: italic;
 }
 .foto_div{
+    position: relative;
     margin-top: 20px;
     background-color: white;
     border-radius: 5px;
-    padding: 10px;
+    padding: 20px;
 }
 .foto_area{
     width: 100%;
@@ -550,10 +601,11 @@ input::placeholder{
 }
 .contact_area{
     background-color: white;
-    padding: 10px;
+    padding: 15px;
     border-radius: 5px;
     margin-top: 10px;
     box-sizing: border-box;
+    position: relative;
 }
 .bottom{
     margin-top: 25px;
@@ -572,6 +624,11 @@ input::placeholder{
 .bot_title_wrapper{
     display: flex;
     align-items: center;
+}
+.button_type{
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    border-radius: 5px;
 }
 .bot_title_indicator{
     font-size: 1rem;
@@ -596,7 +653,7 @@ input::placeholder{
 .bot_input_div_search{
     position: relative;
     width: max-content;
-    margin-top: 10px;
+    margin-top: 5x;
     width: 550px;
     z-index: 3;
 }
@@ -634,16 +691,13 @@ input::placeholder{
     border: none;
 }
 .bot_input_short:disabled:hover{
-    box-shadow: none;
+    border-bottom: none;
 }
 .bot_input_long:disabled:hover{
-    box-shadow: none;
+    border-bottom: none;
 }
 .bot_input_short:hover{
-    box-shadow: 0 1px 1px rgba(132, 132, 132, 0.12), 
-    0 2px 2px rgba(132, 132, 132, 0.12), 
-    0 3px 3px rgba(132, 132, 132, 0.12),
-    0 4px 4px rgba(132, 132, 132, 0.12);
+    border-bottom: 2px solid var(--action);
 }
 .bot_input_short:focus{
     outline: none !important;
@@ -674,10 +728,7 @@ input::placeholder{
     font-weight: 500;
 }
 .bot_input_long:hover{
-    box-shadow: 0 1px 1px rgba(132, 132, 132, 0.12), 
-    0 2px 2px rgba(132, 132, 132, 0.12), 
-    0 3px 3px rgba(132, 132, 132, 0.12),
-    0 4px 4px rgba(132, 132, 132, 0.12);
+    border-bottom: 2px solid var(--action);
 }
 .bot_input_long:focus{
     box-shadow: 0 1px 1px rgba(132, 132, 132, 0.12), 
@@ -860,6 +911,51 @@ input::placeholder{
     font-weight: 600;
     font-size: 0.9rem;
     text-decoration: none !important;
+}
+.previous_voltar{
+    width: 100%;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 3px 3px rgba(0,0,0,0.12),
+    0 4px 4px rgba(0,0,0,0.12);
+    display: flex;
+    height: 80px;
+    padding-left: 3%;
+    background-color: white;
+    cursor: pointer;
+    position: fixed;
+    z-index: 2;
+}
+.previous_voltar:hover{
+    background-color: var(--background);
+}
+.reservar_upper_title{
+    font-size: 4rem;
+    font-weight: 800;
+    color: white;
+    margin: auto;
+    width: fit-content;
+    margin-top: 20px;
+}
+.previous_symbol{
+    width: 25px;
+    height: 25px;
+    align-self: center;
+}
+.previous_voltar_text{
+    font-size: 1.5rem;
+    font-weight: 600;
+    align-self: center;
+}
+.cancelar_editar{
+    color: var(--action);
+    margin: auto;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+}
+.cancelar_editar:hover{
+    opacity: 0.6;
 }
 @media (max-width: 1810px){
     .bot_input_div_search{

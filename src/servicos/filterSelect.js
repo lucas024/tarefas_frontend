@@ -3,6 +3,8 @@ import Select from 'react-select'
 import styles from './trabalhadores.module.css'
 import PersonIcon from '@mui/icons-material/Person';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import BuildIcon from '@mui/icons-material/Build';
+import {regioes, profissoes} from '../general/util'
 
 const FilterSelect = (props) => {
 
@@ -11,44 +13,10 @@ const FilterSelect = (props) => {
 
     useEffect(() => {
         if(props.type==="zona"){
-            setOptions(
-                [
-                    { value: 'acores', label: 'Açores' },
-                    { value: 'aveiro', label: 'Aveiro' },
-                    { value: 'beja', label: 'Beja' },
-                    { value: 'braga', label: 'Braga' },
-                    { value: 'braganca', label: 'Bragança' },
-                    { value: 'castelo_branco', label: 'Castelo Branco' },
-                    { value: 'coimbra', label: 'Coimbra' },
-                    { value: 'evora', label: 'Évora' },
-                    { value: 'faro', label: 'Faro' },
-                    { value: 'guarda', label: 'Guarda' },
-                    { value: 'leiria', label: 'Leiria' },
-                    { value: 'lisboa', label: 'Lisboa' },
-                    { value: 'madeira', label: 'Madeira' },
-                    { value: 'portalegre', label: 'Portalegre' },
-                    { value: 'porto', label: 'Porto' },
-                    { value: 'santarem', label: 'Santarém' },
-                    { value: 'setubal', label: 'Setúbal' },
-                    { value: 'viana_do_castelo', label: 'Viana do Castelo' },
-                    { value: 'vila_real', label: 'Vila Real' },
-                    { value: 'viseu', label: 'Viseu' }
-                ]
-            )
+            setOptions(regioes)
         }
         else if(props.type === "worker"){
-            setOptions(
-                [
-                    { value: 'carpinteiro', label: 'Carpinteiro' },
-                    { value: 'canalizador', label: 'Canalizador' },
-                    { value: 'eletricista', label: 'Eletricista' },
-                    { value: 'empreiteiro', label: 'Empreiteiro' },
-                    { value: 'mudancas', label: 'Mudanças' },
-                    { value: 'pintor', label: 'Pintor' },
-                    { value: 'piscinas', label: 'Piscinas' },
-                    { value: 'jardins', label: 'Jardins' },
-                ]
-            )
+            setOptions(profissoes)
         }
     }, [props.type])
 
@@ -70,7 +38,7 @@ const FilterSelect = (props) => {
             fontFamily: "inherit",
             fontWeight: "500",
             color: "#FF785A",
-            width:"170px",
+            width:"200px",
             transition: "0.2s all ease-in-out",
             borderRadius: "5px",
             border: state.isSelected? "1px solid white": 0,
@@ -93,7 +61,7 @@ const FilterSelect = (props) => {
         menu: base => ({
             ...base,
             textTransform: "uppercase",
-            width:"170px",
+            width:"200px",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
@@ -136,6 +104,16 @@ const FilterSelect = (props) => {
             styles={stylesSelect}
             options={options}
             value={options.filter(option => option.value === selectedValue)}
+            formatOptionLabel={option => (
+                <div className={styles.option}>
+                    {
+                        props.type==="worker"?
+                        <img src={option.img_cor} className={styles.option_image}/>
+                        :null
+                    }
+                    <span>{option.label}</span>
+                </div>
+              )}
             isSearchable={true}
             onChange={value => {
                 props.valueChanged(value.value)
@@ -145,7 +123,12 @@ const FilterSelect = (props) => {
                 props.type==="zona"?
                 <span className={styles.placeholder}>
                     <LocationOnIcon className={styles.placeholder_icon}/>
-                    Região
+                    Distrito
+                </span>
+                :props.trabalho?
+                <span className={styles.placeholder}>
+                    <BuildIcon className={styles.placeholder_icon}/>
+                    Trabalho
                 </span>
                 :
                 <span className={styles.placeholder}>

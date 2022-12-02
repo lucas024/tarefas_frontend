@@ -5,8 +5,10 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
+// import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+// import ManageSearchIcon from '@mui/icons-material/ManageSearch';
+import BuildIcon from '@mui/icons-material/Build';
+import PersonIcon from '@mui/icons-material/Person';
 
 const MainSidebar = (props) => {
 
@@ -37,12 +39,12 @@ const MainSidebar = (props) => {
                     props.selected==="trabalhadores"?
                     <div className={styles.sidebar_top}>
                         <span className={styles.sidebar_top_text}>TRABALHADORES</span>
-                        <PersonSearchIcon className={styles.sidebar_top_icon} style={{color:"#fff"}}/>
+                        <PersonIcon sx={{width:"150px", height:"150px"}} className={styles.sidebar_top_icon} style={{color:"#fff"}}/>
                     </div>
                     :
                     <div className={styles.sidebar_top}>
                         <span className={styles.sidebar_top_text}>TRABALHOS</span>
-                        <ManageSearchIcon className={styles.sidebar_top_icon}/>
+                        <BuildIcon sx={{width:"130px", height:"130px", padding:"10px 0"}} className={styles.sidebar_top_icon}/>
                     </div>
                 }
             </div>
@@ -57,7 +59,7 @@ const MainSidebar = (props) => {
                         className={styles.button_main_trabalhos}
                         style={{border:props.selected==="trabalhos"?"2px solid white":"", background:props.selected==="trabalhos"?"#ffffff20":""}}>
                         <ListItemIcon>
-                        <ManageSearchIcon sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa"}}/>
+                        <BuildIcon sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa"}}/>
                         </ListItemIcon>
                         <ListItemText primary={<span className={styles.prox}>Trabalhos</span>} sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa"}}/>
                     </ListItemButton >
@@ -66,7 +68,7 @@ const MainSidebar = (props) => {
                         className={styles.button_main_trabalhadores}
                         style={{border:props.selected==="trabalhadores"?"2px solid white":"", background:props.selected==="trabalhadores"?"#ffffff20":""}}>
                         <ListItemIcon>
-                        <PersonSearchIcon sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa"}}/>
+                        <PersonIcon sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa"}}/>
                         </ListItemIcon>
                         <ListItemText primary={<span className={styles.prox}>Trabalhadores</span>} sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa"}}/>
                     </ListItemButton >

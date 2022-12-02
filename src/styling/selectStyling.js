@@ -1,5 +1,6 @@
 import React from 'react';
 import Select from 'react-select'
+import {profissoes} from '../general/util'
 
 const TopSelect = (props) => {
     
@@ -76,12 +77,6 @@ const TopSelect = (props) => {
         })
     }
 
-    const options = [
-        { value: 'eletricista', label: 'eletricista' },
-        { value: 'canalizador', label: 'canalizador' },
-        { value: 'carpinteiro', label: 'carpinteiro' }
-    ]
-
     const selectChange = (val) => {
         props.changeWorker(val)
     }
@@ -90,8 +85,8 @@ const TopSelect = (props) => {
     return(
         <Select
             styles={stylesSelect}
-            options={options}
-            value={options.filter(option => option.value === props.id)}
+            options={profissoes}
+            value={profissoes.filter(option => option.value === props.id)}
             isSearchable={false}
             onChange={value => {
                 selectChange(value.value)

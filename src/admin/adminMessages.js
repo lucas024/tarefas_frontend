@@ -163,6 +163,14 @@ const Messages = (props) => {
         }
     }
 
+    const getTypeColor = type => {
+        if(type===0) return "#FDD835"
+        if(type===1) return "#30A883"
+        if(type===2) return "#ff3b30"
+        if(type===3) return "#1EACAA"
+        return "#FFFFFF"
+    }
+
     const messageHandler = () => {
         if(currentText !== ""){
             let text = {
@@ -198,6 +206,25 @@ const Messages = (props) => {
         return prev.getDate() !== curr.getDate()
     }
 
+    const types = {
+        titulo: "Título",
+        description: "Descrição",
+        photos: "Fotografias",
+        location: "Localização"
+    }
+
+    const getFieldsToChange = refusal_array => {
+        return refusal_array.map((val, i) => {
+            return (
+                <div key={i} className={styles.chatbox_text_value} style={{margin:"10px 0"}}>
+                    <CircleIcon className={styles.refusal_icon}/>
+                    <span className={styles.refusal_type}>{types[val.type]}:</span>
+                    <span className={styles.refusal_text}>{val.text}.</span>
+                </div>
+            )
+        })
+    }
+
     const messageDisplay = () => {
         return selectedChatTexts?.map((msg, i) => {
             return (
@@ -213,7 +240,7 @@ const Messages = (props) => {
                         </div>
                         :null
                     }
-
+                    
                     <div key={i} className={msg.origin_type===4?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
                         <div className={msg.origin_type===4?styles.send:styles.receive}>
                             {
@@ -241,16 +268,24 @@ const Messages = (props) => {
                             }
                             {
                                 msg.refusal_start?
-                                <div className={styles.chatbox_text_starter} style={{borderBottomRightRadius:0}}>
-                                    <span className={styles.chatbot_template_wrapper}>
-                                        <span className={styles.chatbot_template}>Problema na publicação</span>
-                                    </span>
+                                <div className={styles.chatbox_text_starter} style={{borderBottomLeftRadius:0}}>
+                                    <div className={styles.chatbot_template_wrapper}>
+                                        <p className={styles.chatbot_template}>Problema na publicação</p>
+                                    </div>
                                     
                                     <div className={styles.chatbox_template_title_wrapper} onClick={() => navigate(`/main/publications/publication?id=${msg.reservation_id}`)}>
                                         <p className={styles.chatbox_template_title}>{msg.reservation_title}</p>
                                     </div>
-                                    <span className={styles.chatbox_text_value}>{msg.text}</span>
-                                    <p className={styles.chatbot_template} style={{fontSize:"0.8rem", marginTop:"5px"}}>Carregue na publicação para editar.</p>
+                                    <p className={styles.chatbox_text_value}>{msg.text}</p>
+                                    {
+                                        msg.refusal_object?
+                                        <div className={styles.refusal_div}>
+                                            {getFieldsToChange(msg.refusal_object)}
+                                        </div>
+                                       
+                                        :null
+                                    }
+                                    <p onClick={() => navigate(`/main/publications/publication?id=${msg.reservation_id}`)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Carregue aqui para editar publicação.</p>
                                 </div>
                                 :
                                 <div className={msg.origin_type===4?styles.chatbox_text_send:styles.chatbox_text_receive}>

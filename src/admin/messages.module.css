@@ -32,12 +32,13 @@
     flex-grow: 1;
     height: calc(100% - 80px);
     position: relative;
+    width: 80%;
+    margin: auto;
 }
 .chat_wrapper{
     min-height: 300px;
     height: 100%;
-    border-left: 1px solid #ccc;
-    border-top: 1px solid #ccc;
+    border: 1px solid #ccc;
     display: flex;
     flex-direction: column;
     background-color: white;
@@ -91,11 +92,13 @@
     width: 100%;
     justify-content: flex-end;
     margin: 5px 0;
+    font-size: 0.8rem;
 }
 .chatbox_wrapper_receive{
     display: flex;
     justify-content: flex-start;
     margin-left: 10px;
+    font-size: 0.8rem;
 }
 .send{
     display: flex;
@@ -150,8 +153,8 @@
     border-bottom-left-radius: 0;
 }
 .chatbox_text_value{
-    max-width: 200px;
-    min-width: 200px;
+    max-width: 500px;
+    min-width: fit-content;
     display: inline-block;
     word-wrap: break-word;
     white-space: pre-line;
@@ -163,6 +166,83 @@
     padding: 10px 10px;
     border-radius: 10px;
     color: white;
+    max-width: 500px;
+    position: relative;
+}
+.chatbox_text_starter_solved{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 4;
+    background: #ffffff;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.ver_public{
+    margin: auto;
+    margin-top: 10px;
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: var(--brand);
+    padding: 5px;
+    border-radius: 5px;
+    border: 2px solid transparent;
+}
+.ver_public:hover{
+    border: 2px solid white;
+}
+.thing{
+    margin: 0 auto;
+    font-size: 1rem;
+}
+.chatbox_text_starter_deleted{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 4;
+    background: rgb(113,132,141);
+    background: linear-gradient(180deg, rgba(113,132,141,0.9) 0%, rgba(113,132,141,0.9) 50%, rgba(113,132,141,0.4) 100%);
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.over_text{
+    margin: 0 auto;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    text-align: center;
+}
+.over_img{
+    margin: 0 auto;
+    font-size: 4rem !important;
+}
+.refusal_div{
+    display: flex;
+    max-width: 500px;
+    min-width: fit-content;
+    flex-direction: column;
+}
+.refusal_icon{
+    color: var(--action);
+    height: 10px !important;
+    width: 10px !important;
+    margin-right: 2px;
+}
+.refusal_type{
+    color: var(--action);
+    margin-right: 5px;
 }
 .chatbot_template_wrapper{
     width: 100%;
@@ -172,6 +252,13 @@
 .chatbot_template{
     font-size: 0.9rem;
     color: #ccc;
+}
+.chatbot_template_hover{
+    font-size: 0.9rem;
+    color: #ccc;
+}
+.chatbot_template_hover:hover{
+    opacity: 0.6;
 }
 .chatbox_template_title_wrapper{
     padding: 20px 0;

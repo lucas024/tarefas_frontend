@@ -14,6 +14,20 @@
     border-top: 1px solid #ccc;
     scroll-behavior: smooth;
 }
+.item_worker_type{
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    align-self: flex-end;
+}
+.item_worker_type_in{
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    align-self: flex-end;
+    bottom: -55px;
+    right: 5px;
+}
 .previous_voltar{
     width: 100%;
     box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
@@ -48,6 +62,40 @@
     font-size: 1.5rem;
     font-weight: 600;
     align-self: center;
+}
+.wrong{
+    margin: auto;
+    width: fit-content;
+    margin-top: 100px;
+    margin-bottom: -70px;
+    align-items: center;
+}
+.wrong_text{
+    color: white;
+    font-size: 1.3rem;
+}
+.wrong_text_special{
+    color: var(--red);
+    text-decoration: underline;
+    text-decoration-color: var(--red);
+    font-size: 1.3rem;
+}
+.wrong_button_div{
+    display: flex;
+    align-items: center;
+    margin: 10px auto;
+    padding: 5px;
+    border-radius: 5px;
+    width: fit-content;
+    color: var(--brand);
+    cursor: pointer;
+    font-weight: 500;
+    border: 2px solid white;
+    background-color: white;
+}
+.wrong_button_div:hover{
+    background-color: var(--brand);
+    color: white;
 }
 .normal_back{
     width: 80%;

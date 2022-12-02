@@ -140,7 +140,7 @@ Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
                                     <span className={styles.action}> Àrea Pessoal</span>.<br/><br/>
                                     <p style={{fontSize:"0.7rem", textAlign:"left", fontStyle:"italic"}}>
                                         Receberá também um <span className={styles.action}>e-mail</span> a confirmar a publicação
-                                        do seu pedido!
+                                        do seu trabalho!
                                     </p>
                                     
                                 </p>
@@ -151,6 +151,39 @@ Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
                         <span className={styles.cancel_text} onClick={() => props.cancelHandler()}>Cancelar</span>
                     </div>
                 </CSSTransition>
+            :
+            props.type === 'confirm_edit'?
+            <CSSTransition 
+                in={transition}
+                timeout={1200}
+                classNames="transition"
+                unmountOnExit
+                >
+            <div className={props.type==='confirm_edit'?styles.popup_confirm:styles.popup}>
+                    <span className={styles.value}>Editar Publicação</span>
+                    <div className={styles.divider}></div>
+                    <div className={styles.line}>
+                        <CircleOutlinedIcon className={styles.line_circle}/>
+                        <span className={styles.line_text}>Está a editar a sua publicação.</span>
+                    </div>
+
+                    <div className={styles.help_text}>
+                            <p className={styles.help_text_val}>
+                                Após carregar em confirmar, a sua publicação será <span className={styles.action}>novamente</span> analisada, podendo seguir o processo na sua  
+                                <span className={styles.action}> Àrea Pessoal</span>.<br/><br/>
+                                <p style={{fontSize:"0.7rem", textAlign:"left", fontStyle:"italic"}}>
+                                    Receberá também um <span className={styles.action}>e-mail</span> a confirmar a publicação
+                                    do seu trabalho!
+                                </p>
+                                
+                            </p>
+                    </div>
+                    <span className={styles.confirm_button} onClick={() => props.confirmHandler()}>
+                        CONFIRMAR
+                    </span>
+                    <span className={styles.cancel_text} onClick={() => props.cancelHandler()}>Cancelar</span>
+                </div>
+            </CSSTransition>
             :  props.type === 'error_to_many'?
                 <CSSTransition 
                 in={transition}
@@ -159,17 +192,17 @@ Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
                 unmountOnExit
                 >
                 <div className={styles.popup}>
-                        <span className={styles.value}>Reserva pendente</span>
+                        <span className={styles.value}>5 ou mais publicações!</span>
                         <div className={styles.divider}></div>
                         <div className={styles.help_text}>
                                 <p className={styles.help_text_val}>
-                                    Tem uma reserva que tem de ser confirmada.
+                                    Já tem 5 publicações activas/pendentes. Conclua uma ou mais publicações anteriores para publicar um novo trabalho.
                                 </p>
                                 <p 
                                         className={styles.action_touchable} 
                                         onClick={() => {
                                             navigate('/user')
-                                        }}>As minhas reservas</p>
+                                        }}>As minhas publicações</p>
                         </div>
                         <span className={styles.confirm_button} onClick={() => props.cancelHandler()}>
                             OK

@@ -9,6 +9,10 @@ import FaceIcon from '@mui/icons-material/Face';
 import { useNavigate } from 'react-router-dom';
 import {io} from "socket.io-client"
 import ScrollToBottom, { useScrollToBottom } from 'react-scroll-to-bottom';
+import CircleIcon from '@mui/icons-material/Circle';
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const Suporte = (props) => {
 
@@ -16,6 +20,8 @@ const Suporte = (props) => {
     const [currentText, setCurrentText] = useState("")
     const [loading, setLoading] = useState(true)
     const [chat, setChat] = useState(null)
+
+    const [reservations, setReservations] = useState([])
 
     const scrollToBottom = useScrollToBottom()
 
@@ -48,8 +54,15 @@ const Suporte = (props) => {
             if(chat.data != null){
                 setChat(chat.data)
                 setMessages(chat.data.texts)
+                checkForRefusalsNoRepetitive(chat.data.texts)
                 scrollToBottom()
             }
+            let reservs = await axios.get(`${props.api_url}/reservations/get_by_id`, { params: {user_id: props.user._id} })
+            if(reservs)
+            {
+                setReservations(reservs.data)
+            }
+                        
             setLoading(false)
         }
         else{
@@ -83,6 +96,32 @@ const Suporte = (props) => {
         textareaRef.current.style.height = scrollHeight + "px";
     }, [currentText])
 
+    const checkForRefusalsNoRepetitive = messages_aux => {
+        const alreadyChecked = []
+        if(messages_aux)
+        {
+            for(let el of messages_aux.reverse())
+            {
+                if(el.refusal_start && !alreadyChecked.includes(el.reservation_id))
+                {
+                    alreadyChecked.push(el.reservation_id)
+                    console.log(el.reservation_id);
+                }
+                else
+                {
+                    el.repetitive_check = true
+                }
+            }
+            messages_aux.reverse()
+            setMessages(messages_aux)
+        }
+        else
+        {
+            setMessages(messages_aux)
+        }
+        
+    }
+
     const handleReceiveSocketMessageUpdate = (data) => {
         //updates user/admin messages
         //all local
@@ -103,6 +142,14 @@ const Suporte = (props) => {
         setChat(chat_aux)
 
         scrollToBottom()
+    }
+
+    const getTypeColorBackground = type => {
+        if(type===0) return "linear-gradient(180deg, rgba(253,216,53,0.95) 0%, rgba(253,216,53,0.95) 50%, rgba(253,216,53,0.7) 100%)"
+        if(type===1) return "linear-gradient(180deg, rgba(110,178,65,0.9) 0%, rgba(110,178,65,0.9) 50%, rgba(110,178,65,0.4) 100%)"
+        if(type===2) return "linear-gradient(180deg, rgba(255,59,48,0.9) 0%, rgba(255,59,48,0.9) 50%, rgba(255,59,48,0.4) 100%)"
+        if(type===3) return "linear-gradient(180deg, rgba(30,172,170,0.9) 0%, rgba(30,172,170,0.9) 50%, rgba(30,172,170,0.4) 100%)"
+        return "#FFFFFF"
     }
 
     const messageHandler = async () => {
@@ -155,6 +202,51 @@ const Suporte = (props) => {
         const curr = new Date(currDate)
         return prev.getDate() !== curr.getDate()
     }
+
+    const editPublicationHandler = (res_id) => {
+        navigate({
+            pathname: `/publicar`,
+            search: `?editar=true&res_id=${res_id}`
+        })
+    }
+
+    const seePublicationHandler = (res_id) => {
+        navigate({
+            pathname: `/main/publications/publication`,
+            search: `?id=${res_id}`
+        })
+    }
+
+    const types = {
+        titulo: "Título",
+        description: "Descrição",
+        photos: "Fotografias",
+        location: "Localização"
+    }
+
+    const getFieldsToChange = refusal_array => {
+        return refusal_array.map((val, i) => {
+            return (
+                <div key={i} className={styles.chatbox_text_value} style={{margin:"10px 0"}}>
+                    <CircleIcon className={styles.refusal_icon}/>
+                    <span className={styles.refusal_type}>{types[val.type]}:</span>
+                    <span className={styles.refusal_text}>{val.text}.</span>
+                </div>
+            )
+        })
+    }
+
+    const findReservation = id => {
+        if(reservations)
+        {
+            for(let el of reservations)
+            {
+                if(el._id === id)
+                    return el
+            }
+        }
+        return null
+    }
     
     const messageDisplay = () => {
         return messages?.map((msg, i) => {
@@ -200,19 +292,66 @@ const Suporte = (props) => {
                             {
                                 msg.refusal_start?
                                 <div className={styles.chatbox_text_starter} style={{borderBottomLeftRadius:0}}>
-                                    <span className={styles.chatbot_template_wrapper}>
-                                        <span className={styles.chatbot_template}>Problema na publicação</span>
-                                    </span>
+                                    {
+                                        msg.repetitive_check?
+                                        <div className={styles.chatbox_text_starter_deleted}
+                                            style={{borderBottomLeftRadius:0, background:getTypeColorBackground(2)}}>
+                                            <div style={{display:"flex", flexDirection:"column", margin:"auto"}}>
+                                                <span className={styles.over_text}>Publicação Novamente Recusada</span>
+                                                <span className={styles.thing}>(NOVA MENSAGEM A BAIXO)</span>
+                                                <ArrowDownwardIcon className={styles.over_img}/>
+                                            </div>
+                                        </div>
+                                        :
+                                        findReservation(msg.reservation_id)?.refusal_object===null?
+                                        <div className={styles.chatbox_text_starter_solved} 
+                                                style={{borderBottomLeftRadius:0, background:getTypeColorBackground(findReservation(msg.reservation_id)?.type)}}>
+                                            <div style={{display:"flex", flexDirection:"column", margin:"auto"}}>
+                                                <span className={styles.over_text}>Publicação Editada</span>
+                                                {
+                                                    findReservation(msg.reservation_id)?.type===0?
+                                                    <span className={styles.thing}>(A PROCESSAR)</span>
+                                                    :findReservation(msg.reservation_id)?.type===1?
+                                                    <span className={styles.thing}>(COM SUCESSO)</span>
+                                                    :findReservation(msg.reservation_id)?.type===2?
+                                                    <span className={styles.thing}>(RECUSADO)</span>
+                                                    :<span className={styles.thing}>(PROCESSAR)</span>
+                                                }
+                                                <CheckIcon className={styles.over_img}/>
+                                                <span className={styles.ver_public} onClick={() => seePublicationHandler(msg.reservation_id)}>VER PUBLICAÇÃO</span>
+
+                                            </div>
+                                        </div>
+                                        :!findReservation(msg.reservation_id)?
+                                        <div className={styles.chatbox_text_starter_deleted}>
+                                            <div style={{display:"flex", flexDirection:"column", margin:"auto"}}>
+                                                <span className={styles.over_text}>Publicação Removida</span>
+                                                <ClearIcon className={styles.over_img}/>
+                                            </div>
+                                        </div>
+                                        :null
+                                    }
+                                    <div className={styles.chatbot_template_wrapper}>
+                                        <p className={styles.chatbot_template}>Problema na publicação</p>
+                                    </div>
                                     
-                                    <div className={styles.chatbox_template_title_wrapper} onClick={() => navigate(`/main/publications/publication?id=${msg.reservation_id}`)}>
+                                    <div className={styles.chatbox_template_title_wrapper} onClick={() => editPublicationHandler(msg.reservation_id)}>
                                         <p className={styles.chatbox_template_title}>{msg.reservation_title}</p>
                                     </div>
-                                    <span className={styles.chatbox_text_value}>{msg.text}</span>
-                                    <p className={styles.chatbot_template} style={{fontSize:"0.8rem", marginTop:"5px"}}>Carregue na publicação para editar.</p>
+                                    <p className={styles.chatbox_text_value}>{msg.text}</p>
+                                    {
+                                        msg.refusal_object?
+                                        <div className={styles.refusal_div}>
+                                            {getFieldsToChange(msg.refusal_object)}
+                                        </div>
+                                       
+                                        :null
+                                    }
+                                    <p onClick={() => editPublicationHandler(msg.reservation_id)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Carregue aqui para editar publicação.</p>
                                 </div>
                                 :
                                 <div className={msg.origin_type===0?styles.chatbox_text_send:styles.chatbox_text_receive}>
-                                    <span className={styles.chatbox_text_value}>{msg.text}</span>
+                                    <p className={styles.chatbox_text_value}>{msg.text}</p>
                                 </div>
                             }
                         </div>

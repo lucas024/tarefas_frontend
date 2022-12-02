@@ -1,15 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from './trabalhadores.module.css'
-import { useLocation, useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import SearchIcon from '@mui/icons-material/Search';
-import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import FilterSelect from './filterSelect';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import PersonIcon from '@mui/icons-material/Person';
 import Row from './row';
 import Loader from './../general/loader';
 import NoPage from '../general/noPage';
@@ -36,6 +33,7 @@ const Trabalhos = (props) => {
     const [workerActive, setWorkerActive] = useState(null)
     const [listAnim, setListAnim] = useState(true)
     const [loaded, setLoaded] = useState(false)
+    const [trabalhosVistos, setTrabalhosVistos] = useState([])
 
 
     const myRef = useRef(null)
@@ -49,6 +47,13 @@ const Trabalhos = (props) => {
         paramsAux.region?setLocationActive(paramsAux.region):setLocationActive(false)
         paramsAux.work?setWorkerActive(paramsAux.work):setWorkerActive(false)
         setCurrPage(paramsAux.page)  
+        let listaTrabalhosVistos = JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))
+        if(listaTrabalhosVistos?.length>0)
+        {
+            console.log(listaTrabalhosVistos);
+            setTrabalhosVistos(listaTrabalhosVistos)
+        }
+
     }, [searchParams])
 
     
@@ -187,11 +192,11 @@ const Trabalhos = (props) => {
                         :null
                     }
                     <Row
-                        id={id}
                         item={item}
                         locationActive={locationActive}
                         workerActive={workerActive}
                         user={props.user}
+                        trabalhoVisto={trabalhosVistos.includes(item._id)}
                     />
                 </div>
             )
@@ -247,7 +252,7 @@ const Trabalhos = (props) => {
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_input_div}>
                         <input value={searchVal} onKeyDown={handleKeyDown} onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Eletricista, Porto...`}></input>
-                        <PersonSearchIcon className={styles.search_input_div_icon}/>
+                        {/* <PersonSearchIcon className={styles.search_input_div_icon}/> */}
                         <SearchIcon className={styles.search_final_icon} onClick={() => fetchJobsByFilter()}/>
                     </div>
                     <div className={styles.search_filter_div_wrapper}>
@@ -262,7 +267,8 @@ const Trabalhos = (props) => {
                                     setLocationActive(val)}}/>
                             <div style={{marginLeft:"10px"}}>
                                 <FilterSelect
-                                    type="worker" 
+                                    type="worker"
+                                    trabalho={true}
                                     clear={clear}
                                     urlVal={workerActive}
                                     valueChanged={val => {
@@ -289,8 +295,8 @@ const Trabalhos = (props) => {
                         }
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>
-                                <LocationOnIcon className={styles.top_info_filter_icon}/>
-                                <span  className={styles.top_info_filter_text}>região:</span>
+                                {/* <LocationOnIcon className={styles.top_info_filter_icon}/> */}
+                                <span  className={styles.top_info_filter_text}>distrito</span>
                             </div>
                             {
                                 locationActive?
@@ -299,14 +305,14 @@ const Trabalhos = (props) => {
                                 </span>
                                 :
                                 <span  className={styles.top_info_filter_value}>
-                                    Todas
+                                    Todos
                                 </span>
                             }
                         </div>
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>
-                                <PersonIcon className={styles.top_info_filter_icon}/>
-                                <span  className={styles.top_info_filter_text}>Tipo de Trabalhador:</span>
+                                {/* <PersonIcon className={styles.top_info_filter_icon}/> */}
+                                <span  className={styles.top_info_filter_text}>Tipo de Trabalho</span>
                             </div>
                             {
                                 workerActive?

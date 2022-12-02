@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import styles from './home.module.css'
-import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import {useLocation, useNavigate} from 'react-router-dom'
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import WorkerBanner from './workerBanner';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import {CSSTransition}  from 'react-transition-group';
 import Sessao from './../transitions/sessao';
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import {auth} from '../firebase/firebase'
+
+import BuildIcon from '@mui/icons-material/Build';
+import PersonIcon from '@mui/icons-material/Person';
+
 
 const Home = (props) => {
 
@@ -108,7 +110,7 @@ const Home = (props) => {
                         props.user || loaded?
                         <div className={styles.section_content}>
                             <div className={styles.section_image_wrapper}>
-                                <ManageSearchIcon className={styles.section_img}/>
+                                <BuildIcon sx={{width:"185px", height:"185px", padding:"15px 0"}} className={styles.section_img}/>
                             </div>
                             <p className={styles.section_title}>
                                 PROCURAR
@@ -148,7 +150,7 @@ const Home = (props) => {
                     <div className={styles.section_two} onClick={() => navigate('/main/publications/trabalhadores')}>
                         <div className={styles.section_content}>
                             <div className={styles.section_image_wrapper}>
-                                <PersonSearchIcon className={styles.section_img} style={{color:"#161F28"}}/>
+                                <PersonIcon sx={{width:"215px", height:"215px"}} className={styles.section_img} style={{color:"#161F28"}}/>
                             </div>
                             <p className={styles.section_title}>
                                 PROCURAR
@@ -173,7 +175,7 @@ const Home = (props) => {
             </div>
             {               
                 props.user?.type===0 || loaded&&!props.user?
-                <div className={styles.publish} onClick={() => navigate('/publicar?w=eletricista')}>
+                <div className={styles.publish} onClick={() => navigate('/publicar?t=eletricista')}>
                     <span className={styles.publish_or}>OU</span>
                     <div className={styles.publish_main}>
                         <span className={styles.publish_text}>

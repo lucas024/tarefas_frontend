@@ -27,12 +27,12 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao';
 import EditIcon from '@mui/icons-material/Edit';
 import Popup from '../transitions/popup';
+import {profissoesPngs} from '../general/util'
 
 const ObjectID = require("bson-objectid");
 
 
 const Trabalho = (props) => {
-
     const [reservation, setReservation] = useState({})
     const [images, setImages] = useState(null)
     const [text, setText] = useState("")
@@ -109,7 +109,21 @@ const Trabalho = (props) => {
                         thumbnailWidth: "100px",
                     })
                 }
-                setImages(arr) 
+                setImages(arr)
+                let listaTrabalhosVistos = JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))
+                if(listaTrabalhosVistos?.length>0 && !listaTrabalhosVistos.includes(res.data._id))
+                {
+                    console.log(listaTrabalhosVistos)
+                    listaTrabalhosVistos.push(res.data._id)
+                    console.log(listaTrabalhosVistos)
+                    window.localStorage.setItem('listaTrabalhosVistos', JSON.stringify(listaTrabalhosVistos))
+                }
+                else if(listaTrabalhosVistos?.length===0)
+                {
+                    let arr = []
+                    arr.push(res.data._id)
+                    window.localStorage.setItem('listaTrabalhosVistos', JSON.stringify(arr))
+                }
             }
             else{
                 setReservation(null)
@@ -140,7 +154,6 @@ const Trabalho = (props) => {
                 }
             }
         }
-        
     }, [reservation, props.user])
 
     useEffect(() => {
@@ -290,7 +303,7 @@ const Trabalho = (props) => {
             .then(() => {
                 setEliminationPopup(false)
                 setLoading(false)
-                navigate('/user')
+                navigate('/user?t=publications')
             })
         
     }
@@ -456,8 +469,21 @@ const Trabalho = (props) => {
                         
                     }
                     
-                    <div className={styles.reserva} onClick={() => more&&setMore(false)} >
+                    <div className={styles.reserva} onClick={() => more&&setMore(false)}>
                         <Loader2 loading={loading}/>
+                        {
+                            reservation.type===2?
+                            <div className={styles.wrong}>
+                                <span className={styles.wrong_text}>A sua publicação encontra-se <span className={styles.wrong_text_special}>INCORRETA</span></span>
+                                <div className={styles.wrong_button_div} onClick={() => editPublicationHandler()}>
+                                    <EditIcon className={styles.drop_div_symbol}/>
+                                    <span className={styles.wrong_button}>EDITAR</span>
+                                </div>
+                                
+                            </div>
+                            
+                            :null
+                        }
                         <div className={styles.top_top} style={{marginTop:location.state&&location.state.fromUserPage&&userView?"80px":"10px"}}>
                             <div className={styles.top_left} style={{borderColor:userView&&getTypeColor(reservation.type), backgroundColor:userView&&`${getTypeColor(reservation.type)}30`}}>
                                 {
@@ -494,8 +520,9 @@ const Trabalho = (props) => {
                                                 </div>
                                             </div>
                                         </div>
+                                        <img src={profissoesPngs[reservation.workerType]} className={styles.item_worker_type_in}/>
                                     </div>
-                                    :null
+                                    :<img src={profissoesPngs[reservation.workerType]} className={styles.item_worker_type}/>
 
                                 }
                                 <div className={styles.top_left_top}>

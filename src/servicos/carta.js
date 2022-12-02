@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styles from './carta.module.css'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
-import {regioesOptions, profissoesOptions} from '../general/util'
+import {regioesOptions, profissoesOptions, profissoesPngs} from '../general/util'
 
 const Carta = (props) => {
     
@@ -24,22 +24,44 @@ const Carta = (props) => {
         }
         return arrRegioes.map((val, i) => {
             return (
-                <span key={i} className={props.locationActive===val?styles.options_selected:styles.options}> {regioesOptions[val]}<span>{i+1<worker.regioes.length?",":null}</span></span>
+                <span key={i} className={props.locationActive===val?styles.options_selected:styles.options}> {regioesOptions[val]}<span style={{color:"#71848d"}}>{i+1<worker.regioes.length?" |":null}</span></span>
             )
         })
     }
 
     const displayTrabalhosExtense = () => {
         let arrTrabalhos = [...worker.trabalhos]
-        if(props.workerActive){
-            if(arrTrabalhos.includes(props.workerActive)){
-                arrTrabalhos.splice(arrTrabalhos.indexOf(props.workerActive), 1)
-                arrTrabalhos = [props.workerActive, ...arrTrabalhos]
-            }
-        }
+        arrTrabalhos.sort(function(a, b){
+            if(a < b) { return -1; }
+            if(a > b) { return 1; }
+            return 0;
+        })
+        // if(props.workerActive){
+        //     if(arrTrabalhos.includes(props.workerActive)){
+        //         arrTrabalhos.splice(arrTrabalhos.indexOf(props.workerActive), 1)
+        //         arrTrabalhos = [props.workerActive, ...arrTrabalhos]
+        //     }
+        // }
         return arrTrabalhos.map((val, i) => {
             return (
-                <span key={i} className={props.workerActive===val?styles.options_selected:styles.options}> {profissoesOptions[val]}<span>{i+1<worker.trabalhos.length?",":null}</span></span>
+                <span key={i} className={props.workerActive===val?styles.options_selected:styles.options}> {profissoesOptions[val]}<span style={{color:"#71848d"}}>{i+1<worker.trabalhos.length?" |":null}</span></span>
+            )
+        })
+    }
+
+    const displayTrabalhosImages = () => {
+        let arrTrabalhos = [...worker.trabalhos]
+        arrTrabalhos.sort(function(a, b){
+            if(a < b) { return -1; }
+            if(a > b) { return 1; }
+            return 0;
+        })
+        return arrTrabalhos.map((val, i) => {
+            return (
+                <div className={props.workerActive===val?styles.top_image_div_selected:styles.top_image_div}>
+                    <img key={i} className={styles.top_image} src={profissoesPngs[val]}/>
+                </div>
+                
             )
         })
     }
@@ -64,25 +86,30 @@ const Carta = (props) => {
                             
                         </span>
                     </div>
+                    <span className={styles.top_desc}>
+                        {worker?.description}
+                    </span>
                 </div>
                 :null
                 }
                 <div className={styles.middle}>
-                    <span className={styles.middle_desc}>
-                        {worker?.description}
-                    </span>
-                </div>
-                <div className={styles.bottom}>
-                    <div className={styles.bottom_div}>
-                        <LocationOnIcon className={styles.bottom_div_icon} style={{color:worker?.regioes.includes(props.locationActive)?"#FF785A":"#71848d"}}/>
-                        <div className={styles.bottom_div_text}>
-                            {worker&&displayRegioesExtense()}
+                    <div className={styles.middle_images}>
+                        <div className={styles.middle_images_background}>
+                            {worker&&displayTrabalhosImages()}
                         </div>
                     </div>
+                </div>
+                <div className={styles.bottom}>
                     <div className={styles.bottom_div}>
                         <PersonIcon className={styles.bottom_div_icon} style={{color:worker?.trabalhos.includes(props.workerActive)?"#FF785A":"#71848d"}}/>
                         <div className={styles.bottom_div_text}>
                             {worker&&displayTrabalhosExtense()}
+                        </div>
+                    </div>
+                    <div className={styles.bottom_div}>
+                        <LocationOnIcon className={styles.bottom_div_icon} style={{color:worker?.regioes.includes(props.locationActive)?"#FF785A":"#71848d"}}/>
+                        <div className={styles.bottom_div_text}>
+                            {worker&&displayRegioesExtense()}
                         </div>
                     </div>
                 </div>

@@ -16,7 +16,6 @@ const Navbar = (props) => {
     const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
-        console.log(props.userLoadAttempt);
         setLoaded(props.userLoadAttempt)
     }, [props.userLoadAttempt])
 

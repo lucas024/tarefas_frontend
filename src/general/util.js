@@ -20,18 +20,6 @@ const regioes = [
     { value: 'vila_real', label: 'Vila Real' },
     { value: 'viseu', label: 'Viseu' }
 ]
-
-const profissoes = [
-    { value: 'carpinteiro', label: 'Carpinteiro' },
-    { value: 'canalizador', label: 'Canalizador' },
-    { value: 'eletricista', label: 'Eletricista' },
-    { value: 'empreiteiro', label: 'Empreiteiro' },
-    { value: 'mudancas', label: 'Mudanças' },
-    { value: 'pintor', label: 'Pintor' },
-    { value: 'piscinas', label: 'Piscinas' },
-    { value: 'jardins', label: 'Jardins' },
-]
-
 const regioesOptions = {
     acores : 'Açores',
     aveiro : 'Aveiro',
@@ -55,20 +43,46 @@ const regioesOptions = {
     viseu : 'Viseu'
 }
 
+const profissoes = [
+    { value: 'arranjo_geral', label: 'Arranjo Geral', img_cor: require('../assets/professions/arranjo_geral_cor.png') },
+    { value: 'canalizador', label: 'Canalizador', img_cor: require('../assets/professions/canalizador_cor.png')},
+    { value: 'carpinteiro', label: 'Carpinteiro', img_cor: require('../assets/professions/carpinteiro_cor.png')},
+    { value: 'eletricista', label: 'Eletricista', img_cor: require('../assets/professions/eletricista_cor.png')},
+    { value: 'empreiteiro', label: 'Empreiteiro', img_cor: require('../assets/professions/empreiteiro_cor.png')},
+    { value: 'mudancas', label: 'Mudanças', img_cor: require('../assets/professions/mudancas_cor.png')},
+    { value: 'pintor', label: 'Pintor', img_cor: require('../assets/professions/pintor_cor.png')},
+    { value: 'piscinas', label: 'Piscinas', img_cor: require('../assets/professions/piscinas_cor.png')},
+    { value: 'jardineiro', label: 'Jardineiro', img_cor: require('../assets/professions/jardineiro_cor.png')},
+]
+
 const profissoesOptions = {
-    carpinteiro : 'Carpinteiro',
+    arranjo_geral : 'Arranjo Geral',
     canalizador : 'Canalizador',
+    carpinteiro : 'Carpinteiro',
     eletricista : 'Eletricista',
     empreiteiro : 'Empreiteiro',
     mudancas : 'Mudanças',
     pintor : 'Pintor',
     piscinas : 'Piscinas',
-    jardins : 'Jardins',
+    jardineiro : 'Jardineiro',
+}
+
+const profissoesPngs = {
+    arranjo_geral : require('../assets/professions/arranjo_geral_cor.png'),
+    canalizador : require('../assets/professions/canalizador_cor.png'),
+    carpinteiro : require('../assets/professions/carpinteiro_cor.png'),
+    eletricista : require('../assets/professions/eletricista_cor.png'),
+    empreiteiro : require('../assets/professions/empreiteiro_cor.png'),
+    mudancas : require('../assets/professions/mudancas_cor.png'),
+    pintor : require('../assets/professions/pintor_cor.png'),
+    piscinas : require('../assets/professions/piscinas_cor.png'),
+    jardineiro : require('../assets/professions/jardineiro_cor.png'),
 }
 
 module.exports = {
     regioes,
     profissoes,
     regioesOptions,
-    profissoesOptions
+    profissoesOptions,
+    profissoesPngs
 }

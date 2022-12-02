@@ -235,8 +235,8 @@ const Servicos = (props) => {
             <div className={styles.main} onScroll={handleScroll}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_input_div}>
-                        <input onKeyDown={handleKeyDown} value={searchVal} onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Pesquisar trabalhadores...`}></input>
-                        <PersonSearchIcon className={styles.search_input_div_icon}/>
+                        <input onKeyDown={handleKeyDown} value={searchVal} onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Eletricista, Porto...`}></input>
+                        {/* <PersonSearchIcon className={styles.search_input_div_icon}/> */}
                         <SearchIcon className={styles.search_final_icon} onClick={() => fetchWorkersByFilter()}/>
                     </div>
                     <div className={styles.search_filter_div_wrapper}>
@@ -278,8 +278,8 @@ const Servicos = (props) => {
                         }
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>
-                                <LocationOnIcon className={styles.top_info_filter_icon}/>
-                                <span  className={styles.top_info_filter_text}>região:</span>
+                                {/* <LocationOnIcon className={styles.top_info_filter_icon}/> */}
+                                <span  className={styles.top_info_filter_text}>distrito</span>
                             </div>
                             {
                                 locationActive?
@@ -288,14 +288,14 @@ const Servicos = (props) => {
                                 </span>
                                 :
                                 <span  className={styles.top_info_filter_value}>
-                                    Todas
+                                    Todos
                                 </span>
                             }
                         </div>
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>
-                                <PersonIcon className={styles.top_info_filter_icon}/>
-                                <span  className={styles.top_info_filter_text}>Tipo de Trabalhador:</span>
+                                {/* <PersonIcon className={styles.top_info_filter_icon}/> */}
+                                <span  className={styles.top_info_filter_text}>Tipo de Trabalhador</span>
                             </div>
                             {
                                 workerActive?
@@ -314,7 +314,7 @@ const Servicos = (props) => {
                     <div>
                         {
                             !loading?
-                            <div className={gridAnim?styles.animGrid:styles.grid}
+                            <div style={{gridTemplateRows: `repeat(${Math.ceil(items.length/2+1)}, 250px)`}} className={gridAnim?styles.animGrid:styles.grid}
                             onAnimationEnd={() =>{
                                 setGridAnim(false)
                             }}>

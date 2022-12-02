@@ -37,7 +37,6 @@ const User = (props) => {
         if(props.user?.type===0)
         {
             axios.get(`http://localhost:5200/reservations/get_by_id`, { params: {user_id: props.user._id} }).then(res => {
-                console.log(res.data)
                 for(let el of res.data){
                     if(el.type<2){
                         setNextReservation(el)

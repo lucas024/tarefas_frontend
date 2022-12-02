@@ -73,7 +73,7 @@
     display: flex;
 }
 .line_circle{
-    font-size: 10px;
+    font-size: 10px !important;
     align-self: center;
     color: var(--action);
 }

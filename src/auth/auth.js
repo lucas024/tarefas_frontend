@@ -115,9 +115,11 @@ const Auth = (props) => {
     const loginHandler = () => {
         props.loadingHandler(true)
         setEmailLoginWrong(false)
+        console.log(emailLogin);
         if(validator.isEmail(emailLogin)){
             fetchSignInMethodsForEmailHandler(emailLogin)
                 .then(res => {
+                    console.log(res);
                     if(res.length>0){
                         if(res[0] === "google.com"){
                             setLoginError('Este e-mail encontra-se registado através da Google. Por favor inicia a sessão com "Entrar com Google"')
@@ -145,7 +147,11 @@ const Auth = (props) => {
                                 setLoginError('O e-mail ou a Password estão incorretos.')
                             })
                         }
-                    }                    
+                    }
+                    else{
+                        props.loadingHandler(false)
+                        setLoginError('O e-mail ou a Password estão incorretos.')
+                    }                  
                 })
             
         } else {
@@ -428,6 +434,10 @@ const Auth = (props) => {
                                             value={emailLogin}
                                             onChange={e => {
                                                 setEmailLogin(e.target.value)
+                                                if(validator.isEmail(e.target.value)){
+                                                    setEmailLoginWrong(false)
+                                                    setLoginError(false)
+                                                }
                                                 }}></input>
                                     </div>
                                     <div className={styles.login} style={{marginTop:"10px"}}>
