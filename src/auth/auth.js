@@ -12,12 +12,11 @@ import {
     auth,
     provider,
     providerFacebook,
-    sendSignInLinkToEmailHandler
     } from '../firebase/firebase'
 import {
-    GoogleAuthProvider,
     FacebookAuthProvider,
     signInWithPopup,
+    linkWithPopup,
     } from "firebase/auth"
 
 const Auth = (props) => {
@@ -48,7 +47,6 @@ const Auth = (props) => {
     const navigate = useNavigate()
 
     const location = useLocation()
-
 
     useEffect(() => {
         if(location.state && location.state.carry){
@@ -110,119 +108,8 @@ const Auth = (props) => {
                 }
             })
     }
-    
 
-    const loginHandler = () => {
-        props.loadingHandler(true)
-        setEmailLoginWrong(false)
-        console.log(emailLogin);
-        if(validator.isEmail(emailLogin)){
-            fetchSignInMethodsForEmailHandler(emailLogin)
-                .then(res => {
-                    console.log(res);
-                    if(res.length>0){
-                        if(res[0] === "google.com"){
-                            setLoginError('Este e-mail encontra-se registado através da Google. Por favor inicia a sessão com "Entrar com Google"')
-                            props.loadingHandler(false)
-                        }
-                        else if(res[0] === "password"){
-                            loginWithEmailAndPassword(emailLogin, passwordLogin)
-                            .then(() => {
-                                if(location.state && location.state.carry)
-                                {
-                                    navigateHandler()
-                                } 
-                                else{
-                                    navigate('/', {
-                                        state: {
-                                            carry: true
-                                        }
-                                    })
-                                }
-                                props.loadingHandler(false)
-                            })
-                            .catch(err => {
-                                console.log(err);
-                                props.loadingHandler(false)
-                                setLoginError('O e-mail ou a Password estão incorretos.')
-                            })
-                        }
-                    }
-                    else{
-                        props.loadingHandler(false)
-                        setLoginError('O e-mail ou a Password estão incorretos.')
-                    }                  
-                })
-            
-        } else {
-            props.loadingHandler(false)
-            setLoginError('Este e-mail não é válido.')
-            setEmailLoginWrong(true)
-        }
-    }
-
-    const registerHandler = () => {
-        props.loadingHandler(true)
-        if(validator.isMobilePhone(phone, "pt-PT")
-            && name.length>1
-            && surname.length>1
-            && validator.isEmail(email)
-            && validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
-                
-                registerWithEmailAndPassword(email, password)
-                    .then(res => {
-                        axios.post(`${props.api_url}/auth/register`, 
-                        {
-                            name: name,
-                            surname: surname,
-                            phone: phone,
-                            email: email,
-                            google_uid: res.user.uid,
-                            address: "",
-                            photoUrl: "",
-                            type: 0,
-                            email_verified: false
-                        })
-                        .then(res => {
-                            props.setUser(res.data.ops[0])
-                            props.loadingHandler(false)
-                            sendSignInLinkToEmailHandler(email)
-                            if(location.state && location.state.carry)
-                            {
-                                navigateHandler()
-                            } 
-                            else{
-                                navigate('/', {
-                                    state: {
-                                        carry: true
-                                    }
-                                })
-                            }
-                            
-                        })
-                        .catch(() => {
-                            props.loadingHandler(false)
-                        })
-                    })
-                    .catch(err => {
-                        if(err.code == "auth/email-already-in-use"){
-                            props.loadingHandler(false)
-                            setEmailWrong("Este e-mail já se encontra associado. Entraste através do Google ou Facebook?")
-                        }
-                        else{
-                            setLoginError("Problema no servidor.")
-                        }
-                        
-                    })
-            }
-        else{
-            props.loadingHandler(false)
-            if(!validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
-                setPasswordWrong(true)
-            }
-        }
-    }
-
+    //helper funcs
     const setPhoneHandler = (val) => {
         let phone = val.replace(/\s/g, '')
         setPhone(phone)
@@ -277,109 +164,6 @@ const Auth = (props) => {
         }
     }
 
-    const signInWithPopupHandler = () => {
-        props.loadingHandler(true)
-        signInWithPopup(auth, provider)
-        .then((result) => {
-            const user = result.user;
-
-            axios.get(`${props.api_url}/auth/get_user`, { params: {google_uid: user.uid} }).then(res => {
-                if(res.data == null){
-                  axios.post(`${props.api_url}/auth/register`, 
-                      {
-                          name: user.displayName,
-                          phone: "",
-                          email: user.email,
-                          google_uid: user.uid,
-                          address: "",
-                          photoUrl: user.photoURL,
-                          type: 0,
-                          email_verified: true
-                      }).then(result => {
-                            console.log(result);
-                            props.setUser(result.data.ops[0])
-                            props.setLoading(false)
-                      })
-                }
-            })
-            if(location.state && location.state.carry)
-            {
-                navigateHandler()
-            } 
-            else{
-                navigate('/', {
-                    state: {
-                        carry: true
-                    }
-                })
-            }
-        }).catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            // ...
-            props.loadingHandler(false)
-        });
-    }
-
-    const signInWithPopupFacebookHandler = () => {
-        props.loadingHandler(true)
-        signInWithPopup(auth, providerFacebook)
-        .then((result) => {
-            // The signed-in user info.
-            const user = result.user;
-
-            axios.get(`${props.api_url}/auth/get_user`, { params: {google_uid: user.uid} }).then(res => {
-                if(res.data == null){
-                  axios.post(`${props.api_url}/auth/register`, 
-                      {
-                          name: user.displayName,
-                          phone: "",
-                          email: user.email,
-                          google_uid: user.uid,
-                          address: "",
-                          photoUrl: user.photoURL,
-                          type: 0,
-                          email_verified: true
-                      }).then(result => {
-                            console.log(result);
-                            props.setUser(result.data.ops[0])
-                            props.setLoading(false)
-                      })
-                }
-            })
-
-            if(location.state && location.state.carry)
-            {
-                navigateHandler()
-            } 
-            else{
-                navigate('/', {
-                    state: {
-                        carry: true
-                    }
-                })
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.email;
-            // The AuthCredential type that was used.
-            const credential = FacebookAuthProvider.credentialFromError(error);
-
-            // ...
-            props.loadingHandler(false)
-        });
-    }
-
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault()
@@ -387,6 +171,146 @@ const Auth = (props) => {
         }
     }
 
+    const loginHandler = async () => {
+        setEmailLoginWrong(false)
+
+        let res = await axios.get(`${props.api_url}/auth/get_worker_by_email`, { params: {email: emailLogin} })
+        if(res.data != null){
+            setLoginError("Este e-mail já se encontra associado a uma conta de TRABALHADOR. Faça login na Àrea Trabalhador.")
+        }
+        else if(validator.isEmail(emailLogin)){
+            fetchSignInMethodsForEmailHandler(emailLogin)
+                .then(res => {
+                    console.log(res);
+                    if(res.length>0){
+                        if(res[0] === "google.com"){
+                            setLoginError('Este e-mail encontra-se registado através da Google. Por favor inicia a sessão com "Entrar com Google"')
+                        }
+                        else if(res[0] === "password"){
+                            loginWithEmailAndPassword(emailLogin, passwordLogin)
+                            .then(() => {
+                                if(location.state && location.state.carry)
+                                {
+                                    navigateHandler()
+                                } 
+                                else{
+                                    navigate('/', {
+                                        state: {
+                                            carry: true
+                                        }
+                                    })
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err);
+                                setLoginError('O e-mail ou a Password estão incorretos.')
+                            })
+                        }
+                    }
+                    else{
+                        setLoginError('O e-mail ou a Password estão incorretos.')
+                    }                  
+                })
+            
+        } else {
+            setLoginError('Este e-mail não é válido.')
+            setEmailLoginWrong(true)
+        }
+    }
+
+    const registerHelper = async (user_uid, from_signup) => {
+        await axios.post(`${props.api_url}/auth/register`, 
+            {
+                name: from_signup?from_signup.name:name,
+                surname: from_signup?from_signup.name:name,
+                phone: phone,
+                email: from_signup?from_signup.email:email.toLocaleLowerCase(),
+                google_uid: user_uid,
+                address: "",
+                photoUrl: from_signup?from_signup.photoURL:"",
+                type: 0,
+                email_verified: false,
+                registerMethod: from_signup?from_signup.register_type:"email"
+            })
+
+        if(location.state && location.state.carry)
+        {
+            navigateHandler()
+        } 
+        else{
+            navigate('/', {
+                state: {
+                    carry: true,
+                    refreshUser: true
+                }
+            })
+        }
+    }
+
+    const registerHandler = async () => {
+        if(validator.isMobilePhone(phone, "pt-PT")
+            && name.length>1
+            && surname.length>1
+            && validator.isEmail(email)
+            && validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
+                
+                try{
+                    let res = await registerWithEmailAndPassword(email.toLocaleLowerCase(), password)
+                    await registerHelper(res.user.uid, false)
+                }
+                catch (err) {
+                    if(err.code == "auth/email-already-in-use"){
+                        axios.get(`${props.api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                            
+                            if(res.data != null){
+                                setEmailWrong("Este e-mail já se encontra associado a uma conta de TRABALHADOR. Por-favor, utilize outro email.")
+                            }
+                            else{
+                                axios.get(`${props.api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                                    if(res.data.registerMethod != "email"){
+                                        setEmailWrong('Este e-mail encontra-se registado através da Google.')
+                                    }
+                                })
+                                setEmailWrong("Este e-mail já se encontra registado. Esqueceu-se da palavra passe?")
+                            }
+                        })
+                    }
+                    else{
+                        setLoginError("Problema no servidor.")
+                    }
+                }
+            }
+        else{
+            if(!validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
+                setPasswordWrong(true)
+            }
+        }
+    }
+
+    const signInWithPopupHandler = async type => {
+        try{
+            let res = await signInWithPopup(auth, type==="google"?provider:providerFacebook)
+            let existing_user = await axios.get(`${props.api_url}/auth/get_user_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
+            let existing_worker = await axios.get(`${props.api_url}/auth/get_worker_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
+
+            if(existing_user.data == null && existing_worker.data == null){
+                //conta nao existe - criar
+                let from_signup = {
+                    name: res.user.displayName,
+                    email: res.user.email,
+                    photoURL: res.user.photoURL
+                }
+                await registerHelper(res.user.uid, from_signup)
+            }
+            else{
+                //conta existe
+                navigate('/')
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
 
     return (
         <div className={styles.auth}>
@@ -404,85 +328,15 @@ const Auth = (props) => {
                     </div>
                     {
                         selectedAuth===1?
-                        <div>
-                            <div className={styles.area_bot}>
-                                <div className={styles.area_o2}>
-                                    <div className={styles.o2_button} onClick={() => signInWithPopupFacebookHandler()}>
-                                        <img src={facebook} className={styles.o2_img}></img>
-                                        <span className={styles.align_vert}>
-                                            <span className={styles.o2_text}>Entrar com Facebook</span>
-                                        </span>
-                                    </div>
-                                    <div className={styles.o2_button} style={{marginTop:"5px"}}  onClick={() => signInWithPopupHandler()}>
-                                        <img src={google} className={styles.o2_img}></img>
-                                        <span className={styles.align_vert}>
-                                            <span className={styles.o2_text}>Entrar com Google</span>
-                                        </span>
-                                    </div>
-                                    <span className={styles.ou}>
-                                        ou
-                                    </span>
-                                </div>
-                                <div className={styles.login_div}>
-                                    <div className={styles.login}>
-                                        <p className={styles.login_title}>E-mail</p>
-                                        <input 
-                                            onKeyDown={handleKeyDown}
-                                            style={{borderBottom:emailLoginWrong?"3px solid red":""}}
-                                            className={styles.login_input} 
-                                            placeholder="E-mail"
-                                            value={emailLogin}
-                                            onChange={e => {
-                                                setEmailLogin(e.target.value)
-                                                if(validator.isEmail(e.target.value)){
-                                                    setEmailLoginWrong(false)
-                                                    setLoginError(false)
-                                                }
-                                                }}></input>
-                                    </div>
-                                    <div className={styles.login} style={{marginTop:"10px"}}>
-                                        <p className={styles.login_title}>Password</p>
-                                        <input 
-                                            onKeyDown={handleKeyDown}
-                                            className={styles.login_input} 
-                                            placeholder="Password"
-                                            type="password"
-                                            value={passwordLogin}
-                                            onChange={e => setPasswordLogin(e.target.value)}></input>
-                                    </div>
-                                </div>
-                                {
-                                    loginError?
-                                    <div className={styles.login_error}>
-                                        <span className={styles.login_error_text}>
-                                            {loginError}
-                                        </span>
-                                    </div>
-                                    :null
-                                }
-                                <div style={{marginTop:"20px"}}>
-                                    <span className={styles.recup_password}>Recuperar password</span>
-                                </div>
-                                <div className={!props.loading?styles.login_button:styles.login_button_disabled} onClick={() => {
-                                    if(!props.loading) loginHandler()}}>
-                                    <p className={styles.login_text}>Efectue o seu login</p>
-                                </div>
-                                <div className={styles.bottom_switch}>
-                                    <span className={styles.bottom_switch_text}>Não tens conta? </span>
-                                    <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Registar</span>
-                                </div>
-                            </div>
-                        </div>
-                        :
                         <div className={styles.area_bot}>
                             <div className={styles.area_o2}>
-                                <div className={styles.o2_button} onClick={() => signInWithPopupFacebookHandler()}>
+                                <div className={styles.o2_button} onClick={() => signInWithPopupHandler("facebook")}>
                                     <img src={facebook} className={styles.o2_img}></img>
                                     <span className={styles.align_vert}>
                                         <span className={styles.o2_text}>Entrar com Facebook</span>
                                     </span>
                                 </div>
-                                <div className={styles.o2_button} style={{marginTop:"5px"}} onClick={() => signInWithPopupHandler()}>
+                                <div className={styles.o2_button} style={{marginTop:"5px"}}  onClick={() => signInWithPopupHandler("google")}>
                                     <img src={google} className={styles.o2_img}></img>
                                     <span className={styles.align_vert}>
                                         <span className={styles.o2_text}>Entrar com Google</span>
@@ -492,6 +346,57 @@ const Auth = (props) => {
                                     ou
                                 </span>
                             </div>
+                            <div className={styles.login_div}>
+                                <div className={styles.login}>
+                                    <p className={styles.login_title}>E-mail</p>
+                                    <input 
+                                        onKeyDown={handleKeyDown}
+                                        style={{borderBottom:emailLoginWrong?"3px solid red":""}}
+                                        className={styles.login_input} 
+                                        placeholder="E-mail"
+                                        value={emailLogin}
+                                        onChange={e => {
+                                            setEmailLogin(e.target.value)
+                                            if(validator.isEmail(e.target.value)){
+                                                setEmailLoginWrong(false)
+                                                setLoginError(false)
+                                            }
+                                            }}></input>
+                                </div>
+                                <div className={styles.login} style={{marginTop:"10px"}}>
+                                    <p className={styles.login_title}>Password</p>
+                                    <input 
+                                        onKeyDown={handleKeyDown}
+                                        className={styles.login_input} 
+                                        placeholder="Password"
+                                        type="password"
+                                        value={passwordLogin}
+                                        onChange={e => setPasswordLogin(e.target.value)}></input>
+                                </div>
+                            </div>
+                            {
+                                loginError?
+                                <div className={styles.login_error}>
+                                    <span className={styles.login_error_text}>
+                                        {loginError}
+                                    </span>
+                                </div>
+                                :null
+                            }
+                            <div style={{marginTop:"20px"}}>
+                                <span className={styles.recup_password}>Recuperar password</span>
+                            </div>
+                            <div className={!props.loading?styles.login_button:styles.login_button_disabled} onClick={() => {
+                                if(!props.loading) loginHandler()}}>
+                                <p className={styles.login_text}>Efectue o seu login</p>
+                            </div>
+                            <div className={styles.bottom_switch}>
+                                <span className={styles.bottom_switch_text}>Não tens conta? </span>
+                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Registar</span>
+                            </div>
+                        </div>
+                        :
+                        <div className={styles.area_bot}>
                             <div className={styles.login_div}>
                                 <div className={styles.login}>
                                     <p className={styles.login_title}>Nome</p>
@@ -593,7 +498,7 @@ const Auth = (props) => {
                     }
                 </div>
                 <div className={styles.button_area}>
-                    <span className={styles.worker_button} onClick={() => navigate('/authentication/worker')}>Registar como Trabalhador</span>
+                    <span className={styles.worker_button} onClick={() => navigate('/authentication/worker')}>Àrea Trabalhador</span>
                 </div>
             </div>
         </div>

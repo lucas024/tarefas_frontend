@@ -30,9 +30,15 @@ const Home = (props) => {
             setTimeout(() => setMensagemPopup(false), 4000)
         }
         else if(location.state?.carry){
+            props.refreshUser()
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
             navigate(location.pathname, {}); 
+        }
+        else if(location.state?.refreshWorker){
+            props.refreshWorker()
+            setLoginPopup(true)
+            setTimeout(() => setLoginPopup(false), 4000)
         }
     }, [props.incompleteUser, location, props.user, loaded])
 
@@ -92,7 +98,12 @@ const Home = (props) => {
             </CSSTransition>
             {
                 workerBanner?
-                <WorkerBanner cancel={() => setWorkerBanner(false)}/>
+                <WorkerBanner 
+                    confirm={() => {
+                        setWorkerBanner(false)
+                        navigate('/authentication/worker')
+                    }}
+                    cancel={() => setWorkerBanner(false)}/>
                 :null
             }
             {
@@ -134,7 +145,7 @@ const Home = (props) => {
                     <div className={styles.section_two} onClick={() => navigate('/user?t=personal')}>
                         <div className={styles.section_content}>
                             <div className={styles.section_image_wrapper}>
-                                <AccessibilityIcon className={styles.section_img} style={{color:"#161F28"}}/>
+                                <AccessibilityIcon sx={{width:"215px", height:"215px"}} className={styles.section_img} style={{color:"#161F28"}}/>
                             </div>
                             <p className={styles.section_title}>
                                 EDITAR

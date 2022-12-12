@@ -37,6 +37,7 @@ const storage = getStorage(app)
 const auth = getAuth(app)
 auth.languageCode = 'pt';
 const provider = new GoogleAuthProvider();
+provider.addScope('email')
 const providerFacebook = new FacebookAuthProvider();
 
 const actionCodeSettings = {

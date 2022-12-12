@@ -54,7 +54,7 @@ const User = (props) => {
         if(val === "publications" && props.user?.type!==1)
             return <Publications api_url={props.api_url} reservations={reservations} user={props.user} refreshPublications={() => updateReservations()} loaded={loaded}/>
         else if(val === "personal")
-            return <Personal loaded={loaded} user={props.user} api_url={props.api_url} incompleteUser={props.incompleteUser} updateUser={(val, what) => props.updateUser(val, what)} />
+            return <Personal loaded={loaded} user={props.user} api_url={props.api_url} incompleteUser={props.incompleteUser} refreshUser={() => props.refreshUser()} updateUser={(val, what) => props.updateUser(val, what)} />
         else if(val === "support")
             return <Suporte user={props.user} api_url={props.api_url}/>
         else if(val === "messages")

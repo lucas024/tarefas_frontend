@@ -43,7 +43,7 @@ const UserSidebar = (props) => {
     }, [props.hasSubscription])
 
     // useEffect(() => {
-    //     if(props.user?.subscription){
+    //     if(props.user?.subscription && props.user.type){
     //         setLoading(true)
     //         axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
     //             subscription_id: props.user.subscription.id,
@@ -141,7 +141,7 @@ const UserSidebar = (props) => {
                                     <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
                                     :
                                     <div style={{position:"relative"}}>
-                                        <Loader small={true} loading={true}/>
+                                        {/* <Loader small={true} loading={true}/> */}
                                         <UnpublishedOutlinedIcon className={styles.off_icon}/>
                                     </div>
                                     }

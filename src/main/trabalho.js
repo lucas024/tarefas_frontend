@@ -159,13 +159,13 @@ const Trabalho = (props) => {
     useEffect(() => {
         if(loaded)
         {
-            if(!props.user){
+            if(!props.user||props.user.type===0){
                 setViewTo('noAccount')
                 setLoading(false)
             }
-            else if(!(props.user?.subscription&&!props.incompleteUser)){
+            else if((props.user?.subscription==null&&props.incompleteUser)){
                 setViewTo('none')
-                setLoading(false)
+                setLoading(false)                
             }
             else if(props.user?.subscription){
                 axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
@@ -180,14 +180,18 @@ const Trabalho = (props) => {
                     {
                         setViewTo("showFull")
                     }
-                    else if(props.incompleteUser || props.user.state===0){
+                    else if(!props.incompleteUser){
                         setViewTo('noProfile')
                     }
                     setLoading(false)
                 })
                 
             }
-            else if(props.incompleteUser || props.user?.state===0){
+            else if(props.user?.subscription==null&&!props.incompleteUser){
+                setViewTo('noSub')
+                setLoading(false)
+            }
+            else if(props.incompleteUser){
                 setViewTo('noProfile')
                 setLoading(false)
             }
@@ -386,7 +390,12 @@ const Trabalho = (props) => {
         <div style={{position:"relative"}}>
             {
                 workerBanner?
-                <WorkerBanner cancel={() => setWorkerBanner(false)}/>
+                <WorkerBanner 
+                    confirm={() => {
+                        setWorkerBanner(false)
+                        navigate('/authentication/worker')
+                    }}
+                    cancel={() => setWorkerBanner(false)}/>
                 :null
             }
             {
@@ -591,21 +600,21 @@ const Trabalho = (props) => {
                                             loaded&&noneView?
                                             <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Completa o teu <span className={styles.text_special}>PERFIL</span> e <span  className={styles.text_special}>SUBSCREVE</span> para contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.market_text}>Complete o seu <span className={styles.text_special}>PERFIL</span> e <span  className={styles.text_special}>SUBSCREVE</span> para contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
                                                 <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=personal')}>Ir para Utilizador</span>
                                             </div>
                                             :
                                             loaded&&noSubView?
                                             <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Só falta completares a tua <span className={styles.text_special}>subscrição</span> para poderes contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.market_text}>Só falta activar a sua <span className={styles.text_special}>SUBSCRIÇÃO</span> para contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
                                                 <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=subscription')}>Ir para Subscrição</span>
                                             </div>
                                             :
                                             loaded&&noProfileView?
                                             <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Só falta completares o teu <span className={styles.text_special}>PERFIL</span> para poderes contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
+                                                <span className={styles.market_text}>Só falta completar o seu <span className={styles.text_special}>PERFIL</span> para contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
                                                 <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=personal')}>Ir para Perfil</span>
                                             </div>
                                             :
@@ -693,11 +702,11 @@ const Trabalho = (props) => {
                                             <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"white", textTransform:"capitalize"}}>{reservation.user_name.split(" ")[0]}</span>,</span>
                                             {
                                                 noAccountView?
-                                                <span className={styles.frontdrop_text}>registe ou entre numa conta TRABALHADOR!</span>
+                                                <span className={styles.frontdrop_text}>crie uma conta de trabalhador</span>
                                                 :noneView?
                                                 <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>PERFIL</span> e <span style={{color:"white"}}>SUBSCRIÇÃO</span>.</span>
                                                 :noSubView?
-                                                <span className={styles.frontdrop_text}>complete a sua <span style={{color:"white"}}>SUBSCRIÇÃO</span>.</span>
+                                                <span className={styles.frontdrop_text}>active a sua <span style={{color:"white"}}>SUBSCRIÇÃO</span>.</span>
                                                 :noProfileView?
                                                 <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>PERFIL</span>.</span>
                                                 :null

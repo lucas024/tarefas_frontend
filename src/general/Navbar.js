@@ -8,6 +8,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import { sendSignInLinkToEmailHandler } from '../firebase/firebase'
+import CircleIcon from '@mui/icons-material/Circle';
 
 const Navbar = (props) => {
 
@@ -17,6 +18,7 @@ const Navbar = (props) => {
 
     useEffect(() => {
         setLoaded(props.userLoadAttempt)
+        console.log(props.incompleteUser);
     }, [props.userLoadAttempt])
 
     const logoutHandler = () => {
@@ -82,6 +84,9 @@ const Navbar = (props) => {
                                                 props.hasSubscription!=null &&
                                                 (props.incompleteUser&&props.user.type || !props.hasSubscription&&props.user.type)?
                                                 <span className={styles.drop_div_notification_big}/>
+                                                :
+                                                props.user.phone===""?
+                                                <span className={styles.drop_div_notification_big}/>                                                
                                                 :null
                                             }
                                             
@@ -128,6 +133,8 @@ const Navbar = (props) => {
                                                             {
                                                                 !props.incompleteUser&&props.user.type?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
+                                                                :props.user.phone===""?
+                                                                <CircleIcon className={styles.off_icon}/>
                                                                 :props.user.type?
                                                                 <UnpublishedOutlinedIcon className={styles.off_icon}/>
                                                                 :null

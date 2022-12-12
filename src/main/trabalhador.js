@@ -139,25 +139,27 @@ const Trabalhador = props => {
     }, [props.userLoadAttempt])
 
     const displayTrabalhosImages = () => {
-        let arrTrabalhos = [...worker.trabalhos]
-        arrTrabalhos.sort(function(a, b){
-            if(a < b) { return -1; }
-            if(a > b) { return 1; }
-            return 0;
-        })
-        return arrTrabalhos.map((val, i) => {
-            return (
-                <div className={styles.top_image_div}>
-                    <img key={i} className={workerActive===val?styles.top_image:styles.top_image} src={profissoesPngs[val]}/>
-                    {
-                        workerActive===val?
-                        <span className={styles.selected_worker}></span>
-                        :null
-                    }
-                </div>
-                
-            )
-        })
+        if(worker.trabalhos){
+            let arrTrabalhos = [...worker.trabalhos]
+            arrTrabalhos.sort(function(a, b){
+                if(a < b) { return -1; }
+                if(a > b) { return 1; }
+                return 0;
+            })
+            return arrTrabalhos.map((val, i) => {
+                return (
+                    <div className={styles.top_image_div}>
+                        <img key={i} className={workerActive===val?styles.top_image:styles.top_image} src={profissoesPngs[val]}/>
+                        {
+                            workerActive===val?
+                            <span className={styles.selected_worker}></span>
+                            :null
+                        }
+                    </div>
+                    
+                )
+            })
+        }
     }
 
     return(

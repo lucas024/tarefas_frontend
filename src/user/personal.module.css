@@ -21,6 +21,7 @@
     -webkit-box-shadow: 0px 2px 2px -2px #919191; 
     box-shadow: 0px 2px 2px -2px #919191;
 }
+
 .top_title{
     font-size: 1.8rem;
     color: var(--brand);
@@ -211,9 +212,9 @@ input[type=file]{
     display: flex;
     flex-direction: column;
 }
-.input_wrong{
+.input_right{
     border: none;
-    border-bottom: 2px solid var(--red);
+    border-bottom: 1px solid var(--check);
     color: var(--brand);
     height: 25px;
     width: 250px;
@@ -222,6 +223,20 @@ input[type=file]{
     font-weight: 500;
     font-family: 'Montserrat', sans-serif;
     background-color: var(--background);
+    outline: none;
+}
+.input_wrong{
+    border: none;
+    border-bottom: 1px solid var(--red);
+    color: var(--brand);
+    height: 25px;
+    width: 250px;
+    padding-left: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--background);
+    outline: none;
 }
 .input_input{
     border: none;

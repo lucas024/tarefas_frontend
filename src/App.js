@@ -35,7 +35,7 @@ function App() {
   const [hasSubscription, setHasSubscription] = useState(null)
 
 
-  onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, (user) => {
     if (user) {
       setUserGoogle(user)
     } else {
@@ -43,124 +43,149 @@ function App() {
       setUser(null)
       setUserLoadAttempt(true)
     }
-  });
+});
 
-  const updateChatReadLocal = chat_id => {
-    let has = false
-    if(user.chats.length>0){
-      let arr = user.chats
-      for(let el of arr){
-        if(el.chat_id === chat_id){
-          if(user.type===1){
-            el.worker_read = true
-          }
-          else{
-            el.user_read = true
-          }
+const updateChatReadLocal = chat_id => {
+  let has = false
+  if(user.chats.length>0){
+    let arr = user.chats
+    for(let el of arr){
+      if(el.chat_id === chat_id){
+        if(user.type===1){
+          el.worker_read = true
         }
         else{
-          if(user.type===1&&!el.worker_read){
-            has=true
-          }
-          else if(user.type===0&&!el.user_read){
-            has=true
-          }
+          el.user_read = true
         }
       }
-      setHasTexts(has)
-      setUser(user)
+      else{
+        if(user.type===1&&!el.worker_read){
+          has=true
+        }
+        else if(user.type===0&&!el.user_read){
+          has=true
+        }
+      }
     }
+    setHasTexts(has)
+    setUser(user)
   }
+}
 
 
-  useEffect(() => {
-    setLoading(true)
-    if(userGoogle){
-      axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
-        if(res.data !== null){
-          setUser(res.data)
-          if(res.data.chats?.length>0){
-            for(const el of res.data.chats){
-              if(el.user_read){
-                setHasTexts(true)
-                break
-              }
+useEffect(() => {
+  setLoading(true)
+  if(userGoogle){
+    axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
+      if(res.data != null){
+        setUser(res.data)
+        if(res.data.chats?.length>0){
+          for(const el of res.data.chats){
+            if(el.user_read){
+              setHasTexts(true)
+              break
             }
           }
-          setUserLoadAttempt(true)
-          setLoading(false)
-        }
-        else{
-          axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
-            if(res.data !== null){
-              setUser(res.data)
-              if(res.data.subscription){
-                setLoading(true)
-                axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
-                    subscription_id: res.data.subscription.id,
-                    schedule_id: res.data.subscription.sub_schedule
-                })
-                .then(res2 => {
-                    if(res2.data.schedule){
-                        if(new Date().getTime() < new Date(res2.data.schedule.current_phase.end_date*1000)){
-                          setHasSubscription(true)
-                        }
-                    }
-                })
-              }
-              else{
-                setHasSubscription(false)
-              }
-              if(res.data.chats?.length>0){
-                for(const el of res.data.chats){
-                  if(!el.worker_read){
-                    setHasTexts(true)
-                    break
-                  }
-                }
-              }
-              if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
-                setIncompleteUser(true)
-              }
-              else{
-                setIncompleteUser(false)
-              }
-              setUserLoadAttempt(true)
-              setLoading(false)
-            }
-            else{
-              setLoading(false)
-            }
-          })
-        }
-      }).catch(err => {
-        setLoading(false)
-      })
-    }
-    else{
-      setLoading(false)
-    }
-  }, [userGoogle])
-
-  const refreshWorker = () => {
-    axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
-      if(res.data !== null){
-        setUser(res.data)
-        setNotifications(res.data.notifications)
-        if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
-          setIncompleteUser(true)
-        }
-        else{
-          setIncompleteUser(false)
         }
         setUserLoadAttempt(true)
         setLoading(false)
       }
       else{
-        setLoading(false)
+        axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
+          if(res.data !== null){
+            setUser(res.data)
+            if(res.data.subscription){
+              setLoading(true)
+              axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
+                  subscription_id: res.data.subscription.id,
+                  schedule_id: res.data.subscription.sub_schedule
+              })
+              .then(res2 => {
+                  if(res2.data.schedule){
+                      if(new Date().getTime() < new Date(res2.data.schedule.current_phase.end_date*1000)){
+                        setHasSubscription(true)
+                      }
+                  }
+              })
+            }
+            else{
+              setHasSubscription(false)
+            }
+            if(res.data.chats?.length>0){
+              for(const el of res.data.chats){
+                if(!el.worker_read){
+                  setHasTexts(true)
+                  break
+                }
+              }
+            }
+            if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
+              setIncompleteUser(true)
+            }
+            else{
+              setIncompleteUser(false)
+            }
+            setUserLoadAttempt(true)
+            setLoading(false)
+          }
+          else{
+            setLoading(false)
+          }
+        })
       }
+    }).catch(err => {
+      setLoading(false)
     })
   }
+  else{
+    setLoading(false)
+  }
+}, [userGoogle])
+
+const refreshUser = async () => {
+  window.history.replaceState({}, document.title)
+  let res = await axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} })
+  if(res.data !== null){
+    setUser(res.data)
+  }
+}
+
+const refreshWorker = () => {
+  window.history.replaceState({}, document.title)
+  axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
+    if(res.data !== null){
+      setUser(res.data)
+      if(res.data.subscription){
+        setLoading(true)
+        axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
+            subscription_id: res.data.subscription.id,
+            schedule_id: res.data.subscription.sub_schedule
+        })
+        .then(res2 => {
+            if(res2.data.schedule){
+                if(new Date().getTime() < new Date(res2.data.schedule.current_phase.end_date*1000)){
+                  setHasSubscription(true)
+                }
+            }
+        })
+      }
+      else{
+        setHasSubscription(false)
+      }
+      if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
+        setIncompleteUser(true)
+      }
+      else{
+        setIncompleteUser(false)
+      }
+      setUserLoadAttempt(true)
+      setLoading(false)
+    }
+    else{
+      setLoading(false)
+    }
+  })
+}
 
   const updateUser = (val, what) => {
     let userAux = user
@@ -219,6 +244,7 @@ function App() {
               <Route exact path="/user" 
                 element={
                   <User
+                    refreshUser={() => refreshUser()}
                     refreshWorker={() => refreshWorker()}
                     incompleteUser={incompleteUser}
                     hasSubscription={hasSubscription}
@@ -233,6 +259,7 @@ function App() {
               />
               <Route exact path="/authentication/worker" 
                 element={<AuthWorker
+                  refreshWorker={() => refreshWorker()}
                   setUser = {user => setUser(user)}
                   api_url={api_url}
                   loading={loading}
@@ -251,7 +278,9 @@ function App() {
                   user={user} 
                   userLoadAttempt={userLoadAttempt}/>} />
               <Route path="/" 
-                element={<Home 
+                element={<Home
+                  refreshUser={() => refreshUser()}
+                  refreshWorker={() => refreshWorker()}
                   user={user} 
                   notifications={notifications}
                   incompleteUser={incompleteUser}

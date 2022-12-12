@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import styles from './workerBanner.module.css'
-import CircleOutlinedIcon from '@mui/icons-material/Circle';
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
+import BuildIcon from '@mui/icons-material/Build';
 import PersonIcon from '@mui/icons-material/Person';
 import MessageIcon from '@mui/icons-material/Message';
 import {CSSTransition}  from 'react-transition-group';
@@ -31,7 +30,7 @@ const WorkerBanner = (props) => {
                 <span className={styles.value}>Trabalhador ARRANJA</span>
                 <div className={styles.divider}/>
                 <div className={styles.line}>
-                    <ManageSearchIcon className={styles.line_circle}/>
+                    <BuildIcon className={styles.line_circle}/>
                     <span className={styles.helper_text}>Trabalhos:</span>
                     <span className={styles.line_text}>Acesso desbloqueado aos detalhes de <span className={styles.action}>contacto</span> e <span className={styles.action}>localização</span> de <span className={styles.bold}>todos os trabalhos publicados</span>.</span>
                 </div>

@@ -31,6 +31,7 @@ const Personal = (props) => {
     const [descriptionWrong, setDescriptionWrong] = useState(false)
     const [phoneVisual, setPhoneVisual] = useState("")
     const [phoneWrong, setPhoneWrong] = useState(false)
+    const [phoneCorrect, setPhoneCorrect] = useState(false)
     const [email, setEmail] = useState("")
     const [edit, setEdit] = useState(false)
     const [editBottom, setEditBottom] = useState(false)
@@ -51,7 +52,7 @@ const Personal = (props) => {
     
     useEffect(() => {
         if(props.user){
-            if(props.user.photoUrl===""||props.user.phone===""||props.user.trabalhos.length===0||props.user.trabalhos.length===0){
+            if(props.user.photoUrl===""||props.user.phone===""||props.user.trabalhos?.length===0||props.user.trabalhos?.length===0){
                 setDisplayTop(true)
             }
             setPhoto(props.user.photoUrl)
@@ -72,14 +73,23 @@ const Personal = (props) => {
             if(props.user.regioes?.length===0||props.user.trabalhos?.length===0){
                 setEditBottom(true)
             }
+            if(props.user.phone===""){
+                setEdit(true)
+                setPhoneWrong(true)
+            }
         }
     }, [props.user])
 
     useEffect(() => {
+        setPhoneCorrect(false)
         if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
         else if(phone.length>=4) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3)}`)
         else{
             setPhoneVisual(`${phone.slice(0,3)}`)
+        }
+        if(validator.isMobilePhone(phone, "pt-PT")){
+            setPhoneWrong(false)
+            setPhoneCorrect(true)
         }
     }, [phone])
 
@@ -489,7 +499,7 @@ const Personal = (props) => {
                                     </div>
                                     <div className={styles.top_edit_area}>
                                         <div className={styles.edit_area_left}>
-                                            <span className={styles.input_title} style={{marginTop:"3px"}}>Telefone</span>
+                                            <span className={styles.input_title} style={{marginTop:"3px"}}>Telefone</span>                                            
                                             {
                                                 props.user?.type===1?
                                                 <span className={styles.input_title} style={{marginTop:"10px"}}>Descrição</span>
@@ -497,7 +507,8 @@ const Personal = (props) => {
                                             }
                                         </div>
                                         <div className={styles.edit_area_right}>
-                                            <input className={phoneWrong?styles.input_wrong
+                                            <input className={  phoneCorrect?styles.input_right
+                                                                :phoneWrong?styles.input_wrong
                                                                 :edit?styles.input_input_edit
                                                                 :styles.input_input}
                                                     value={phoneVisual}
