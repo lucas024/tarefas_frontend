@@ -4,6 +4,8 @@
 }
 .App{
     position: relative;
+    height: 100%;
+    background-color: var(--background);
 }
 
 .frontdrop{

@@ -58,7 +58,6 @@ const Trabalhos = (props) => {
 
     
     useEffect(() => {
-        console.log(locationActive, workerActive);
         if(locationActive||workerActive){
             fetchJobsByFilter()
         }
@@ -349,7 +348,15 @@ const Trabalhos = (props) => {
                         <div className={styles.num}>
                             {
                                 currDisplay === "solo"?
-                                <span></span>
+                                <div className={styles.num_flex}>
+                                    <div className={styles.num_flex_content}>
+                                        <span style={{color:"white"}}>_</span>
+                                        <span style={{color:"white"}}>_</span>
+                                        <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
+                                        <span style={{color:"white"}}>_</span>
+                                        <span style={{color:"white"}}>_</span>
+                                    </div>
+                                </div>
                                 :currDisplay === "init"?
                                 <div className={styles.num_flex}>
                                     <div className={styles.num_flex_content}>

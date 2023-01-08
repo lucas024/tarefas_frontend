@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import styles from './publicar.module.css'
-import TopSelect from '../styling/selectStyling';
+import TopSelect from '../selects/selectStyling';
 import dayjs from 'dayjs';
 import validator from 'validator';
 import ReactTooltip from 'react-tooltip';

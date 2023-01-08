@@ -11,6 +11,14 @@ import {auth} from '../firebase/firebase'
 
 import BuildIcon from '@mui/icons-material/Build';
 import PersonIcon from '@mui/icons-material/Person';
+import SelectHome from '../selects/selectHome';
+import {profissoes, profissoesPngs, regioes, regioesOptions} from '../general/util'
+import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
+
+const firstOptions = [
+    { value: 'trabalhos', label: 'Trabalhos' },
+    { value: 'trabalhadores', label: 'Trabalhadores' },
+]
 
 
 const Home = (props) => {
@@ -20,6 +28,10 @@ const Home = (props) => {
     const [mensagemPopup, setMensagemPopup] = useState(false)
     const [loginPopup, setLoginPopup] = useState(false)
     const [loaded, setLoaded] = useState(false)
+
+    const [first, setFirst] = useState('trabalhos')
+    const [second, setSecond] = useState(null)
+    const [third, setThird] = useState(null)
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -116,89 +128,207 @@ const Home = (props) => {
                 
             }
             <div className={styles.home_back}>
-                <div className={styles.section_one} onClick={() => navigate('/main/publications/trabalhos')}>
-                    {
-                        props.user || loaded?
-                        <div className={styles.section_content}>
-                            <div className={styles.section_image_wrapper}>
-                                <BuildIcon sx={{width:"185px", height:"185px", padding:"15px 0"}} className={styles.section_img}/>
+                <div className={styles.home_back_top} style={{backgroundColor:first==="trabalhadores"?"#FF785A":""}}>
+                    <span className={styles.text_brand}>Serviços</span>
+                    <span className={styles.text_title}>O que procura hoje no Serviços?</span>
+                    <div className={styles.main}>
+                        <div className={styles.zone}>
+                            <div className={styles.zone_img}>
+                                {
+                                    first==="trabalhadores"?
+                                    <PersonIcon className={styles.zone_person_icon}/>
+                                    :
+                                    <BuildIcon className={styles.zone_build_icon}/>
+                                }
                             </div>
-                            <p className={styles.section_title}>
-                                PROCURAR
-                            </p>
-                            <p className={styles.section_title}>
-                                <span>TRABALHOS</span>
-                            </p>
-                            <a className={styles.link}/>
-                        </div> 
-                        :
-                        <div className={styles.section_content}>
-                            <span className={styles.skeleton_content_in_img}></span>
-                            <p className={styles.skeleton_content_in}></p>
-                            <p className={styles.skeleton_content_in}></p>
+                            <div className={styles.zone_select}>
+                                <SelectHome 
+                                    options={firstOptions} 
+                                    option={first} 
+                                    changeOption={val => setFirst(val)}
+                                    placeholder={"Secção..."}/>
+                            </div>
                         </div>
-                                              
-                    }
+                        <div className={styles.zone_arrow_div}>
+                            <span className={styles.zone_arrow} style={{borderTopColor:first==="trabalhadores"?"#161F28":""}}>
+                                {/* arrow */}
+                            </span>
+                        </div>
+                        <div className={styles.zone}>
+                            <div className={styles.zone_img} style={{backgroundColor:second?"#ffffff":"#ffffff50"}}>
+                                {
+                                    second? 
+                                    <img src={profissoesPngs[second]} className={styles.zone_image_prof}/>
+                                    :
+                                    <QuestionMarkOutlinedIcon className={styles.zone_build_icon} style={{color:first==="trabalhadores"?"#FF785A":""}}/>
+                                }
+                            </div>
+                            <div className={styles.zone_select}>
+                                <SelectHome 
+                                    options={profissoes} 
+                                    option={second} 
+                                    changeOption={val => setSecond(val)}
+                                    placeholder={'Serviço...'}/>
+                            </div>
+                        </div>
+                        <div className={styles.zone_arrow_div}>
+                            <span className={styles.zone_arrow} style={{borderTopColor:first==="trabalhadores"?"#161F28":""}}>
+                                {/* arrow */}
+                            </span>
+                        </div>
+                        <div className={styles.zone}>
+                            <div className={styles.zone_img} style={{backgroundColor:third?"#ffffff":"#ffffff50"}}>
+                                <div className={styles.zone_search}>
+                                    <div className={styles.zone_arrow_div}>
+                                        <span className={styles.zone_arrow} style={{borderTopStyle:"solid", width:"50px", borderTopColor:first==="trabalhadores"?"#161F28":""}}>
+                                            {/* arrow */}
+                                        </span>
+                                    </div>
+                                    <span className={styles.zone_search_button} style={{backgroundColor:first==="trabalhadores"?"#161F28":""}}>PROCURAR</span>
+                                </div>
+                                {
+                                    third? 
+                                    <span className={styles.zone_image_region}>{regioesOptions[third]}</span>
+                                    :
+                                    <QuestionMarkOutlinedIcon className={styles.zone_build_icon} style={{color:first==="trabalhadores"?"#FF785A":""}}/>
+                                }
+                            </div>
+                            <div className={styles.zone_select}>
+                                <SelectHome 
+                                    options={regioes} 
+                                    option={third} 
+                                    changeOption={val => setThird(val)}
+                                    placeholder={'Distrito...'}/>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-                {
-                    props.user?.type===1?
-                    <div className={styles.section_two} onClick={() => navigate('/user?t=personal')}>
-                        <div className={styles.section_content}>
-                            <div className={styles.section_image_wrapper}>
-                                <AccessibilityIcon sx={{width:"215px", height:"215px"}} className={styles.section_img} style={{color:"#161F28"}}/>
+                <span className={styles.home_explorar}>EXPLORAR</span>
+                <div className={styles.home_back_publish}>
+                    <span className={styles.back_publish_title}>PUBLICAR</span>
+                    <div className={styles.back_publish_div}>
+                        <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
+                        <span className={styles.back_publish_button}>PUBLICAR UM TRABALHO</span>
+                    </div>
+                </div>
+                <div className={styles.home_geral}>
+                    <span className={styles.back_publish_title}>VER</span>
+                    <div className={styles.home_back_bottom}>
+                        <div className={styles.section_one}>
+                            {
+                                props.user || loaded?
+                                <div className={styles.section_content}>
+                                    <div className={styles.section_image_wrapper}>
+                                        <BuildIcon className={styles.section_img}/>
+                                    </div>
+                                    <span className={styles.section_image_text_title}>
+                                        TRABALHOS
+                                    </span>
+                                    <span className={styles.section_image_text}>
+                                        Ver todos os trabalhos disponíveis
+                                    </span>
+                                    <div className={styles.section_button} onClick={() => navigate('/main/publications/trabalhos')}>
+                                        <p className={styles.section_title}>
+                                            VER TRABALHOS
+                                        </p>
+                                    </div>
+                                    
+                                    {/* <a className={styles.link}/> */}
+                                </div> 
+                                :
+                                <div className={styles.section_content}>
+                                    <span className={styles.skeleton_content_in_img}></span>
+                                    <p className={styles.skeleton_content_in}></p>
+                                    <p className={styles.skeleton_content_in}></p>
+                                </div>        
+                            }
+                        </div>
+                        <span className={styles.section_spacer}></span>
+                        {
+                            props.user?.type===1?
+                            <div className={styles.section_two}>
+                                <div className={styles.section_content}>
+                                    <div className={styles.section_image_wrapper}>
+                                        <AccessibilityIcon className={styles.section_img} style={{color:"#FF785A"}}/>
+                                    </div>
+                                    <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
+                                        PERFIL
+                                    </span>
+                                    <span className={styles.section_image_text}>
+                                        Ver ou editar perfil
+                                    </span>
+                                    <div className={styles.section_button} onClick={() => navigate('/user?t=personal')}>
+                                        <p className={styles.section_title}>
+                                            PERFIL
+                                        </p>
+                                    </div>
+                                </div>
+                                {/* <a className={styles.link2}/> */}
                             </div>
-                            <p className={styles.section_title}>
-                                EDITAR
-                            </p>
-                            <p className={styles.section_title}>
-                                <span>PERFIL</span>
-                            </p>
-                        </div>
-                        <a className={styles.link2}/>
-                    </div>
-                    :
-                    props.user?.type===0 || loaded?
-                    <div className={styles.section_two} onClick={() => navigate('/main/publications/trabalhadores')}>
-                        <div className={styles.section_content}>
-                            <div className={styles.section_image_wrapper}>
-                                <PersonIcon sx={{width:"215px", height:"215px"}} className={styles.section_img} style={{color:"#161F28"}}/>
+                            :
+                            props.user?.type===0 || loaded?
+                            <div className={styles.section_two}>
+                                <div className={styles.section_content}>
+                                    <div className={styles.section_image_wrapper}>
+                                        <PersonIcon className={styles.section_img} style={{color:"#FF785A"}}/>
+                                    </div>
+                                    <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
+                                        TRABALHADORES
+                                    </span>
+                                    <span className={styles.section_image_text}>
+                                        Ver todos os trabalhadores disponíveis
+                                    </span>
+                                    <div className={styles.section_button_right} onClick={() => navigate('/main/publications/trabalhadores')}>
+                                        <p className={styles.section_title_right}>
+                                            VER TRABALHADORES
+                                        </p>
+                                    </div>
+                                </div>
+                                {/* <a className={styles.link2}/> */}
                             </div>
-                            <p className={styles.section_title}>
-                                PROCURAR
-                            </p>
-                            <p className={styles.section_title}>
-                                <span>TRABALHADORES</span>
-                            </p>
-                        </div>
-                        <a className={styles.link2}/>
+                            :
+                            <div className={styles.section_two}>
+                                <div className={styles.section_content}>
+                                    <span className={styles.skeleton_content_in_img}></span>
+                                    <p className={styles.skeleton_content_in}></p>
+                                    <p className={styles.skeleton_content_in}></p>
+                                </div>
+                            </div>
+                            
+                            
+                        }
                     </div>
-                    :
-                    <div className={styles.section_two}>
-                        <div className={styles.section_content}>
-                            <span className={styles.skeleton_content_in_img}></span>
-                            <p className={styles.skeleton_content_in}></p>
-                            <p className={styles.skeleton_content_in}></p>
+                </div>
+                <div className={styles.back_bottom_trabalhador}>
+                    <div className={styles.home_back_publish} style={{paddingBottom:"20px", marginTop:"10px"}}>
+                        <span className={styles.back_publish_title} style={{color:"white", opacity:"0.9"}}>TRABALHADOR</span>
+                        <div className={styles.back_publish_div}>
+                            <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
+                            <span className={styles.back_publish_button_action} onClick={() => setWorkerBanner(true)}>TORNAR-ME TRABALHADOR</span>
                         </div>
                     </div>
-                    
-                    
-                }
+                </div>
+                
             </div>
+                
+                
+                
             {               
-                props.user?.type===0 || loaded&&!props.user?
-                <div className={styles.publish} onClick={() => navigate('/publicar?t=eletricista')}>
-                    <span className={styles.publish_or}>OU</span>
-                    <div className={styles.publish_main}>
-                        <span className={styles.publish_text}>
-                            PUBLICAR UM TRABALHO
-                        </span>
-                        <PostAddIcon className={styles.publish_icon}/>
-                    </div>
-                </div>
-                :props.user?.type===1?
-                null                
-                :
-                <span className={styles.skeleton_publish}></span>
+                // props.user?.type===0 || loaded&&!props.user?
+                // <div className={styles.publish} onClick={() => navigate('/publicar?t=eletricista')}>
+                //     <span className={styles.publish_or}>OU</span>
+                //     <div className={styles.publish_main}>
+                //         <span className={styles.publish_text}>
+                //             PUBLICAR UM TRABALHO
+                //         </span>
+                //         <PostAddIcon className={styles.publish_icon}/>
+                //     </div>
+                // </div>
+                // :props.user?.type===1?
+                // null                
+                // :
+                // <span className={styles.skeleton_publish}></span>
             }
             {
                 // props.user?.type===0 || loaded&&!props.user?

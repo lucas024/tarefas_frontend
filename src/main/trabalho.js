@@ -91,7 +91,6 @@ const Trabalho = (props) => {
 
     useEffect( () => {
         const paramsAux = Object.fromEntries([...searchParams])
-        console.log(paramsAux);
         paramsAux.region&&setLocationActive(paramsAux.region)
         paramsAux.work&&setWorkerActive(paramsAux.work)
         setPage(paramsAux.page)
@@ -118,7 +117,7 @@ const Trabalho = (props) => {
                     console.log(listaTrabalhosVistos)
                     window.localStorage.setItem('listaTrabalhosVistos', JSON.stringify(listaTrabalhosVistos))
                 }
-                else if(listaTrabalhosVistos?.length===0)
+                else if(listaTrabalhosVistos?.length===0 || !listaTrabalhosVistos)
                 {
                     let arr = []
                     arr.push(res.data._id)

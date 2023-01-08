@@ -4,7 +4,7 @@ import CircleOutlinedIcon from '@mui/icons-material/Circle';
 import {CSSTransition}  from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
-import SelectAdmin from '../styling/selectAdmin';
+import SelectAdmin from '../selects/selectAdmin';
 
 
 const Popup = (props) => {
