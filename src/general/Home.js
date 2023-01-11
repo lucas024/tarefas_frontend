@@ -14,6 +14,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import SelectHome from '../selects/selectHome';
 import {profissoes, profissoesPngs, regioes, regioesOptions} from '../general/util'
 import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
+import InstagramIcon from '@mui/icons-material/Instagram';
 
 const firstOptions = [
     { value: 'trabalhos', label: 'Trabalhos' },
@@ -118,15 +119,6 @@ const Home = (props) => {
                     cancel={() => setWorkerBanner(false)}/>
                 :null
             }
-            {
-                props.user?.type===0&&props.userLoadAttempt || !props.user&&props.userLoadAttempt?
-                <span className={styles.worker_button} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
-                :props.user?.type===1?
-                null
-                :
-                <span className={styles.skeleton_worker_botbanner}></span>
-                
-            }
             <div className={styles.home_back}>
                 <div className={styles.home_back_top} style={{backgroundColor:first==="trabalhadores"?"#FF785A":""}}>
                     <span className={styles.text_brand}>Serviços</span>
@@ -180,7 +172,7 @@ const Home = (props) => {
                             <div className={styles.zone_img} style={{backgroundColor:third?"#ffffff":"#ffffff50"}}>
                                 <div className={styles.zone_search}>
                                     <div className={styles.zone_arrow_div}>
-                                        <span className={styles.zone_arrow} style={{borderTopStyle:"solid", width:"50px", borderTopColor:first==="trabalhadores"?"#161F28":""}}>
+                                        <span className={styles.zone_arrow_final} style={{borderTopColor:first==="trabalhadores"?"#161F28":""}}>
                                             {/* arrow */}
                                         </span>
                                     </div>
@@ -208,8 +200,14 @@ const Home = (props) => {
                 <div className={styles.home_back_publish}>
                     <span className={styles.back_publish_title}>PUBLICAR</span>
                     <div className={styles.back_publish_div}>
+                        {
+                            props.user?.type===1?
+                            <span className={styles.back_publish_div_frontdrop}></span>
+                            :null
+                        }
+                        <PostAddIcon className={styles.section_img_mini}/>
                         <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
-                        <span className={styles.back_publish_button}>PUBLICAR UM TRABALHO</span>
+                        <span className={styles.back_publish_button} onClick={() => navigate('/publicar')}>PUBLICAR UM TRABALHO</span>
                     </div>
                 </div>
                 <div className={styles.home_geral}>
@@ -233,8 +231,6 @@ const Home = (props) => {
                                             VER TRABALHOS
                                         </p>
                                     </div>
-                                    
-                                    {/* <a className={styles.link}/> */}
                                 </div> 
                                 :
                                 <div className={styles.section_content}>
@@ -264,7 +260,6 @@ const Home = (props) => {
                                         </p>
                                     </div>
                                 </div>
-                                {/* <a className={styles.link2}/> */}
                             </div>
                             :
                             props.user?.type===0 || loaded?
@@ -285,7 +280,6 @@ const Home = (props) => {
                                         </p>
                                     </div>
                                 </div>
-                                {/* <a className={styles.link2}/> */}
                             </div>
                             :
                             <div className={styles.section_two}>
@@ -309,40 +303,27 @@ const Home = (props) => {
                         </div>
                     </div>
                 </div>
+
+                <div className={styles.footer}>
+                    <div className={styles.footer_div}>
+                        <div className={styles.footer_div_1}>
+                            <p className={styles.footer_div_text}>APP Serviços</p>
+                        </div>
+                        <div className={styles.footer_div_2}>
+                            <p className={styles.footer_div_text}>Ajuda e contactos</p>
+                        </div>
+                        <div className={styles.footer_div_3}>
+                            <div>
+                                <p className={styles.footer_div_text_3}>Segue-nos nas redes:</p>
+                                <div className={styles.footer_icon_div}>
+                                    <InstagramIcon className={styles.footer_icon}/>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
                 
             </div>
-                
-                
-                
-            {               
-                // props.user?.type===0 || loaded&&!props.user?
-                // <div className={styles.publish} onClick={() => navigate('/publicar?t=eletricista')}>
-                //     <span className={styles.publish_or}>OU</span>
-                //     <div className={styles.publish_main}>
-                //         <span className={styles.publish_text}>
-                //             PUBLICAR UM TRABALHO
-                //         </span>
-                //         <PostAddIcon className={styles.publish_icon}/>
-                //     </div>
-                // </div>
-                // :props.user?.type===1?
-                // null                
-                // :
-                // <span className={styles.skeleton_publish}></span>
-            }
-            {
-                // props.user?.type===0 || loaded&&!props.user?
-                // <div className={styles.tag}>
-                //     <p className={styles.tag_text}>
-                //         Do que precisa hoje?
-                //     </p>
-                // </div>
-                // :
-                // props.user?.type===1?
-                // null
-                // :
-                // <span className={styles.skeleton_tag}></span>
-            }
         </div>
     )
 }

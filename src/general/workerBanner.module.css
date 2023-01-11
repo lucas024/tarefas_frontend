@@ -12,6 +12,7 @@
 }
 
 .popup{
+    position: static;
     width: 550px;
     padding: 25px;
     margin-top: -150px;
