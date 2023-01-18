@@ -265,7 +265,7 @@ const refreshWorker = () => {
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}/>}
               />
-              <Route exact path="/authentication" 
+              <Route path="/authentication/*" 
                 element={<Auth
                   setUser = {user => setUser(user)}
                   api_url={api_url}

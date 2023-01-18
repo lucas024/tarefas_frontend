@@ -180,7 +180,7 @@ const Publications = (props) => {
                         <div className={styles.item_none} style={{padding:"30px 0"}}>
                             <div className={styles.item_flex}>
                                 <span className={styles.item_type_tbd}>Sem publicações activas</span>
-                                <span className={styles.publicar} onClick={() => {navigate('/publicar?t=eletricista')}}>
+                                <span className={styles.publicar} onClick={() => {navigate('/publicar')}}>
                                     PUBLICAR
                                 </span>
                             </div>

@@ -71,7 +71,7 @@ const UserSidebar = (props) => {
     const logoutHandler = () => {
         logout()
         navigate({
-            pathname: `/authentication`,
+            pathname: `/authentication?type=1`,
         })
     }
 

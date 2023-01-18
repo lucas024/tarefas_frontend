@@ -7,8 +7,8 @@ import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
 import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import { sendSignInLinkToEmailHandler } from '../firebase/firebase'
 import CircleIcon from '@mui/icons-material/Circle';
+import ReactTooltip from 'react-tooltip';
 
 const Navbar = (props) => {
 
@@ -24,11 +24,11 @@ const Navbar = (props) => {
     const logoutHandler = () => {
         setDropdown(false)
         logout()
-        navigate('/authentication')
+        navigate('/authentication?type=1')
     }
 
     return (
-        <div className={styles.navbar} onClick={() => sendSignInLinkToEmailHandler(props.user.email)}>
+        <div className={styles.navbar}>
             <div className={styles.flex}>
                 <div className={styles.flex_end}>
                     <p className={styles.title} 
@@ -45,10 +45,17 @@ const Navbar = (props) => {
                                 <span className={styles.user_button} onClick={() => {navigate('/main/publications/trabalhos')}}>
                                         TRABALHOS
                                 </span>
-                                :loaded?
-                                <span className={styles.user_button} onClick={() => {navigate('/publicar?t=eletricista')}}>
+                                :loaded&&props.user?
+                                <span className={styles.user_button} onClick={() => {navigate('/publicar')}}>
                                         PUBLICAR
                                 </span>
+                                :loaded?
+                                <div className={styles.user_button_disabled} data-for='navbar' data-tip="Por favor crie conta ou inicie sessão para publicar.">
+                                        <span className={styles.back_publish_div_frontdrop}></span>
+                                        <span>PUBLICAR</span>
+                                </div>
+
+                                
                                 :
                                 <span className={styles.skeleton_button}></span>
                                 
@@ -209,7 +216,7 @@ const Navbar = (props) => {
                                     </div>
                                     :loaded?
                                     <p className={styles.user_login} 
-                                    onClick={() => navigate('/authentication')}>
+                                    onClick={() => navigate('/authentication?type=1')}>
                                     Iniciar Sessão</p>
                                     :<span className={styles.skeleton_text}></span>
                                 }
@@ -218,6 +225,7 @@ const Navbar = (props) => {
                     </div>
                 </div>               
             </div>
+            <ReactTooltip id={"navbar"} effect='solid' place='left'/>
         </div>
     )
 }

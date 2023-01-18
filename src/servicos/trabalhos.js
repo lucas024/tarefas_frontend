@@ -6,7 +6,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import SearchIcon from '@mui/icons-material/Search';
-import FilterSelect from './filterSelect';
+import SelectPublications from '../selects/selectPublications';
 import Row from './row';
 import Loader from './../general/loader';
 import NoPage from '../general/noPage';
@@ -256,7 +256,7 @@ const Trabalhos = (props) => {
                     </div>
                     <div className={styles.search_filter_div_wrapper}>
                         <div className={styles.search_filter_div}>
-                            <FilterSelect 
+                            <SelectPublications 
                                 type="zona" 
                                 clear={clear}
                                 urlVal={locationActive}
@@ -265,7 +265,7 @@ const Trabalhos = (props) => {
                                     !workerActive&&setSearchParams({'region': val})
                                     setLocationActive(val)}}/>
                             <div style={{marginLeft:"10px"}}>
-                                <FilterSelect
+                                <SelectPublications
                                     type="worker"
                                     trabalho={true}
                                     clear={clear}

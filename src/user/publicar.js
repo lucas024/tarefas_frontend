@@ -20,6 +20,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {profissoesPngs} from '../general/util'
+import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
 
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
@@ -203,7 +204,7 @@ const Publicar = (props) => {
     }, [phone])
 
     useEffect(() => {
-        if(nome.length>0 && validator.isMobilePhone(phone, "pt-PT") && validator.isEmail(email) && (address.length>0 || editAddress?.length>0) && titulo.length>5 && porta.length>0)
+        if(checkAll())
             setComplete(true)
         else{
             setComplete(false)
@@ -227,7 +228,17 @@ const Publicar = (props) => {
         if(address.length===0 && addressFocused) setWrongAddress(true)
         if(titulo.length>5) setTituloWrong(false)
         else if(tituloFocused) setTituloWrong(true)
-    }, [nome, phone, email, address, phoneFocused, emailFocused, porta, portaFocused, addressFocused, titulo, tituloFocused, editAddress])
+    }, [nome, phone, email, address, phoneFocused, emailFocused, porta, portaFocused, addressFocused, titulo, tituloFocused, editAddress, selectedWorker])
+
+    const checkAll = () => {
+        return nome.length>0 && 
+        validator.isMobilePhone(phone, "pt-PT") && 
+        validator.isEmail(email) && 
+        (address.length>0 || editAddress?.length>0) && 
+        titulo.length>5 && 
+        porta.length>0 &&
+        selectedWorker != null
+    }
 
     const nameFocused = () => {
         if(nome.length===0) setNomeWrong(true)
@@ -335,8 +346,8 @@ const Publicar = (props) => {
     }
 
     const confirmarHandler = () => {
-        if(!props.user){
-            navigate('/authentication',
+        if(!props.user && checkAll()){
+            navigate('/authentication?type=0',
                 {
                     state: {
                         carry: true,
@@ -351,7 +362,7 @@ const Publicar = (props) => {
                     }
                 })
         }
-        else{
+        else if(checkAll()){
             props.loadingHandler(true)
             checkPendingReservations()
         }
@@ -582,7 +593,16 @@ const Publicar = (props) => {
                             }
                             <div className={styles.top_left}>
                                 <span className={styles.left_image_border}>
-                                    <img src={profissoesPngs[selectedWorker]} className={styles.left_img}></img>
+                                    {
+                                        selectedWorker?
+                                        <img src={profissoesPngs[selectedWorker]} className={styles.left_img}></img>
+                                        :
+                                        <div>
+                                            <QuestionMarkOutlinedIcon className={styles.left_img_qm}/>
+                                            <span className={styles.left_img_qm_asterisc}>*</span>
+                                        </div>
+                                        
+                                    }                                    
                                 </span>
                                 
                                 <div className={styles.left_select}>

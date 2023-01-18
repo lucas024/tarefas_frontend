@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
 import ScrollToBottom, { useScrollToBottom, useSticky } from 'react-scroll-to-bottom';
-import Face3Icon from '@mui/icons-material/Face3';
+import Face3Icon from '@mui/icons-material/Face';
 
 const Messages = (props) => {
     

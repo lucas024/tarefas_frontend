@@ -111,6 +111,23 @@
     left: calc(50% - 35px);
     top: calc(50% - 35px);
 }
+.left_img_qm{
+    width: 70px !important;
+    height: 70px !important;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    position: absolute;
+    left: calc(50% - 35px);
+    top: calc(50% - 35px);
+}
+.left_img_qm_asterisc{
+    position: absolute;
+    left: calc(50% + 15px);
+    top: calc(50% - 35px);
+    color: var(--action);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
 .left_select{
     z-index: 1;
     margin-top: 5px;
@@ -361,6 +378,9 @@
     border-bottom: 2px solid var(--action);
 }
 .top_input_short:focus{
+    border-bottom: 2px solid var(--action);
+}
+.top_input_short:focus{
     outline: none !important;
 }
 input::placeholder{
@@ -421,6 +441,7 @@ input::placeholder{
 }
 .top_desc_area:focus{
     outline: none !important;
+    border-bottom: 2px solid var(--action);
 }
 .top_desc_area::placeholder{
     font-style: italic;

@@ -282,7 +282,7 @@ const Trabalhador = props => {
                                 <div className={styles.frontdrop}>
                                     <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"#FF785A", textTransform:"capitalize"}}>{worker?.name?.split(" ")[0]}</span>,</span>
                                     <span className={styles.frontdrop_text}>registe-se ou entre numa conta!</span>
-                                    <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication')}>Ir para autenticação</span>
+                                    <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication/worker?type=1')}>Ir para autenticação</span>
                                 </div>
                             </div>
                             :

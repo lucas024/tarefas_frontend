@@ -180,6 +180,33 @@
 .back_publish_text{
     text-align: center;
 }
+.back_publish_button_disabled{
+    margin-top: 20px;
+    width: fit-content;
+    background-color: var(--brand);
+    padding: 10px 30px;
+    border-radius: 5px;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    position: relative;
+}
+.auth{
+    margin: auto;
+    margin-top: 15px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--brand);
+}
+.auth_specific{
+    color: var(--action);
+    font-weight: 500;
+}
+.auth_specific:hover{
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
 .back_publish_button{
     margin-top: 20px;
     width: fit-content;

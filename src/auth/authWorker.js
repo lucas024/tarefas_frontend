@@ -18,6 +18,8 @@ import {
     FacebookAuthProvider,
     signInWithPopup,
     } from "firebase/auth"
+import { useSearchParams } from 'react-router-dom';
+import Loader from '../general/loader'
 
 const AuthWorker = (props) => {
 
@@ -43,7 +45,20 @@ const AuthWorker = (props) => {
     const [phoneWrong, setPhoneWrong] = useState(false)
     const [phoneFocused, setPhoneFocused] = useState(false)
 
+    const [loading, setLoading] = useState(false)
+
+    const [searchParams] = useSearchParams()
+
+
     const navigate = useNavigate()
+
+    useEffect(async () => {
+        const paramsAux = Object.fromEntries([...searchParams])
+        if(paramsAux)
+        {
+            setSelectedAuth(parseInt(paramsAux.type))
+        }
+    }, [searchParams])
 
     useEffect(() => {
         if(name.length>1){
@@ -142,12 +157,13 @@ const AuthWorker = (props) => {
 
     const loginHandler = async () => {
         setEmailLoginWrong(false)
+        setLoading(true)
 
         let res = await axios.get(`${props.api_url}/auth/get_user_by_email`, { params: {email: emailLogin} })
         setEmailLoginWrong(false)
         if(res.data != null){
             setLoginError("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Faça login na Àrea Utlizador.")
-            
+            setLoading(false)
         }
         else if(validator.isEmail(emailLogin)){
             fetchSignInMethodsForEmailHandler(emailLogin)
@@ -155,6 +171,7 @@ const AuthWorker = (props) => {
                     if(res.length>0){
                         if(res[0] === "google.com"){
                             setLoginError('Este e-mail encontra-se registado através da Google. Por favor inicia a sessão com "Entrar com Google".')
+                            setLoading(false)
                         }
                         else if(res[0] === "password"){
                             loginWithEmailAndPassword(emailLogin, passwordLogin)
@@ -164,24 +181,25 @@ const AuthWorker = (props) => {
                                         carry: true
                                     }
                                 })
+                                setLoading(false)
                                 
                             })
-                            .catch(err => {
-                                
+                            .catch(() => {
                                 setLoginError('O e-mail ou a Password estão incorretos.')
+                                setLoading(false)
                             })
                         }
                     }
                     else{
-                        
                         setLoginError('O e-mail ou a Password estão incorretos.')
+                        setLoading(false)
                     }                  
                 })
             
         } else {
-            
             setLoginError('Este e-mail não é válido.')
             setEmailLoginWrong(true)
+            setLoading(false)
         }
     }
 
@@ -219,6 +237,7 @@ const AuthWorker = (props) => {
     }
 
     const registerHandler = async () => {
+        setLoading(true)
         if(validator.isMobilePhone(phone, "pt-PT")
             && name.length>1
             && surname.length>1
@@ -227,10 +246,12 @@ const AuthWorker = (props) => {
             try{
                 let res = await registerWithEmailAndPassword(email.toLocaleLowerCase(), password)
                 await registerHelper(res.user.uid, false)
+                setLoading(false)
             }
             catch (err) {
                 if(err.code == "auth/email-already-in-use"){
                     axios.get(`${props.api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                        setLoading(false)
                         if(res.data != null){
                             setEmailWrong("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Por-favor, utilize outro email.")
                         }
@@ -242,11 +263,12 @@ const AuthWorker = (props) => {
                 }
                 else{
                     setLoginError("Problema no servidor.")
+                    setLoading(false)
                 }
             }
             }
         else{
-            
+            setLoading(false)
             if(!validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
                 setPasswordWrong(true)
             }
@@ -254,6 +276,7 @@ const AuthWorker = (props) => {
     }
 
     const signInWithPopupHandler = async (type) => {
+        setLoading(true)
         try{
             let res = await signInWithPopup(auth, type==="google"?provider:providerFacebook)
             let existing_user = await axios.get(`${props.api_url}/auth/get_user_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
@@ -268,14 +291,16 @@ const AuthWorker = (props) => {
                     photoURL: res.user.photoURL
                 }
                 await registerHelper(res.user.uid, from_signup)
+                setLoading(false)
             }
             else{
                 //conta existe
                 navigate('/')
+                setLoading(false)
             }
         }
         catch (err) {
-            console.log(err);
+            setLoading(false)
         }
     }
 
@@ -283,6 +308,7 @@ const AuthWorker = (props) => {
         <div className={styles.auth}>
             <div className={styles.auth_main_worker}>
                 <div className={styles.area}>
+                    <Loader radius={true} loading={loading}/>
                     <div className={styles.area_top}>
                         <ul>
                             <li onClick={() => setSelectedAuth(1)} style={{color:"#FF785A"}} className={selectedAuth?styles.li_active:""}>
@@ -353,8 +379,8 @@ const AuthWorker = (props) => {
                             <div style={{marginTop:"20px"}}>
                                 <span className={styles.recup_password}>Recuperar password</span>
                             </div>
-                            <div className={!props.loading?styles.login_button:styles.login_button_disabled} onClick={() => {
-                                if(!props.loading) loginHandler()}}>
+                            <div className={!loading?styles.login_button:styles.login_button_disabled} onClick={() => {
+                                if(!loading) loginHandler()}}>
                                 <p className={styles.login_text}>Efectue o seu login</p>
                             </div>
                             <div className={styles.bottom_switch}>
@@ -364,10 +390,12 @@ const AuthWorker = (props) => {
                         </div>
                         :
                         <div className={styles.area_bot}>
+                            <Loader radius={true} loading={loading}/>
                             <div className={styles.login_div}>
                                 <div className={styles.login}>
                                     <p className={styles.login_title}>Nome</p>
                                     <input 
+                                        autoComplete="off"
                                         maxLength={12}
                                         onChange={e => setName(e.target.value)} 
                                         className={styles.login_input} 
@@ -384,7 +412,8 @@ const AuthWorker = (props) => {
                                 </div>
                                 <div className={styles.login} style={{marginTop:"10px"}}>
                                     <p className={styles.login_title}>Apelido</p>
-                                    <input 
+                                    <input
+                                        autoComplete="off"
                                         maxLength={12}
                                         onChange={e => setSurname(e.target.value)} 
                                         className={styles.login_input} 
@@ -401,7 +430,8 @@ const AuthWorker = (props) => {
                                 </div>
                                 <div className={styles.login} style={{marginTop:"10px"}}>
                                     <p className={styles.login_title}>Telefone</p>
-                                    <input 
+                                    <input
+                                        autoComplete="off"
                                         maxLength={11} 
                                         onChange={e => setPhoneHandler(e.target.value)} 
                                         value={phoneVisual} className={styles.login_input} 
@@ -419,6 +449,7 @@ const AuthWorker = (props) => {
                                 <div className={styles.login} style={{marginTop:"10px"}}>
                                     <p className={styles.login_title}>E-mail</p>
                                     <input 
+                                        autoComplete="off"
                                         maxLength={80} 
                                         onChange={e => setEmail(e.target.value)} 
                                         className={styles.login_input} 
@@ -436,6 +467,7 @@ const AuthWorker = (props) => {
                                 <div className={styles.login} style={{marginTop:"10px"}}>
                                     <p className={styles.login_title}>Password</p>
                                     <input 
+                                        autoComplete="new-password"
                                         maxLength={40} 
                                         type="password"
                                         onChange={e => setPassword(e.target.value)}
@@ -452,13 +484,13 @@ const AuthWorker = (props) => {
                                         }
                                 </div>
                             </div>
-                            <div className={!props.loading?styles.login_button:styles.login_button_disabled} style={{marginTop:"20px"}} onClick={() => {
-                                    if(!props.loading) registerHandler()}}>
+                            <div className={!loading?styles.login_button:styles.login_button_disabled} style={{marginTop:"20px"}} onClick={() => {
+                                    if(!loading) registerHandler()}}>
                                 <p className={styles.login_text}>Registar como <span style={{textDecoration:"underline"}}>Trabalhador</span></p>
                             </div>
                             <div className={styles.bottom_switch}>
                                 <span className={styles.bottom_switch_text}>Já tens conta? </span>
-                                <span className={styles.bottom_switch_button} onClick={() => navigate('/authentication')}>Login</span>
+                                <span className={styles.bottom_switch_button} onClick={() => navigate('/authentication?type=1')}>Login</span>
                             </div>
                         </div>
 
@@ -466,7 +498,7 @@ const AuthWorker = (props) => {
                     
                 </div>
                 <div className={styles.button_area}>
-                    <span className={styles.user_button} onClick={() => navigate('/authentication')}>Àrea Utilizador</span>
+                    <span className={styles.user_button} onClick={() => navigate('/authentication?type=1')}>Àrea Utilizador</span>
                 </div>
             </div>
         </div>
