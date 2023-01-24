@@ -234,7 +234,12 @@ const Auth = (props) => {
                 })
             
         } else {
-            setLoginError('Este e-mail não é válido.')
+            if(emailLogin.length===0){
+                setLoginError('Por favor, insira o e-mail.')
+            }
+            else{
+                setLoginError('Este e-mail não é válido.')
+            }
             setEmailLoginWrong(true)
             setLoading(false)
         }
@@ -306,7 +311,19 @@ const Auth = (props) => {
             }
         else{
             setLoading(false)
-            if(!validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
+            if(name.length<2){
+                setNameWrong(true)
+            }
+            else if(surname.length<2){
+                setSurnameWrong(true)
+            }
+            else if(!validator.isMobilePhone(phone, "pt-PT")){
+                setPhoneWrong(true)
+            }
+            else if(email.length===0){
+                setEmailWrong(true)
+            }
+            else if(!validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
                 setPasswordWrong(true)
             }
         }

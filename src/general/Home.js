@@ -95,6 +95,22 @@ const Home = (props) => {
     const handleMoveAuth = type => {
         navigate(`/authentication?type=${type}`)
     }
+
+    const searchHandler = () => {
+        if(second&&third){
+            navigate(`/main/publications/${first}?work=${second}&region=${third}`)
+        }
+        else if(second){
+            navigate(`/main/publications/${first}?work=${second}`)
+        }
+        else if(third){
+            navigate(`/main/publications/${first}?region=${third}`)
+        }
+        else{
+            navigate(`/main/publications/${first}`)
+        }
+        
+    }
     
     return(
         <div className={styles.home}>
@@ -185,7 +201,7 @@ const Home = (props) => {
                                                 {/* arrow */}
                                             </span>
                                         </div>
-                                        <span className={styles.zone_search_button} style={{backgroundColor:first==="trabalhadores"?"#161F28":""}}>PROCURAR</span>
+                                        <span onClick={() => searchHandler()} className={styles.zone_search_button} style={{backgroundColor:first==="trabalhadores"?"#161F28":""}}>PROCURAR</span>
                                     </div>
                                     {
                                         third? 
@@ -212,7 +228,7 @@ const Home = (props) => {
                 </div>
                 <span className={styles.home_explorar}>EXPLORAR</span>
                 <div className={styles.home_back_publish}>
-                    <span className={styles.back_publish_title}>PUBLICAR</span>
+                    <p className={styles.back_publish_title}>PUBLICAR</p>
 
                     {
                         loaded?
@@ -247,7 +263,7 @@ const Home = (props) => {
                 </div>
                 
                 <div className={styles.home_geral}>
-                    <span className={styles.back_publish_title}>VER</span>
+                    <p className={styles.back_publish_title}>VER</p>
                     <div className={styles.home_back_bottom}>
                         <div className={styles.section_one}>
                             {

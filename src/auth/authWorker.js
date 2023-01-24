@@ -59,7 +59,6 @@ const AuthWorker = (props) => {
             setSelectedAuth(parseInt(paramsAux.type))
         }
     }, [searchParams])
-
     useEffect(() => {
         if(name.length>1){
             setNameWrong(false)
@@ -197,7 +196,12 @@ const AuthWorker = (props) => {
                 })
             
         } else {
-            setLoginError('Este e-mail não é válido.')
+            if(emailLogin.length===0){
+                setLoginError('Por favor, insira o e-mail.')
+            }
+            else{
+                setLoginError('Este e-mail não é válido.')
+            }
             setEmailLoginWrong(true)
             setLoading(false)
         }
@@ -269,7 +273,19 @@ const AuthWorker = (props) => {
             }
         else{
             setLoading(false)
-            if(!validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
+            if(name.length<2){
+                setNameWrong(true)
+            }
+            else if(surname.length<2){
+                setSurnameWrong(true)
+            }
+            else if(!validator.isMobilePhone(phone, "pt-PT")){
+                setPhoneWrong(true)
+            }
+            else if(email.length===0){
+                setEmailWrong(true)
+            }
+            else if(!validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
                 setPasswordWrong(true)
             }
         }
@@ -309,12 +325,12 @@ const AuthWorker = (props) => {
             <div className={styles.auth_main_worker}>
                 <div className={styles.area}>
                     <Loader radius={true} loading={loading}/>
-                    <div className={styles.area_top}>
+                    <div className={styles.area_top} style={{borderBottom:"1px solid #FF785A50"}}>
                         <ul>
-                            <li onClick={() => setSelectedAuth(1)} style={{color:"#FF785A"}} className={selectedAuth?styles.li_active:""}>
+                            <li onClick={() => setSelectedAuth(1)} style={{color:"#FF785A"}} className={selectedAuth?styles.li_active_worker:""}>
                                 <span className={selectedAuth?styles.li_text_active_worker:styles.li_text}>Login</span>
                             </li>
-                            <li onClick={() => setSelectedAuth(0)} style={{color:"#FF785A"}} className={!selectedAuth?styles.li_active:""}>
+                            <li onClick={() => setSelectedAuth(0)} style={{color:"#FF785A"}} className={!selectedAuth?styles.li_active_worker:""}>
                                 <span className={!selectedAuth?styles.li_text_active_worker:styles.li_text}>Registar</span>
                             </li>
                         </ul>
@@ -322,7 +338,7 @@ const AuthWorker = (props) => {
                     {
                         selectedAuth===1?
                         <div className={styles.area_bot}>
-                            <div className={styles.area_o2}>
+                            <div className={styles.area_o2} style={{borderBottom:"1px solid #FF785A50"}}>
                                 <div className={styles.o2_button} onClick={() => signInWithPopupHandler("facebook")}>
                                     <img src={facebook} className={styles.o2_img}></img>
                                     <span className={styles.align_vert}>
@@ -379,7 +395,7 @@ const AuthWorker = (props) => {
                             <div style={{marginTop:"20px"}}>
                                 <span className={styles.recup_password}>Recuperar password</span>
                             </div>
-                            <div className={!loading?styles.login_button:styles.login_button_disabled} onClick={() => {
+                            <div className={!loading?styles.login_button_worker:styles.login_button_disabled} onClick={() => {
                                 if(!loading) loginHandler()}}>
                                 <p className={styles.login_text}>Efectue o seu login</p>
                             </div>
@@ -484,13 +500,13 @@ const AuthWorker = (props) => {
                                         }
                                 </div>
                             </div>
-                            <div className={!loading?styles.login_button:styles.login_button_disabled} style={{marginTop:"20px"}} onClick={() => {
+                            <div className={!loading?styles.login_button_worker:styles.login_button_disabled} style={{marginTop:"20px"}} onClick={() => {
                                     if(!loading) registerHandler()}}>
                                 <p className={styles.login_text}>Registar como <span style={{textDecoration:"underline"}}>Trabalhador</span></p>
                             </div>
                             <div className={styles.bottom_switch}>
                                 <span className={styles.bottom_switch_text}>Já tens conta? </span>
-                                <span className={styles.bottom_switch_button} onClick={() => navigate('/authentication?type=1')}>Login</span>
+                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(1)}>Login</span>
                             </div>
                         </div>
 

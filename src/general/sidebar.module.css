@@ -118,6 +118,7 @@
     background: rgb(22,31,40);
     background: linear-gradient(135deg, rgba(22, 31, 40, 0.591) 0%, rgba(50, 66, 80, 0.559) 100%);
 }
+
 .thing{
     position: absolute;
     display: flex;
@@ -196,6 +197,9 @@
     height: 20px !important;
     color: var(--check);
 }
+.flex_10px{
+    margin-top: 10px;
+}
 @keyframes rotation {
     from {
       transform: rotate(0deg);
@@ -205,8 +209,39 @@
     }
 }
 
-@media (max-width: 1023px){
+@media (max-width: 1024px){
     .prox{
         font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px){
+    .sidebar_icon_wrapper{
+        display: none;
+    }
+    .sidebar_list{
+        width: 100%;
+        min-width: none;
+        margin-top: 0px;
+    }
+    .button_main_trabalhos{
+        padding: 5px !important;
+        height: 50px;
+    }
+    .button_main_trabalhadores{
+        padding: 2px !important;
+        height: 50px;
+    }
+    .prox{
+        display: none;
+    }
+    .sidebar_data_flex{
+        display: none;
+    }
+    .sidebar_flex{
+        height: calc(100vh - 70px);
+    }
+    .flex_10px{
+        margin-top: 0px;
     }
 }

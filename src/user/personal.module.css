@@ -214,7 +214,7 @@ input[type=file]{
 }
 .input_right{
     border: none;
-    border-bottom: 1px solid var(--check);
+    border-bottom: 2px solid var(--check);
     color: var(--brand);
     height: 25px;
     width: 250px;
@@ -224,10 +224,11 @@ input[type=file]{
     font-family: 'Montserrat', sans-serif;
     background-color: var(--background);
     outline: none;
+    border-radius: 5px;
 }
 .input_wrong{
     border: none;
-    border-bottom: 1px solid var(--red);
+    border-bottom: 2px solid var(--red);
     color: var(--brand);
     height: 25px;
     width: 250px;
@@ -237,6 +238,7 @@ input[type=file]{
     font-family: 'Montserrat', sans-serif;
     background-color: var(--background);
     outline: none;
+    border-radius: 5px;
 }
 .input_input{
     border: none;
@@ -253,7 +255,7 @@ input[type=file]{
 }
 .input_input_edit{
     border: none;
-    border-bottom: 1px solid var(--action);
+    border-bottom: 2px solid var(--action);
     background-color: var(--background);
     color: var(--brand);
     height: 25px;
@@ -271,7 +273,7 @@ input[type=file]{
     height: 80px;
     padding-left: 5px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 400;
     font-family: 'Montserrat', sans-serif;
     border-radius: 5px;
     background-color: var(--background);
@@ -287,7 +289,7 @@ input[type=file]{
     height: 80px;
     padding: 5px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 400;
     font-family: 'Montserrat', sans-serif;
     border-radius: 5px;
     background-color: #cccccc10;
@@ -300,12 +302,15 @@ input[type=file]{
     height: 80px;
     padding-left: 5px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 400;
     font-family: 'Montserrat', sans-serif;
     border-radius: 5px;
     background-color: var(--background);
-    border-bottom: 1px solid var(--action);
+    border-bottom: 2px solid var(--brand);
     outline: none;
+}
+.textarea_input_edit:focus{
+    border-bottom: 2px solid var(--action);
 }
 .textarea_input::placeholder{
     color: #ccc;
@@ -320,8 +325,6 @@ input[type=file]{
 }
 .input_div_top{
     display: flex;
-    justify-content: space-between;
-    width: 80%;
 }
 .top_edit_area{
     display: flex;
@@ -379,7 +382,7 @@ input[type=file]{
 }
 .edit_top{
     position: absolute;
-    top: 65px;
+    top: 0px;
     right: 0;
     padding: 3px 10px;
     border-radius: 5px;
@@ -391,7 +394,7 @@ input[type=file]{
 }
 .save_top{
     position: absolute;
-    top: 65px;
+    top: 0px;
     right: 10px;
     padding: 3px 10px;
     border-radius: 5px;
@@ -403,8 +406,9 @@ input[type=file]{
     cursor: pointer;
 }
 .helper{
-    color: var(--action);
-    font-size: 0.9rem;
+    color: var(--yellow);
+    font-size: 1rem;
+    font-weight: 600;
 }
 .divider{
     height: 2px;
@@ -592,14 +596,18 @@ transform: rotate(45deg);
     height: 25px;
     padding-left: 5px;
     margin-left: 5px;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 400;
     background-color: var(--white);
     color: var(--brand);
     border: none;
-    border-bottom: 1px solid var(--brand);
+    border-bottom: 2px solid var(--action);
     outline: none;
     width: fit-content;
+    border-radius: 5px;
+    border-bottom-left-radius: 0;
+    background-color: #cccccc10;
+    font-style: normal !important;
 }
 .radio_button_input:disabled{
     color: rgb(148, 148, 148);
@@ -768,6 +776,30 @@ transform: rotate(45deg);
     }
     .edit_icon{
         font-size: 30px;
+    }
+    .edit_top{
+        top: 130px;
+        left: 10px;
+        right: 10px;
+        text-align: center;
+    }
+    .save_top{
+        top: 130px;
+        left: 10px;
+        right: 10px;
+        text-align: center;
+    }
+    .input_right{
+        width: 150px;
+    }
+    .input_wrong{
+        width: 150px;
+    }
+    .input_input_edit{
+        width: 150px;
+    }
+    .input_input{
+        width: 150px;
     }
 }
 @media (max-width: 850px){

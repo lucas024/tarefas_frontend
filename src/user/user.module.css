@@ -55,3 +55,12 @@
         width: 250px;
     }
 }
+
+
+@media (max-width: 768px) {
+    .left{
+        flex: none;
+        max-width: 50px;
+        min-width: 0;
+    }
+}

@@ -57,18 +57,18 @@ const MainSidebar = (props) => {
                     <ListItemButton 
                         onClick={() => handleSelectedSidebar("trabalhos")} 
                         className={styles.button_main_trabalhos}
-                        style={{border:props.selected==="trabalhos"?"2px solid white":"", background:props.selected==="trabalhos"?"#ffffff20":""}}>
+                        style={{border:props.selected==="trabalhos"?"4px dashed white":"2px solid #FF785A", background:props.selected==="trabalhos"?"#ffffff20":""}}>
                         <ListItemIcon>
-                        <BuildIcon sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa"}}/>
+                        <BuildIcon sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa", fontSize:"2rem", padding:props.selected==="trabalhos"?"4px 0":"6px 0"}}/>
                         </ListItemIcon>
                         <ListItemText primary={<span className={styles.prox}>Trabalhos</span>} sx={{color:props.selected==="trabalhos"?"#fff":"#ffffffaa"}}/>
                     </ListItemButton >
                     <ListItemButton 
                         onClick={() => handleSelectedSidebar("trabalhadores")} 
                         className={styles.button_main_trabalhadores}
-                        style={{border:props.selected==="trabalhadores"?"2px solid white":"", background:props.selected==="trabalhadores"?"#ffffff20":""}}>
+                        style={{border:props.selected==="trabalhadores"?"4px dashed white":"2px solid #161F28", background:props.selected==="trabalhadores"?"#ffffff20":""}}>
                         <ListItemIcon>
-                        <PersonIcon sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa"}}/>
+                        <PersonIcon sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa", fontSize:"2.5rem", padding:props.selected==="trabalhadores"?"0":"2px 0"}}/>
                         </ListItemIcon>
                         <ListItemText primary={<span className={styles.prox}>Trabalhadores</span>} sx={{color:props.selected==="trabalhadores"?"#fff":"#ffffffaa"}}/>
                     </ListItemButton >
