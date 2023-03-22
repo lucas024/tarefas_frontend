@@ -182,7 +182,7 @@ const Trabalhos = (props) => {
     const mapRowsToDisplay = () => {
         return items?.map((item, i) => {
             return(
-                <div key={i} className={styles.row} onClick={() => navigatePubHandler(item._id)}>
+                <div key={i} className={styles.row}>
                     {
                         i>0&&getDiffDate(items[i-1].timestamp, item.timestamp)?
                         <div className={styles.day_splitter}>
@@ -191,6 +191,7 @@ const Trabalhos = (props) => {
                         :null
                     }
                     <Row
+                        onClick={() => navigatePubHandler(item._id)}
                         item={item}
                         locationActive={locationActive}
                         workerActive={workerActive}
