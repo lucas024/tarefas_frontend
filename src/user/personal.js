@@ -81,6 +81,12 @@ const Personal = (props) => {
     }, [props.user])
 
     useEffect(() => {
+        if(entityName.length>1){
+            setEntityWrong(false)
+        }
+    }, [entityName])
+
+    useEffect(() => {
         setPhoneCorrect(false)
         if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
         else if(phone.length>=4) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3)}`)
@@ -202,8 +208,11 @@ const Personal = (props) => {
 
 
     const bottomEditDoneHandler = () => {
-        if(selectedProf.length>0 && selectedReg.length>0){
-            if(radioSelected===1||radioSelected===0){
+        if(radioSelected===1 && entityName.length<=1){
+            setEntityWrong(true)
+        }
+        else if(selectedProf.length>0 && selectedReg.length>0){
+            if((radioSelected===1 && entityName.length>2)||radioSelected===0){
                 setEditBottom(false)
                 setLoadingBottom(true)
                 axios.post(`${props.api_url}/worker/update_selected`, {
@@ -221,9 +230,6 @@ const Personal = (props) => {
                     setBottomPop(true)
                     setTimeout(() => setBottomPop(false), 4000)
                 })
-            }
-            else{
-                setEntityWrong(true)
             }
         }
         else{
@@ -279,7 +285,8 @@ const Personal = (props) => {
 
     return (
         <div className={styles.personal}>
-            <Loader loading={!props.loaded}/>
+            <Loader loading={false}/>
+            {/* !props.loaded em vez de false */}
             {
                 props.loaded?
                 <div>
@@ -438,7 +445,7 @@ const Personal = (props) => {
                                 {
                                     props.user&&photo!==""?
                                     <img className={styles.image} src={photo}/>
-                                    :<FaceIcon className={styles.image_tbd}/>
+                                    :<FaceIcon style={{color:props.user.type===1?"#fdd83590":""}} className={styles.image_tbd}/>
                                 }
                                 <div className={styles.image_input_wrapper}>
                                     <EditIcon className={styles.edit_icon}/>
@@ -507,8 +514,8 @@ const Personal = (props) => {
                                             }
                                         </div>
                                         <div className={styles.edit_area_right}>
-                                            <input className={  phoneCorrect?styles.input_right
-                                                                :phoneWrong?styles.input_wrong
+                                            <input className={  phoneCorrect&&edit?styles.input_right
+                                                                :phoneWrong&&edit?styles.input_wrong
                                                                 :edit?styles.input_input_edit
                                                                 :styles.input_input}
                                                     value={phoneVisual}
@@ -586,25 +593,27 @@ const Personal = (props) => {
                                     </div>
                                     {
                                         radioSelected===1?
-                                        <input maxLength={30} disabled={!editBottom} value={entityName} onChange={e => setEntityName(e.target.value)} placeholder='Nome da empresa...' className={styles.radio_button_input} />
+                                        <input maxLength={30} disabled={!editBottom} style={{borderColor:entityName.length>1?"#6EB241":"#fdd835"}} value={entityName} onChange={e => setEntityName(e.target.value)} placeholder='Nome da empresa...' className={styles.radio_button_input} />
                                         :
                                         null
                                     }
                                 </div>
                                 {
-                                    entityWrong?
-                                    <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor defina a sua situação de trabalho!</span>
+                                    entityWrong&&entityName.length<=1?
+                                    <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escreva pelo menos 2 caracteres.</span>
+                                    :entityWrong?
+                                    <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor defina a sua situação de trabalho.</span>
                                     :null
                                 }
                             </div>  
                             
                             <div className={styles.flex_bottom}>
                                 <div className={styles.flex_left}>
-                                    <span className={styles.flex_title}>Trabalhos que exerço</span>
-                                    <span className={editBottom?styles.divider_active:styles.divider}></span>
+                                    <span className={styles.flex_title}>Serviços que exerço</span>
+                                    <span className={editBottom?styles.divider_active:styles.divider} style={{backgroundColor:selectedProf.length===0?"#fdd835":"#6EB241"}}></span>
                                     {
                                         editBottom&&selectedProf.length===0?
-                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um trabalho!</span>
+                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um serviço!</span>
                                         :null
                                     }
                                     <div className={styles.flex_select_div}>
@@ -614,11 +623,11 @@ const Personal = (props) => {
                                     </div>
                                 </div>
                                 <div className={styles.flex_left}>
-                                    <span className={styles.flex_title}>Regiões onde trabalho</span>
-                                    <span className={editBottom?styles.divider_active:styles.divider}></span>
+                                    <span className={styles.flex_title}>Distritos onde trabalho</span>
+                                    <span className={editBottom?styles.divider_active:styles.divider} style={{backgroundColor:selectedReg.length===0?"#fdd835":"#6EB241"}}></span>
                                     {
                                         editBottom&&selectedReg.length===0?
-                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos uma região!</span>
+                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um distrito!</span>
                                         :null
                                     }
                                     <div className={styles.flex_select_div}>

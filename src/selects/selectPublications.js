@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import Select from 'react-select'
-import styles from './trabalhadores.module.css'
+import styles from '../servicos/trabalhadores.module.css'
 import PersonIcon from '@mui/icons-material/Person';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
 import {regioes, profissoes} from '../general/util'
 
-const FilterSelect = (props) => {
+const SelectPublications = (props) => {
 
     const [selectedValue, setSelectedValue] = useState(null)
     const [options, setOptions] = useState([])
@@ -128,7 +128,7 @@ const FilterSelect = (props) => {
                 :props.trabalho?
                 <span className={styles.placeholder}>
                     <BuildIcon className={styles.placeholder_icon}/>
-                    Trabalho
+                    Serviço
                 </span>
                 :
                 <span className={styles.placeholder}>
@@ -140,4 +140,4 @@ const FilterSelect = (props) => {
     )
 }
 
-export default FilterSelect
+export default SelectPublications

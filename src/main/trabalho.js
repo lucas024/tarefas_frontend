@@ -392,7 +392,7 @@ const Trabalho = (props) => {
                 <WorkerBanner 
                     confirm={() => {
                         setWorkerBanner(false)
-                        navigate('/authentication/worker')
+                        navigate('/authentication/worker?type=1')
                     }}
                     cancel={() => setWorkerBanner(false)}/>
                 :null

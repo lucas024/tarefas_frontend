@@ -88,6 +88,7 @@ const TopSelect = (props) => {
             options={profissoes}
             value={profissoes.filter(option => option.value === props.id)}
             isSearchable={false}
+            placeholder="Serviço..."
             onChange={value => {
                 selectChange(value.value)
             }}

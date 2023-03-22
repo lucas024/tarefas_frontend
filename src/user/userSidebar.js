@@ -71,7 +71,7 @@ const UserSidebar = (props) => {
     const logoutHandler = () => {
         logout()
         navigate({
-            pathname: `/authentication`,
+            pathname: `/authentication?type=1`,
         })
     }
 
@@ -91,7 +91,7 @@ const UserSidebar = (props) => {
                     <span className={styles.name}>{props.user?props.user.name:null}</span>
                 </div>
             </div>
-            <div style={{marginTop:"10px"}}></div>
+            <div className={styles.flex_10px}></div>
             <div className={styles.sidebar_flex}>
                 <div>
                 <List
