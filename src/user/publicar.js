@@ -546,7 +546,7 @@ const Publicar = (props) => {
                     </CSSTransition>
                     <div className={styles.reservar}>
                         <div className={styles.reservar_upper} style={{marginTop:edit?"100px":""}}>
-                            <p className={styles.reservar_upper_title}>TRABALHO</p>
+                            <p className={styles.reservar_upper_title}>PUBLICAR</p>
                             {
                                 edit?
                                 <p className={styles.reservar_upper_desc} style={{display:"flex", justifyContent:"center", marginBottom:"10px"}}>
@@ -554,7 +554,7 @@ const Publicar = (props) => {
                                 </p>
                                 :
                                 <p className={styles.reservar_upper_desc}>
-                                    Nesta página pode criar e publicar o seu <span className={styles.action}>trabalho</span>!<br/>
+                                    Criar e publicar o seu <span className={styles.action}>trabalho</span><br/>
                                     <br></br>
                                 </p>
                             }
