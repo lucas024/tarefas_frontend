@@ -143,7 +143,7 @@ const AdminMessages = (props) => {
             text: new_text,
             time: new Date().getTime(),
             chat_id: selectedChatId,
-            type: props.user.type
+            type: props.user.type,
         })        
     }
 
@@ -450,6 +450,8 @@ const AdminMessages = (props) => {
     // }
 
     const updateReadDatabaseAndNavigate = async (chat_id, type) => {
+        //type 0 == user
+        //type 1 == worker
         await axios.post(`${props.api_url}/chats/update_text_read`, {
             chat_id: chat_id,
             type: type

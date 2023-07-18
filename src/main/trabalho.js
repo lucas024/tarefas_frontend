@@ -100,8 +100,8 @@ const Trabalho = (props) => {
                 let arr = []
                 for(let img of res.data.photos){
                     arr.push({
-                        original: img,
-                        thumbnail: img,
+                        original: img.url,
+                        thumbnail: img.url,
                         originalHeight: "300px",
                         originalWidth: "700px",
                         thumbnailHeight: "50px",
@@ -158,7 +158,12 @@ const Trabalho = (props) => {
     useEffect(() => {
         if(loaded)
         {
-            if(!props.user||props.user.type===0){
+            if(props.user.admin)
+            {
+                setViewTo("showFull")
+                setLoading(false)
+            }
+            else if(!props.user||props.user.type===0){
                 setViewTo('noAccount')
                 setLoading(false)
             }
@@ -166,7 +171,7 @@ const Trabalho = (props) => {
                 setViewTo('none')
                 setLoading(false)                
             }
-            else if(props.user?.subscription){
+            else if(props.user?.subscription&&!props.incompleteUser){
                 axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
                     subscription_id: props.user.subscription.id,
                     schedule_id: props.user.subscription.sub_schedule
@@ -179,14 +184,15 @@ const Trabalho = (props) => {
                     {
                         setViewTo("showFull")
                     }
-                    else if(!props.incompleteUser){
-                        setViewTo('noProfile')
+                    else
+                    {
+                        setViewTo("showFull")
                     }
                     setLoading(false)
                 })
                 
             }
-            else if(props.user?.subscription==null&&!props.incompleteUser){
+            else if(!props.incompleteUser){
                 setViewTo('noSub')
                 setLoading(false)
             }

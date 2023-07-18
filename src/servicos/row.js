@@ -28,6 +28,13 @@ const Row = (props) => {
         return "#FFFFFF"
     }
 
+    const getMainPhoto = (photos, main_photo) => {
+        for(let el of photos)
+            if(el.id === main_photo) return el.url
+
+        return photos[0].url
+    }
+
     return (
         <div className={styles.row} style={{border:props.item.user_id===props.user?._id?`3px solid ${getTypeColor(props.item.type)}`:"none"}}>
             <div className={props.trabalhoVisto?styles.row_time_seen:styles.row_time}>
@@ -62,7 +69,7 @@ const Row = (props) => {
                 <div className={styles.row_right_left}>
                     {
                         props.item.photos?
-                        <img className={styles.row_img} src={props.item.photos[0]}/>
+                        <img className={styles.row_img} src={getMainPhoto(props.item.photos, props.item.photo_principal)}/>
                         :
                         <NoPhotographyIcon className={styles.item_no_img}/>
                     }

@@ -92,6 +92,7 @@ useEffect(() => {
       }
       else{
         axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
+          console.log('here')
           if(res.data !== null){
             setUser(res.data)
             if(res.data.subscription){
@@ -123,6 +124,7 @@ useEffect(() => {
               setIncompleteUser(true)
             }
             else{
+              console.log('complete')
               setIncompleteUser(false)
             }
             setUserLoadAttempt(true)

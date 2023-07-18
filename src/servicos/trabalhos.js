@@ -50,7 +50,6 @@ const Trabalhos = (props) => {
         let listaTrabalhosVistos = JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))
         if(listaTrabalhosVistos?.length>0)
         {
-            console.log(listaTrabalhosVistos);
             setTrabalhosVistos(listaTrabalhosVistos)
         }
 
@@ -102,8 +101,7 @@ const Trabalhos = (props) => {
         setLoading(true)
         axios.get(`${props.api_url}/reservations`).then(res => {
             if(res.data!==null){
-                let arr = res.data
-                setAllItems(arr)
+                setAllItems(res.data.data)
             }
             setLoading(false)
         })
@@ -157,6 +155,7 @@ const Trabalhos = (props) => {
     }
 
     const navigatePubHandler = (id) => {
+        console.log('teste')
         navigate(`/main/publications/publication${getSearchParams(id)}`, {
                     state: {
                         fromUserPage: false,
@@ -190,14 +189,16 @@ const Trabalhos = (props) => {
                         </div>
                         :null
                     }
-                    <Row
-                        onClick={() => navigatePubHandler(item._id)}
-                        item={item}
-                        locationActive={locationActive}
-                        workerActive={workerActive}
-                        user={props.user}
-                        trabalhoVisto={trabalhosVistos.includes(item._id)}
-                    />
+                    <div onClick={() => navigatePubHandler(item._id)}>
+                        <Row
+                            item={item}
+                            locationActive={locationActive}
+                            workerActive={workerActive}
+                            user={props.user}
+                            trabalhoVisto={trabalhosVistos.includes(item._id)}
+                        />
+                    </div>
+                    
                 </div>
             )
         })
