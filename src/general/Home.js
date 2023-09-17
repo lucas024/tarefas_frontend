@@ -9,18 +9,19 @@ import Sessao from '../transitions/sessao';
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import {auth} from '../firebase/firebase'
 
-import BuildIcon from '@mui/icons-material/Build';
-import PersonIcon from '@mui/icons-material/Person';
 import SelectHome from '../selects/selectHome';
 import {profissoes, profissoesPngs, regioes, regioesOptions} from './util'
 import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import ReactTooltip from 'react-tooltip';
-
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import SearchIcon from '@mui/icons-material/Search';
+import BackHandIcon from '@mui/icons-material/BackHand';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
 
 const firstOptions = [
-    { value: 'trabalhos', label: 'Trabalhos' },
     { value: 'trabalhadores', label: 'Trabalhadores' },
+    { value: 'trabalhos', label: 'Trabalhos' },
 ]
 
 
@@ -32,7 +33,7 @@ const Home = (props) => {
     const [loginPopup, setLoginPopup] = useState(false)
     const [loaded, setLoaded] = useState(false)
 
-    const [first, setFirst] = useState('trabalhos')
+    const [first, setFirst] = useState('trabalhadores')
     const [second, setSecond] = useState(null)
     const [third, setThird] = useState(null)
 
@@ -111,6 +112,11 @@ const Home = (props) => {
         }
         
     }
+
+    const clearTopSearch = () => {
+        setSecond(null)
+        setThird(null)
+    }
     
     return(
         <div className={styles.home}>
@@ -142,83 +148,94 @@ const Home = (props) => {
                 :null
             }
             <div className={styles.home_back}>
-                <div className={styles.home_back_top} style={{backgroundColor:first==="trabalhadores"?"#FF785A":""}}>
+                <div className={styles.home_back_top}>
                     <span className={styles.text_brand}>Serviços</span>
                     <span className={styles.text_title}>O que procura hoje no Serviços?</span>
-
                     {
                         loaded?
-                        <div className={styles.main}>
-                            <div className={styles.zone}>
-                                <div className={styles.zone_img}>
-                                    {
-                                        first==="trabalhadores"?
-                                        <PersonIcon className={styles.zone_person_icon}/>
-                                        :
-                                        <BuildIcon className={styles.zone_build_icon}/>
-                                    }
+                        <div className={styles.main_wrapper}>
+                            <div className={styles.main}>
+                                <div className={styles.search_clear_wrapper} style={{backgroundColor:second||third?'#161F28':"#989898"}} onClick={() => clearTopSearch()}>
+                                    <SearchOffIcon className={styles.search_clear_icon}/>
                                 </div>
-                                <div className={styles.zone_select}>
-                                    <SelectHome 
-                                        options={firstOptions} 
-                                        option={first} 
-                                        changeOption={val => setFirst(val)}
-                                        placeholder={"Secção..."}/>
-                                </div>
-                            </div>
-                            <div className={styles.zone_arrow_div}>
-                                <span className={styles.zone_arrow} style={{borderTopColor:first==="trabalhadores"?"#161F28":""}}>
-                                    {/* arrow */}
-                                </span>
-                            </div>
-                            <div className={styles.zone}>
-                                <div className={styles.zone_img} style={{backgroundColor:second?"#ffffff":"#ffffff50"}}>
-                                    {
-                                        second? 
-                                        <img src={profissoesPngs[second]} className={styles.zone_image_prof}/>
-                                        :
-                                        <QuestionMarkOutlinedIcon className={styles.zone_build_icon} style={{color:first==="trabalhadores"?"#FF785A":""}}/>
-                                    }
-                                </div>
-                                <div className={styles.zone_select}>
-                                    <SelectHome 
-                                        options={profissoes} 
-                                        option={second} 
-                                        changeOption={val => setSecond(val)}
-                                        placeholder={'Serviço...'}/>
-                                </div>
-                            </div>
-                            <div className={styles.zone_arrow_div}>
-                                <span className={styles.zone_arrow} style={{borderTopColor:first==="trabalhadores"?"#161F28":""}}>
-                                    {/* arrow */}
-                                </span>
-                            </div>
-                            <div className={styles.zone}>
-                                <div className={styles.zone_img} style={{backgroundColor:third?"#ffffff":"#ffffff50"}}>
-                                    <div className={styles.zone_search}>
-                                        <div className={styles.zone_arrow_div}>
-                                            <span className={styles.zone_arrow_final} style={{borderTopColor:first==="trabalhadores"?"#161F28":""}}>
-                                                {/* arrow */}
-                                            </span>
-                                        </div>
-                                        <span onClick={() => searchHandler()} className={styles.zone_search_button} style={{backgroundColor:first==="trabalhadores"?"#161F28":""}}>PROCURAR</span>
+                                <div className={styles.zone}>
+                                    <div className={styles.zone_img} style={{backgroundColor:first==="trabalhadores"?"#FF785A":"#0358e5", borderColor:first==="trabalhadores"?"#FF785A":"#0358e5"}}>
+                                        {
+                                            first==="trabalhadores"?
+                                            <BackHandIcon className={styles.zone_person_icon} style={{transform: 'scaleX(-1)'}}/>
+                                            :
+                                            <AssignmentIcon className={styles.zone_build_icon}/>
+                                        }
                                     </div>
-                                    {
-                                        third? 
-                                        <span className={styles.zone_image_region}>{regioesOptions[third]}</span>
-                                        :
-                                        <QuestionMarkOutlinedIcon className={styles.zone_build_icon} style={{color:first==="trabalhadores"?"#FF785A":""}}/>
-                                    }
+                                    <div className={styles.zone_select}>
+                                        <SelectHome 
+                                            options={firstOptions} 
+                                            optionFirst={first} 
+                                            option={first} 
+                                            changeOption={val => setFirst(val)}
+                                            placeholder={"Secção..."}/>
+                                    </div>
                                 </div>
-                                <div className={styles.zone_select}>
-                                    <SelectHome 
-                                        options={regioes} 
-                                        option={third} 
-                                        changeOption={val => setThird(val)}
-                                        placeholder={'Distrito...'}/>
+                                <div className={styles.zone_arrow_div}>
+                                    <span className={first==="trabalhos"?second?styles.zone_arrow_trabalhos:styles.zone_arrow_trabalhos_half
+                                                    :second?styles.zone_arrow_trabalhadores:styles.zone_arrow_trabalhadores_half}>
+                                        {/* arrow */}
+                                    </span>
                                 </div>
+                                <div className={styles.zone}>
+                                    <div className={styles.zone_img} style={{borderColor:second?first==="trabalhadores"?"#FF785A":"#0358e5":"#989898",
+                                                backgroundColor:second?'#161F28':'#989898'}}>
+                                        {
+                                            second? 
+                                            <img src={profissoesPngs[second]} className={styles.zone_image_prof}/>
+                                            :
+                                            <QuestionMarkOutlinedIcon className={styles.zone_build_icon}/>
+                                        }
+                                    </div>
+                                    <div className={styles.zone_select}>
+                                        <SelectHome 
+                                            options={profissoes}
+                                            optionFirst={first} 
+                                            option={second} 
+                                            changeOption={val => setSecond(val)}
+                                            placeholder={'Serviço...'}/>
+                                    </div>
+                                </div>
+                                <div className={styles.zone_arrow_div}>
+                                    <span className={second&&third?first==='trabalhos'?styles.zone_arrow_trabalhos:styles.zone_arrow_trabalhadores
+                                                    :second?first==='trabalhos'?styles.zone_arrow_trabalhos_half:styles.zone_arrow_trabalhadores_half
+                                                    :third?first==='trabalhos'?styles.zone_arrow_trabalhos_half_reverse:styles.zone_arrow_trabalhadores_half_reverse
+                                                    :styles.zone_arrow_none}>
+                                        {/* arrow */}
+                                    </span>
+                                </div>
+                                <div className={styles.zone}>
+                                    <div className={styles.zone_img} style={{borderColor:third?first==="trabalhadores"?"#FF785A":"#0358e5":"#989898",
+                                                backgroundColor:third?'#161F28':'#989898'}}>
+                                        {
+                                            third? 
+                                            <span className={styles.zone_image_region}>{regioesOptions[third]}</span>
+                                            :
+                                            <QuestionMarkOutlinedIcon className={styles.zone_build_icon}/>
+                                        }
+                                    </div>
+                                    <div className={styles.zone_select}>
+                                        <SelectHome 
+                                            options={regioes}
+                                            optionFirst={first} 
+                                            option={third} 
+                                            changeOption={val => setThird(val)}
+                                            placeholder={'Distrito...'}/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div onClick={() => second&&third&&searchHandler()} className={second&&third?styles.search_wrapper:styles.search_wrapper_disabled} 
+                                            style={{backgroundColor:second&&third?first==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff20"}}>
+                                <SearchIcon className={styles.zone_search_icon} style={{color:second&&third?"white":"#989898"}}/>
+                                <span className={styles.zone_search_button} style={{color:second&&third?"white":"#989898"}}>PROCURAR</span>
                             </div>
                         </div>
+                        
                         :
                         <div className={styles.section_content} style={{backgroundColor:"transparent"}}>
                             <p className={styles.skeleton_content_in}></p>
@@ -226,6 +243,7 @@ const Home = (props) => {
                     }
                     
                 </div>
+                <div className={styles.home_divider} style={{backgroundColor:first==="trabalhadores"?"#FF785A":"#0358e5"}}>_</div>
                 <span className={styles.home_explorar}>EXPLORAR</span>
                 <div className={styles.home_back_publish}>
                     <p className={styles.back_publish_title}>PUBLICAR</p>
@@ -242,12 +260,12 @@ const Home = (props) => {
                             <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
                             {
                                 props.user?
-                                <span className={styles.back_publish_button} onClick={() => navigate('/publicar')}>PUBLICAR UM TRABALHO</span>
+                                <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar')}>PUBLICAR UM TRABALHO</span>
                                 :
                                 <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                     <div className={styles.back_publish_button_disabled} data-for='home' data-tip="Por favor crie conta ou inicie sessão para publicar.">
                                         <span className={styles.back_publish_div_frontdrop}></span>
-                                        <span>PUBLICAR UM TRABALHO</span>
+                                        <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
                                     </div>
                                     <span className={styles.auth}><span onClick={() => handleMoveAuth(1)} className={styles.auth_specific}>Iniciar Sessão</span> | <span onClick={() => handleMoveAuth(0)} className={styles.auth_specific}>Criar Conta</span></span>
                                 </div>
@@ -270,7 +288,7 @@ const Home = (props) => {
                                 props.user || loaded?
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
-                                        <BuildIcon className={styles.section_img}/>
+                                        <AssignmentIcon className={styles.section_img}/>
                                     </div>
                                     <span className={styles.section_image_text_title}>
                                         TRABALHOS
@@ -279,7 +297,7 @@ const Home = (props) => {
                                         Ver todos os trabalhos disponíveis
                                     </span>
                                     <div className={styles.section_button} onClick={() => navigate('/main/publications/trabalhos')}>
-                                        <p className={styles.section_title}>
+                                        <p className={styles.section_title} style={{fontSize: '0.9rem'}}>
                                             VER TRABALHOS
                                         </p>
                                     </div>
@@ -300,15 +318,15 @@ const Home = (props) => {
                                     <div className={styles.section_image_wrapper}>
                                         <AccessibilityIcon className={styles.section_img} style={{color:"#FF785A"}}/>
                                     </div>
-                                    <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
+                                    <span className={styles.section_image_text_title}>
                                         PERFIL
                                     </span>
                                     <span className={styles.section_image_text}>
                                         Ver ou editar perfil
                                     </span>
                                     <div className={styles.section_button} onClick={() => navigate('/user?t=personal')}>
-                                        <p className={styles.section_title}>
-                                            PERFIL
+                                        <p className={styles.section_title} style={{fontSize: '0.9rem'}}>
+                                            VER PERFIL
                                         </p>
                                     </div>
                                 </div>
@@ -318,16 +336,16 @@ const Home = (props) => {
                             <div className={styles.section_two}>
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
-                                        <PersonIcon className={styles.section_img} style={{color:"#FF785A"}}/>
+                                        <BackHandIcon className={styles.section_img} style={{color:"#FF785A", transform: 'scaleX(-1)'}}/>
                                     </div>
-                                    <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
+                                    <span className={styles.section_image_text_title}>
                                         TRABALHADORES
                                     </span>
                                     <span className={styles.section_image_text}>
                                         Ver todos os trabalhadores disponíveis
                                     </span>
                                     <div className={styles.section_button_right} onClick={() => navigate('/main/publications/trabalhadores')}>
-                                        <p className={styles.section_title_right}>
+                                        <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
                                             VER TRABALHADORES
                                         </p>
                                     </div>
@@ -354,7 +372,7 @@ const Home = (props) => {
                             loaded?
                             <div className={styles.back_publish_div}>
                                 <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
-                                <span className={styles.back_publish_button_action} onClick={() => setWorkerBanner(true)}>TORNAR-ME TRABALHADOR</span>
+                                <span className={styles.back_publish_button_action} style={{fontSize: '0.9rem'}} onClick={() => setWorkerBanner(true)}>TORNAR-ME TRABALHADOR</span>
                             </div>
                             :
                             <div className={styles.section_content}>

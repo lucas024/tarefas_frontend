@@ -5,40 +5,32 @@ import PersonIcon from '@mui/icons-material/Person';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
 import {regioes, profissoes} from '../general/util'
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import {useLocation, useNavigate} from 'react-router-dom'
 
-const SelectPublications = (props) => {
+const SelectPosts = (props) => {
 
     const [selectedValue, setSelectedValue] = useState(null)
-    const [options, setOptions] = useState([])
 
-    useEffect(() => {
-        if(props.type==="zona"){
-            setOptions(regioes)
-        }
-        else if(props.type === "worker"){
-            setOptions(profissoes)
-        }
-    }, [props.type])
+    const navigate = useNavigate()
 
     useEffect(() => {
         setSelectedValue(null)
     }, [props.clear])
-
-    useEffect(() => {
-        props.urlVal&&setSelectedValue(props.urlVal)
-    }, [props.urlVal])
     
  
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: selectedValue?"#0358e5":"#ffffff",
+            minHeight: '100px',
+            height: '100px',
+            backgroundColor: props.type==='trabalhos'?"#0358e5":"#FF785A",
             borderColor: "#161F28",
-            fontSize: "1rem",
+            fontSize: "0.9rem",
             fontFamily: "inherit",
-            fontWeight: "500",
-            color: "#FF785A",
-            width:"200px",
+            fontWeight: "700",
+            color: "white",
+            width:"95%",
             transition: "0.2s all ease-in-out",
             borderRadius: "5px",
             border: state.isSelected? "1px solid white": 0,
@@ -46,9 +38,12 @@ const SelectPublications = (props) => {
             height: "40px",
             padding: "0 5px",
             color: "#ccc",
+            display:'flex',
+            justifyContent:'center',
+            alignItems:'center',
             "&:hover": {
                 cursor: "pointer",
-            }
+            },
         }),
         option: (base, state) => ({
             ...base,
@@ -56,12 +51,12 @@ const SelectPublications = (props) => {
             cursor: "pointer",
             color: "#161F28",
             fontWeight: state.isSelected? 600: 400,
-            backgroundColor: state.isSelected? "#0358e5": state.isFocused? '#0358e550': "transparent",
+            backgroundColor: "#ffffff",
         }),
         menu: base => ({
             ...base,
             textTransform: "uppercase",
-            width:"200px",
+            width:"95%",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
@@ -75,10 +70,10 @@ const SelectPublications = (props) => {
         }),
         dropdownIndicator : base => ({
             ...base,
-            color: !selectedValue?"#0358e5":"#ffffff",
+            color: !selectedValue?"#ffffff":"#ffffff",
             transition: "0.3s all ease-in-out",
             "&:hover": {
-                color: "#0358e5",
+                color: "#FF785A",
             }
         }),
         singleValue: base => ({
@@ -91,53 +86,40 @@ const SelectPublications = (props) => {
         valueContainer: base => ({
             ...base,
             padding: "2px 10px 2px 2px",
-            color: "#ffffff"
+            color: "#ffffff",
+            justifyContent: 'center'
         }),
         placeholder: base => ({
             ...base,
             color: "#ccc",
-        })
+            alignSelf:'center'
+        }),
     }
 
     return (
         <Select
+            hideSelectedOptions={true}
             styles={stylesSelect}
-            options={options}
-            value={options.filter(option => option.value === selectedValue)}
+            options={props.options}
+            value={props.options.filter(option => option.value === props.type)}
             formatOptionLabel={option => (
-                <div className={styles.option}>
-                    {
-                        props.type==="worker"?
-                        <img src={option.img_cor} className={styles.option_image}/>
-                        :null
+                <span className={styles.placeholder_left}>
+                    {option.value==='trabalhos'?
+                        <AssignmentIcon className={styles.placeholder_left_icon} style={{color:props.type===option.value?'#fff':'#161F28'}}/>
+                        :<PersonIcon className={styles.placeholder_left_icon} style={{color:props.type===option.value?'#fff':'#FF785A'}}/>
                     }
-                    <span>{option.label}</span>
-                </div>
-              )}
-            isSearchable={true}
+                    
+                    <span className={props.type===option.value?styles.placeholder_left_text:styles.placeholder_left_text_nonselcted}
+                                    style={{color:props.type===option.value?'#fff':option.value==='trabalhos'?'#0358e5':'#FF785A'}}>{option.label}</span>
+                </span>
+            )}
+            isSearchable={false}
             onChange={value => {
-                props.valueChanged(value.value)
                 setSelectedValue(value.value)
+                navigate(`/main/publications/${value.value}`)
             }}
-            placeholder={
-                props.type==="zona"?
-                <span className={styles.placeholder}>
-                    <LocationOnIcon className={styles.placeholder_icon}/>
-                    Distrito
-                </span>
-                :props.trabalho?
-                <span className={styles.placeholder}>
-                    <BuildIcon className={styles.placeholder_icon}/>
-                    Serviço
-                </span>
-                :
-                <span className={styles.placeholder}>
-                    <PersonIcon className={styles.placeholder_icon}/>
-                    Trabalhador
-                </span>
-            }
         />
     )
 }
 
-export default SelectPublications
+export default SelectPosts

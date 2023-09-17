@@ -6,14 +6,14 @@ const SelectHome = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: "#ffffff",
+            backgroundColor: props.option==='trabalhos'?"#0358e5":props.option==='trabalhadores'?"#FF785A":props.option?"#161F28":"#989898",
             borderColor: "#ffffff",
             fontSize: "0.7rem",
             textTransform: "uppercase",
-            color: "#FF785A",
+            color: "#ffffff",
             fontWeight: 600,
             width:"160px",
-            transition: "0.2s all ease-in-out",
+            transition: "0.5s all ease-in-out",
             borderRadius: "10px",
             borderBottomRightRadius: "0px",
             borderBottomLeftRadius: state.isFocused? 0: "10px",
@@ -31,8 +31,8 @@ const SelectHome = (props) => {
             cursor: "pointer",
             color: "#161F28",
             fontSize:"0.8rem",
-            fontWeight: state.isSelected? 600: 500,
-            backgroundColor: state.isSelected? "#FF785A ": state.isFocused? '#FF785A50': "transparent",
+            fontWeight: state.isSelected? 800: 500,
+            backgroundColor: state.isSelected? "#161F2840 ": state.isFocused? '#161F2810': "transparent",
         }),
         menu: base => ({
             ...base,
@@ -51,10 +51,10 @@ const SelectHome = (props) => {
         }),
         dropdownIndicator : base => ({
             ...base,
-            color: "#FF785A",
+            color: "#ffffff",
             transition: "0.3s all ease-in-out",
             "&:hover": {
-                color: "#FF785A",
+                color: "#161F28",
             }
         }),
         container: base => ({
@@ -63,13 +63,14 @@ const SelectHome = (props) => {
         }),
         singleValue: base => ({
             ...base,
-            color: "#161F28",
+            color: "#ffffff",
             margin: "auto",
             fontSize: "0.7rem"
         }),
         indicatorSeparator : base => ({
             ...base,
-            backgroundColor: "#FF785A"
+            backgroundColor: "#ffffff",
+            display:'none'
         }),
         valueContainer: base => ({
             ...base,

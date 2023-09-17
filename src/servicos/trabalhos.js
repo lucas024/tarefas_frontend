@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from './trabalhadores.module.css'
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import dayjs from 'dayjs';
@@ -12,6 +12,10 @@ import Loader from './../general/loader';
 import NoPage from '../general/noPage';
 import clearIcon from '../assets/search_clear.png'
 import {regioesOptions, profissoesOptions} from '../general/util'
+import SelectPosts from '../selects/selectPosts';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import BuildIcon from '@mui/icons-material/Build';
+
 
 require('dayjs/locale/pt')
 
@@ -35,13 +39,23 @@ const Trabalhos = (props) => {
     const [loaded, setLoaded] = useState(false)
     const [trabalhosVistos, setTrabalhosVistos] = useState([])
 
+    const [selectedType, setSelectedType] = useState('trabalhos')
+
 
     const myRef = useRef(null)
-
+    const location = useLocation()
+    const [arrPathname, setArrPathname] = useState([])
     
     const monthNames = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
+    useEffect(() => {
+        let arrPathnameAux = location.pathname.split('/')
+        console.log(arrPathnameAux)
+        setSelectedType(arrPathnameAux[3])
+        setArrPathname(arrPathnameAux)
+    }, [location]) 
+    
     useEffect(() => {
         const paramsAux = Object.fromEntries([...searchParams])
         paramsAux.region?setLocationActive(paramsAux.region):setLocationActive(false)
@@ -246,45 +260,60 @@ const Trabalhos = (props) => {
         fetchJobs()
     }
 
+    const options = [
+        { value: 'trabalhadores', label: 'trabalhadores' },
+        { value: 'trabalhos', label: 'trabalhos' },
+    ]
+
     return (
         <div className={styles.servicos}>
             <Loader loading={loading}/>
             <div className={styles.main} onScroll={handleScroll}>
                 <div className={styles.search_div} ref={myRef}>
-                    <div className={styles.search_input_div}>
-                        <input value={searchVal} onKeyDown={handleKeyDown} onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Eletricista, Porto...`}></input>
-                        {/* <PersonSearchIcon className={styles.search_input_div_icon}/> */}
-                        <SearchIcon className={styles.search_final_icon} onClick={() => fetchJobsByFilter()}/>
+                    <div className={styles.search_left}>
+                    <SelectPosts 
+                        options={options}
+                        type={selectedType}
+                    />
                     </div>
-                    <div className={styles.search_filter_div_wrapper}>
-                        <div className={styles.search_filter_div}>
-                            <SelectPublications 
-                                type="zona" 
-                                clear={clear}
-                                urlVal={locationActive}
-                                valueChanged={val => {
-                                    workerActive&&setSearchParams({'work': workerActive, 'region': val})
-                                    !workerActive&&setSearchParams({'region': val})
-                                    setLocationActive(val)}}/>
-                            <div style={{marginLeft:"10px"}}>
-                                <SelectPublications
-                                    type="worker"
-                                    trabalho={true}
+                    <div className={styles.search_right}>
+                        <div className={styles.search_input_div}>
+                            <input value={searchVal} onKeyDown={handleKeyDown} onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Eletricista, Porto...`}></input>
+                            {/* <PersonSearchIcon className={styles.search_input_div_icon}/> */}
+                            <SearchIcon className={styles.search_final_icon} onClick={() => fetchJobsByFilter()}/>
+                        </div>
+                        <div className={styles.search_filter_div_wrapper}>
+                            <div className={styles.search_filter_div}>
+                            <SelectPublications
+                                        type="worker"
+                                        trabalho={true}
+                                        clear={clear}
+                                        urlVal={workerActive}
+                                        valueChanged={val => {
+                                            locationActive&&setSearchParams({'work': val, 'region': locationActive})
+                                            !locationActive&&setSearchParams({'work': val})
+                                            setWorkerActive(val)}}/>
+                                
+                                <div style={{marginLeft:"10px"}}>
+                                <SelectPublications 
+                                    type="zona" 
                                     clear={clear}
-                                    urlVal={workerActive}
+                                    urlVal={locationActive}
                                     valueChanged={val => {
-                                        locationActive&&setSearchParams({'work': val, 'region': locationActive})
-                                        !locationActive&&setSearchParams({'work': val})
-                                        setWorkerActive(val)}}/>
+                                        workerActive&&setSearchParams({'work': workerActive, 'region': val})
+                                        !workerActive&&setSearchParams({'region': val})
+                                        setLocationActive(val)}}/>
+                                </div>
+                            </div>
+                            <div className={styles.search_clear_wrapper} onClick={() => limparPesquisa()}>
+                                <span className={styles.search_clear}>
+                                    Limpar Pesquisa
+                                </span>
+                                <img src={clearIcon} className={styles.search_clear_icon}/>
                             </div>
                         </div>
-                        <div className={styles.search_clear_wrapper} onClick={() => limparPesquisa()}>
-                            <span className={styles.search_clear}>
-                                Limpar Pesquisa
-                            </span>
-                            <img src={clearIcon} className={styles.search_clear_icon}/>
-                        </div>
                     </div>
+
                 </div>
                 <div className={styles.divider}></div>          
                     <div className={styles.top_info}>
@@ -296,13 +325,13 @@ const Trabalhos = (props) => {
                         }
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>
-                                {/* <LocationOnIcon className={styles.top_info_filter_icon}/> */}
-                                <span  className={styles.top_info_filter_text}>distrito</span>
+                                <BuildIcon className={styles.top_info_filter_icon}/>
+                                {/* <span  className={styles.top_info_filter_text}>Tipo de Trabalho</span> */}
                             </div>
                             {
-                                locationActive?
+                                workerActive?
                                 <span  className={styles.top_info_filter_value_on}>
-                                    {regioesOptions[locationActive]}
+                                    {profissoesOptions[workerActive]}
                                 </span>
                                 :
                                 <span  className={styles.top_info_filter_value}>
@@ -312,13 +341,13 @@ const Trabalhos = (props) => {
                         </div>
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>
-                                {/* <PersonIcon className={styles.top_info_filter_icon}/> */}
-                                <span  className={styles.top_info_filter_text}>Tipo de Trabalho</span>
+                                <LocationOnIcon className={styles.top_info_filter_icon}/>
+                                {/* <span  className={styles.top_info_filter_text}>distrito</span> */}
                             </div>
                             {
-                                workerActive?
+                                locationActive?
                                 <span  className={styles.top_info_filter_value_on}>
-                                    {profissoesOptions[workerActive]}
+                                    {regioesOptions[locationActive]}
                                 </span>
                                 :
                                 <span  className={styles.top_info_filter_value}>

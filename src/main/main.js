@@ -19,9 +19,9 @@ const Main = (props) => {
     return (
         <div className={stylesSidebar.worker}>
             <div className={stylesSidebar.flex}>
-                <div className={stylesSidebar.left}>
+                {/* <div className={stylesSidebar.left}>
                     <MainSidebar user={props.user} selected={arrPathname[3]}/>
-                </div>
+                </div> */}
                 <div className={stylesSidebar.right}>
                     <div className={stylesSidebar.worker_area}>
                         <div className={styles.area}>
