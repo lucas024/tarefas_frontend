@@ -44,10 +44,10 @@ const NoPage = (props) => {
                     </span>
                 </div>
                 :props.object==="no_search"?
-                <div className={styles.blank_flex} style={{marginTop:"50px"}}>
-                    <span className={styles.blank_text}>Sem resultados para esta pesquisa</span>
-                    <Sad className={styles.blank_face_small}/>
-                    <span className={styles.button} onClick={() => props.limparPesquisa()}>
+                <div className={styles.blank_flex} style={{marginTop:"100px"}}>
+                    <span className={styles.blank_text} style={{color:"#ffffff"}}>Sem resultados para esta pesquisa</span>
+                    <Sad className={styles.blank_face_small} style={{color:"white"}}/>
+                    <span className={styles.button} style={{backgroundColor:props.type==="trabalhos"?"#0358e5":"#FF785A"}} onClick={() => props.limparPesquisa()}>
                         Limpar Pesquisa
                     </span>
                 </div>

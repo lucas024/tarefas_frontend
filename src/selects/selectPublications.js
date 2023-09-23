@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import Select from 'react-select'
-import styles from '../servicos/trabalhadores.module.css'
+import styles from '../servicos/main.module.css'
 import PersonIcon from '@mui/icons-material/Person';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import BuildIcon from '@mui/icons-material/Build';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import {regioes, profissoes} from '../general/util'
 
 const SelectPublications = (props) => {
@@ -25,18 +25,18 @@ const SelectPublications = (props) => {
     }, [props.clear])
 
     useEffect(() => {
-        props.urlVal&&setSelectedValue(props.urlVal)
+        props.urlVal!=null&&setSelectedValue(props.urlVal)
     }, [props.urlVal])
     
  
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: selectedValue?"#0358e5":"#ffffff",
+            backgroundColor: selectedValue?props.selected==='trabalhos'?"#0358e5":'#FF785A':"#ffffff",
             borderColor: "#161F28",
             fontSize: "1rem",
             fontFamily: "inherit",
-            fontWeight: "500",
+            fontWeight: "400",
             color: "#FF785A",
             width:"200px",
             transition: "0.2s all ease-in-out",
@@ -75,8 +75,8 @@ const SelectPublications = (props) => {
         }),
         dropdownIndicator : base => ({
             ...base,
-            color: !selectedValue?"#0358e5":"#ffffff",
-            transition: "0.3s all ease-in-out",
+            color: !selectedValue?props.selected==='trabalhos'?"#0358e5":'#FF785A':"#ffffff",
+            transition: "0.15s all ease-in-out",
             "&:hover": {
                 color: "#0358e5",
             }
@@ -85,7 +85,7 @@ const SelectPublications = (props) => {
             ...base,
             color: "#ffffff",
             textTransform: "Capitalize",
-            fontWeight: "600"
+            fontWeight: "500"
         }),
         indicatorSeparator : () => ({}),
         valueContainer: base => ({
@@ -122,12 +122,12 @@ const SelectPublications = (props) => {
             placeholder={
                 props.type==="zona"?
                 <span className={styles.placeholder}>
-                    <LocationOnIcon className={styles.placeholder_icon}/>
+                    <LocationOnOutlinedIcon className={styles.placeholder_icon}/>
                     Distrito
                 </span>
                 :props.trabalho?
                 <span className={styles.placeholder}>
-                    <BuildIcon className={styles.placeholder_icon}/>
+                    <BuildOutlinedIcon className={styles.placeholder_icon}/>
                     Serviço
                 </span>
                 :

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import styles from './trabalhadores.module.css'
+import styles from './main.module.css'
 import { useParams, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -8,74 +8,100 @@ import axios from 'axios';
 import SearchIcon from '@mui/icons-material/Search';
 import SelectPublications from '../selects/selectPublications';
 import Row from './row';
-import Loader from './../general/loader';
+import Loader from '../general/loader';
 import NoPage from '../general/noPage';
 import clearIcon from '../assets/search_clear.png'
 import {regioesOptions, profissoesOptions} from '../general/util'
 import SelectPosts from '../selects/selectPosts';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
-
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
+import Carta from './carta'
 
 require('dayjs/locale/pt')
 
-const Trabalhos = (props) => {
+const Main = (props) => {
 
     const {id} = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
     const [currPage, setCurrPage] = useState(0)
     const [currDisplay, setCurrDisplay] = useState("solo")
-    const [items, setItems] = useState([])
+    const [items, setItems] = useState(null)
     const navigate = useNavigate()
     const [scrollPosition, setScrollPosition] = useState(0)
     const [loading, setLoading] = useState(false)
     const [clear, setClear] = useState(false)
     const [searchVal, setSearchVal] = useState('')
     dayjs.locale('pt')
-    const [allItems, setAllItems] = useState([])
+    const [allItems, setAllItems] = useState(null)
     const [locationActive, setLocationActive] = useState(null)
     const [workerActive, setWorkerActive] = useState(null)
     const [listAnim, setListAnim] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [trabalhosVistos, setTrabalhosVistos] = useState([])
+    const [gridAnim, setGridAnim] = useState(true)
 
     const [selectedType, setSelectedType] = useState('trabalhos')
 
 
     const myRef = useRef(null)
     const location = useLocation()
-    const [arrPathname, setArrPathname] = useState([])
     
     const monthNames = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
     useEffect(() => {
         let arrPathnameAux = location.pathname.split('/')
-        console.log(arrPathnameAux)
         setSelectedType(arrPathnameAux[3])
-        setArrPathname(arrPathnameAux)
-    }, [location]) 
+    }, [location])
+
+    useEffect(() => {
+        if(selectedType==='trabalhos')
+        {
+            fetchJobs()
+            let listaTrabalhosVistos = JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))
+            if(listaTrabalhosVistos?.length>0)
+            {
+                setTrabalhosVistos(listaTrabalhosVistos)
+            }
+            setGridAnim(true)
+        }
+        else
+        {
+            fetchWorkers()
+            if(window.history?.state?.usr?.from_page)
+            {
+                setGridAnim(false)
+            }
+        }
+    }, [selectedType])
     
     useEffect(() => {
         const paramsAux = Object.fromEntries([...searchParams])
         paramsAux.region?setLocationActive(paramsAux.region):setLocationActive(false)
         paramsAux.work?setWorkerActive(paramsAux.work):setWorkerActive(false)
         setCurrPage(paramsAux.page)  
-        let listaTrabalhosVistos = JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))
-        if(listaTrabalhosVistos?.length>0)
-        {
-            setTrabalhosVistos(listaTrabalhosVistos)
-        }
-
     }, [searchParams])
 
     
     useEffect(() => {
         if(locationActive||workerActive){
-            fetchJobsByFilter()
+            if(selectedType==="trabalhos")
+                fetchJobsByFilter()
+            else
+                fetchWorkersByFilter()
         }
         else if(locationActive===false && workerActive===false){
-            fetchJobs()
+            if(selectedType==="trabalhos")
+            {
+                fetchJobs()
+            }
+               
+            else{
+                fetchWorkers()
+            }
+                
         }
     }, [locationActive, workerActive])
     
@@ -88,23 +114,24 @@ const Trabalhos = (props) => {
 
     useEffect(() => {
         if(allItems!==null){
-            if(allItems.length >= currPage*24 && currPage>1){
-                if(allItems.length > (currPage*24 + 24)) setItems(allItems.slice((currPage-1)*24,(currPage-1)*24+24))
-                else setItems(allItems.slice((currPage-1)*24, (currPage)*24 + 24 - (currPage-1)*24 + 24 - allItems.length))
+            console.log(allItems)
+            if(allItems.data.length >= currPage*24 && currPage>1){
+                if(allItems.length > (currPage*24 + 24)) setItems({data: allItems.data.slice((currPage-1)*24,(currPage-1)*24+24), type:allItems.type})
+                else setItems({data: allItems.data.slice((currPage-1)*24, (currPage)*24 + 24 - (currPage-1)*24 + 24 - allItems.data.length), type:allItems.type})
                 setCurrDisplay("middle")
             }
-            else if(allItems.length < currPage*24 && currPage>1){
-                setItems(allItems.slice((currPage-1)*24))
+            else if(allItems.data.length < currPage*24 && currPage>1){
+                setItems({data: allItems.data.slice((currPage-1)*24), type:allItems.type})
                 setCurrDisplay("last")
             }
             else{
                 setCurrPage(1)
-                if(allItems.length > 24){
-                    setItems(allItems.slice(0,24))
+                if(allItems.data.length > 24){
+                    setItems({data: allItems.data.slice(0,24), type:allItems.type})
                     setCurrDisplay("init")
                 }
                 else{
-                    setItems(allItems)
+                    setItems({data: allItems.data, type:allItems.type})
                     setCurrDisplay("solo")
                 }
             }
@@ -115,7 +142,9 @@ const Trabalhos = (props) => {
         setLoading(true)
         axios.get(`${props.api_url}/reservations`).then(res => {
             if(res.data!==null){
-                setAllItems(res.data.data)
+                console.log(res.data.data)
+                setListAnim(true)
+                setAllItems({data: res.data.data, type: 'trabalhos'})
             }
             setLoading(false)
         })
@@ -123,8 +152,8 @@ const Trabalhos = (props) => {
 
 
     const fetchJobsByFilter = () => {
-        setListAnim(true)
         setLoading(true)
+        console.log("use efefe")
         if(searchVal===""&&!workerActive&&!locationActive)
         {
             fetchJobs()
@@ -140,17 +169,65 @@ const Trabalhos = (props) => {
                 }
             }
             axios.post(`${props.api_url}/reservations/get_reservations_by_filter`, {
-                region: locationActive,
-                trabalho: workerActive,
+                region: ((locationActive==null) || (locationActive===undefined))?false:locationActive!=='none'?locationActive:false,
+                trabalho: ((workerActive==null) || (workerActive===undefined))?false:workerActive!=='none'?workerActive:false,
                 search: searchValFinal
             }).then(res => {
                 if(res.data!=='non_existing'){
-                    let arr = res.data
-                    setAllItems(arr)
+                    let arr = res.data.data
+                    setListAnim(true)
+                    setAllItems({data: arr, type: 'trabalhos'})
                 }
                 setLoading(false)
             }).catch(err => console.log(err))
         }
+    }
+
+    const fetchWorkersByFilter = () => {
+        console.log('teste')
+        setLoading(true)
+        var searchValFinal = ""
+        if(searchVal!=="")
+        {
+            for(let el of searchVal.split(' '))
+            {
+                searchValFinal += `\"${el}\" `
+            }
+        }
+        axios.post(`${props.api_url}/worker/get_workers_by_filter`, {
+            region: ((locationActive==null) || (locationActive===undefined))?false:locationActive!=='none'?locationActive:false,
+            trabalho: ((workerActive==null) || (workerActive===undefined))?false:workerActive!=='none'?workerActive:false,
+            search: searchValFinal
+        }).then(res => {
+            if(res.data!=='non_existing'){
+                console.log(res.data)
+                let arr = res.data.data
+                arr = fisher_yates_shuffle(arr)
+                setAllItems({data: arr, type: 'trabalhadores'})
+            }
+            setLoading(false)
+        }).catch(err => console.log(err))
+
+    }
+
+    const fetchWorkers = () => {
+        setLoading(true)
+        axios.get(`${props.api_url}/workers`).then(res => {
+            if(res.data!==null){
+                let arr = res.data.data
+                arr = fisher_yates_shuffle(arr)
+                setAllItems({data: arr, type: 'trabalhadores'})
+            }
+            setLoading(false)
+        })
+    }
+    const fisher_yates_shuffle = arr => {
+        let i = arr.length;
+        while (--i > 0) {
+            let randIndex = Math.floor(Math.random() * (i + 1));
+            [arr[randIndex], arr[i]] = [arr[i], arr[randIndex]];
+        }
+        return arr;
     }
     
     const getSearchParams = id => {
@@ -169,7 +246,6 @@ const Trabalhos = (props) => {
     }
 
     const navigatePubHandler = (id) => {
-        console.log('teste')
         navigate(`/main/publications/publication${getSearchParams(id)}`, {
                     state: {
                         fromUserPage: false,
@@ -193,7 +269,7 @@ const Trabalhos = (props) => {
     }
 
     const mapRowsToDisplay = () => {
-        return items?.map((item, i) => {
+        return items?.data.map((item, i) => {
             return(
                 <div key={i} className={styles.row}>
                     {
@@ -217,6 +293,27 @@ const Trabalhos = (props) => {
             )
         })
     }
+
+    const mapBoxesToDisplay = () => {
+        console.log(items)
+        return items?.data.map((worker, i) => {
+            return(
+                <div key={i} className={styles.box_case} onClick={() => navigate({
+                                                                    pathname: `/main/publications/trabalhador`,
+                                                                    search: getSearchParams(worker._id)
+                                                                })}>
+                    <Carta
+                        user={props.user}
+                        id={id}
+                        worker={worker}
+                        locationActive={locationActive}
+                        workerActive={workerActive}
+                    />
+                </div>
+            )
+        })
+    }
+
     const arrowClick = (val) => {
         navigate({
             search: `?p=${currPage + val}`
@@ -245,7 +342,10 @@ const Trabalhos = (props) => {
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault()
-            fetchJobsByFilter()
+            if(selectedType==="trabalhos")
+                fetchJobsByFilter()
+            else
+                fetchWorkersByFilter()
         }
     }
 
@@ -257,7 +357,10 @@ const Trabalhos = (props) => {
         setSearchParams(searchParams)
         setClear(!clear)
         setSearchVal("")
-        fetchJobs()
+        if(selectedType==="trabalhos")
+            fetchJobs()
+        else
+            fetchWorkers()
     }
 
     const options = [
@@ -271,16 +374,24 @@ const Trabalhos = (props) => {
             <div className={styles.main} onScroll={handleScroll}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_left}>
-                    <SelectPosts 
+                    <SelectPosts
                         options={options}
                         type={selectedType}
                     />
                     </div>
                     <div className={styles.search_right}>
                         <div className={styles.search_input_div}>
-                            <input value={searchVal} onKeyDown={handleKeyDown} onChange={val => handleSearchVal(val)} spellCheck={false} className={!scrollPosition?styles.searchTop:styles.search} placeholder={`Eletricista, Porto...`}></input>
-                            {/* <PersonSearchIcon className={styles.search_input_div_icon}/> */}
-                            <SearchIcon className={styles.search_final_icon} onClick={() => fetchJobsByFilter()}/>
+                            <input 
+                                value={searchVal} 
+                                onKeyDown={handleKeyDown} 
+                                onChange={val => handleSearchVal(val)} 
+                                spellCheck={false} 
+                                className={!scrollPosition?styles.searchTop:styles.search} 
+                                placeholder={`Eletricista, Porto...`}></input>
+                            <SearchIcon 
+                                className={styles.search_final_icon} 
+                                style={{backgroundColor:selectedType==='trabalhos'?'#0358e5':'#FF785A'}} 
+                                onClick={() => searchVal.length>0?selectedType==="trabalhos"?fetchJobsByFilter():fetchWorkersByFilter():{}}/>
                         </div>
                         <div className={styles.search_filter_div_wrapper}>
                             <div className={styles.search_filter_div}>
@@ -289,6 +400,7 @@ const Trabalhos = (props) => {
                                         trabalho={true}
                                         clear={clear}
                                         urlVal={workerActive}
+                                        selected={selectedType}
                                         valueChanged={val => {
                                             locationActive&&setSearchParams({'work': val, 'region': locationActive})
                                             !locationActive&&setSearchParams({'work': val})
@@ -296,9 +408,10 @@ const Trabalhos = (props) => {
                                 
                                 <div style={{marginLeft:"10px"}}>
                                 <SelectPublications 
-                                    type="zona" 
+                                    type="zona"
                                     clear={clear}
                                     urlVal={locationActive}
+                                    selected={selectedType}
                                     valueChanged={val => {
                                         workerActive&&setSearchParams({'work': workerActive, 'region': val})
                                         !workerActive&&setSearchParams({'region': val})
@@ -319,18 +432,22 @@ const Trabalhos = (props) => {
                     <div className={styles.top_info}>
                         
                         {
-                            allItems.length===1?
-                            <span className={styles.top_info_numbers}>1 TRABALHO</span>
-                            :<span className={styles.top_info_numbers}>{allItems.length} trabalhos</span>
+                            allItems?.data.length===1?
+                            <span className={styles.top_info_numbers}>1 {selectedType.slice(0, selectedType==="trabalhos"?-1:-2)}</span>
+                            :<span className={styles.top_info_numbers}>{allItems?.data.length?allItems?.data.length:0} {selectedType}</span>
                         }
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>
-                                <BuildIcon className={styles.top_info_filter_icon}/>
-                                {/* <span  className={styles.top_info_filter_text}>Tipo de Trabalho</span> */}
+                                {
+                                    workerActive?
+                                    <BuildIcon className={styles.top_info_filter_icon}/>
+                                    :
+                                    <BuildOutlinedIcon className={styles.top_info_filter_icon}/>
+                                }
                             </div>
                             {
                                 workerActive?
-                                <span  className={styles.top_info_filter_value_on}>
+                                <span className={styles.top_info_filter_value_on}>
                                     {profissoesOptions[workerActive]}
                                 </span>
                                 :
@@ -341,8 +458,12 @@ const Trabalhos = (props) => {
                         </div>
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>
-                                <LocationOnIcon className={styles.top_info_filter_icon}/>
-                                {/* <span  className={styles.top_info_filter_text}>distrito</span> */}
+                                {
+                                    locationActive?
+                                    <LocationOnIcon className={styles.top_info_filter_icon}/>
+                                    :
+                                    <LocationOnOutlinedIcon className={styles.top_info_filter_icon}/>
+                                }
                             </div>
                             {
                                 locationActive?
@@ -357,15 +478,18 @@ const Trabalhos = (props) => {
                         </div>
                     </div>
                     {
-                    items.length>0?
+                    items?.data.length>0?
                     <div>
                         <div className={listAnim?styles.animList:styles.list} 
                                     onAnimationEnd={() =>{
                                         setListAnim(false)
                                     }}>
                             {
-                                !loading?
-                                mapRowsToDisplay()
+                                selectedType==="trabalhos"?
+                                !loading?  
+                                    items?.type==="trabalhos"?
+                                    mapRowsToDisplay()
+                                    :null
                                 :
                                 <div>
                                     <div className={styles.loading_skeleton}/>
@@ -373,6 +497,30 @@ const Trabalhos = (props) => {
                                     <div className={styles.loading_skeleton}/>
                                     <div className={styles.loading_skeleton}/>
                                     <div className={styles.loading_skeleton}/>
+                                </div>
+                                :
+                                !loading?
+                                <div style={{gridTemplateRows: `repeat(${Math.ceil(items?.data.length/2+1)}, 140px)`}} 
+                                        className={gridAnim?styles.animGrid:styles.grid}
+                                        onAnimationEnd={() => setGridAnim(false)}
+                                >
+                                {
+                                    items?.type==="trabalhadores"?
+                                    mapBoxesToDisplay()
+                                    :null
+                                }
+                                </div>
+                                :
+                                <div className={gridAnim?styles.animGrid:styles.grid}>
+                                    <div className={styles.loading_skeleton}/>
+                                    <div className={styles.loading_skeleton}/>
+                                    <div className={styles.loading_skeleton}/>
+                                    <div className={styles.loading_skeleton}/>
+                                    <div className={styles.loading_skeleton}/>
+                                    <div className={styles.loading_skeleton}/>
+                                    <div style={{marginTop:"30px"}} className={styles.loading_skeleton}/>
+                                    <div style={{marginTop:"30px"}} className={styles.loading_skeleton}/>
+                                    <div style={{marginTop:"30px"}} className={styles.loading_skeleton}/>
                                 </div>
                             }
                         </div>
@@ -385,7 +533,7 @@ const Trabalhos = (props) => {
                                         <span style={{color:"white"}}>_</span>
                                         <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
                                         <span style={{color:"white"}}>_</span>
-                                        <span style={{color:"white"}}>_</span>
+                                        <ArrowForwardIosIcon className={styles.arrow_disabled}/>
                                     </div>
                                 </div>
                                 :currDisplay === "init"?
@@ -427,7 +575,7 @@ const Trabalhos = (props) => {
                         </div>
                     </div>
                     :loaded?
-                        <NoPage object="no_search" limparPesquisa={() => limparPesquisa()}/>
+                        <NoPage type={selectedType} object="no_search" limparPesquisa={() => limparPesquisa()}/>
                     :null
                 }
             </div>
@@ -435,4 +583,4 @@ const Trabalhos = (props) => {
     )
 }
 
-export default Trabalhos;
+export default Main;

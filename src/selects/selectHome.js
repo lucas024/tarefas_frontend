@@ -14,10 +14,10 @@ const SelectHome = (props) => {
             fontWeight: 600,
             width:"160px",
             transition: "0.5s all ease-in-out",
-            borderRadius: "10px",
-            borderBottomRightRadius: "0px",
-            borderBottomLeftRadius: state.isFocused? 0: "10px",
-            borderBottomRightRadius: state.isFocused? 0: "10px",
+            borderRadius: "5px",
+            // borderBottomRightRadius: "0px",
+            // borderBottomLeftRadius: state.isFocused? 0: "10px",
+            // borderBottomRightRadius: state.isFocused? 0: "10px",
             border: state.isSelected? "1px solid white": 0,
             boxShadow: "white",
             height: "40px",
@@ -52,7 +52,7 @@ const SelectHome = (props) => {
         dropdownIndicator : base => ({
             ...base,
             color: "#ffffff",
-            transition: "0.3s all ease-in-out",
+            transition: "0.15s all ease-in-out",
             "&:hover": {
                 color: "#161F28",
             }
@@ -85,7 +85,7 @@ const SelectHome = (props) => {
     
     return(
         <Select
-            placeholder={props.placeholder}
+            placeholder={<span style={{marginLeft:'5px', color:'#ffffff'}}>{props.placeholder}</span>}
             styles={stylesSelect}
             options={props.options}
             value={props.options?.filter(option => option.value === props.option)}

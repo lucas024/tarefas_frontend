@@ -37,7 +37,7 @@ const border_override = css`
 const Loader = (props) => {
     return(
         <div>
-            <ClipLoader color={"#FF785A"} css={props.small?small_override:override} loading={props.loading} size={props.small?20:150} />
+            <ClipLoader color={"#FFFFFF"} css={props.small?small_override:override} loading={props.loading} size={props.small?20:150} />
                 {
                     props.loading?
                     <div className="frontdrop" style={{borderRadius:props.radius?"10px":""}}></div>

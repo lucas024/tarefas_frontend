@@ -74,7 +74,7 @@
     margin-top: 0px;
     color: white;
     font-size: 1.2rem;
-    font-weight: 600;
+    font-weight: 400;
 }
 .main_wrapper{
     display: flex;
@@ -90,11 +90,10 @@
     display: flex;
     justify-content: center;
     background-color: var(--neutral);
-    border-radius: 50px;
-    padding: 20px;
-    width: 50%;
+    border-radius: 10px;
+    padding: 20px 0;
     max-width: 1200px;
-    min-width: 800px;
+    width: 80%;
     position: relative;
     border-top-right-radius: 0;
 }
@@ -205,8 +204,8 @@
     margin: auto;
     margin-top: 0px;
     padding: 15px;
-    border-bottom-right-radius: 20px;
-    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
     cursor: default;
     transition: all 0.5s;
     border: 2px solid white;
@@ -222,8 +221,8 @@
     margin-top: 0px;
     background-color: var(--neutral);
     padding: 15px;
-    border-bottom-right-radius: 50%;
-    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
     cursor: pointer;
     transition: all 0.5s;
     border: 2px solid white;
@@ -245,7 +244,7 @@
 .zone_search_button{
     color: #989898;
     font-weight: 500;
-    font-size: 0.5rem;
+    font-size: 0.6rem;
 }
 .home_geral{
     width: 80%;
@@ -263,7 +262,7 @@
 
 .home_explorar{
     text-align: center;
-    margin-top: 30px;
+    margin-top: 50px;
     font-size: 1.2rem;
     font-weight: 500;
     color: var(--neutral);
@@ -282,7 +281,7 @@
 .back_publish_div{
     margin-top: 15px;
     width: 100%;
-    background-color: white;
+    background-color: transparent;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -290,6 +289,7 @@
     padding: 10px;
     box-sizing: border-box;
     position: relative;
+    border: 1px solid #ffffff20;
 }
 .back_publish_div_frontdrop{
     position: absolute;
@@ -303,6 +303,7 @@
 .back_publish_text{
     text-align: center;
     font-size: 0.8rem;
+    color: var(--neutral);
 }
 .back_publish_button_disabled{
     width: fit-content;
@@ -322,7 +323,7 @@
     text-align: center;
     cursor: pointer;
     font-weight: 600;
-    color: var(--brand);
+    color: var(--neutral);
 }
 .auth_specific{
     color: var(--job);
@@ -335,10 +336,10 @@
 }
 .back_publish_button{
     width: fit-content;
-    background-color: var(--brand);
+    background-color: var(--neutral);
     padding: 10px 30px;
     border-radius: 5px;
-    color: white;
+    color: var(--brand);
     font-size: 1.2rem;
     font-weight: 600;
     border: 3px solid transparent;
@@ -356,18 +357,17 @@
 .back_publish_button_action{
     margin-top: 20px;
     width: fit-content;
-    background-color: var(--action);
+    background-color: var(--neutral);
     padding: 10px 30px;
     border-radius: 5px;
-    color: white;
+    color: var(--action);
     font-weight: 600;
     border: 3px solid transparent;
     cursor: pointer;
 }
 .back_publish_button_action:hover{
-    background-color: white;
-    border: 3px solid var(--action);
-    color: var(--action);
+    background-color: var(--brand);
+    color: var(--neutral);
     transition: 150ms;
 }
 
@@ -401,10 +401,11 @@
     align-self: center;
     justify-content: center;
     width: 100%;
-    background-color: white;
+    background-color: var(--brand);
     padding: 10px 0;
     border-radius: 5px;
     max-height: 270px;
+    border: 1px solid #ffffff20;
 }
 .section_button{
     padding: 10px;
@@ -412,24 +413,23 @@
     margin: auto;
     border-radius: 5px;
     margin-top: 10px;
-    background-color: var(--brand);
+    background-color: var(--neutral);
     cursor: pointer;
     border: 3px solid transparent;
 }
 .section_button:hover{
-    background-color: white;
-    border: 3px solid var(--job);
+    background-color: var(--job);
     transition: 150ms;
 }
 .section_button:hover > .section_title{
-    color: var(--job);
+    color: var(--neutral);
     transition: 150ms;
 }
 .section_title{
     text-align: center;
     font-weight: 600;
     font-size: 1rem;
-    color: white;
+    color: var(--brand);
 }
 .section_button_right{
     padding: 10px;
@@ -437,32 +437,31 @@
     margin: auto;
     border-radius: 5px;
     margin-top: 10px;
-    background-color: var(--brand);
+    background-color: var(--neutral);
     cursor: pointer;
     border: 3px solid transparent;
     margin-bottom: 10px;
 }
 .section_button_right:hover{
-    background-color: white;
-    border: 3px solid var(--action);
+    background-color: var(--action);
     transition: 150ms;
 }
 .section_button_right:hover > .section_title_right{
-    color: var(--action);
+    color: var(--neutral);
     transition: 150ms;
 }
 .section_title_right{
     text-align: center;
     font-weight: 600;
     font-size: 1.2rem;
-    color: white;
+    color: var(--brand);
 }
 .section_image_text_title{
     display: flex;
     justify-content: center;
     font-weight: 600;
     font-size: 0.9rem;
-    color: var(--brand);
+    color: var(--neutral);
     margin-top: 5px;
     text-align: center;
 }
@@ -472,6 +471,7 @@
     padding: 10px 0;
     text-align: center;
     font-size: 0.9rem;
+    color: var(--neutral);
 }
 .section_image_wrapper{
     display: flex;
@@ -488,7 +488,7 @@
 .section_img_mini{
     display: block;
     transition: 0.3s ease-in-out;
-    color: var(--brand);
+    color: var(--neutral);
     width: 50px !important;
     height: 50px !important;
     padding: 0 0 10px 0;
@@ -769,11 +769,13 @@
         flex-direction: column;
     }
     .section_one{
-        width: 100%;
+        width: 99.5%;
+        margin: auto;
         margin-top: 15px;
     }
     .section_two{
-        width: 100%;
+        width: 99.5%;
+        margin: auto;
     }
     .section_spacer{
         width: 100%;

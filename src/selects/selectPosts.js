@@ -1,12 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import Select from 'react-select'
-import styles from '../servicos/trabalhadores.module.css'
+import styles from '../servicos/main.module.css'
 import PersonIcon from '@mui/icons-material/Person';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import BuildIcon from '@mui/icons-material/Build';
-import {regioes, profissoes} from '../general/util'
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import {useLocation, useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 
 const SelectPosts = (props) => {
 
@@ -22,8 +19,8 @@ const SelectPosts = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            minHeight: '100px',
-            height: '100px',
+            minHeight: '90px',
+            height: '90px',
             backgroundColor: props.type==='trabalhos'?"#0358e5":"#FF785A",
             borderColor: "#161F28",
             fontSize: "0.9rem",
@@ -52,6 +49,9 @@ const SelectPosts = (props) => {
             color: "#161F28",
             fontWeight: state.isSelected? 600: 400,
             backgroundColor: "#ffffff",
+            "&:hover": {
+                backgroundColor: props.type==='trabalhos'?"#FF785A90":"#0358e590",
+            },
         }),
         menu: base => ({
             ...base,
@@ -68,13 +68,10 @@ const SelectPosts = (props) => {
             padding: "0",
             zIndex: 4,
         }),
-        dropdownIndicator : base => ({
+        dropdownIndicator : (base, state) => ({
             ...base,
-            color: !selectedValue?"#ffffff":"#ffffff",
-            transition: "0.3s all ease-in-out",
-            "&:hover": {
-                color: "#FF785A",
-            }
+            color: state.isFocused?"#161F28":"#ffffff",
+            transition: "0.15s all ease-in-out"
         }),
         singleValue: base => ({
             ...base,

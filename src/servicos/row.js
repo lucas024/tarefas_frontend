@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import styles from './row.module.css'
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -85,12 +85,12 @@ const Row = (props) => {
                     }
                     <div>
                         <div className={styles.right_flex}>
-                            <BuildIcon className={styles.right_type_icon} style={{color:props.workerActive?"#FF785A":"#71848d"}}/>
-                            <span className={styles.right_type} style={{color:props.workerActive?"#FF785A":"#71848d"}}>{profissoesOptions[props.item.workerType]}</span>
+                            <BuildIcon className={styles.right_type_icon} style={{color:props.workerActive?"#0358e5":"#71848d"}}/>
+                            <span className={styles.right_type} style={{color:props.workerActive?"#0358e5":"#71848d"}}>{profissoesOptions[props.item.workerType]}</span>
                         </div>
                         <div className={styles.right_flex}>
-                            <LocationOnIcon className={styles.right_type_icon} style={{color:props.locationActive?"#FF785A":"#71848d"}}/>
-                            <span className={styles.right_type} style={{color:props.locationActive?"#FF785A":"#71848d"}}>{regioesOptions[props.item.district]}</span>
+                            <LocationOnIcon className={styles.right_type_icon} style={{color:props.locationActive?"#0358e5":"#71848d"}}/>
+                            <span className={styles.right_type} style={{color:props.locationActive?"#0358e5":"#71848d"}}>{regioesOptions[props.item.district]}</span>
                         </div>
                     </div>
                     

@@ -53,7 +53,7 @@ const TopSelect = (props) => {
         dropdownIndicator : base => ({
             ...base,
             color: "#FF785A",
-            transition: "0.3s all ease-in-out",
+            transition: "0.15s all ease-in-out",
             "&:hover": {
                 color: "#FF785A",
             }

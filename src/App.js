@@ -14,8 +14,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import {auth} from './firebase/firebase'
 import axios from 'axios'
 import User from './user/user';
-import Main from './main/main';
-import Loader from './general/loader';
+import Main from './servicos/main';
 import Trabalho from './main/trabalho';
 import AuthWorker from './auth/authWorker';
 import Trabalhador from './main/trabalhador';

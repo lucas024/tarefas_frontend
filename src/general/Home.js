@@ -19,6 +19,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import BackHandIcon from '@mui/icons-material/BackHand';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import BuildIcon from '@mui/icons-material/Build';
+
 const firstOptions = [
     { value: 'trabalhadores', label: 'Trabalhadores' },
     { value: 'trabalhos', label: 'Trabalhos' },
@@ -26,7 +29,6 @@ const firstOptions = [
 
 
 const Home = (props) => {
-
     const [workerBanner, setWorkerBanner] = useState(false)
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
@@ -65,7 +67,6 @@ const Home = (props) => {
 
 
     useEffect(() => {
-
         // Confirm the link is a sign-in with email link.
         if (isSignInWithEmailLink(auth, location.pathname)) {
             console.log("yes");
@@ -189,7 +190,7 @@ const Home = (props) => {
                                             second? 
                                             <img src={profissoesPngs[second]} className={styles.zone_image_prof}/>
                                             :
-                                            <QuestionMarkOutlinedIcon className={styles.zone_build_icon}/>
+                                            <BuildIcon className={styles.zone_build_icon}/>
                                         }
                                     </div>
                                     <div className={styles.zone_select}>
@@ -216,7 +217,7 @@ const Home = (props) => {
                                             third? 
                                             <span className={styles.zone_image_region}>{regioesOptions[third]}</span>
                                             :
-                                            <QuestionMarkOutlinedIcon className={styles.zone_build_icon}/>
+                                            <LocationOnIcon className={styles.zone_build_icon}/>
                                         }
                                     </div>
                                     <div className={styles.zone_select}>
@@ -260,7 +261,7 @@ const Home = (props) => {
                             <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
                             {
                                 props.user?
-                                <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar')}>PUBLICAR UM TRABALHO</span>
+                                <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar')}>PUBLICAR</span>
                                 :
                                 <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                     <div className={styles.back_publish_button_disabled} data-for='home' data-tip="Por favor crie conta ou inicie sessão para publicar.">

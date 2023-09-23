@@ -9,7 +9,7 @@
 .flex{
     display: flex;
     width: 100%;
-    height: calc(100vh - 68px);
+    height: calc(100vh - 67px);
 }
 .left{
     width: 200px;
