@@ -18,13 +18,20 @@ import BuildIcon from '@mui/icons-material/Build';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import Carta from './carta'
+import { useSelector, useDispatch } from 'react-redux'
+import { search_save, search_scroll_save } from '../store';
 
 require('dayjs/locale/pt')
 
 const Main = (props) => {
 
+    const search_context = useSelector(state => {return state.search_context})
+    const search_scroll = useSelector(state => {return state.search_scroll})
+    const dispatch = useDispatch()
+
     const {id} = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
+    const [params, setParams] = useState({work: false, region: false})
     const [currPage, setCurrPage] = useState(0)
     const [currDisplay, setCurrDisplay] = useState("solo")
     const [items, setItems] = useState(null)
@@ -34,77 +41,76 @@ const Main = (props) => {
     const [clear, setClear] = useState(false)
     const [searchVal, setSearchVal] = useState('')
     dayjs.locale('pt')
-    const [allItems, setAllItems] = useState(null)
-    const [locationActive, setLocationActive] = useState(null)
-    const [workerActive, setWorkerActive] = useState(null)
-    const [listAnim, setListAnim] = useState(true)
+    const [allItemsLength, setAllItemsLength] = useState(0)
+    const [listAnim, setListAnim] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const [trabalhosVistos, setTrabalhosVistos] = useState([])
-    const [gridAnim, setGridAnim] = useState(true)
 
-    const [selectedType, setSelectedType] = useState('trabalhos')
+    const [selectedType, setSelectedType] = useState(null)
 
 
     const myRef = useRef(null)
+    const mainRef = useRef(null)
     const location = useLocation()
     
     const monthNames = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
     useEffect(() => {
-        let arrPathnameAux = location.pathname.split('/')
-        setSelectedType(arrPathnameAux[3])
-    }, [location])
+        let arr_pathname = location.pathname.split('/')
+        const paramsAux = Object.fromEntries([...searchParams])
+        if(!paramsAux.work && !paramsAux.region)
+            setParams({work: false, region: false})
+        else
+            setParams(paramsAux)
 
-    useEffect(() => {
-        if(selectedType==='trabalhos')
+        setCurrPage(paramsAux.page?paramsAux.page:1)
+        setSelectedType(arr_pathname[3])
+        if(search_context?.list == null 
+            || ((search_context?.work !== paramsAux.work) && paramsAux.work != undefined)
+            || ((search_context?.region !== paramsAux.region) && paramsAux.region != undefined)
+            || search_context?.type !== arr_pathname[3])
         {
-            fetchJobs()
-            let listaTrabalhosVistos = JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))
-            if(listaTrabalhosVistos?.length>0)
-            {
-                setTrabalhosVistos(listaTrabalhosVistos)
+            if(paramsAux.region||paramsAux.work){
+                if(arr_pathname[3]==="trabalhos")
+                    fetchJobsByFilter()
+                else
+                    fetchWorkersByFilter(paramsAux)
             }
-            setGridAnim(true)
+            else{
+                if(arr_pathname[3]==="trabalhos")
+                {
+                    fetchJobs()
+                }
+                else{
+                    fetchWorkers()
+                }
+            }
+            if(arr_pathname[3]==="trabalhos")
+            {
+                let listaTrabalhosVistos = JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))
+                if(listaTrabalhosVistos?.length>0)
+                {
+                    setTrabalhosVistos(listaTrabalhosVistos) 
+                }
+            }
+            else
+            {
+                if(window.history?.state?.usr?.from_page) setListAnim(false)
+                else setListAnim(true)
+            }
         }
         else
         {
-            fetchWorkers()
-            if(window.history?.state?.usr?.from_page)
-            {
-                setGridAnim(false)
-            }
+            console.log(search_context, search_scroll)
+            setItems(search_context.list)
+            setAllItemsLength(search_context.list.data.length)
+            setTimeout(() => {
+                mainRef.current.scrollTo(50, 0)
+            }, 1000)
+            
         }
-    }, [selectedType])
-    
-    useEffect(() => {
-        const paramsAux = Object.fromEntries([...searchParams])
-        paramsAux.region?setLocationActive(paramsAux.region):setLocationActive(false)
-        paramsAux.work?setWorkerActive(paramsAux.work):setWorkerActive(false)
-        setCurrPage(paramsAux.page)  
-    }, [searchParams])
-
-    
-    useEffect(() => {
-        if(locationActive||workerActive){
-            if(selectedType==="trabalhos")
-                fetchJobsByFilter()
-            else
-                fetchWorkersByFilter()
-        }
-        else if(locationActive===false && workerActive===false){
-            if(selectedType==="trabalhos")
-            {
-                fetchJobs()
-            }
-               
-            else{
-                fetchWorkers()
-            }
-                
-        }
-    }, [locationActive, workerActive])
-    
+    }, [location, searchParams])
 
     useEffect(() => {
         setLoaded(props.userLoadAttempt)
@@ -112,39 +118,48 @@ const Main = (props) => {
         return () => setLoaded(false)
     }, [props.userLoadAttempt])
 
-    useEffect(() => {
-        if(allItems!==null){
-            console.log(allItems)
-            if(allItems.data.length >= currPage*24 && currPage>1){
-                if(allItems.length > (currPage*24 + 24)) setItems({data: allItems.data.slice((currPage-1)*24,(currPage-1)*24+24), type:allItems.type})
-                else setItems({data: allItems.data.slice((currPage-1)*24, (currPage)*24 + 24 - (currPage-1)*24 + 24 - allItems.data.length), type:allItems.type})
+    const setItemsAux = all_items => {
+        if(all_items!==null){
+            let items = null
+            if(all_items.data?.length >= currPage*24 && currPage>1){
+                if(all_items.data?.length > (currPage*24 + 24)) items = {data: all_items.data.slice((currPage-1)*24,(currPage-1)*24+24), type:all_items.type}
+                else items = {data: all_items.data.slice((currPage-1)*24, (currPage)*24 + 24 - (currPage-1)*24 + 24 - all_items.data.length), type:all_items.type}
                 setCurrDisplay("middle")
             }
-            else if(allItems.data.length < currPage*24 && currPage>1){
-                setItems({data: allItems.data.slice((currPage-1)*24), type:allItems.type})
+            else if(all_items.data?.length < currPage*24 && currPage>1){
+                items = {data: all_items.data.slice((currPage-1)*24), type:all_items.type}
                 setCurrDisplay("last")
             }
             else{
                 setCurrPage(1)
-                if(allItems.data.length > 24){
-                    setItems({data: allItems.data.slice(0,24), type:allItems.type})
+                if(all_items.data?.length > 24){
+                    items = {data: all_items.data.slice(0,24), type:all_items.type}
                     setCurrDisplay("init")
                 }
                 else{
-                    setItems({data: allItems.data, type:allItems.type})
+                    items = {data: all_items.data, type:all_items.type}
                     setCurrDisplay("solo")
                 }
             }
+            setItems(items)
+            dispatch(search_save({
+                list: items,
+                work: params.work,
+                region: params.region,
+                type: selectedType,
+                all_items_length: allItemsLength
+            }))
         }
-    }, [allItems])
+    }
 
     const fetchJobs = () => {
         setLoading(true)
         axios.get(`${props.api_url}/reservations`).then(res => {
             if(res.data!==null){
-                console.log(res.data.data)
                 setListAnim(true)
-                setAllItems({data: res.data.data, type: 'trabalhos'})
+                let all_items = {data: res.data.data, type: 'trabalhos'}
+                setAllItemsLength(all_items.data.length)
+                setItemsAux(all_items)
             }
             setLoading(false)
         })
@@ -153,8 +168,7 @@ const Main = (props) => {
 
     const fetchJobsByFilter = () => {
         setLoading(true)
-        console.log("use efefe")
-        if(searchVal===""&&!workerActive&&!locationActive)
+        if(searchVal===""&&!params.work&&!params.region)
         {
             fetchJobs()
         }
@@ -169,22 +183,23 @@ const Main = (props) => {
                 }
             }
             axios.post(`${props.api_url}/reservations/get_reservations_by_filter`, {
-                region: ((locationActive==null) || (locationActive===undefined))?false:locationActive!=='none'?locationActive:false,
-                trabalho: ((workerActive==null) || (workerActive===undefined))?false:workerActive!=='none'?workerActive:false,
+                region: ((params.region==null) || (params.region===undefined))?false:params.region!=='none'?params.region:false,
+                trabalho: ((params.work==null) || (params.work===undefined))?false:params.work!=='none'?params.work:false,
                 search: searchValFinal
             }).then(res => {
                 if(res.data!=='non_existing'){
                     let arr = res.data.data
                     setListAnim(true)
-                    setAllItems({data: arr, type: 'trabalhos'})
+                    let all_items = {data: arr, type: 'trabalhos'}
+                    setAllItemsLength(all_items.data.length)
+                    setItemsAux(all_items)
                 }
                 setLoading(false)
             }).catch(err => console.log(err))
         }
     }
 
-    const fetchWorkersByFilter = () => {
-        console.log('teste')
+    const fetchWorkersByFilter = (params_aux) => {
         setLoading(true)
         var searchValFinal = ""
         if(searchVal!=="")
@@ -195,15 +210,16 @@ const Main = (props) => {
             }
         }
         axios.post(`${props.api_url}/worker/get_workers_by_filter`, {
-            region: ((locationActive==null) || (locationActive===undefined))?false:locationActive!=='none'?locationActive:false,
-            trabalho: ((workerActive==null) || (workerActive===undefined))?false:workerActive!=='none'?workerActive:false,
+            region: ((params_aux.region==null) || (params_aux.region===undefined))?false:params_aux.region!=='none'?params_aux.region:false,
+            trabalho: ((params_aux.work==null) || (params_aux.work===undefined))?false:params_aux.work!=='none'?params_aux.work:false,
             search: searchValFinal
         }).then(res => {
             if(res.data!=='non_existing'){
-                console.log(res.data)
                 let arr = res.data.data
                 arr = fisher_yates_shuffle(arr)
-                setAllItems({data: arr, type: 'trabalhadores'})
+                let all_items = {data: arr, type: 'trabalhadores'}
+                setAllItemsLength(all_items.data.length)
+                setItemsAux(all_items)
             }
             setLoading(false)
         }).catch(err => console.log(err))
@@ -216,7 +232,9 @@ const Main = (props) => {
             if(res.data!==null){
                 let arr = res.data.data
                 arr = fisher_yates_shuffle(arr)
-                setAllItems({data: arr, type: 'trabalhadores'})
+                let all_items = {data: arr, type: 'trabalhadores'}
+                setAllItemsLength(all_items.data.length)
+                setItemsAux(all_items)
             }
             setLoading(false)
         })
@@ -231,14 +249,14 @@ const Main = (props) => {
     }
     
     const getSearchParams = id => {
-        if(workerActive&&locationActive){
-            return `?id=${id}&page=${currPage}&work=${workerActive}&region=${locationActive}`
+        if(params.work&&params.region){
+            return `?id=${id}&page=${currPage}&work=${params.work}&region=${params.region}`
         }
-        else if(workerActive){
-            return `?id=${id}&page=${currPage}&work=${workerActive}`
+        else if(params.work){
+            return `?id=${id}&page=${currPage}&work=${params.work}`
         }
-        else if(locationActive){
-            return `?id=${id}&page=${currPage}&region=${locationActive}`
+        else if(params.region){
+            return `?id=${id}&page=${currPage}&region=${params.region}`
         }
         else{
             return `?id=${id}&page=${currPage}`
@@ -282,8 +300,8 @@ const Main = (props) => {
                     <div onClick={() => navigatePubHandler(item._id)}>
                         <Row
                             item={item}
-                            locationActive={locationActive}
-                            workerActive={workerActive}
+                            locationActive={params.region}
+                            workerActive={params.work}
                             user={props.user}
                             trabalhoVisto={trabalhosVistos.includes(item._id)}
                         />
@@ -295,19 +313,21 @@ const Main = (props) => {
     }
 
     const mapBoxesToDisplay = () => {
-        console.log(items)
         return items?.data.map((worker, i) => {
             return(
-                <div key={i} className={styles.box_case} onClick={() => navigate({
-                                                                    pathname: `/main/publications/trabalhador`,
-                                                                    search: getSearchParams(worker._id)
-                                                                })}>
+                <div key={i} className={styles.box_case} onClick={() => {
+                                                                    
+                                                                    navigate({
+                                                                        pathname: `/main/publications/trabalhador`,
+                                                                        search: getSearchParams(worker._id)
+                                                                    })}
+                                                                }>
                     <Carta
                         user={props.user}
                         id={id}
                         worker={worker}
-                        locationActive={locationActive}
-                        workerActive={workerActive}
+                        locationActive={params.region}
+                        workerActive={params.work}
                     />
                 </div>
             )
@@ -322,12 +342,9 @@ const Main = (props) => {
     }
 
 
-    const handleScroll = async event => {
-        const {scrollTop} = event.target.scrollTop
-        if(scrollTop > 0 ){
-            setScrollPosition(true)
-        }
-        else setScrollPosition(false)
+    const handleScroll = async val => {
+        let aux = await val.target.scrollTop
+        dispatch(search_scroll_save(aux))
     }
     
     const handleScrollTop = () => {
@@ -345,13 +362,12 @@ const Main = (props) => {
             if(selectedType==="trabalhos")
                 fetchJobsByFilter()
             else
-                fetchWorkersByFilter()
+                fetchWorkersByFilter(params)
         }
     }
 
     const limparPesquisa = () => {
-        setLocationActive(false)
-        setWorkerActive(false)
+        setParams({work: false, region: false})
         searchParams.delete("work")
         searchParams.delete("region")
         setSearchParams(searchParams)
@@ -368,10 +384,10 @@ const Main = (props) => {
         { value: 'trabalhos', label: 'trabalhos' },
     ]
 
-    return (
-        <div className={styles.servicos}>
+    return (        
+        <div className={styles.servicos} ref={mainRef} onScroll={handleScroll}>
             <Loader loading={loading}/>
-            <div className={styles.main} onScroll={handleScroll}>
+            <div className={styles.main}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_left}>
                     <SelectPosts
@@ -391,7 +407,7 @@ const Main = (props) => {
                             <SearchIcon 
                                 className={styles.search_final_icon} 
                                 style={{backgroundColor:selectedType==='trabalhos'?'#0358e5':'#FF785A'}} 
-                                onClick={() => searchVal.length>0?selectedType==="trabalhos"?fetchJobsByFilter():fetchWorkersByFilter():{}}/>
+                                onClick={() => searchVal.length>0?selectedType==="trabalhos"?fetchJobsByFilter():fetchWorkersByFilter(params):{}}/>
                         </div>
                         <div className={styles.search_filter_div_wrapper}>
                             <div className={styles.search_filter_div}>
@@ -399,23 +415,23 @@ const Main = (props) => {
                                         type="worker"
                                         trabalho={true}
                                         clear={clear}
-                                        urlVal={workerActive}
+                                        urlVal={params.work}
                                         selected={selectedType}
                                         valueChanged={val => {
-                                            locationActive&&setSearchParams({'work': val, 'region': locationActive})
-                                            !locationActive&&setSearchParams({'work': val})
-                                            setWorkerActive(val)}}/>
+                                            params.region&&setSearchParams({'work': val, 'region': params.region})
+                                            !params.region&&setSearchParams({'work': val})
+                                            setParams({work: val, region: params.region})}}/>
                                 
                                 <div style={{marginLeft:"10px"}}>
                                 <SelectPublications 
                                     type="zona"
                                     clear={clear}
-                                    urlVal={locationActive}
+                                    urlVal={params.region}
                                     selected={selectedType}
                                     valueChanged={val => {
-                                        workerActive&&setSearchParams({'work': workerActive, 'region': val})
-                                        !workerActive&&setSearchParams({'region': val})
-                                        setLocationActive(val)}}/>
+                                        params.work&&setSearchParams({'work': params.work, 'region': val})
+                                        !params.work&&setSearchParams({'region': val})
+                                        setParams({work: params.work, region: val})}}/>
                                 </div>
                             </div>
                             <div className={styles.search_clear_wrapper} onClick={() => limparPesquisa()}>
@@ -432,23 +448,23 @@ const Main = (props) => {
                     <div className={styles.top_info}>
                         
                         {
-                            allItems?.data.length===1?
+                            allItemsLength===1?
                             <span className={styles.top_info_numbers}>1 {selectedType.slice(0, selectedType==="trabalhos"?-1:-2)}</span>
-                            :<span className={styles.top_info_numbers}>{allItems?.data.length?allItems?.data.length:0} {selectedType}</span>
+                            :<span className={styles.top_info_numbers}>{allItemsLength} {selectedType}</span>
                         }
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>
                                 {
-                                    workerActive?
+                                    params.work?
                                     <BuildIcon className={styles.top_info_filter_icon}/>
                                     :
                                     <BuildOutlinedIcon className={styles.top_info_filter_icon}/>
                                 }
                             </div>
                             {
-                                workerActive?
+                                params.work?
                                 <span className={styles.top_info_filter_value_on}>
-                                    {profissoesOptions[workerActive]}
+                                    {profissoesOptions[params.work]}
                                 </span>
                                 :
                                 <span  className={styles.top_info_filter_value}>
@@ -459,16 +475,16 @@ const Main = (props) => {
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>
                                 {
-                                    locationActive?
+                                    params.region?
                                     <LocationOnIcon className={styles.top_info_filter_icon}/>
                                     :
                                     <LocationOnOutlinedIcon className={styles.top_info_filter_icon}/>
                                 }
                             </div>
                             {
-                                locationActive?
+                                params.region?
                                 <span  className={styles.top_info_filter_value_on}>
-                                    {regioesOptions[locationActive]}
+                                    {regioesOptions[params.region]}
                                 </span>
                                 :
                                 <span  className={styles.top_info_filter_value}>
@@ -478,7 +494,7 @@ const Main = (props) => {
                         </div>
                     </div>
                     {
-                    items?.data.length>0?
+                    items?.data?.length>0?
                     <div>
                         <div className={listAnim?styles.animList:styles.list} 
                                     onAnimationEnd={() =>{
@@ -500,9 +516,9 @@ const Main = (props) => {
                                 </div>
                                 :
                                 !loading?
-                                <div style={{gridTemplateRows: `repeat(${Math.ceil(items?.data.length/2+1)}, 140px)`}} 
-                                        className={gridAnim?styles.animGrid:styles.grid}
-                                        onAnimationEnd={() => setGridAnim(false)}
+                                <div style={{gridTemplateRows: `repeat(${Math.ceil(items?.data?.length/2+1)}, 140px)`}} 
+                                        className={styles.grid}
+                            
                                 >
                                 {
                                     items?.type==="trabalhadores"?
@@ -511,7 +527,7 @@ const Main = (props) => {
                                 }
                                 </div>
                                 :
-                                <div className={gridAnim?styles.animGrid:styles.grid}>
+                                <div className={styles.grid}>
                                     <div className={styles.loading_skeleton}/>
                                     <div className={styles.loading_skeleton}/>
                                     <div className={styles.loading_skeleton}/>
@@ -523,61 +539,63 @@ const Main = (props) => {
                                     <div style={{marginTop:"30px"}} className={styles.loading_skeleton}/>
                                 </div>
                             }
-                        </div>
-                        <div className={styles.num}>
-                            {
-                                currDisplay === "solo"?
-                                <div className={styles.num_flex}>
-                                    <div className={styles.num_flex_content}>
-                                        <span style={{color:"white"}}>_</span>
-                                        <span style={{color:"white"}}>_</span>
-                                        <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
-                                        <span style={{color:"white"}}>_</span>
-                                        <ArrowForwardIosIcon className={styles.arrow_disabled}/>
-                                    </div>
-                                </div>
-                                :currDisplay === "init"?
-                                <div className={styles.num_flex}>
-                                    <div className={styles.num_flex_content}>
-                                        <span style={{color:"white"}}>_</span>
-                                        <span style={{color:"white"}}>_</span>
-                                        <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
-                                        <span className={styles.num_style_side} onClick={() => arrowClick(1)}>{currPage + 1}</span>
-                                        <ArrowForwardIosIcon className={styles.arrow}
-                                                    onClick={() => arrowClick(1)}/>
-                                        
-                                    </div>
-                                </div>
-                                :currDisplay === "middle"?
-                                <div className={styles.num_flex}>
-                                    <div className={styles.num_flex_content}>
-                                        <ArrowBackIosNewIcon className={styles.arrow}
-                                                    onClick={() => arrowClick(-1)}/>
-                                        <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>
-                                        <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
-                                        <span className={styles.num_style_side} onClick={() => arrowClick(1)}>{currPage + 1}</span>
-                                        <ArrowForwardIosIcon className={styles.arrow}
-                                                    onClick={() => arrowClick(1)}/>
-                                    </div>
-                                </div>
-                                :
-                                <div className={styles.num_flex}>
-                                    <div className={styles.num_flex_content}>
-                                        <ArrowBackIosNewIcon className={styles.arrow}
-                                                    onClick={() => arrowClick(-1)}/>
-                                        <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>
-                                        <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
-                                        <span style={{color:"white"}}>__</span>
-                                        <span style={{color:"white"}}>__</span>
-                                    </div>
-                                </div>
-                            }
-                        </div>
+                        </div>   
                     </div>
                     :loaded?
                         <NoPage type={selectedType} object="no_search" limparPesquisa={() => limparPesquisa()}/>
                     :null
                 }
+            </div>
+            <div className={styles.num_wrapper} style={{borderTopColor:selectedType==="trabalhos"?'#0358e580':'#FF785A80'}}>
+                <div className={styles.num}>
+                    {
+                        currDisplay === "solo"?
+                        <div className={styles.num_flex}>
+                            <div className={styles.num_flex_content}>
+                                <span style={{color:"white"}}>_</span>
+                                <span style={{color:"white"}}>_</span>
+                                <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
+                                <span style={{color:"white"}}>_</span>
+                                <ArrowForwardIosIcon className={styles.arrow_disabled}/>
+                            </div>
+                        </div>
+                        :currDisplay === "init"?
+                        <div className={styles.num_flex}>
+                            <div className={styles.num_flex_content}>
+                                <span style={{color:"white"}}>_</span>
+                                <span style={{color:"white"}}>_</span>
+                                <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
+                                <span className={styles.num_style_side} onClick={() => arrowClick(1)}>{currPage + 1}</span>
+                                <ArrowForwardIosIcon className={styles.arrow}
+                                            onClick={() => arrowClick(1)}/>
+                                
+                            </div>
+                        </div>
+                        :currDisplay === "middle"?
+                        <div className={styles.num_flex}>
+                            <div className={styles.num_flex_content}>
+                                <ArrowBackIosNewIcon className={styles.arrow}
+                                            onClick={() => arrowClick(-1)}/>
+                                <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>
+                                <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
+                                <span className={styles.num_style_side} onClick={() => arrowClick(1)}>{currPage + 1}</span>
+                                <ArrowForwardIosIcon className={styles.arrow}
+                                            onClick={() => arrowClick(1)}/>
+                            </div>
+                        </div>
+                        :
+                        <div className={styles.num_flex}>
+                            <div className={styles.num_flex_content}>
+                                <ArrowBackIosNewIcon className={styles.arrow}
+                                            onClick={() => arrowClick(-1)}/>
+                                <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>
+                                <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
+                                <span style={{color:"white"}}>__</span>
+                                <span style={{color:"white"}}>__</span>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     )

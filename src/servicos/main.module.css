@@ -1,6 +1,6 @@
 .servicos{
     width: 100%;
-    height: calc(100vh - 68px);
+    height: calc(100vh - 138px);
     background-color: var(--brand);
     margin: 0 auto;
     border-top: 1px solid #ddd;
@@ -27,7 +27,6 @@
     padding: 1px;
     border-radius: 5px;
 }
-
 .main{
     width: 98%;
     height: 100%;
@@ -120,14 +119,24 @@
     display: flex;
     flex-direction: column;
 }
-
+.num_wrapper{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid var(--action);
+    background-color: var(--brand);
+    z-index: 5;
+    height: 60px;
+}
 .num{
     width: 100%;
 }
 .num_flex{
     display: flex;
     justify-content: center;
-    padding: 20px 0;
 }
 .num_flex_content{
     display: flex;
@@ -135,19 +144,21 @@
     padding: 5px 10px;
     background-color: white;
     border: 1px solid rgb(138, 138, 138);
-    border-radius: 5px;
+    border-radius: 3px;
     justify-content: space-between;
 }
 .num_style{
     margin-top: 2px;
     font-weight: 600;
     font-size: 1rem;
+    color: var(--brand);
 }
 .num_style_side{
     font-size: 0.8rem;
     font-weight: 500;
     margin-top: 8px;
     cursor: pointer;
+    color: var(--brand);
 }
 .arrow_disabled{
     cursor: default;

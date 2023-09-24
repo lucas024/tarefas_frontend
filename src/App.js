@@ -19,6 +19,8 @@ import Trabalho from './main/trabalho';
 import AuthWorker from './auth/authWorker';
 import Trabalhador from './main/trabalhador';
 import Admin from './admin/admin';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 function App() {
   const api_url = "http://localhost:5200" //"https://docker-image-fixed-v2-z4uucaddha-ew.a.run.app"
@@ -202,7 +204,7 @@ const refreshWorker = () => {
 
   return (
     <div className="App">
-      <div>
+      <Provider store={store}>
         <BrowserRouter>
           <Navbar 
             user={user} 
@@ -289,7 +291,7 @@ const refreshWorker = () => {
               <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
-      </div>
+      </Provider>
     </div>
   );
 }

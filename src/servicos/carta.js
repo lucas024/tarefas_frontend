@@ -52,9 +52,9 @@ const Carta = (props) => {
         })
         return arrTrabalhos.map((val, i) => {
             return (
-                <div className={props.workerActive===val?styles.top_image_div_selected:styles.top_image_div} 
+                <div key={i} className={props.workerActive===val?styles.top_image_div_selected:styles.top_image_div} 
                         style={{marginLeft:i!==0?'5px':'0px'}}>
-                    <img key={i} className={styles.top_image} src={profissoesPngs[val]}/>
+                    <img className={styles.top_image} src={profissoesPngs[val]}/>
                 </div>
                 
             )

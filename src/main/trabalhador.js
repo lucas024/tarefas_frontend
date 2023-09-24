@@ -8,6 +8,7 @@ import Loader from '../general/loader';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import {regioesOptions, profissoesOptions, profissoesPngs} from '../general/util'
+import ChatIcon from '@mui/icons-material/Chat';
 
 const ObjectID = require("bson-objectid");
 
@@ -110,24 +111,43 @@ const Trabalhador = props => {
             }
     }
 
-    const mapTrabalhosList = list => {
-        return list?.map((val, i) => {
-            return (
-                <div key={i} className={styles.list_el_wrapper}>
-                    <span className={workerActive===val?styles.list_el_active:styles.list_el}>{profissoesOptions[val]}</span>
-                </div>
-            )
-        })
+    const mapTrabalhosList = () => {
+        if(worker.trabalhos)
+        {
+            let arrTrabalhos = [...worker?.trabalhos]
+            arrTrabalhos.sort(function(a, b){
+                if(a < b) { return -1; }
+                if(a > b) { return 1; }
+                return 0;
+            })
+            return arrTrabalhos.map((val, i) => {
+                return (
+                    <div key={i} className={styles.list_el_wrapper}>
+                        <span className={workerActive===val?styles.list_el_active:styles.list_el}>{profissoesOptions[val]}</span>
+                    </div>
+                )
+            })
+        }
+        
     }
 
-    const mapRegioesList = list => {
-        return list?.map((val, i) => {
-            return (
-                <div key={i} className={styles.list_el_wrapper}>
-                    <span className={locationActive===val?styles.list_el_active:styles.list_el}>{regioesOptions[val]}</span>
-                </div>
-            )
-        })
+    const mapRegioesList = () => {
+        if(worker.regioes)
+        {
+            let arrRegioes = [...worker?.regioes]
+            arrRegioes.sort(function(a, b){
+                if(a < b) { return -1; }
+                if(a > b) { return 1; }
+                return 0;
+            })
+            return arrRegioes.map((val, i) => {
+                return (
+                    <div key={i} className={styles.list_el_wrapper}>
+                        <span className={locationActive===val?styles.list_el_active:styles.list_el}>{regioesOptions[val]}</span>
+                    </div>
+                )
+            })
+        }
     }
 
     const getNumberDisplay = number => {
@@ -139,7 +159,7 @@ const Trabalhador = props => {
     }, [props.userLoadAttempt])
 
     const displayTrabalhosImages = () => {
-        if(worker.trabalhos){
+        if(worker?.trabalhos){
             let arrTrabalhos = [...worker.trabalhos]
             arrTrabalhos.sort(function(a, b){
                 if(a < b) { return -1; }
@@ -148,13 +168,11 @@ const Trabalhador = props => {
             })
             return arrTrabalhos.map((val, i) => {
                 return (
-                    <div className={styles.top_image_div}>
-                        <img key={i} className={workerActive===val?styles.top_image:styles.top_image} src={profissoesPngs[val]}/>
-                        {
-                            workerActive===val?
-                            <span className={styles.selected_worker}></span>
-                            :null
-                        }
+                    <div 
+                        key={i} 
+                        className={workerActive===val?styles.top_image_div_selected:styles.top_image_div}
+                        style={{marginLeft:i===0?'-10px':''}}>
+                        <img className={styles.top_image} src={profissoesPngs[val]}/>
                     </div>
                     
                 )
@@ -173,10 +191,7 @@ const Trabalhador = props => {
                     <span className={styles.normal_back_left_text}>VOLTAR</span>
                 </Link>
                 <div className={styles.normal_back_right}>
-                    <span className={styles.normal_back_right_dir} onClick={() => navigate({
-                    pathname: '/main/publications/trabalhadores',
-                    state: {from_page: true}
-                    })}>Trabalhadores</span>
+                    <span className={styles.normal_back_right_dir} onClick={() => navigate(-1)}>Trabalhadores</span>
                     <div className={styles.normal_back_right_sep_wrapper}>
                         <div className={styles.normal_back_right_sep}>|</div>
                     </div>
@@ -197,13 +212,8 @@ const Trabalhador = props => {
                             :<FaceIcon className={styles.left_img}/>
                         }
                         <div className={styles.left_div}>
-                            <div style={{display:"flex", alignItems:"flex-start"}}>
-                                <span className={styles.left_name}>{worker.name}</span>
-                                <div className={styles.middle_images}>
-                                    <div className={styles.middle_images_background}>
-                                        {worker&&displayTrabalhosImages()}
-                                    </div>
-                                </div>
+                            <div className={styles.left_name_wrapper}>
+                                <p className={styles.left_name}>{worker.name}</p>
                             </div>
                             <span className={styles.left_type}>{worker.entity?"Empresa":"Particular"}</span>
                             {
@@ -214,15 +224,25 @@ const Trabalhador = props => {
                         </div>
                     </div>
                     <div className={styles.description_wrapper}>
+                        <div className={styles.middle_images}>
+                            <div className={styles.middle_images_background}>
+                                {worker&&displayTrabalhosImages()}
+                            </div>
+                        </div>
                         <span className={styles.description_title}>Sobre</span>
                         <span className={styles.description}>{worker.description}</span>
                     </div>
                     {
                         !ownPost&&loaded?
-                        <span className={styles.top_message} onClick={() => {
-                            messageAreaRef.current.focus()
-                            messageRef.current.scrollIntoView()
-                            }}>Enviar Mensagem</span>
+                        <span 
+                            className={styles.top_message} 
+                            onClick={() => {
+                                messageAreaRef.current.focus()
+                                messageRef.current.scrollIntoView()
+                            }}>
+                                <span className={styles.top_message_text}>Enviar Mensagem</span>
+                                <ChatIcon className={styles.top_message_icon}/>
+                            </span>                        
                         :ownPost?
                         null
                         :<span className={`${styles.top_message} ${styles.skeleton}`} style={{height:"40px", width:"150px"}}></span>
@@ -245,14 +265,14 @@ const Trabalhador = props => {
                         <div className={styles.bottom_right_wrapper}>
                             <span className={styles.bottom_right_title}>Trabalhos</span>
                             <div className={styles.list}>
-                                {mapTrabalhosList(worker.trabalhos)}
+                                {mapTrabalhosList()}
                             </div>
                         </div>
                         <span className={styles.bottom_right_divider}></span>
                         <div className={styles.bottom_right_wrapper}>
                             <span className={styles.bottom_right_title}>Regiões</span>
                             <div className={styles.list}>
-                                {mapRegioesList(worker.regioes)}
+                                {mapRegioesList()}
                             </div>
                         </div>
                     </div>
@@ -282,7 +302,7 @@ const Trabalhador = props => {
                                 <div className={styles.frontdrop}>
                                     <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"#FF785A", textTransform:"capitalize"}}>{worker?.name?.split(" ")[0]}</span>,</span>
                                     <span className={styles.frontdrop_text}>registe-se ou entre numa conta!</span>
-                                    <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication/worker?type=1')}>Ir para autenticação</span>
+                                    <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication/worker?type=1')}>autenticar</span>
                                 </div>
                             </div>
                             :
