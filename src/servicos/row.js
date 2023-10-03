@@ -30,9 +30,9 @@ const Row = (props) => {
 
     const getMainPhoto = (photos, main_photo) => {
         for(let el of photos)
-            if(el.id === main_photo) return el.url
+            if(el.id === main_photo) return el?.url
 
-        return photos[0].url
+        return photos[0]?.url
     }
 
     return (

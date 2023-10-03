@@ -295,12 +295,13 @@ const Trabalhador = props => {
                             !props.user?
                             <div className={styles.textarea_wrapper}>
                                 <textarea   
+                                        disabled={!props.user}
                                         ref={messageAreaRef}
                                         className={styles.message_textarea_disabled}
                                         placeholder="Escrever mensagem..."
                                         />
                                 <div className={styles.frontdrop}>
-                                    <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"#FF785A", textTransform:"capitalize"}}>{worker?.name?.split(" ")[0]}</span>,</span>
+                                    <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{textTransform:"capitalize", fontWeight:700}}>{worker?.name?.split(" ")[0]}</span>,</span>
                                     <span className={styles.frontdrop_text}>registe-se ou entre numa conta!</span>
                                     <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication/worker?type=1')}>autenticar</span>
                                 </div>

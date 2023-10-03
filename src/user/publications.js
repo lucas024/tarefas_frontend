@@ -164,12 +164,12 @@ const Publications = (props) => {
         <div className={styles.reserva_list}>
             <Loader loading={loading}/>
             <div className={styles.list_title}>
-                <span className={styles.top_title}>As Minhas Publicações</span>
+                <span className={styles.top_title}>Os Meus Trabalhos</span>
             </div>
 
             <div className={styles.list}>
                 <div className={styles.list_prox}>
-                    <span className={styles.list_prox_text}>Publicações</span>
+                    <span className={styles.list_prox_text}>Trabalhos</span>
                 </div>
                     <div>
                     {
@@ -179,7 +179,7 @@ const Publications = (props) => {
                         loaded?
                         <div className={styles.item_none} style={{padding:"30px 0"}}>
                             <div className={styles.item_flex}>
-                                <span className={styles.item_type_tbd}>Sem publicações activas</span>
+                                <span className={styles.item_type_tbd}>Sem trabalhos activos</span>
                                 <span className={styles.publicar} onClick={() => {navigate('/publicar')}}>
                                     PUBLICAR
                                 </span>
@@ -189,7 +189,7 @@ const Publications = (props) => {
                     }
                     </div>
                     <div className={styles.list_prox} style={{marginTop:0}}>
-                        <span className={styles.list_prox_text}>Publicações Concluídas</span>
+                        <span className={styles.list_prox_text}>Trabalhos Concluídos</span>
                     </div>
                     {
                         notActiveReservations?
@@ -197,7 +197,7 @@ const Publications = (props) => {
                         :
                         <div className={styles.item_none}>
                             <div className={styles.item_flex}>
-                                <span className={styles.item_type_tbd}>Sem publicações concluídas</span>
+                                <span className={styles.item_type_tbd}>Sem trabalhos concluídos</span>
                             </div>
                         </div>
                         }

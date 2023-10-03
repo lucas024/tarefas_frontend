@@ -44,7 +44,7 @@
 }
 .flex_end_publicar:hover{
     background-color: rgb(196, 68, 0);
-    transition: 0.5s;
+    transition: 150ms;
 }
 .publicar{
     color: white;
@@ -57,7 +57,7 @@
     margin-bottom: 5px;
     cursor: pointer;
     position: relative;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
 }
 .chat_div{
     display: flex;
@@ -103,13 +103,13 @@
 .user_button{
     margin-right: 20px;
     background-color: var(--brand);
-    padding: 7px;
+    padding: 10px;
     box-sizing: border-box;
     color: white;
     border-radius: 5px;
     font-weight: 600;
     cursor: pointer;
-    border: 3px solid var(--brand);
+    font-size: 0.9rem;
 }
 .user_button:hover{
     background-color: white;
@@ -147,19 +147,18 @@
 }
 .user{
     display: flex;
-    justify-content: space-between;
     align-items: center;
     cursor: pointer;
     position: relative;
     border-bottom: none;
-    width: 160px;
+    width: 140px;
 }
 .user:hover > * {
     color: var(--action);
 }
 .user_text{
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 .user_dropdown{
     position: relative;
@@ -226,7 +225,10 @@
     width: 100%;
     justify-content: space-between;
 }
-.drop_div_text{}
+.drop_div_text{
+    font-size: 0.9rem;
+    font-weight: 400;
+}
 .off_icon{
     width: 20px !important;
     height: 20px !important;
@@ -274,6 +276,15 @@
     text-decoration: underline;
     margin-left: 15px;
     margin-top: 3px;
+}
+.drop_div_flex{
+    display: flex;
+    align-items: center;
+}
+.drop_div_flex_icon{
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 2px;
 }
 .skeleton_button{
     width: 100px;

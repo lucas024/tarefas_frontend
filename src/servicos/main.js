@@ -20,6 +20,8 @@ import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import Carta from './carta'
 import { useSelector, useDispatch } from 'react-redux'
 import { search_save, search_scroll_save } from '../store';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+
 
 require('dayjs/locale/pt')
 
@@ -48,9 +50,9 @@ const Main = (props) => {
 
     const [selectedType, setSelectedType] = useState(null)
 
-
     const myRef = useRef(null)
-    const mainRef = useRef(null)
+    const postRef = useRef(null)
+    
     const location = useLocation()
     
     const monthNames = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
@@ -66,11 +68,13 @@ const Main = (props) => {
 
         setCurrPage(paramsAux.page?paramsAux.page:1)
         setSelectedType(arr_pathname[3])
+
         if(search_context?.list == null 
             || ((search_context?.work !== paramsAux.work) && paramsAux.work != undefined)
             || ((search_context?.region !== paramsAux.region) && paramsAux.region != undefined)
             || search_context?.type !== arr_pathname[3])
         {
+            console.log('ayo')
             if(paramsAux.region||paramsAux.work){
                 if(arr_pathname[3]==="trabalhos")
                     fetchJobsByFilter()
@@ -102,13 +106,9 @@ const Main = (props) => {
         }
         else
         {
-            console.log(search_context, search_scroll)
+            console.log('aya')
             setItems(search_context.list)
-            setAllItemsLength(search_context.list.data.length)
-            setTimeout(() => {
-                mainRef.current.scrollTo(50, 0)
-            }, 1000)
-            
+            setAllItemsLength(search_context.list.data.length)            
         }
     }, [location, searchParams])
 
@@ -117,6 +117,13 @@ const Main = (props) => {
 
         return () => setLoaded(false)
     }, [props.userLoadAttempt])
+
+    useEffect(() => {
+        if(items?.data?.length>0)
+        {
+            postRef?.current?.scrollIntoView()
+        }
+    }, [items])
 
     const setItemsAux = all_items => {
         if(all_items!==null){
@@ -142,11 +149,17 @@ const Main = (props) => {
                 }
             }
             setItems(items)
+            let arr_pathname = location.pathname.split('/')
+            let paramsAux = Object.fromEntries([...searchParams])
+            if(search_scroll!=0)
+            {
+                search_scroll_save(0)
+            }
             dispatch(search_save({
                 list: items,
-                work: params.work,
-                region: params.region,
-                type: selectedType,
+                work: paramsAux.work,
+                region: paramsAux.region,
+                type: arr_pathname[3],
                 all_items_length: allItemsLength
             }))
         }
@@ -297,7 +310,15 @@ const Main = (props) => {
                         </div>
                         :null
                     }
-                    <div onClick={() => navigatePubHandler(item._id)}>
+                    <div ref={i===search_scroll?postRef:null} onClick={() => {
+                            dispatch(search_scroll_save(i))
+                            navigate(`/main/publications/publication${getSearchParams(item._id)}`, {
+                                    state: {
+                                        fromUserPage: false,
+                                    }
+                                }
+                            )}
+                        }>
                         <Row
                             item={item}
                             locationActive={params.region}
@@ -315,8 +336,8 @@ const Main = (props) => {
     const mapBoxesToDisplay = () => {
         return items?.data.map((worker, i) => {
             return(
-                <div key={i} className={styles.box_case} onClick={() => {
-                                                                    
+                <div key={i} ref={i===search_scroll?postRef:null} className={styles.box_case} onClick={() => {
+                                                                    dispatch(search_scroll_save(i))
                                                                     navigate({
                                                                         pathname: `/main/publications/trabalhador`,
                                                                         search: getSearchParams(worker._id)
@@ -341,11 +362,6 @@ const Main = (props) => {
         handleScrollTop()
     }
 
-
-    const handleScroll = async val => {
-        let aux = await val.target.scrollTop
-        dispatch(search_scroll_save(aux))
-    }
     
     const handleScrollTop = () => {
         myRef.current.scrollIntoView()
@@ -385,7 +401,7 @@ const Main = (props) => {
     ]
 
     return (        
-        <div className={styles.servicos} ref={mainRef} onScroll={handleScroll}>
+        <div className={styles.servicos}>
             <Loader loading={loading}/>
             <div className={styles.main}>
                 <div className={styles.search_div} ref={myRef}>
@@ -438,7 +454,7 @@ const Main = (props) => {
                                 <span className={styles.search_clear}>
                                     Limpar Pesquisa
                                 </span>
-                                <img src={clearIcon} className={styles.search_clear_icon}/>
+                                <HighlightOffIcon className={styles.search_clear_icon}/>
                             </div>
                         </div>
                     </div>

@@ -14,7 +14,7 @@
 .left{
     width: 200px;
     min-width: 200px;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #ffffff50;
     background-color: var(--brand);
     height: 100%;
 }

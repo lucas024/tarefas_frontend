@@ -104,7 +104,7 @@ useEffect(() => {
               })
               .then(res2 => {
                   if(res2.data.schedule){
-                      if(new Date().getTime() < new Date(res2.data.schedule.current_phase.end_date*1000)){
+                      if(new Date().getTime() < new Date(res2.data.schedule.current_phase?.end_date*1000)){
                         setHasSubscription(true)
                       }
                   }
@@ -236,7 +236,17 @@ const refreshWorker = () => {
                   userLoadAttempt={userLoadAttempt}
                   />}
               />
-              <Route exact path="/publicar/*" 
+              <Route exact path="/publicar/:editar/*" 
+                key={'single'}
+                element={<Publicar
+                  user={user}
+                  api_url={api_url}
+                  loading={loading}
+                  loadingHandler={bool => setLoading(bool)}
+                  />}
+              />
+              <Route exact path="/publicar/novo/*" 
+                key={'all'}
                 element={<Publicar
                   user={user}
                   api_url={api_url}

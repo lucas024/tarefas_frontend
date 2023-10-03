@@ -51,6 +51,14 @@ const NoPage = (props) => {
                         Limpar Pesquisa
                     </span>
                 </div>
+                :props.object==="select_message"?
+                <div className={styles.blank_flex} style={{marginTop:"100px"}}>
+                    <span className={styles.blank_text} style={{color:"#ffffff"}}>Selecione uma mensagem</span>
+                    <ChatIcon className={styles.blank_face_small} style={{color:"white"}}/>
+                    {/* <span className={styles.button} style={{backgroundColor:props.type==="trabalhos"?"#0358e5":"#FF785A"}} onClick={() => props.limparPesquisa()}>
+                        Limpar Pesquisa
+                    </span> */}
+                </div>
                 :
                 <div className={styles.blank_flex}>
                     <span className={styles.blank_text}>Esta {props.object} não existe</span>

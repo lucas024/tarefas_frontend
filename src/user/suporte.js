@@ -377,9 +377,9 @@ const Suporte = (props) => {
     return (
         <div className={styles.suporte}>
 
-            <div className={styles.suporte_title}>
+            {/* <div className={styles.suporte_title}>
                 <span className={styles.top_title}>Suporte</span>
-            </div>
+            </div> */}
             <div className={styles.chat}>
                 <ClipLoader color={"#FF785A"} css={override} loading={loading} size={150} />
                     {

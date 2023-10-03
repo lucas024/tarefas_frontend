@@ -158,7 +158,7 @@ const Trabalho = (props) => {
     useEffect(() => {
         if(loaded)
         {
-            if(props.user.admin)
+            if(props.user?.admin)
             {
                 setViewTo("showFull")
                 setLoading(false)
@@ -177,10 +177,10 @@ const Trabalho = (props) => {
                     schedule_id: props.user.subscription.sub_schedule
                 })
                 .then(res2 => {
-                    if(!isActiveSub(res2.data.schedule.current_phase.end_date)){
+                    if(!isActiveSub(res2.data.schedule.current_phase?.end_date)){
                         setViewTo('noSub')
                     }
-                    else if(isActiveSub(res2.data.schedule.current_phase.end_date)&&props.user.state===1)
+                    else if(isActiveSub(res2.data.schedule.current_phase?.end_date)&&props.user.state===1)
                     {
                         setViewTo("showFull")
                     }
@@ -386,7 +386,7 @@ const Trabalho = (props) => {
 
     const editPublicationHandler = () => {
         navigate({
-            pathname: `/publicar`,
+            pathname: `/publicar/editar`,
             search: `?editar=true&res_id=${reservation._id}`
         })
     }
@@ -439,9 +439,9 @@ const Trabalho = (props) => {
                     }
                     {
                         location.state&&location.state.fromUserPage&&userView?
-                        <div className={styles.previous_voltar} onClick={() => backHandler()}>
+                        <div className={styles.previous_voltar} style={{borderBottom:`3px solid #FF785A`}} onClick={() => backHandler()}>
                             <ArrowBackIcon className={styles.previous_symbol}/>
-                            <span className={styles.previous_voltar_text}>VOLTAR ÀS <span className={styles.action}>MINHAS PUBLICAÇÕES</span></span>
+                            <span className={styles.previous_voltar_text}>VOLTAR AOS <span className={styles.action}>MEUS TRABALHOS</span></span>
                         </div>
                         :
                         <div>
@@ -704,7 +704,7 @@ const Trabalho = (props) => {
                                             placeholder="Escrever mensagem..."
                                         />
                                         <div className={styles.frontdrop}>
-                                            <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"white", textTransform:"capitalize"}}>{reservation.user_name.split(" ")[0]}</span>,</span>
+                                            <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"white", textTransform:"capitalize", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>,</span>
                                             {
                                                 noAccountView?
                                                 <span className={styles.frontdrop_text}>crie uma conta de trabalhador</span>

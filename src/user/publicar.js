@@ -191,6 +191,15 @@ const Publicar = (props) => {
             })
         }
         else{
+            setEdit(false)
+            setEditReservation(null)
+            setTitulo('')
+            setDescription('')
+            setEditAddress(null)
+            setPorta('')
+            setLat('')
+            setLng('')
+            setDistrict('')
             props.loadingHandler(false)
         }
     }, [searchParams])
@@ -490,9 +499,9 @@ const Publicar = (props) => {
         <div className={styles.reservation}>
             {
                 edit?
-                <div className={styles.previous_voltar} style={{borderBottom:`5px solid ${getTypeColor(editReservation?.type)}`}} onClick={() => navigate(-1)}>
+                <div className={styles.previous_voltar} style={{borderBottom:`3px solid #FF785A`}} onClick={() => navigate(-1)}>
                     <ArrowBackIcon className={styles.previous_symbol}/>
-                    <span className={styles.previous_voltar_text}><span style={{color:getTypeColor(editReservation?.type)}}>CANCELAR </span> EDIÇÃO</span>
+                    <span className={styles.previous_voltar_text}>CANCELAR<span style={{color:'#FF785A'}}> EDIÇÃO</span></span>
                 </div>
                 :null
             }
@@ -546,11 +555,16 @@ const Publicar = (props) => {
                     </CSSTransition>
                     <div className={styles.reservar}>
                         <div className={styles.reservar_upper} style={{marginTop:edit?"100px":""}}>
-                            <p className={styles.reservar_upper_title}>PUBLICAR</p>
+                            <p className={styles.reservar_upper_title}>
+                                {edit?
+                                <div><span style={{color:'#FF785A'}}>EDITAR</span><span> TRABALHO</span></div>:
+                                'PUBLICAR TRABALHO'
+                                }
+                            </p>
                             {
                                 edit?
                                 <p className={styles.reservar_upper_desc} style={{display:"flex", justifyContent:"center", marginBottom:"10px"}}>
-                                    <span className={styles.action} style={{fontSize:"2rem"}}>EDITAR</span>
+                                    <span className={styles.action} style={{fontSize:"1rem"}}>EDITAR</span>
                                 </p>
                                 :
                                 <p className={styles.reservar_upper_desc}>
@@ -561,7 +575,9 @@ const Publicar = (props) => {
                         </div>
                         <div style={{width:"100%", display:"flex", justifyContent:"space-between", alignItems:"center"}}>
                             <div className={styles.bot_title_wrapper}>
-                                <span className={styles.bot_title_indicator}>1</span>
+                                <div className={styles.bot_title_indicator_wrapper}>
+                                    <span className={styles.bot_title_indicator}>1</span>
+                                </div>
                                 <span className={styles.bot_title}>Detalhes do Trabalho</span>
                             </div>
                             {
@@ -640,7 +656,7 @@ const Publicar = (props) => {
                                             </span>
                                         }
                                     
-                                    <input onFocus={() => {setTituloFocused(true)}} placeholder="Título da publicação..." maxLength={40} onChange={e => setTitulo(e.target.value)} value={titulo} className={styles.top_input_short} style={{borderColor:tituloWrong&&titulo.length>0?"red":!tituloWrong&&tituloFocused&&titulo.length>0?"#26B282":""}}></input>
+                                    <input onFocus={() => {setTituloFocused(true)}} placeholder="Título do trabalho..." maxLength={40} onChange={e => setTitulo(e.target.value)} value={titulo} className={styles.top_input_short} style={{borderColor:tituloWrong&&titulo.length>0?"red":!tituloWrong&&tituloFocused&&titulo.length>0?"#26B282":""}}></input>
                                 </div>
                                 <div className={styles.diff_right}>
                                         {
@@ -662,7 +678,7 @@ const Publicar = (props) => {
                                             maxRows={20}
                                             minRows={8}
                                             maxLength={400}
-                                            className={styles.top_desc_area} placeholder="Descrição do problema..." 
+                                            className={styles.top_desc_area} placeholder="Descrição do trabalho..." 
                                             value={description} onChange={e => {
                                             setTextareaHeight(e.target.value)
                                             setDescription(e.target.value)}}>
@@ -723,7 +739,9 @@ const Publicar = (props) => {
                         <div className={styles.bottom}>
                             <div className={styles.bottom_area}>
                                 <div className={styles.bot_title_wrapper}>
-                                    <span className={styles.bot_title_indicator}>2</span>
+                                    <div className={styles.bot_title_indicator_wrapper}>
+                                        <span className={styles.bot_title_indicator}>2</span>
+                                    </div>
                                     <span className={styles.bot_title}>Detalhes de contacto</span>
                                 </div>
                                 <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
@@ -750,7 +768,9 @@ const Publicar = (props) => {
                             </div>
                             <div className={styles.bottom_area_second}>
                                 <div className={styles.bot_title_wrapper} style={{alignItems:editReservation?.type===2&&getFieldWrong('location')?'flex-start':""}}>
-                                    <span className={styles.bot_title_indicator}>3</span>
+                                    <div className={styles.bot_title_indicator_wrapper}>
+                                        <span className={styles.bot_title_indicator}>3</span>
+                                    </div>
                                     {
                                         editReservation?.type===2&&getFieldWrong('location')?
                                         <div className={styles.diff_right_title_container} style={{alignItems:"flex-start"}}>

@@ -7,10 +7,10 @@
 }
 .personal_title{
     width: 100%;
-    border-bottom: 1px solid #ccc;
     display: flex;
     height: 80px;
     background-color: white;
+    margin-top: 1px;
 }
 .top_info{
     height: fit-content;
@@ -23,12 +23,12 @@
 }
 
 .top_title{
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     color: var(--brand);
     font-weight: 600;
     align-self: center;
     text-transform: uppercase;
-    margin-left: 3%;
+    margin-left: 15px;
 }
 .top_title_two{
     font-size: 3rem;
@@ -67,8 +67,9 @@
     padding: 20px;
     padding-top: 20px;
     width: 100%;
-    background-color: white;
+    background-color: var(--brand);
     box-sizing: border-box;
+    border-bottom: 1px solid var(--brand);
 }
 .top_complete_line{
     display: flex;
@@ -122,6 +123,8 @@
     display: flex;
     width: 100%;
     margin-top: 10px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid white;
 }
 .top_right_flex{
     display: flex;
@@ -148,8 +151,13 @@
     position: absolute;
     right: 0;
     top: 0;
-    color: var(--action);
-    font-size: 40px;
+    color: var(--neutral);
+    font-size: 30px !important;
+    cursor: pointer !important;
+    padding: 5px;
+    background-color: var(--action);
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 .image_input_wrapper{
     position: absolute;
@@ -157,7 +165,9 @@
     top: 0;
 }
 .image_input_wrapper:hover > .edit_icon{
-    opacity: 0.7;
+    color: var(--action);
+    background-color: white;
+    transition: all 150ms ease-in-out;
 }
 input[type=file]{
     opacity:0;
@@ -186,7 +196,7 @@ input[type=file]{
     flex-direction: column;
     position: relative;
     padding: 10px;
-    background-color: white;
+    background-color: var(--brand);
 }
 .input_flex{
     margin-top: 5px;
@@ -195,11 +205,11 @@ input[type=file]{
     flex-direction: column;
     position: relative;
     padding: 10px;
-    background-color: white;
+    background-color: var(--brand);
 }
 .personal_subtitle{
     font-weight: 500;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     text-transform: uppercase;
     display: inline-block;
 }
@@ -220,11 +230,12 @@ input[type=file]{
     width: 250px;
     padding-left: 5px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     font-family: 'Montserrat', sans-serif;
     background-color: var(--background);
     outline: none;
-    border-radius: 5px;
+    border-radius: 3px;
+    padding: 5px 10px;
 }
 .input_wrong{
     border: none;
@@ -234,11 +245,12 @@ input[type=file]{
     width: 250px;
     padding-left: 5px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     font-family: 'Montserrat', sans-serif;
     background-color: var(--background);
     outline: none;
-    border-radius: 5px;
+    border-radius: 3px;
+    padding: 5px 10px;
 }
 .input_input{
     border: none;
@@ -248,9 +260,10 @@ input[type=file]{
     width: 250px;
     padding-left: 5px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     font-family: 'Montserrat', sans-serif;
-    border-radius: 5px;
+    border-radius: 3px;
+    padding: 5px 10px;
     background-color: #cccccc10;
 }
 .input_input_edit{
@@ -262,10 +275,11 @@ input[type=file]{
     width: 250px;
     padding-left: 5px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     font-family: 'Montserrat', sans-serif;
-    border-radius: 5px;
     outline: none;
+    border-radius: 3px;
+    padding: 5px 10px;
 }
 .textarea_wrong{
     color: var(--brand);
@@ -346,9 +360,10 @@ input[type=file]{
 }
 .input_title{
     font-weight: 400;
-    font-size: 1rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
     width: 110px;
+    color: var(--neutral);
 }
 .input_email{
     font-weight: 400;
@@ -362,10 +377,9 @@ input[type=file]{
     align-items: center;
 }
 .edit{
-    padding: 3px 10px;
+    padding: 20px;
     border-radius: 5px;
     box-sizing: border-box;
-    border: 3px solid var(--action);
     background-color: var(--action);
     color: white;
     cursor: pointer;
@@ -383,20 +397,27 @@ input[type=file]{
 .edit_top{
     position: absolute;
     top: 0px;
-    right: 0;
-    padding: 3px 10px;
+    right: 0px;
+    padding: 10px 20px;
     border-radius: 5px;
     box-sizing: border-box;
-    border: 3px solid var(--action);
     background-color: var(--action);
     color: white;
     cursor: pointer;
+    font-weight: 600;
+    border: 3px solid var(--action);
+}
+.edit_top:hover{
+    background-color: white;
+    border-color: var(--neutral);
+    color: var(--action);
+    transition: all 150ms ease-in-out;
 }
 .save_top{
     position: absolute;
     top: 0px;
-    right: 10px;
-    padding: 3px 10px;
+    right: 0px;
+    padding: 10px 20px;
     border-radius: 5px;
     box-sizing: border-box;
     border: 3px solid var(--action);
@@ -405,10 +426,16 @@ input[type=file]{
     font-weight: 600;
     cursor: pointer;
 }
+.save_top:hover{
+    background-color: var(--action);
+    color: var(--neutral);
+    transition: all 150ms ease-in-out;
+}
 .helper{
-    color: var(--yellow);
-    font-size: 1rem;
-    font-weight: 600;
+    color: var(--action);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 5px;
 }
 .divider{
     height: 2px;
@@ -738,7 +765,7 @@ transform: rotate(45deg);
 
 @media (max-width: 1024px){
     .top_title{
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
     .item_wrapper{
         font-size: 0.8rem;
@@ -755,18 +782,6 @@ transform: rotate(45deg);
     .input_email{
         font-size: 1rem;
     }
-    .input_wrong{
-        font-size: 1rem;
-        height: 20px;
-    }
-    .input_input_edit{
-        font-size: 1rem;
-        height: 20px;
-    }
-    .input_input{
-        font-size: 1rem;
-        height: 20px;
-    }
     .input_icon{
         width: 15px !important;
         height: 15px !important;
@@ -778,13 +793,13 @@ transform: rotate(45deg);
         font-size: 30px;
     }
     .edit_top{
-        top: 130px;
+        top: 200px;
         left: 10px;
         right: 10px;
         text-align: center;
     }
     .save_top{
-        top: 130px;
+        top: 200px;
         left: 10px;
         right: 10px;
         text-align: center;

@@ -14,6 +14,8 @@ import { useSearchParams } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
 import ScrollToBottom, { useScrollToBottom } from 'react-scroll-to-bottom';
 import letter_t from '../assets/letter-t.png'
+import BackHandIcon from '@mui/icons-material/BackHand';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 
 const URL = "http://localhost:5500";
@@ -31,6 +33,10 @@ const AdminMessages = (props) => {
     const [onlineUsers, setOnlineUsers] = useState([])
     const [loadingChats, setLoadingChats] = useState(false)
     const [loadingChatBox, setLoadingChatBox] = useState(false)
+    const [chatInformation, setChatInformation] = useState({})
+    const [skip, setSkip] = useState(1)
+    const limit = 15
+
 
     const [isLoaded, setIsLoaded] = useState(false)
 
@@ -54,11 +60,12 @@ const AdminMessages = (props) => {
         setLoadingChatBox(true)
         const paramsAux = Object.fromEntries([...searchParams])
 
-        axios.get(`${props.api_url}/chats/get_chat`, { params: {chat_id: paramsAux.id} })
+        axios.get(`${props.api_url}/chats/get_chat`, { params: {chat_id: paramsAux.id, skip: 0, limit: limit} })
             .then(res => {
                 if(res.data!==''){
+                    
                     setSelectedChat(res.data)
-                    setSelectedChatTexts(res.data.texts)
+                    setSelectedChatTexts(res.data.texts.reverse())
                     scrollToBottom()
                 } 
                 setLoadingChatBox(false)
@@ -66,6 +73,17 @@ const AdminMessages = (props) => {
         setSelectedChatId(paramsAux.id)
 
     }, [searchParams])
+
+    useEffect(() => {
+        const paramsAux = Object.fromEntries([...searchParams])
+        for(let el of chats)
+        {
+            if(el.chat_id === paramsAux.id)
+            {
+                setChatDisplayInformation(el)
+            }
+        }
+    }, [searchParams, chats])
 
     const sortByTimestamp = (a, b) => {
         return a.last_text.timestamp < b.last_text.timestamp ? 1 : -1
@@ -92,6 +110,7 @@ const AdminMessages = (props) => {
                 axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: props.user._id} })
                 .then(res => {
                     if(res.data!==''){
+                        console.log(res.data)
                         setChats(res.data.chats?.sort(sortByTimestamp))
                         setIsLoaded(true)
                         setLoadingChats(false)
@@ -223,7 +242,6 @@ const AdminMessages = (props) => {
             sendSynchronousAndUpdateDatabaseHandler(currentText)
 
             scrollToBottom()
-
             setCurrentText("")   
         }
     }
@@ -257,13 +275,13 @@ const AdminMessages = (props) => {
                                 <div className={styles.chatbox_user}>
                                     {
                                         msg.origin_type===1?
-                                            selectedChat.worker_photoUrl!==""?
-                                            <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
+                                            chatInformation.worker_photo!==""?
+                                            <img src={chatInformation.worker_photo} className={styles.chatbox_user_img}/>
                                             :
                                             <FaceIcon className={styles.chatbox_user_img}/>
                                         :
-                                            selectedChat.user_photoUrl!==""?
-                                            <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
+                                            chatInformation.user_photo!==""?
+                                            <img src={chatInformation.user_photo} className={styles.chatbox_user_img}/>
                                             :
                                             <FaceIcon className={styles.chatbox_user_img}/>
                                     }
@@ -272,13 +290,13 @@ const AdminMessages = (props) => {
                                 :<div className={styles.chatbox_user_opacity}>
                                     {
                                         msg.origin_type===1?
-                                        selectedChat.worker_photoUrl!==""?
-                                        <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
+                                        chatInformation.worker_photo!==""?
+                                        <img src={chatInformation.worker_photo} className={styles.chatbox_user_img}/>
                                         :
                                         <FaceIcon className={styles.chatbox_user_img}/>
                                     :
-                                        selectedChat.user_photoUrl!==""?
-                                        <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
+                                    chatInformation.user_photo!==""?
+                                        <img src={chatInformation.user_photo} className={styles.chatbox_user_img}/>
                                         :
                                         <FaceIcon className={styles.chatbox_user_img}/>
                                     }
@@ -315,7 +333,7 @@ const AdminMessages = (props) => {
     const userMessageDisplay = () => {
         return selectedChatTexts?.map((msg, i) => {
             return (
-                <div key={i}>
+                <div key={i} className={styles.chatbox_wrapper}>
                     {
                         i===0?
                         <div className={styles.day_splitter}>
@@ -336,30 +354,30 @@ const AdminMessages = (props) => {
                                 <div className={styles.chatbox_user}>
                                     {
                                         msg.origin_type===0?
-                                            selectedChat.user_photoUrl!==""?
-                                            <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
+                                            chatInformation.user_photo!==""?
+                                            <img src={chatInformation.user_photo} className={styles.chatbox_user_img}/>
                                             :
-                                            <FaceIcon className={styles.chatbox_user_img}/>
+                                            <FaceIcon className={styles.chatbox_user_img} style={{color:'#0358e5'}}/>
                                         :
-                                            selectedChat.worker_photoUrl!==""?
-                                            <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
+                                            chatInformation.worker_photo!==""?
+                                            <img src={chatInformation.worker_photo} className={styles.chatbox_user_img}/>
                                             :
-                                            <FaceIcon className={styles.chatbox_user_img}/>
+                                            <FaceIcon className={styles.chatbox_user_img} style={{color:'#FF785A'}}/>
                                     }
                                     <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
                                 </div>
                                 :<div className={styles.chatbox_user_opacity}>
                                     {
                                         msg.origin_type===0?
-                                        selectedChat.user_photoUrl!==""?
-                                        <img src={selectedChat.user_photoUrl} className={styles.chatbox_user_img}/>
+                                        chatInformation.user_photo!==""?
+                                        <img src={chatInformation.user_photo} className={styles.chatbox_user_img}/>
                                         :
-                                        <FaceIcon className={styles.chatbox_user_img}/>
+                                        <FaceIcon className={styles.chatbox_user_img} style={{color:'#0358e5'}}/>
                                     :
-                                        selectedChat.worker_photoUrl!==""?
-                                        <img src={selectedChat.worker_photoUrl} className={styles.chatbox_user_img}/>
+                                        chatInformation.worker_photo!==""?
+                                        <img src={chatInformation.worker_photo} className={styles.chatbox_user_img}/>
                                         :
-                                        <FaceIcon className={styles.chatbox_user_img}/>
+                                        <FaceIcon className={styles.chatbox_user_img} style={{color:'#FF785A'}}/>
                                     }
                                     <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
                                 </div>
@@ -378,7 +396,7 @@ const AdminMessages = (props) => {
                                     </span>
                                 </div>
                                 :
-                                <div className={msg.origin_type===0?styles.chatbox_text_send:styles.chatbox_text_receive}>
+                                <div className={msg.origin_type===0?styles.chatbox_text_send:styles.chatbox_text_receive} style={{backgroundColor:msg.origin_type===0?'#0358e5aa':'#ffffff', color:msg.origin_type===0?'#ffffff':'#161F28'}}>
                                     <span className={styles.chatbox_text_value}>{msg.text}</span>
                                 </div>
                             }
@@ -459,7 +477,7 @@ const AdminMessages = (props) => {
         navigate({
             pathname: `/user`,
             search: `?t=messages&id=${chat_id}`
-        })
+        }, {replace: true})
     }
 
     const updateReadLocal = async (chat_id, type) => {
@@ -480,18 +498,36 @@ const AdminMessages = (props) => {
         props.updateChatReadLocal(chat_id)
     }
 
+    const setChatDisplayInformation = (chat, type) => {
+        setChatInformation(
+            {
+                user_name: chat.user_name,
+                user_photo: chat.user_photoUrl,
+                worker_name: chat.worker_name,
+                worker_photo: chat.worker_photoUrl,
+                reservation_title: chat.reservation_title,
+                reservation_id: chat.reservation_id,
+                worker_id: chat.worker_id,
+                user_id: chat.user_id
+            }
+        )
+    }
+
     const workerChatsDisplay = () => {
         return chats?.map((item, i) => {
             return (
                 <div onClick={() => {
                     updateReadDatabaseAndNavigate(item.chat_id, 1)
                     updateReadLocal(item.chat_id, 1)
+                    setChatDisplayInformation(item, 1)
                     //props.updateNotification(item._id)
                     //removeNotificationHandler(item._id, other_user, true)
                     }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
                     {
                         item.reservation_title?
-                        <img className={styles.row_img} style={{backgroundColor:"white"}} src={letter_t}/>
+                        <div className={styles.row_icon_wrapper}>
+                            <AssignmentIcon className={styles.row_icon}/>
+                        </div>
                         :item.worker_photoUrl!==""?
                         <img className={styles.row_img} src={item.user_photoUrl}/>
                         :
@@ -530,12 +566,15 @@ const AdminMessages = (props) => {
                 <div onClick={() => {
                     updateReadDatabaseAndNavigate(item.chat_id, 0)
                     updateReadLocal(item.chat_id, 0)
+                    setChatDisplayInformation(item, 0)
                     //props.updateNotification(item._id)
                     //removeNotificationHandler(item._id, other_user, true)
                     }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
                     {   
                         item.reservation_title?
-                        <img className={styles.row_img} style={{backgroundColor:"white"}} src={letter_t}/>
+                        <div className={styles.row_icon_wrapper}>
+                            <AssignmentIcon className={styles.row_icon}/>
+                        </div>
                         :item.worker_photoUrl!==""?
                         <img className={styles.row_img} src={item.worker_photoUrl}/>
                         :
@@ -604,53 +643,62 @@ const AdminMessages = (props) => {
                                 <Loader loading={loading}/>
                                 <div className={styles.chat_wrapper}>
                                     <div className={styles.top}>
-                                        <div className={styles.top_left_flex}>
+                                        <div 
+                                            className={props.user?.type===0?styles.top_left_flex_for_user:styles.top_left_flex}
+                                            onClick={() => props.user?.type===0&&navigate(`/main/publications/trabalhador?id=${chatInformation.worker_id}`)}
+                                            >
                                             {/* <span className={styles.top_left_indicator} style={{backgroundColor:isUserOnline()?"#6EB241":"white", border:!isUserOnline()?"1px solid #F40009":"1px solid transparent"}}></span> */}
                                             {/* drena do ultima vez online */}
                                             {
-                                                props.user?.type===1?
-                                                    selectedChat.user_photoUrl!==""?
-                                                    <img style={{marginLeft:"5px"}} className={styles.chatbox_user_img} src={selectedChat.user_photoUrl}/>
-                                                    :
-                                                    <FaceIcon style={{marginLeft:"5px"}} className={styles.chatbox_user_img}/>
+                                                props.user?.type===0?
+                                                chatInformation.worker_photo!==""?
+                                                <img 
+                                                    style={{marginLeft:"5px", border:"2px solid #FF785A"}} 
+                                                    className={styles.chatbox_user_img} 
+                                                    src={chatInformation.worker_photo}/>
+                                                :<FaceIcon style={{marginLeft:"5px", border:"2px solid #FF785A"}} className={styles.chatbox_user_img}/>
                                                 :
-                                                selectedChat.worker_photoUrl!==""?
-                                                <img style={{marginLeft:"5px"}} className={styles.chatbox_user_img} src={selectedChat.worker_photoUrl}/>
+                                                chatInformation.user_photo!==""?
+                                                <img style={{marginLeft:"5px", border:"2px solid #0358e5"}} className={styles.chatbox_user_img} st src={chatInformation.user_photo}/>
                                                 :
-                                                <FaceIcon style={{marginLeft:"5px"}} className={styles.chatbox_user_img}/>
-
+                                                <FaceIcon style={{marginLeft:"5px", border:"2px solid #0358e5"}} className={styles.chatbox_user_img}/>
                                             }
                                             {
-                                                props.user?.type===1?
+                                                props.user?.type===0?
                                                 <div className={styles.name_indicator}>
-                                                    <span className={styles.top_left_name}>{selectedChat.user_name}</span>
-                                                    <span className={styles.type_indicator}>CLIENTE</span>
+                                                    <span className={styles.top_left_name}>{chatInformation.worker_name}</span>
+                                                    <span className={styles.type_indicator}>
+                                                            <div className={styles.indicator_div}>
+                                                                <BackHandIcon className={styles.indicator_icon}/>
+                                                                <span className={styles.indicator_name}>TRABALHADOR</span>
+                                                            </div>
+                                                    </span>
                                                 </div>
                                                 :
                                                 <div className={styles.name_indicator}>
-                                                    <span className={styles.top_left_name}>{selectedChat.worker_name}</span>
-                                                    <span className={styles.type_indicator}>TRABALHADOR</span>
+                                                    <span className={styles.top_left_name}>{chatInformation.user_name}</span>
+                                                    <span className={styles.type_indicator}>
+                                                        {
+                                                            <div className={styles.indicator_div}>
+                                                                <span className={styles.indicator_name} style={{color:'#0358e5'}}>CLIENTE</span>
+                                                            </div>
+                                                        }
+                                                    </span>
                                                 </div>
-                                                
-                                            }
-                                            {/* {
-                                                props.user?.type===1?
-                                                <span className={styles.type_indicator}>CLIENTE</span>
-                                                :
-                                                <span className={styles.type_indicator}>TRABALHADOR</span>
-                                            } */}                                            
+                                            }                             
                                         </div>
                                         {
-                                            selectedChat.reservation_title?
+                                            chatInformation.reservation_title?
 
-                                            <div className={styles.post} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>
-                                                <span className={styles.post_title}>{selectedChat.reservation_title}</span>
+                                            <div className={styles.post} onClick={() => navigate(`/main/publications/publication?id=${chatInformation.reservation_id}`)}>
+                                                <span className={styles.post_title}>{chatInformation.reservation_title}</span>
                                                 <span className={styles.post_link} >ver trabalho</span>
                                             </div>
                                             :null
                                             
                                         }
                                     </div>
+                                    <div className={props.user?.type===1?styles.top_separator_user:chatInformation.reservation_title?styles.top_separator_worker:styles.top_separator_user}/>
                                     <ScrollToBottom className={styles.chat_area}>
                                         <Loader loading={loadingChatBox}/>
                                         {
@@ -670,7 +718,7 @@ const AdminMessages = (props) => {
                                                 onChange={e => setCurrentText(e.target.value)} 
                                                 />
                                             <div className={styles.bot_right_flex}>
-                                                <SendOutlinedIcon className={styles.send_icon} onClick={() => messageHandler()}/>
+                                                <SendOutlinedIcon className={props.user?.type===1?styles.send_icon_worker:styles.send_icon_user} onClick={() => messageHandler()}/>
                                             </div>
                                         </div>
                                     </div>
@@ -680,6 +728,7 @@ const AdminMessages = (props) => {
                             <NoPage object={"mensagens"}/>
                             :(!chats||chats?.length===0)&&props.user?.type===0?
                             <NoPage object={"mensagens_user"}/>
+                            :!selectedChat?<NoPage object={"select_message"}/>
                             :null
                         }
                         

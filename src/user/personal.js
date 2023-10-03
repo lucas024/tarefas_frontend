@@ -506,7 +506,7 @@ const Personal = (props) => {
                                     </div>
                                     <div className={styles.top_edit_area}>
                                         <div className={styles.edit_area_left}>
-                                            <span className={styles.input_title} style={{marginTop:"3px"}}>Telefone</span>                                            
+                                            <span className={styles.input_title} style={{marginTop:"3px", color:edit?"#FF785A":"#fff"}}>Telefone</span>                                            
                                             {
                                                 props.user?.type===1?
                                                 <span className={styles.input_title} style={{marginTop:"10px"}}>Descrição</span>
@@ -545,10 +545,15 @@ const Personal = (props) => {
                                     <div className={styles.input_div}>
                                         {
                                             edit&&phone?.length!==9?
-                                                <span className={styles.helper}>Introduza o seu número de contacto!</span>
+                                                <span className={styles.helper}>Introduza o seu número de contacto.</span>
                                             :
+                                            edit&&!validator.isMobilePhone(phone, "pt-PT")?
+                                                <span className={styles.helper}>Número de contacto inválido.</span>
+                                            :null
+                                        }
+                                        {
                                             edit&&description?.length===0?
-                                                <span className={styles.helper}>Introduza uma breve descrição!</span>
+                                                <span className={styles.helper}>Introduza uma breve descrição</span>
                                             :null
                                         }
                                     </div>

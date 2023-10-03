@@ -9,6 +9,11 @@ import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CircleIcon from '@mui/icons-material/Circle';
 import ReactTooltip from 'react-tooltip';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 
 const Navbar = (props) => {
 
@@ -46,13 +51,13 @@ const Navbar = (props) => {
                                         TRABALHOS
                                 </span>
                                 :loaded&&props.user?
-                                <span className={styles.user_button} onClick={() => {navigate('/publicar')}}>
+                                <span className={styles.user_button} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
                                         PUBLICAR
                                 </span>
                                 :loaded?
                                 <div className={styles.user_button_disabled} data-for='navbar' data-tip="Por favor crie conta ou inicie sessão para publicar.">
                                         <span className={styles.back_publish_div_frontdrop}></span>
-                                        <span>PUBLICAR</span>
+                                        <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
                                 </div>
 
                                 
@@ -106,7 +111,6 @@ const Navbar = (props) => {
                                             </div>
                                             <div className={styles.user_dropdown}>   
                                             <div className={styles.drop_user}>
-                                                <FaceIcon sx={{fontSize: "30px"}} className={styles.user_icon}/>
                                                 <span className={styles.drop_user_text}>{props.user.name} {props.user.surname}</span>
                                             </div>
                                             {
@@ -117,8 +121,9 @@ const Navbar = (props) => {
                                                     }>
                                                     <div className={styles.drop_div}>
                                                         <div className={styles.drop_div_special}>
-                                                            <div style={{display:"flex"}}>
-                                                                <span className={styles.drop_div_text}>Publicações</span>
+                                                            <div className={styles.drop_div_flex}>
+                                                                <AssignmentOutlinedIcon className={styles.drop_div_flex_icon}/>
+                                                                <span className={styles.drop_div_text}>Meus Trabalhos</span>
                                                                 {/* <span className={styles.drop_div_number}>
                                                                     <span className={styles.drop_div_number_text}>1</span>
                                                                 </span> */}
@@ -134,7 +139,8 @@ const Navbar = (props) => {
                                                 navigate('/user?t=personal')}} className={styles.drop_div_main}>
                                                 <div className={styles.drop_div}>
                                                     <div className={styles.drop_div_special}>
-                                                            <div style={{display:"flex"}}>
+                                                            <div className={styles.drop_div_flex}>
+                                                                <AccountCircleOutlinedIcon className={styles.drop_div_flex_icon}/>
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
@@ -181,6 +187,7 @@ const Navbar = (props) => {
                                                     <div className={styles.drop_div}>
                                                         <div className={styles.drop_div_special}>
                                                             <div style={{display:"flex"}}>
+                                                                <ChatOutlinedIcon className={styles.drop_div_flex_icon}/>
                                                                 <span className={styles.drop_div_text}>Mensagens</span>
                                                             </div>
                                                             {
@@ -198,13 +205,15 @@ const Navbar = (props) => {
                                                 setDropdown(false)
                                                 navigate('/user?t=support')}} className={styles.drop_div_main} style={{borderTop:"1px solid #ccc"}}>
                                                 <div className={styles.drop_div}>
-                                                    <span className={styles.drop_div_text}>Suporte</span>
+                                                    <SupportAgentIcon className={styles.drop_div_flex_icon}/>
+                                                    <span className={styles.drop_div_text} style={{marginTop:'2px'}}>Suporte</span>
                                                 </div>
                                             </div>
                                         
                                             <div onClick={() => logoutHandler()} className={styles.drop_div_main} style={{borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
                                                 <div className={styles.drop_div}>
-                                                    <span className={styles.drop_div_text}>Logout</span>
+                                                    <LogoutIcon className={styles.drop_div_flex_icon} style={{transform:'rotate(180deg)'}}/>
+                                                    <span className={styles.drop_div_text} style={{marginTop:'1px'}}>Sair da Conta</span>
                                                 </div>
                                             </div>
                                             </div>

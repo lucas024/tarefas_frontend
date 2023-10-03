@@ -243,22 +243,21 @@
     width: fit-content;
     align-self: flex-end;
     align-items: center;
-    border-bottom: 1px solid transparent;
     margin-right: 5px;
 }
 .search_clear_wrapper:hover{
     cursor: pointer;
-    color: var(--brand);
-    border-bottom: 1px solid var(--grey);
+    transform: scale(1.02);
 }
 .search_clear_icon{
-    width: 20px;
-    height: 20px;
+    width: 20px !important;
+    height: 20px !important;
+    color: var(--neutral);
 }
 .search_clear{
-    font-size: 0.8rem;
-    color: var(--grey);
-    width: 110px;
+    font-size: 0.7rem;
+    color: var(--neutral);
+    width: 100px;
     /* font-style: italic; */
 }
 .search_input_div_icon{

@@ -18,6 +18,9 @@ import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import Loader from '../general/loader';
 import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import AssignmentdIcon from '@mui/icons-material/Assignment';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 
 const UserSidebar = (props) => {
 
@@ -100,11 +103,11 @@ const UserSidebar = (props) => {
                     {
                         props.user?.type?
                         null:
-                        <ListItemButton style={{borderTop:"3px solid #71848d"}} onClick={() => sidebarNavigate("publications")}  className={selectedSidebar==="publications"?styles.button:""}>
+                        <ListItemButton style={{borderTop:"1px solid #ffffff50"}} onClick={() => sidebarNavigate("publications")}  className={selectedSidebar==="publications"?styles.button:""}>
                             <ListItemIcon>
-                            <ManageSearchIcon sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
+                            <AssignmentdIcon sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
                             </ListItemIcon>
-                            <ListItemText primary={<span className={styles.prox}>Publicações</span>} sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
+                            <ListItemText primary={<span className={styles.prox}>Meus Trabalhos</span>} sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
                         </ListItemButton >
                     }
                     
@@ -112,7 +115,7 @@ const UserSidebar = (props) => {
                         //className={selectedSidebar==="personal"?styles.button:""}
                     >
                         <ListItemIcon>
-                        <AccessibilityIcon sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
+                        <AccountCircleIcon sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                         </ListItemIcon>
                         <ListItemText primary={
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
@@ -229,7 +232,7 @@ const UserSidebar = (props) => {
                     </ListItemButton>
                     <ListItemButton onClick={() => logoutHandler()} >
                         <ListItemIcon>
-                        <LogoutIcon sx={{color:"#fff"}}/>
+                        <LogoutIcon sx={{color:"#fff"}} style={{transform:'rotate(180deg)'}}/>
                         </ListItemIcon>
                         <ListItemText primary={<span className={styles.prox}>Logout</span>} sx={{color:selectedSidebar===""?"#FF785A":"#fff"}}/>
                     </ListItemButton >
