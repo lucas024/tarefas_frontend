@@ -40,7 +40,7 @@ const Loader = (props) => {
             <ClipLoader color={"#FFFFFF"} css={props.small?small_override:override} loading={props.loading} size={props.small?20:150} />
                 {
                     props.loading?
-                    <div className="frontdrop" style={{borderRadius:props.radius?"10px":""}}></div>
+                    <div className={props.nofrontdrop?"":"frontdrop"} style={{borderRadius:props.radius?"10px":""}}></div>
                     :null
                 }
         </div>

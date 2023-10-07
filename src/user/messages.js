@@ -12,7 +12,7 @@ import Loader from './../general/loader';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
-import ScrollToBottom, { useScrollToBottom } from 'react-scroll-to-bottom';
+import ScrollToBottom, { useScrollToBottom, useSticky, useAtBottom, useAtEnd, useAtStart } from 'react-scroll-to-bottom';
 import letter_t from '../assets/letter-t.png'
 import BackHandIcon from '@mui/icons-material/BackHand';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -29,13 +29,18 @@ const AdminMessages = (props) => {
     const [chats, setChats] = useState([])
     const [selectedChat, setSelectedChat] = useState()
     const [selectedChatId, setSelectedChatId] = useState()
-    const [selectedChatTexts, setSelectedChatTexts] = useState()
+    const [selectedChatTexts, setSelectedChatTexts] = useState([])
     const [onlineUsers, setOnlineUsers] = useState([])
     const [loadingChats, setLoadingChats] = useState(false)
     const [loadingChatBox, setLoadingChatBox] = useState(false)
     const [chatInformation, setChatInformation] = useState({})
     const [skip, setSkip] = useState(1)
     const limit = 15
+    const [loadingNew, setLoadingNew] = useState(false)
+    const [displayLoadingNew, setDisplayLoadingNew] = useState(false)
+    const [allLoaded, setAllLoaded] = useState(false)
+    const [loadedInitial, setLoadedInitial] = useState(false)
+    const [atBottom, setAtBottom] = useState(false)
 
 
     const [isLoaded, setIsLoaded] = useState(false)
@@ -45,7 +50,8 @@ const AdminMessages = (props) => {
     const [s, setS] = useState()
 
     const chatareaRef = useRef(null)
-    const chatbubbleRef = useRef(null)
+    const chatMainRef = useRef(null)
+    const onLoadBubbleRef = useRef(null)
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -57,25 +63,12 @@ const AdminMessages = (props) => {
 
 
     useEffect(() => {
-        setLoadingChatBox(true)
         const paramsAux = Object.fromEntries([...searchParams])
-
-        axios.get(`${props.api_url}/chats/get_chat`, { params: {chat_id: paramsAux.id, skip: 0, limit: limit} })
-            .then(res => {
-                if(res.data!==''){
-                    
-                    setSelectedChat(res.data)
-                    setSelectedChatTexts(res.data.texts.reverse())
-                    scrollToBottom()
-                } 
-                setLoadingChatBox(false)
-            })
-        setSelectedChatId(paramsAux.id)
-
-    }, [searchParams])
-
-    useEffect(() => {
-        const paramsAux = Object.fromEntries([...searchParams])
+        if(paramsAux.id)
+        {
+            setSelectedChatId(paramsAux.id)
+            triggerChatLoad()
+        }
         for(let el of chats)
         {
             if(el.chat_id === paramsAux.id)
@@ -97,7 +90,6 @@ const AdminMessages = (props) => {
             if(props.user.type===1){
                 axios.get(`${props.api_url}/worker/get_worker_by_mongo_id`, { params: {_id: props.user._id} })
                 .then(res => {
-                    console.log(res);
                     if(res.data!==''){
                         setChats(res.data.chats?.sort(sortByTimestamp))
                         setIsLoaded(true)
@@ -110,7 +102,6 @@ const AdminMessages = (props) => {
                 axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: props.user._id} })
                 .then(res => {
                     if(res.data!==''){
-                        console.log(res.data)
                         setChats(res.data.chats?.sort(sortByTimestamp))
                         setIsLoaded(true)
                         setLoadingChats(false)
@@ -149,13 +140,13 @@ const AdminMessages = (props) => {
             timestamp : sent_timestamp,
             text: new_text
         }
-        await axios.post(`${props.api_url}/chats/update_common_chat`, {
-            worker_read: props.user.type===1?true:false,
-            user_read: props.user.type===0?true:false,
-            chat_id: selectedChatId,
-            text: text,
-            updated: sent_timestamp
-        })
+        // await axios.post(`${props.api_url}/chats/update_common_chat`, {
+        //     worker_read: props.user.type===1?true:false,
+        //     user_read: props.user.type===0?true:false,
+        //     chat_id: selectedChatId,
+        //     text: text,
+        //     updated: sent_timestamp
+        // })
 
         s.emit("send-message", {
             recipient: getOtherUserId(),
@@ -179,8 +170,6 @@ const AdminMessages = (props) => {
         //updates common chat
         //all local
     
-        console.log(data)
-
         let arrChats = [...chats]
         const text = {
             origin_type : data.type,
@@ -188,13 +177,13 @@ const AdminMessages = (props) => {
             text: data.text
         }
         for(let chat of arrChats){
-            if(chat.chat_id === data.chat_id){
+            if((chat.chat_id===data.chat_id)){
                 chat.last_text = text
-                if(data.type===0){
+                if(data.type===0&&selectedChatId!=data.chat_id){
                     chat.user_read = true
                     chat.worker_read = false
                 }
-                else{
+                else if(selectedChatId!=data.chat_id){
                     chat.user_read = false
                     chat.worker_read = true
                 }
@@ -251,11 +240,19 @@ const AdminMessages = (props) => {
         const curr = new Date(currDate)
         return prev.getDate() !== curr.getDate()
     }
+
     const workerMessageDisplay = () => {
         return selectedChatTexts?.map((msg, i) => {
             return (
                 <div key={i}>
                     {
+                        i===0&&displayLoadingNew?
+                        <div className={styles.day_splitter}>
+                            <span className={styles.day_value}>
+                                <Loader nofrontdrop={true} loading={displayLoadingNew} small={true}/>
+                            </span>
+                        </div>
+                        :
                         i===0?
                         <div className={styles.day_splitter}>
                             <span className={styles.day_value}>{extenseDate(msg.timestamp)}</span>
@@ -267,7 +264,7 @@ const AdminMessages = (props) => {
                         :null
                     }
                     
-                    <div className={msg.origin_type===1?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
+                    <div ref={i===limit?onLoadBubbleRef:null} className={msg.origin_type===1?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
                         <div className={msg.origin_type===1?styles.send:styles.receive}>
                             {
                                 (selectedChatTexts[i+1])&&(selectedChatTexts[i+1].origin_type!==msg.origin_type)
@@ -310,7 +307,7 @@ const AdminMessages = (props) => {
                                     <span className={styles.chatbox_starter}>
                                         <span className={styles.chatbot_template}>Interesse no trabalho!</span>
                                         <div className={styles.chatbox_template_title_wrapper}>
-                                            <p className={styles.chatbox_template_title}>{selectedChat.reservation_title}</p>
+                                            <p className={styles.chatbox_template_title} onClick={() => navigate(`/main/publications/publication?id=${chatInformation.reservation_id}`)}>{chatInformation.reservation_title}</p>
                                         </div>
                                         <p className={styles.chatbot_template}>Mensagem</p>
                                         <span className={styles.chatbox_text_value}>{msg.text}</span>
@@ -335,7 +332,21 @@ const AdminMessages = (props) => {
             return (
                 <div key={i} className={styles.chatbox_wrapper}>
                     {
-                        i===0?
+                        i===0&&allLoaded?
+                        <div className={styles.inicio_wrapper}>
+                            <span className={styles.inicio_text}>Início da Conversa</span>
+                        </div>
+                        :null
+                    }
+                    {
+                        i===0&&displayLoadingNew?
+                        <div className={styles.day_splitter}>
+                            <span className={styles.day_value}>
+                                <Loader nofrontdrop={true} loading={displayLoadingNew} small={true}/>
+                            </span>
+                        </div>
+                        :
+                        i==0?
                         <div className={styles.day_splitter}>
                             <span className={styles.day_value}>{extenseDate(msg.timestamp)}</span>
                         </div>
@@ -346,7 +357,7 @@ const AdminMessages = (props) => {
                         :null
                     }
 
-                    <div key={i} className={msg.origin_type===0?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
+                    <div ref={i===limit?onLoadBubbleRef:null} className={msg.origin_type===0?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
                         <div className={msg.origin_type===0?styles.send:styles.receive}>
                             {
                                 (selectedChatTexts[i+1])&&(selectedChatTexts[i+1].origin_type!==msg.origin_type)
@@ -389,7 +400,7 @@ const AdminMessages = (props) => {
                                     <span className={styles.chatbox_starter}>
                                         <span className={styles.chatbot_template}>Interesse no trabalho!</span>
                                         <div className={styles.chatbox_template_title_wrapper}>
-                                            <p className={styles.chatbox_template_title} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>{selectedChat.reservation_title}</p>
+                                            <p className={styles.chatbox_template_title} onClick={() => navigate(`/main/publications/publication?id=${chatInformation.reservation_id}`)}>{chatInformation.reservation_title}</p>
                                         </div>
                                         <p className={styles.chatbot_template}>Mensagem</p>
                                         <span className={styles.chatbox_text_value}>{msg.text}</span>
@@ -421,11 +432,11 @@ const AdminMessages = (props) => {
     }
 
     const getOtherUserId = () => {
-        if(selectedChat&&props.user?.type===1){
-            return selectedChat.user_id
+        if(chatInformation&&props.user?.type===1){
+            return chatInformation.user_id
         }
-        else if(selectedChat){
-            return selectedChat.worker_id
+        else if(chatInformation){
+            return chatInformation.worker_id
         }
     }
     
@@ -508,7 +519,8 @@ const AdminMessages = (props) => {
                 reservation_title: chat.reservation_title,
                 reservation_id: chat.reservation_id,
                 worker_id: chat.worker_id,
-                user_id: chat.user_id
+                user_id: chat.user_id,
+                chat_id: chat.chat_id
             }
         )
     }
@@ -517,11 +529,12 @@ const AdminMessages = (props) => {
         return chats?.map((item, i) => {
             return (
                 <div onClick={() => {
-                    updateReadDatabaseAndNavigate(item.chat_id, 1)
-                    updateReadLocal(item.chat_id, 1)
-                    setChatDisplayInformation(item, 1)
-                    //props.updateNotification(item._id)
-                    //removeNotificationHandler(item._id, other_user, true)
+                    if(selectedChatId!==item.chat_id)
+                    {
+                        updateReadDatabaseAndNavigate(item.chat_id, 1)
+                        updateReadLocal(item.chat_id, 1)
+                        setChatDisplayInformation(item, 1)
+                    }
                     }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
                     {
                         item.reservation_title?
@@ -564,12 +577,16 @@ const AdminMessages = (props) => {
         return chats?.map((item, i) => {
             return (
                 <div onClick={() => {
-                    updateReadDatabaseAndNavigate(item.chat_id, 0)
-                    updateReadLocal(item.chat_id, 0)
-                    setChatDisplayInformation(item, 0)
+                    if(selectedChatId!==item.chat_id)
+                    {
+                        updateReadDatabaseAndNavigate(item.chat_id, 0)
+                        updateReadLocal(item.chat_id, 0)
+                        setChatDisplayInformation(item, 0)
+                    }
                     //props.updateNotification(item._id)
                     //removeNotificationHandler(item._id, other_user, true)
-                    }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
+                    }} key={i} className={
+                        selectedChatId===item.chat_id?chatInformation.reservation_title?styles.row_selected:styles.row_selected_just_worker:item.reservation_title?styles.row:styles.row_just_worker}>
                     {   
                         item.reservation_title?
                         <div className={styles.row_icon_wrapper}>
@@ -618,17 +635,92 @@ const AdminMessages = (props) => {
         return false
     }
 
+    const triggerChatLoad = () => {
+
+        const paramsAux = Object.fromEntries([...searchParams])
+        let local_all_loaded = false
+        setAtBottom(false)
+        if(!loadingNew)
+        {
+            setLoadingNew(true)
+            setDisplayLoadingNew(true)
+            axios.get(`${props.api_url}/chats/get_chat`, { params: {chat_id: paramsAux.id, skip: selectedChatTexts.length===0?0:skip*limit, limit: limit} })
+            .then(res => {
+                if(res.data!==''){
+                    console.log(res.data)
+                    setSelectedChat(res.data)
+                    if(skip === 1)
+                    {
+                        setSelectedChatTexts(res.data.texts.reverse())
+                    }
+                    else
+                    {
+                        let newItems = res.data.texts.reverse().concat([...selectedChatTexts])
+                        if(newItems.length===[...selectedChatTexts].length)
+                        {
+                            setAllLoaded(true)
+                            local_all_loaded = true
+                        }
+                        else
+                        {
+                            setSelectedChatTexts(newItems)
+                        }
+                    }
+                    if(skip===1)
+                    {
+                        scrollToBottom()
+                        setTimeout(() => {
+                            setLoadingNew(false)
+                        }, 2000)
+                    }
+                        
+                    else if(!local_all_loaded){
+                        onLoadBubbleRef.current.scrollIntoView({behavior: 'instant', block: 'start', inline: 'nearest'})
+                        setTimeout(() => {
+                            setLoadingNew(false)
+                        }, 2000)
+                    } 
+
+                    setSkip(skip+1)
+                    setDisplayLoadingNew(false)
+                }
+            })
+        }
+    }
+
+    const Content = () => {
+        const [sticky] = useAtStart()
+
+        useEffect(() => {
+            if(sticky)
+            {
+                !allLoaded&&selectedChatId&&triggerChatLoad()
+            }
+        }, [sticky])
+    
+
+        return(
+                props.user?.type===1&&selectedChatTexts?
+                workerMessageDisplay()
+                :
+                selectedChatTexts?
+                userMessageDisplay()
+                :null
+        )
+    }
+
     return (
         <div className={styles.suporte}>
             <Loader loading={loading}/>
             {
                 isLoaded?
-                <div style={{height:"100%"}}>
-                    <div className={styles.suporte_title}>
-                        <span className={styles.top_title}>Mensagens</span>
-                    </div>
                     <div className={styles.main}>
                         <div className={styles.users}>
+                            <div className={styles.top_title_wrap}>
+                                <p className={styles.top_title}>
+                                    MENSAGENS
+                                </p>
+                            </div>
                             <Loader loading={loadingChats}/>
                             {
                                 props.user?.type===1?
@@ -669,7 +761,7 @@ const AdminMessages = (props) => {
                                                     <span className={styles.top_left_name}>{chatInformation.worker_name}</span>
                                                     <span className={styles.type_indicator}>
                                                             <div className={styles.indicator_div}>
-                                                                <BackHandIcon className={styles.indicator_icon}/>
+                                                                {/* <BackHandIcon className={styles.indicator_icon}/> */}
                                                                 <span className={styles.indicator_name}>TRABALHADOR</span>
                                                             </div>
                                                     </span>
@@ -698,14 +790,10 @@ const AdminMessages = (props) => {
                                             
                                         }
                                     </div>
-                                    <div className={props.user?.type===1?styles.top_separator_user:chatInformation.reservation_title?styles.top_separator_worker:styles.top_separator_user}/>
+                                    <div className={props.user?.type===1?styles.top_separator_user:chatInformation.reservation_title?styles.top_separator_worker_reservation:styles.top_separator_worker}/>
                                     <ScrollToBottom className={styles.chat_area}>
                                         <Loader loading={loadingChatBox}/>
-                                        {
-                                            props.user?.type===1?
-                                            workerMessageDisplay()
-                                            :userMessageDisplay()
-                                        }
+                                            <Content />
                                         <div ref={chatareaRef}></div>
                                     </ScrollToBottom>
                                     <div className={styles.bot}>
@@ -733,7 +821,6 @@ const AdminMessages = (props) => {
                         }
                         
                     </div>
-                </div>
                 :
                 null
             }

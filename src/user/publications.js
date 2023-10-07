@@ -18,6 +18,7 @@ const Publications = (props) => {
     const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
+        console.log(props.reservations)
         for(let res of props.reservations){
             if(res.type<3){
                 setActiveReservations(true)
@@ -101,7 +102,7 @@ const Publications = (props) => {
                             <div className={styles.item_left}>
                                 {
                                     res?.photos[0]?
-                                    <img src={res?.photos[0]} className={styles.item_img}></img>
+                                    <img src={res?.photos[0].url} className={styles.item_img}></img>
                                     :<NoPhotographyIcon className={styles.item_no_img}/>
                                 }
                                 <div className={styles.item_title_div}>

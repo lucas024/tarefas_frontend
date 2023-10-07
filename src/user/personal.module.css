@@ -158,6 +158,8 @@
     background-color: var(--action);
     border-top-right-radius: 5px;
     border-bottom-left-radius: 5px;
+    border-left: 1px solid white;
+    border-bottom: 1px solid white;
 }
 .image_input_wrapper{
     position: absolute;
@@ -190,21 +192,21 @@ input[type=file]{
     margin: auto;
 }
 .input_flex_edit{
-    margin-top: 5px;
     height: calc(100%);
     display: flex;
     flex-direction: column;
     position: relative;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 0px;
     background-color: var(--brand);
 }
 .input_flex{
-    margin-top: 5px;
     height: calc(100%);
     display: flex;
     flex-direction: column;
     position: relative;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 0px;
     background-color: var(--brand);
 }
 .personal_subtitle{
@@ -221,65 +223,35 @@ input[type=file]{
 .input_div{
     display: flex;
     flex-direction: column;
-}
-.input_right{
-    border: none;
-    border-bottom: 2px solid var(--check);
-    color: var(--brand);
-    height: 25px;
-    width: 250px;
-    padding-left: 5px;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: 'Montserrat', sans-serif;
-    background-color: var(--background);
-    outline: none;
-    border-radius: 3px;
-    padding: 5px 10px;
-}
-.input_wrong{
-    border: none;
-    border-bottom: 2px solid var(--red);
-    color: var(--brand);
-    height: 25px;
-    width: 250px;
-    padding-left: 5px;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: 'Montserrat', sans-serif;
-    background-color: var(--background);
-    outline: none;
-    border-radius: 3px;
-    padding: 5px 10px;
+    width: 350px;
 }
 .input_input{
     border: none;
-    border-bottom: 1px solid #ccc;
     color: #ccc;
-    height: 25px;
-    width: 250px;
-    padding-left: 5px;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 400;
     font-family: 'Montserrat', sans-serif;
-    border-radius: 3px;
-    padding: 5px 10px;
-    background-color: #cccccc10;
-}
-.input_input_edit{
-    border: none;
-    border-bottom: 2px solid var(--action);
-    background-color: var(--background);
-    color: var(--brand);
-    height: 25px;
-    width: 250px;
-    padding-left: 5px;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: 'Montserrat', sans-serif;
+    background-color: var(--brand);
     outline: none;
+}
+.input_div_button{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+.input_div_button_text{
+    color: white;
+    font-size: 0.9rem;
+    background: var(--yellow);
+    padding: 2px 5px;
     border-radius: 3px;
-    padding: 5px 10px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.input_div_button:hover{
+    opacity: 0.8;
+    transition: all 150ms ease-in-out;
 }
 .textarea_wrong{
     color: var(--brand);
@@ -337,11 +309,21 @@ input[type=file]{
     align-items: center;
     margin-top: 2px;
 }
+.input_div_wrapper_editable{
+    display: flex;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 8px 5px;
+    padding-right: 0px;
+    width: 100%;
+    transition: all 150ms ease-in-out;
+    box-sizing: border-box;
+}
 .input_div_top{
     display: flex;
 }
 .top_edit_area{
-    display: flex;
     margin-top: 15px;
 }
 .edit_area_left{
@@ -352,11 +334,24 @@ input[type=file]{
     display: flex;
     flex-direction: column;
 }
+.input_icon_div{
+    width: 30px;
+    display: flex;
+    align-items: center;
+}
+.input_icon_seperator{
+    width: 1px;
+    height: 100%;
+    background-color: var(--job);
+    margin-right: 10px;
+    transition: all 150ms ease-in-out;
+}
 .input_icon{
     width: 20px !important;
     height: 20px !important;
     margin-right: 5px;
-    color: var(--brand);
+    color: var(--neutral);
+    transition: all 150ms ease-in-out;
 }
 .input_title{
     font-weight: 400;
@@ -367,8 +362,9 @@ input[type=file]{
 }
 .input_email{
     font-weight: 400;
-    color: #ccc;
+    color: var(--grey);
     font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
 }
 .title_flex{
     display: flex;
@@ -779,12 +775,9 @@ transform: rotate(45deg);
     .flex_title{
         font-size: 0.9rem;
     }
-    .input_email{
-        font-size: 1rem;
-    }
     .input_icon{
-        width: 15px !important;
-        height: 15px !important;
+        width: 20px !important;
+        height: 20px !important;
     }
     .input_flex{
         height: 160px;
@@ -793,10 +786,11 @@ transform: rotate(45deg);
         font-size: 30px;
     }
     .edit_top{
-        top: 200px;
+        top: 205px;
         left: 10px;
         right: 10px;
         text-align: center;
+        width: 100%;
     }
     .save_top{
         top: 200px;
@@ -815,6 +809,9 @@ transform: rotate(45deg);
     }
     .input_input{
         width: 150px;
+    }
+    .input_div{
+        width: 100%;
     }
 }
 @media (max-width: 850px){

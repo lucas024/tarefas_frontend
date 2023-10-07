@@ -22,6 +22,12 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 import {regioes, profissoes} from '../general/util'
 
+import EmailVerified from '@mui/icons-material/MarkEmailRead';
+import EmailUnverified from '@mui/icons-material/Unsubscribe';
+import PhoneVerified from '@mui/icons-material/MobileFriendly';
+import PhoneUnverified from '@mui/icons-material/PhonelinkErase';
+
+
 const Personal = (props) => {
     
     const [name, setName] = useState("")
@@ -496,33 +502,64 @@ const Personal = (props) => {
                                                 <span className={styles.input_email}>{name} {surname}</span>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div className={styles.top_edit_area}>
                                         <div className={styles.input_div}>
-                                            <span className={styles.input_title}>E-mail</span>
-                                            <div className={styles.input_div_wrapper}>
-                                                {/* <AlternateEmailIcon className={styles.input_icon}/> */}
+                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#71848d':'#ffffff'}}>
+                                                <div className={styles.input_icon_div}>
+                                                    {
+                                                        props.user?.email_verified?
+                                                        <EmailVerified className={styles.input_icon} style={{color:edit?'#71848d':'#0358e5'}}/>
+                                                        :
+                                                        <EmailUnverified className={styles.input_icon} style={{color:edit?'#71848d':'#fdd835'}}/>
+                                                    }
+                                                </div>
+                                                <span className={styles.input_icon_seperator} style={{backgroundColor:edit?'#71848d':!props.user?.email_verified?'#fdd835':'#0358e5'}}>.</span>
                                                 <span className={styles.input_email}>{email}</span>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className={styles.top_edit_area}>
                                         <div className={styles.edit_area_left}>
-                                            <span className={styles.input_title} style={{marginTop:"3px", color:edit?"#FF785A":"#fff"}}>Telefone</span>                                            
                                             {
                                                 props.user?.type===1?
                                                 <span className={styles.input_title} style={{marginTop:"10px"}}>Descrição</span>
                                                 :null
                                             }
                                         </div>
-                                        <div className={styles.edit_area_right}>
-                                            <input className={  phoneCorrect&&edit?styles.input_right
-                                                                :phoneWrong&&edit?styles.input_wrong
-                                                                :edit?styles.input_input_edit
+                                        {/* novo phone input */}
+                                        <div className={styles.input_div} style={{marginTop:'10px'}}>
+                                            {
+                                                !props.user?.phone_verified?
+                                                <div className={styles.input_div_button} onClick={() => {}}>
+                                                    <span className={styles.input_div_button_text}>Verificar Telemóvel</span>
+                                                </div>
+                                                :null
+                                            }
+                                            
+                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#FF785A':!props.user?.phone_verified?'#fdd835':'#ffffff', borderTopRightRadius:!props.user?.phone_verified?'0px':'3px'}}>
+                                                
+                                                <div className={styles.input_icon_div}>
+                                                    {
+                                                        props.user?.phone_verified?
+                                                        <PhoneVerified className={styles.input_icon} style={{color:edit?'#71848d':'#0358e5'}}/>
+                                                        :
+                                                        <PhoneUnverified className={styles.input_icon} style={{color:edit?'#71848d':'#fdd835'}}/>
+                                                    }
+                                                </div>
+                                                <span className={styles.input_icon_seperator} style={{backgroundColor:edit?'#71848d':!props.user?.phone_verified?'#fdd835':'#0358e5'}}>.</span>
+                                                <input className={  phoneCorrect&&edit?styles.input_input
+                                                                :phoneWrong&&edit?styles.input_input
+                                                                :edit?styles.input_input
                                                                 :styles.input_input}
-                                                    value={phoneVisual}
-                                                    maxLength={11} 
-                                                    onChange={e => setPhoneHandler(e.target.value)}
-                                                    disabled={!edit}>
-                                            </input>
+                                                        value={phoneVisual}
+                                                        maxLength={11} 
+                                                        onChange={e => setPhoneHandler(e.target.value)}
+                                                        disabled={!edit}>
+                                                </input>
+                                            </div>
+                                        </div>
+
+                                        <div className={styles.edit_area_right}>
+
                                             {
                                                 props.user?.type===1?
                                                 <textarea
