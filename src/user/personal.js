@@ -26,6 +26,8 @@ import EmailVerified from '@mui/icons-material/MarkEmailRead';
 import EmailUnverified from '@mui/icons-material/Unsubscribe';
 import PhoneVerified from '@mui/icons-material/MobileFriendly';
 import PhoneUnverified from '@mui/icons-material/PhonelinkErase';
+import VerificationBannerPhone from '../general/verificationBannerPhone';
+import SelectWorker from '../selects/selectWorker';
 
 
 const Personal = (props) => {
@@ -55,6 +57,8 @@ const Personal = (props) => {
     const [radioSelected, setRadioSelected] = useState(null)
     const [entityName, setEntityName] = useState("")
     const [entityWrong, setEntityWrong] = useState(false)
+
+    const [verifyPhone, setVerifyPhone] = useState(0)
     
     useEffect(() => {
         if(props.user){
@@ -294,6 +298,16 @@ const Personal = (props) => {
             <Loader loading={false}/>
             {/* !props.loaded em vez de false */}
             {
+                verifyPhone?
+                <VerificationBannerPhone 
+                    cancel={() => setVerifyPhone(0)}
+                    setNext={val => setVerifyPhone(val)}
+                    next={verifyPhone} 
+                    phone={phone}
+                    />
+                :null
+            }
+            {
                 props.loaded?
                 <div>
                     <div className={styles.personal_title}>
@@ -334,6 +348,27 @@ const Personal = (props) => {
                     >
                     <Sessao text={"Detalhes trabalhador atualizados com sucesso!"}/>
                 </CSSTransition>
+                {
+                    props.user?.type===1?
+                    <div className={styles.status_div} style={{backgroundColor:!props.incompleteUser&&props.user?.verified?"#0358e5":props.incompleteUser===false?"#0358e5bb":"#fdd835bb"}}>
+                        <span className={styles.status_div_title}>Estado do Perfil</span>
+                        <div className={styles.status_div_flex}>
+                            <span className={styles.status_div_flex_title}>
+                                {
+                                    !props.incompleteUser?
+                                    "COMPLETO"
+                                    :"INCOMPLETO"
+                                }
+                            </span>
+                            {/* {
+                                !props.incompleteUser?
+                                <CheckCircleOutlineOutlinedIcon className={styles.status_icon}/>
+                                :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
+                            } */}
+                        </div>
+                    </div>
+                    :null
+                }
                 <div className={styles.mid}>
                     {
                         props.user?.type===1?
@@ -341,11 +376,11 @@ const Personal = (props) => {
                             <div className={styles.top_info}  onClick={() => setDisplayTop(!displayTop)}>
                                 {/* {
                                     displayTop?
-                                    <span className={styles.top_desc}>Assim que tiveres o perfil <span style={{color:"#6EB241", fontWeight:"600"}}>100% completo</span>, este será verificado pela pela equipa do Arranja.</span>
+                                    <span className={styles.top_desc}>Assim que tiveres o perfil <span style={{color:"#0358e5", fontWeight:"600"}}>100% completo</span>, este será verificado pela pela equipa do Arranja.</span>
                                     :null
                                 } */}
                                 <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-                                    <span className={styles.top_complete}>O teu perfil está <span style={{color:getPercentagem()<100?"#fdd835":"#6EB241", fontWeight:"600"}}>{getPercentagem()}%</span> completo:</span>
+                                    <span className={styles.top_complete}>O teu perfil está <span style={{color:getPercentagem()<100?"#fdd835":"#0358e5", fontWeight:"600"}}>{getPercentagem()}%</span> completo:</span>
                                     <ArrowForwardIosIcon className={!displayTop?styles.top_complete_arrow:styles.top_complete_arrow_show}/>
                                 </div>
                                 {
@@ -461,27 +496,6 @@ const Personal = (props) => {
                             </div>
                         </div>
                         <div className={styles.top_right_flex}>
-                            {
-                                props.user?.type===1?
-                                <div className={styles.status_div} style={{backgroundColor:!props.incompleteUser&&props.user?.verified?"#6EB241":props.incompleteUser===false?"#6EB241bb":"#fdd835bb"}}>
-                                    <span className={styles.status_div_title}>Estado do Perfil</span>
-                                    <div className={styles.status_div_flex}>
-                                        <span className={styles.status_div_flex_title}>
-                                            {
-                                                !props.incompleteUser?
-                                                "COMPLETO"
-                                                :"INCOMPLETO"
-                                            }
-                                        </span>
-                                        {
-                                            !props.incompleteUser?
-                                            <CheckCircleOutlineOutlinedIcon className={styles.status_icon}/>
-                                            :<CheckBoxOutlineBlankIcon className={styles.status_icon}/>
-                                        }
-                                    </div>
-                                </div>
-                                :null
-                            }
                             <div className={styles.top_right}>
                                 <div className={edit?styles.input_flex_edit:styles.input_flex}>
                                     {
@@ -518,25 +532,17 @@ const Personal = (props) => {
                                                 <span className={styles.input_email}>{email}</span>
                                             </div>
                                         </div>
-                                        <div className={styles.edit_area_left}>
-                                            {
-                                                props.user?.type===1?
-                                                <span className={styles.input_title} style={{marginTop:"10px"}}>Descrição</span>
-                                                :null
-                                            }
-                                        </div>
                                         {/* novo phone input */}
                                         <div className={styles.input_div} style={{marginTop:'10px'}}>
                                             {
                                                 !props.user?.phone_verified?
-                                                <div className={styles.input_div_button} onClick={() => {}}>
+                                                <div className={styles.input_div_button} onClick={() => setVerifyPhone(1)}>
                                                     <span className={styles.input_div_button_text}>Verificar Telemóvel</span>
                                                 </div>
                                                 :null
                                             }
                                             
                                             <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#FF785A':!props.user?.phone_verified?'#fdd835':'#ffffff', borderTopRightRadius:!props.user?.phone_verified?'0px':'3px'}}>
-                                                
                                                 <div className={styles.input_icon_div}>
                                                     {
                                                         props.user?.phone_verified?
@@ -557,7 +563,13 @@ const Personal = (props) => {
                                                 </input>
                                             </div>
                                         </div>
-
+                                        <div className={styles.edit_area_left}>
+                                            {
+                                                props.user?.type===1?
+                                                <span className={styles.input_title} style={{marginTop:"10px"}}>Descrição</span>
+                                                :null
+                                            }
+                                        </div>
                                         <div className={styles.edit_area_right}>
 
                                             {
@@ -601,9 +613,50 @@ const Personal = (props) => {
                     {
                         props.user?.type===1?
                         <div>
-                            <div className={styles.divider_max} style={{margin:"40px 0"}}></div>
                             <div className={styles.title_flex}>
-                                <span className={styles.personal_subtitle}>Detalhes Trabalhador</span>
+                                <div>
+                                    <span className={styles.personal_subtitle}>Detalhes Trabalhador</span>
+                                    <div className={styles.radio_div}>
+                                        <SelectWorker 
+                                                editBottom={editBottom} 
+                                                worker_type={radioSelected} 
+                                                changeType={val => {
+                                                    setRadioSelected(val)
+                                                    setEntityWrong(false)
+                                                }}/>
+                                        {
+                                            radioSelected===1?
+                                            <div 
+                                                className={styles.input_div_wrapper_editable} 
+                                                style={{borderColor:entityWrong&&entityName.length<=1?'#fdd835':'#FF785A', marginLeft:'10px', borderColor:!editBottom?'#FF785Ac3':entityWrong||entityName.length<=1?'#fdd835':'#FF785A'}}>
+                                                <div className={styles.input_icon_div}>
+                                                    {
+                                                        entityWrong||entityName.length<=1?
+                                                        <PhoneUnverified className={styles.input_icon} style={{color:'#fdd835'}}/>
+                                                        :
+                                                        <PhoneVerified className={styles.input_icon} style={{color:!editBottom?'#FF785Ac3':'#FF785A'}}/>
+                                                    }
+                                                </div>
+                                                <span className={styles.input_icon_seperator} style={{backgroundColor:!editBottom?'#FF785Ac3':entityWrong||entityName.length<=1?'#fdd835':'#FF785A'}}>.</span>
+                                                <input className={styles.input_input}
+                                                        style={{color:!editBottom?'#71848d':'#fff'}}
+                                                        value={entityName}
+                                                        onChange={e => setEntityName(e.target.value)}
+                                                        disabled={!editBottom}>
+                                                </input>
+                                            </div>
+                                            :
+                                            null
+                                        }
+                                    </div>
+                                    {
+                                        entityWrong&&entityName.length<=1?
+                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escreva pelo menos 2 caracteres.</span>
+                                        :entityWrong?
+                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor defina a sua situação de trabalho.</span>
+                                        :null
+                                    }
+                                </div>
                                 {   
                                     !editBottom?
                                     <span className={styles.edit} onClick={() => setEditBottom(true)}>
@@ -615,44 +668,11 @@ const Personal = (props) => {
                                     </span>
                                 }
                             </div>
-                            <Loader loading={loadingBottom}/>
-                            <div className={styles.radio_div}>
-                                <div style={{cursor:!editBottom?"default":"pointer"}} className={styles.radio_area} onClick={() =>{ 
-                                    editBottom&&setRadioSelected(0)
-                                    setEntityWrong(false)}}>
-                                    <input readOnly type="radio" value="particular" name="tipo" checked={radioSelected===0}/>
-                                    <span className={editBottom?styles.fake_radio_button:styles.fake_radio_button_disabled}/>
-                                    <span className={editBottom?styles.radio_text:styles.radio_text_disabled}>Particular</span>
-                                </div>
-                                <div style={{display:"flex", alignItems:"center"}}>
-                                    <div style={{cursor:!editBottom?"default":"pointer"}} className={styles.radio_area} onClick={() => {
-                                        editBottom&&setRadioSelected(1)
-                                        setEntityWrong(false)}
-                                        }>
-                                        <input readOnly type="radio" value="empresa" name="tipo" checked={radioSelected===1}/>
-                                        <span className={editBottom?styles.fake_radio_button:styles.fake_radio_button_disabled}/>
-                                        <span className={editBottom?styles.radio_text:styles.radio_text_disabled}>Empresa</span>
-                                    </div>
-                                    {
-                                        radioSelected===1?
-                                        <input maxLength={30} disabled={!editBottom} style={{borderColor:entityName.length>1?"#6EB241":"#fdd835"}} value={entityName} onChange={e => setEntityName(e.target.value)} placeholder='Nome da empresa...' className={styles.radio_button_input} />
-                                        :
-                                        null
-                                    }
-                                </div>
-                                {
-                                    entityWrong&&entityName.length<=1?
-                                    <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escreva pelo menos 2 caracteres.</span>
-                                    :entityWrong?
-                                    <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor defina a sua situação de trabalho.</span>
-                                    :null
-                                }
-                            </div>  
-                            
+                            <Loader loading={loadingBottom}/>                            
                             <div className={styles.flex_bottom}>
                                 <div className={styles.flex_left}>
                                     <span className={styles.flex_title}>Serviços que exerço</span>
-                                    <span className={editBottom?styles.divider_active:styles.divider} style={{backgroundColor:selectedProf.length===0?"#fdd835":"#6EB241"}}></span>
+                                    <span className={editBottom?styles.divider_active:styles.divider}></span>
                                     {
                                         editBottom&&selectedProf.length===0?
                                         <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um serviço!</span>
@@ -666,7 +686,7 @@ const Personal = (props) => {
                                 </div>
                                 <div className={styles.flex_left}>
                                     <span className={styles.flex_title}>Distritos onde trabalho</span>
-                                    <span className={editBottom?styles.divider_active:styles.divider} style={{backgroundColor:selectedReg.length===0?"#fdd835":"#6EB241"}}></span>
+                                    <span className={editBottom?styles.divider_active:styles.divider}></span>
                                     {
                                         editBottom&&selectedReg.length===0?
                                         <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um distrito!</span>

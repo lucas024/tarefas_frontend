@@ -4,7 +4,7 @@ import styles from './publicar.module.css'
 import TopSelect from '../selects/selectStyling';
 import dayjs from 'dayjs';
 import validator from 'validator';
-import ReactTooltip from 'react-tooltip';
+import {Tooltip} from 'react-tooltip';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Geocode, { setLanguage } from "react-geocode";
 import {CSSTransition}  from 'react-transition-group';
@@ -930,7 +930,7 @@ const Publicar = (props) => {
                 </div>
                 <div className={styles.right}></div>
             </div>
-            <ReactTooltip effect='solid'/>
+            <Tooltip effect='solid'/>
         </div>
     )
 }

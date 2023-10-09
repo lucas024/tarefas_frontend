@@ -1,0 +1,197 @@
+.verification{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background-color: #00000090;
+    z-index: 2;
+    justify-content: center;
+    align-items: center;
+}
+.main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    background-color: var(--neutral);
+    padding: 25px;
+    border-radius: 5px;
+    border: 3px solid var(--yellow);
+    width: 450px;
+}
+.main_inner{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+}
+.title_separator{
+    width: 100%;
+    height: 1px;
+    background-color: var(--grey);
+    margin: 5px;
+}
+.phone_title{
+    color: var(--brand);
+    text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.phone_description{
+    color: var(--brand);
+    text-align: center;
+    font-size: 0.8rem;
+    margin-top: 15px;
+}
+.phone_wrapper{
+    margin: auto;
+    margin-top: 15px;
+    font-size: 1.2rem;
+}
+.phone_prefix{
+    color: var(--grey);
+}
+.phone_value{
+    font-weight: 600;
+}
+.button_disabled{
+    background-color: var(--grey);
+    padding: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    width: 350px;
+    align-self: center;
+    margin-top: 40px;
+    color: var(--neutral);
+    transition: all 150ms;
+    cursor: default;
+}
+.button{
+    background-color: var(--yellow);
+    padding: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    width: 350px;
+    align-self: center;
+    margin-top: 40px;
+    color: var(--neutral);
+    transition: all 150ms;
+}
+.button:hover{
+    cursor: pointer;
+    transform: scale(1.01);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+.button_text{
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.resend{
+    background-color: var(--yellow);
+    padding: 2px 0;
+    border-radius: 5px;
+    text-align: center;
+    width: 350px;
+    align-self: center;
+    margin-top: 5px;
+    color: var(--neutral);
+    transition: all 150ms;
+}
+.resend_text{
+    display: flex;
+    justify-content: center;
+}
+.resend_disabled{
+    background-color: var(--grey);
+    padding: 2px 0;
+    border-radius: 5px;
+    text-align: center;
+    width: 350px;
+    align-self: center;
+    margin-top: 5px;
+    color: var(--neutral);
+    transition: all 150ms;
+}
+.resend:hover{
+    transform: scale(1.01);
+    cursor: pointer;
+}
+.resend_seconds{
+    width: 25px;
+    display: block;
+}
+.resend_text_value{
+    font-weight: 400;
+}
+.cancel{
+    margin: auto;
+    margin-top: 10px;
+    color: var(--grey);
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.cancel:hover{
+    opacity: 0.5;
+    transition: all 150ms;
+}
+.phone_input_wrapper{
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    margin-top: 5px;
+    padding: 5px;
+    border: 3px solid var(--job);
+    border-radius: 3px;
+    position: relative;
+    z-index: 0;
+    margin-bottom: 20px;
+}
+.main_code_placeholder{
+    position:absolute;
+    left:0;
+    top:5px;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-around;
+    width:100%;
+    z-index:1;
+}
+.main_code_placeholder_value{
+    color:#ccc;
+    font-size:1.4rem;
+    font-family: 'Roboto Mono', monospace;
+}
+.phone_input_title{
+    font-size: 1rem;
+    text-align: center;
+    color: var(--job);
+    font-weight: 600;
+    margin-top: 30px;
+}
+.phone_input{
+    outline: none;
+    border: none;
+    color: var(--brand);
+    font-size: 1.4rem;
+    letter-spacing: 32px;
+    font-family: 'Roboto Mono', monospace;
+    caret-color: var(--job);
+    overflow: hidden;
+    margin-right: -35px;
+    margin-left: 5px;
+    z-index: 1;
+    background-color: transparent;
+}
+.wrong_code_div{
+    display: flex;
+    justify-content: center;
+    margin-top: 2px;
+}
+.wrong_code_text{
+    font-weight: 600;
+    color: var(--yellow);
+}

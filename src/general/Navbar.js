@@ -8,7 +8,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CircleIcon from '@mui/icons-material/Circle';
-import ReactTooltip from 'react-tooltip';
+import {Tooltip} from 'react-tooltip';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
@@ -55,7 +55,7 @@ const Navbar = (props) => {
                                         PUBLICAR
                                 </span>
                                 :loaded?
-                                <div className={styles.user_button_disabled} data-for='navbar' data-tip="Por favor crie conta ou inicie sessão para publicar.">
+                                <div className={styles.user_button_disabled} data-tooltip-id='navbar' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
                                         <span className={styles.back_publish_div_frontdrop}></span>
                                         <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
                                 </div>
@@ -234,7 +234,7 @@ const Navbar = (props) => {
                     </div>
                 </div>               
             </div>
-            <ReactTooltip id={"navbar"} effect='solid' place='left'/>
+            <Tooltip id={"navbar"} effect='solid' place='left'/>
         </div>
     )
 }

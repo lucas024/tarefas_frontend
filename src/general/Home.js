@@ -13,7 +13,7 @@ import SelectHome from '../selects/selectHome';
 import {profissoes, profissoesPngs, regioes, regioesOptions} from './util'
 import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import ReactTooltip from 'react-tooltip';
+import {Tooltip} from 'react-tooltip';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SearchIcon from '@mui/icons-material/Search';
 import BackHandIcon from '@mui/icons-material/BackHand';
@@ -58,7 +58,7 @@ const Home = (props) => {
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
         }
-        ReactTooltip.rebuild()
+        // Tooltip.rebuild()
     }, [props.incompleteUser, location, props.user, loaded])
 
     useEffect(() => {
@@ -264,7 +264,7 @@ const Home = (props) => {
                                 <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar')}>PUBLICAR</span>
                                 :
                                 <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
-                                    <div className={styles.back_publish_button_disabled} data-for='home' data-tip="Por favor crie conta ou inicie sessão para publicar.">
+                                    <div className={styles.back_publish_button_disabled} data-tooltip-id='home' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
                                         <span className={styles.back_publish_div_frontdrop}></span>
                                         <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
                                     </div>
@@ -402,7 +402,7 @@ const Home = (props) => {
                         </div>  
                     </div>
                 </div>
-                <ReactTooltip effect='solid' place='right' id="home"/>
+                <Tooltip effect='solid' place='right' id="home"/>
             </div>
             
 

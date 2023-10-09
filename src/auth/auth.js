@@ -65,7 +65,7 @@ const Auth = (props) => {
         }
     }, [location])
 
-    useEffect(async () => {
+    useEffect(() => {
         const paramsAux = Object.fromEntries([...searchParams])
         if(paramsAux)
         {
@@ -456,7 +456,7 @@ const Auth = (props) => {
                                         value={name}
                                         onBlur={() => validateNameHandler()}
                                         onFocus={() => setNameFocused(true)}
-                                        style={{borderBottom:nameWrong?"3px solid red":!nameWrong&&name.length>1?"3px solid #6EB241":""}}></input>
+                                        style={{borderBottom:nameWrong?"3px solid red":!nameWrong&&name.length>1?"3px solid #0358e5":""}}></input>
                                     {
                                         nameWrong?
                                         <span className={styles.field_error}>Por favor, escreva pelo menos 2 caracteres.</span>
@@ -474,7 +474,7 @@ const Auth = (props) => {
                                         placeholder="Apelido" 
                                         value={surname}
                                         onBlur={() => validateSurnameHandler()}
-                                        style={{borderBottom:surnameWrong?"3px solid red":!surnameWrong&&surname.length>1?"3px solid #6EB241":""}}></input>
+                                        style={{borderBottom:surnameWrong?"3px solid red":!surnameWrong&&surname.length>1?"3px solid #0358e5":""}}></input>
                                     {
                                         surnameWrong?
                                         <span className={styles.field_error}>Por favor, escreva pelo menos 2 caracteres.</span>
@@ -491,7 +491,7 @@ const Auth = (props) => {
                                         value={phoneVisual} className={styles.login_input} 
                                         placeholder="Telefone"
                                         onBlur={() => validatePhoneHandler()}
-                                        style={{borderBottom:phoneWrong?"3px solid red":validator.isMobilePhone(phone, "pt-PT")&&phone.length===9?"3px solid #6EB241":""}}
+                                        style={{borderBottom:phoneWrong?"3px solid red":validator.isMobilePhone(phone, "pt-PT")&&phone.length===9?"3px solid #0358e5":""}}
                                         onFocus={() => setPhoneFocused(true)}></input>
                                         {
                                             phoneWrong?
@@ -511,7 +511,7 @@ const Auth = (props) => {
                                         value={email}
                                         onFocus={() => setEmailFocused(true)}
                                         onBlur={() => validateEmailHandler()}
-                                        style={{borderBottom:emailWrong?"3px solid red":validator.isEmail(email)&&email.length>0?"3px solid #6EB241":""}}></input>
+                                        style={{borderBottom:emailWrong?"3px solid red":validator.isEmail(email)&&email.length>0?"3px solid #0358e5":""}}></input>
                                         {
                                             emailWrong?
                                             <span className={styles.field_error}>{emailWrong}</span>
@@ -530,7 +530,7 @@ const Auth = (props) => {
                                         value={password}
                                         onFocus={() => setPasswordFocused(true)}
                                         onBlur={() => validatePasswordHandler()}
-                                        style={{borderBottom:passwordWrong?"3px solid red":!passwordWrong&&password.length>7?"3px solid #6EB241":""}}></input>
+                                        style={{borderBottom:passwordWrong?"3px solid red":!passwordWrong&&password.length>7?"3px solid #0358e5":""}}></input>
                                         {
                                             passwordWrong?
                                             <span className={styles.field_error}>Por favor, escreva pelo menos 8 caracteres.</span>

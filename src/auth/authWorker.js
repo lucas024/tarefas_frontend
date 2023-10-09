@@ -52,13 +52,14 @@ const AuthWorker = (props) => {
 
     const navigate = useNavigate()
 
-    useEffect(async () => {
+    useEffect(() => {
         const paramsAux = Object.fromEntries([...searchParams])
         if(paramsAux)
         {
             setSelectedAuth(parseInt(paramsAux.type))
         }
     }, [searchParams])
+    
     useEffect(() => {
         if(name.length>1){
             setNameWrong(false)
@@ -418,7 +419,7 @@ const AuthWorker = (props) => {
                                         placeholder="Nome" 
                                         value={name}
                                         onBlur={() => validateNameHandler()}
-                                        style={{borderBottom:nameWrong?"3px solid black":!nameWrong&&name.length>1?"3px solid #6EB241":""}}></input>
+                                        style={{borderBottom:nameWrong?"3px solid black":!nameWrong&&name.length>1?"3px solid #0358e5":""}}></input>
                                     {
                                         nameWrong?
                                         <span className={styles.field_error} style={{color:"black"}}>Por favor, escreva pelo menos 2 caracteres.</span>
@@ -436,7 +437,7 @@ const AuthWorker = (props) => {
                                         placeholder="Apelido" 
                                         value={surname}
                                         onBlur={() => validateSurnameHandler()}
-                                        style={{borderBottom:surnameWrong?"3px solid black":!surnameWrong&&surname.length>1?"3px solid #6EB241":""}}></input>
+                                        style={{borderBottom:surnameWrong?"3px solid black":!surnameWrong&&surname.length>1?"3px solid #0358e5":""}}></input>
                                     {
                                         surnameWrong?
                                         <span className={styles.field_error} style={{color:"black"}}>Por favor, escreva pelo menos 2 caracteres.</span>
@@ -453,7 +454,7 @@ const AuthWorker = (props) => {
                                         value={phoneVisual} className={styles.login_input} 
                                         placeholder="Telefone"
                                         onBlur={() => validatePhoneHandler()}
-                                        style={{borderBottom:phoneWrong?"3px solid black":validator.isMobilePhone(phone, "pt-PT")&&phone.length===9?"3px solid #6EB241":""}}
+                                        style={{borderBottom:phoneWrong?"3px solid black":validator.isMobilePhone(phone, "pt-PT")&&phone.length===9?"3px solid #0358e5":""}}
                                         onFocus={() => setPhoneFocused(true)}></input>
                                         {
                                             phoneWrong?
@@ -473,7 +474,7 @@ const AuthWorker = (props) => {
                                         value={email}
                                         onFocus={() => setEmailFocused(true)}
                                         onBlur={() => validateEmailHandler()}
-                                        style={{borderBottom:emailWrong?"3px solid black":validator.isEmail(email)&&email.length>0?"3px solid #6EB241":""}}></input>
+                                        style={{borderBottom:emailWrong?"3px solid black":validator.isEmail(email)&&email.length>0?"3px solid #0358e5":""}}></input>
                                         {
                                             emailWrong?
                                             <span className={styles.field_error}>{emailWrong}</span>
@@ -492,7 +493,7 @@ const AuthWorker = (props) => {
                                         value={password}
                                         onFocus={() => setPasswordFocused(true)}
                                         onBlur={() => validatePasswordHandler()}
-                                        style={{borderBottom:passwordWrong?"3px solid black":!passwordWrong&&password.length>7?"3px solid #6EB241":""}}></input>
+                                        style={{borderBottom:passwordWrong?"3px solid black":!passwordWrong&&password.length>7?"3px solid #0358e5":""}}></input>
                                         {
                                             passwordWrong?
                                             <span className={styles.field_error} style={{color:"black"}}>Por favor, escreva pelo menos 8 caracteres.</span>

@@ -89,7 +89,7 @@ const Subscription = props => {
                 setSchedule(res.data.schedule)
                 setIsLoaded(true)
                 setLoading(false)
-                setEndDate(res.data.schedule.current_phase.end_date*1000)
+                setEndDate(res.data.schedule.current_phase?.end_date*1000)
                 setCurrentDate(new Date().getTime())
             })
         }
@@ -288,7 +288,7 @@ const Subscription = props => {
         let iso_date = new Date(date*1000)
         let day = iso_date.toISOString().split("T")[0].slice(-2)
         let month = monthNames[parseInt(iso_date.toISOString().split("T")[0].slice(5,7))]
-        let year = iso_date.toISOString().split("T")[0].slice(0,4)
+        let year = iso_date?.toISOString().split("T")[0].slice(0,4)
         return `${day} de ${month}, ${year}`
     }
 
@@ -366,13 +366,13 @@ const Subscription = props => {
             <Loader loading={loading}/>
             {
                 isLoaded?
-                <div style={{position:"relative"}}>
+                <div style={{position:"relative", height:'100%'}}>
                     {
                         cancelSubscription?
                             <Popup
                                 type = 'cancel_subscription'
                                 cancelHandler={() => setCancelSubscription(false)}
-                                date = {schedule&&extenseDate(schedule.current_phase.end_date)}
+                                date = {schedule.current_phase?.end_date&&extenseDate(schedule.current_phase?.end_date)}
                                 confirm = {() => cancelSubscriptionFinal()}
                                 />
                             :null
@@ -400,7 +400,7 @@ const Subscription = props => {
 
                     
                         <div className={styles.mid_content}>
-                            <div className={styles.display} style={{backgroundColor:endDate>currentDate?"#6EB241":"#fdd835"}}>
+                            <div className={styles.display} style={{backgroundColor:endDate>currentDate?"#0358e5":"#fdd835"}}>
                                 <div className={styles.display_top}>
                                     <div className={styles.display_user}>
                                         <div className={styles.user_top_flex} onClick={() => updateCard()}>
@@ -414,7 +414,7 @@ const Subscription = props => {
                                             {
                                                 isCanceled?
                                                 <div className={styles.future_end}>
-                                                    (Termina <span style={{textDecoration:"underline"}}>{schedule&&extenseDate(schedule.current_phase.end_date)}</span>)
+                                                    (Termina <span style={{textDecoration:"underline"}}>{schedule.current_phase?.end_date&&extenseDate(schedule.current_phase?.end_date)}</span>)
                                                 </div>
                                                 :null
                                             }
@@ -445,7 +445,7 @@ const Subscription = props => {
                                             <span>
                                                 {
                                                     schedule.phases.length===2&&schedule.phases[0].metadata.from_canceled?
-                                                    <span className={styles.helper_two}>(Início a {getDateToString(schedule.current_phase.end_date)} - fim da subscrição previamente cancelada)</span>
+                                                    <span className={styles.helper_two}>(Início a {getDateToString(schedule.current_phase?.end_date)} - fim da subscrição previamente cancelada)</span>
                                                     :null
                                                 }
                                             </span>
@@ -456,12 +456,12 @@ const Subscription = props => {
                                                     schedule&&schedule.phases.length>1&&!schedule.phases[0].metadata.from_canceled?
                                                     <div className={styles.plan_meio}>
                                                         <span className={styles.prox_cobr}>Data da próxima cobrança e <span style={{fontWeight:600}}>alteração de plano</span></span>
-                                                        <span className={styles.prox_cobr_val} style={{color:"white"}}> {schedule&&extenseDate(schedule.current_phase.end_date)}</span>
+                                                        <span className={styles.prox_cobr_val} style={{color:"white"}}> {schedule.current_phase?.end_date&&extenseDate(schedule.current_phase?.end_date)}</span>
                                                     </div>
                                                     :
                                                     <div className={styles.plan_meio}>
                                                         <span className={styles.prox_cobr}>Data da próxima cobrança </span>
-                                                        <span className={styles.prox_cobr_val} style={{color:"white"}}>{schedule&&extenseDate(schedule.current_phase.end_date)}</span>
+                                                        <span className={styles.prox_cobr_val} style={{color:"white"}}>{schedule.current_phase?.end_date&&extenseDate(schedule.current_phase?.end_date)}</span>
                                                     </div>
 
                                                 }
@@ -530,7 +530,7 @@ const Subscription = props => {
                                     </div>
                                     <span className={styles.subtitle}>Método de Pagamento</span>
                                     <div className={styles.divider}/>
-                                    <span className={styles.subtitle_sub}><span style={{fontWeight:"500"}}>Cartão</span> <span style={{marginLeft:"5px"}}>-</span> <span style={{color:subscriptionStatus==="active"?"#6EB241":"#fdd835", marginLeft:"5px"}}>{subscriptionStatus==="active"?<span style={{display:"flex", alignItems:"center"}}>ATIVO <Check style={{width:"15px !important", height:"15px !important", marginLeft:"3px"}}/></span>:<span style={{display:"flex", alignItems:"center"}}>ERRO <ClearIcon style={{width:"15px !important", height:"15px !important", marginLeft:"3px"}}/></span>}</span></span>
+                                    <span className={styles.subtitle_sub}><span style={{fontWeight:"500"}}>Cartão</span> <span style={{marginLeft:"5px"}}>-</span> <span style={{color:subscriptionStatus==="active"?"#0358e5":"#fdd835", marginLeft:"5px"}}>{subscriptionStatus==="active"?<span style={{display:"flex", alignItems:"center"}}>ATIVO <Check style={{width:"15px !important", height:"15px !important", marginLeft:"3px"}}/></span>:<span style={{display:"flex", alignItems:"center"}}>ERRO <ClearIcon style={{width:"15px !important", height:"15px !important", marginLeft:"3px"}}/></span>}</span></span>
                                     <div className={styles.initial}>
 
                                         <div className={styles.card} style={{marginTop:"10px", border:subscriptionStatus==="delay"?"6px solid #fdd835":""}}>
@@ -745,7 +745,7 @@ const Subscription = props => {
                                                     </div>
                                                     <div className={styles.right_section}>
                                                         <span className={styles.right_helper}>Número do Cartão</span>
-                                                        <CardNumberElement onChange={e => cardValidHanlder(e)} className={styles.right_input} style={{borderColor:validCard?"#6EB241":!validCard?"#ff3b30":""}}/>
+                                                        <CardNumberElement onChange={e => cardValidHanlder(e)} className={styles.right_input} style={{borderColor:validCard?"#0358e5":!validCard?"#ff3b30":""}}/>
                                                         {/* {
                                                             !validCard?
                                                             <span className={styles.card_wrong}>Este número de cartão é inválido</span>
@@ -883,7 +883,7 @@ const Subscription = props => {
                                         <div className={styles.plans_area} style={{marginTop:"40px"}}>
                                             <p className={styles.plans_title}>Escolher o plano</p>
                                             <div className={styles.plans_sections}>
-                                                <div className={selectedPlan===1?styles.section_selected:styles.section} style={{borderColor:schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===1?"#6EB241":props.user.subscription?.plan===1&&!schedule.phases[0].metadata.from_canceled?"#6EB241":""}} onClick={() => setSelectedPlan(1)}>
+                                                <div className={selectedPlan===1?styles.section_selected:styles.section} style={{borderColor:schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===1?"#0358e5":props.user.subscription?.plan===1&&!schedule.phases[0].metadata.from_canceled?"#0358e5":""}} onClick={() => setSelectedPlan(1)}>
                                                 {
                                                         schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===1?
                                                         <span className={styles.ativo}>Ativo</span>
@@ -909,11 +909,11 @@ const Subscription = props => {
                                                         </div>
                                                         :props.user.subscription.plan===1?
                                                         <span className={styles.section_button_active}>Ativo</span>
-                                                        :<span className={styles.section_button}>Escolher</span>
+                                                        :null
                                                     }
                                                     
                                                 </div>
-                                                <div className={selectedPlan===2?styles.section_selected:styles.section} style={{borderColor:schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===2?"#6EB241":props.user.subscription?.plan===2&&!schedule.phases[0].metadata.from_canceled?"#6EB241":""}} onClick={() => setSelectedPlan(2)}>
+                                                <div className={selectedPlan===2?styles.section_selected:styles.section} style={{borderColor:schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===2?"#0358e5":props.user.subscription?.plan===2&&!schedule.phases[0].metadata.from_canceled?"#0358e5":""}} onClick={() => setSelectedPlan(2)}>
                                                     <span className={styles.popular}>POPULAR</span>
                                                     {
                                                         schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===2?
@@ -939,10 +939,10 @@ const Subscription = props => {
                                                             <Check className={styles.section_button_selected_icon}/>
                                                         </div>
                                                         
-                                                        :<span className={styles.section_button}>Escolher</span>
+                                                        :null
                                                     }
                                                 </div>
-                                                <div className={selectedPlan===3?styles.section_selected:styles.section} style={{borderColor:schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===3?"#6EB241":props.user.subscription?.plan===3&&!schedule.phases[0].metadata.from_canceled?"#6EB241":""}} onClick={() => setSelectedPlan(3)}>
+                                                <div className={selectedPlan===3?styles.section_selected:styles.section} style={{borderColor:schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===3?"#0358e5":props.user.subscription?.plan===3&&!schedule.phases[0].metadata.from_canceled?"#0358e5":""}} onClick={() => setSelectedPlan(3)}>
                                                     {
                                                         schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===3?
                                                         <span className={styles.ativo}>Ativo</span>
@@ -967,7 +967,7 @@ const Subscription = props => {
                                                             <Check className={styles.section_button_selected_icon}/>
                                                         </div>
                                                         
-                                                        :<span className={styles.section_button}>Escolher</span>
+                                                        :null
                                                     }
                                                 </div>
                                             </div>
@@ -1017,7 +1017,7 @@ const Subscription = props => {
                                         </div>
                                         <div style={{marginTop:"20px"}}>
                                             <span className={styles.alterar_plano}>A alteração do plano terá efeito imediato, mas <span style={{fontWeight:"600"}}>apenas será cobrado na data da próxima cobrança. </span></span>
-                                            <p className={styles.alterar_plano} style={{fontSize:"0.7rem"}}>(Próx. cobrança - <span style={{color:"#FF785A"}}>{schedule&&extenseDate(schedule.current_phase.end_date)}</span>)</p>
+                                            <p className={styles.alterar_plano} style={{fontSize:"0.7rem"}}>(Próx. cobrança - <span style={{color:"#FF785A"}}>{schedule.current_phase?.end_date&&extenseDate(schedule.current_phase?.end_date)}</span>)</p>
                                         </div>
                                         <div className={styles.buttons}>
                                             <span className={

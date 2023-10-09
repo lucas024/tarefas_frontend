@@ -170,7 +170,7 @@ const UserSidebar = (props) => {
                     <div className={styles.status}>
                         <Loader loading={loadingSub}/>
                         <div className={styles.status_top}>
-                            <span className={styles.status_top_val} style={{color:!props.incompleteUser&&props.user?.state===1&&props.hasSubscription?"#6EB241":"#fdd835"}}>
+                            <span className={styles.status_top_val} style={{color:!props.incompleteUser&&props.user?.state===1&&props.hasSubscription?"#0358e5":"#fdd835"}}>
                                 {
                                     !props.incompleteUser&&props.user?.state===1&&props.hasSubscription?
                                     "CONTA ATIVA"
@@ -178,7 +178,7 @@ const UserSidebar = (props) => {
                                 }
                             </span>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:!props.incompleteUser&&props.user?.state===1?"#6EB241":props.incompleteUser===false?"#6EB241bb":"#fdd835bb"}}>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:!props.incompleteUser&&props.user?.state===1?"#0358e5":props.incompleteUser===false?"#0358e5bb":"#fdd835bb"}}>
                             <span className={styles.status_div_title}>Perfil</span>
                             <div className={styles.status_div_flex}>
                                 <span className={styles.status_div_val}>
@@ -197,7 +197,7 @@ const UserSidebar = (props) => {
                                 }
                             </div>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:props.hasSubscription?"#6EB241":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:props.hasSubscription?"#0358e5":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
                             <span className={styles.status_div_title}>Subscrição</span>
                             <div className={styles.status_div_flex}>
                                 <span className={styles.status_div_val}>
