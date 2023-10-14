@@ -14,6 +14,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import CardMembershipIcon from '@mui/icons-material/CardMembership';
 
 const Navbar = (props) => {
 
@@ -164,7 +165,8 @@ const Navbar = (props) => {
                                                     }>
                                                     <div className={styles.drop_div}>
                                                         <div className={styles.drop_div_special}>
-                                                            <div style={{display:"flex"}}>
+                                                            <div className={styles.drop_div_flex}>
+                                                                <CardMembershipIcon className={styles.drop_div_flex_icon}/>
                                                                 <span className={styles.drop_div_text}>Subscrição</span>
                                                             </div>
                                                             {

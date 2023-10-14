@@ -1,9 +1,8 @@
 .personal{
     color: var(--brand);
-    overflow-x: auto !important;
-    min-width: 300px;
     position: relative;
     height: 100%;
+    width: 100%;
 }
 .personal_title{
     width: 100%;
@@ -72,6 +71,7 @@
     box-sizing: border-box;
     border-bottom: 1px solid var(--brand);
     position: relative;
+    overflow-x: scroll !important;
 }
 .top_complete_line{
     display: flex;
@@ -84,7 +84,7 @@
 }
 .line_text{
     margin-left: 5px;
-    color: #ccc;
+    color: var(--grey);
     text-transform: uppercase;
     font-size: 0.8rem;
 }
@@ -92,7 +92,7 @@
     width: 18px !important;
     height: 18px !important;
     margin-left: 5px;
-    color: var(--grey);
+    color: var(--yellow);
 }
 .line_text_complete{
     color: var(--check);
@@ -116,7 +116,7 @@
     height: 1px;
     width: 100%;
     margin: 10px auto;
-    background-color: #ccc;
+    background-color: var(--grey);
 }
 .special{
     text-decoration: underline;
@@ -127,6 +127,7 @@
     margin-top: 10px;
     padding-bottom: 40px;
     border-bottom: 1px solid white;
+    height: 350px;
 }
 .top_right_flex{
     display: flex;
@@ -142,7 +143,7 @@
 .image_wrapper{
     height: 250px;
     width: 250px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--grey);
     display: flex;
     position: relative;
     border-radius: 5px;
@@ -231,7 +232,7 @@ input[type=file]{
 }
 .input_input{
     border: none;
-    color: #ccc;
+    color: var(--grey);
     font-size: 0.95rem;
     font-weight: 400;
     font-family: 'Montserrat', sans-serif;
@@ -273,8 +274,8 @@ input[type=file]{
 }
 .textarea_input{
     border: none;
-    border-bottom: 1px solid #ccc;
-    color: #ccc;
+    border-bottom: 1px solid var(--grey);
+    color: var(--grey);
     width: 450px;
     height: 80px;
     padding: 5px;
@@ -282,11 +283,11 @@ input[type=file]{
     font-weight: 400;
     font-family: 'Montserrat', sans-serif;
     border-radius: 5px;
-    background-color: #cccccc10;
+    background-color: var(--grey)ccc10;
 }
 .textarea_input_edit{
     border: none;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--grey);
     color: var(--brand);
     width: 450px;
     height: 80px;
@@ -303,10 +304,10 @@ input[type=file]{
     border-bottom: 2px solid var(--action);
 }
 .textarea_input::placeholder{
-    color: #ccc;
+    color: var(--grey);
 }
 .textarea_input_edit::placeholder{
-    color: #ccc;
+    color: var(--grey);
 }
 .input_div_wrapper{
     display: flex;
@@ -384,8 +385,12 @@ input[type=file]{
     color: white;
     cursor: pointer;
     font-weight: 600;
-    border: 3px solid var(--action);
     align-self: flex-start;
+}
+.edit:hover{
+    color: var(--action);
+    background-color: white;
+    transition: all 150ms ease-in-out;
 }
 .save{
     padding: 10px 20px;
@@ -409,11 +414,26 @@ input[type=file]{
     color: white;
     cursor: pointer;
     font-weight: 600;
-    border: 3px solid var(--action);
 }
 .edit_top:hover{
     background-color: white;
-    border-color: var(--neutral);
+    color: var(--action);
+    transition: all 150ms ease-in-out;
+}
+.edit_top_worker{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: var(--action);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+.edit_top_worker:hover{
+    background-color: white;
     color: var(--action);
     transition: all 150ms ease-in-out;
 }
@@ -435,6 +455,24 @@ input[type=file]{
     color: var(--neutral);
     transition: all 150ms ease-in-out;
 }
+.save_top_worker{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 3px solid var(--action);
+    background-color: white;
+    color: var(--action);
+    font-weight: 600;
+    cursor: pointer;
+}
+.save_top_worker:hover{
+    background-color: var(--action);
+    color: var(--neutral);
+    transition: all 150ms ease-in-out;
+}
 .helper{
     color: var(--action);
     font-size: 0.8rem;
@@ -445,13 +483,13 @@ input[type=file]{
     height: 2px;
     width: 100%;
     margin: 10px 0;
-    background-color: #ccc;
+    background-color: var(--grey);
 }
 .divider_active{
     height: 2px;
     width: 100%;
     margin: 10px 0;
-    background-color: var(--action);
+    background-color: var(--job);
 }
 .flex_bottom{
     display: flex;
@@ -507,7 +545,7 @@ top: 0;
 left: 0;
 height: 25px;
 width: 25px;
-background-color: var(--background);
+background-color: var(--neutral);
 border-radius: 3px;
 }
 .checkmark_disabled{
@@ -516,7 +554,7 @@ top: 0;
 left: 0;
 height: 25px;
 width: 25px;
-background-color: var(--background);
+background-color: var(--grey);
 border-radius: 3px;
 }
 .checkbox_text{
@@ -529,12 +567,12 @@ border-radius: 3px;
 }
 /* On mouse-over, add a grey background color */
 .container:hover input ~ .checkmark {
-background-color: #ccc;
+background-color: var(--grey);
 }
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
-background-color: var(--action);
+background-color: var(--job);
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -565,7 +603,7 @@ transform: rotate(45deg);
     
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark_disabled {
-background-color: #ff785ac3;
+background-color: #0358e590;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -627,7 +665,7 @@ transform: rotate(45deg);
 .radio_text_disabled{
     margin-left: 30px;
     font-size: 1.2rem;
-    color: #ccc;
+    color: var(--grey);
 }
 .radio_button_input{
     height: 25px;
@@ -643,7 +681,7 @@ transform: rotate(45deg);
     width: fit-content;
     border-radius: 5px;
     border-bottom-left-radius: 0;
-    background-color: #cccccc10;
+    background-color: var(--grey)ccc10;
     font-style: normal !important;
 }
 .radio_button_input:disabled{
@@ -695,7 +733,7 @@ transform: rotate(45deg);
   
   /* On mouse-over, add a grey background color */
   .radio_area:hover input ~ .fake_radio_button {
-    background-color: #ccc;
+    background-color: var(--grey);
   }
 
   
@@ -706,7 +744,7 @@ transform: rotate(45deg);
 
     /* When the radio button is checked, add a blue background */
     .radio_area input:checked ~ .fake_radio_button_disabled {
-        background-color: #ff785ac3;
+        background-color: #0358e590;
       }
       
   
@@ -743,15 +781,16 @@ transform: rotate(45deg);
     font-size: 0.8rem;
     text-transform: uppercase;
     margin: auto;
+    font-weight: 500;
 }
 .status_div_flex{
     display: flex;
     align-items: center;
     margin: auto;
-    margin-top: 5px;
 }
 .status_div_flex_title{
     font-weight: 600;
+    font-size: 1.1rem;
 }
 .status_icon{
     color: white;
@@ -779,19 +818,10 @@ transform: rotate(45deg);
     .item_wrapper{
         font-size: 0.8rem;
     }
-    .personal_subtitle{
-        font-size: 1.2rem;
-    }
-    .input_title{
-        font-size: 0.9rem;
-    }
     .flex_title{
         font-size: 0.9rem;
     }
-    .input_icon{
-        width: 20px !important;
-        height: 20px !important;
-    }
+
     .input_flex{
         height: 160px;
     }
@@ -807,24 +837,24 @@ transform: rotate(45deg);
         box-sizing: border-box;
     }
     .save_top{
-        top: 200px;
+        top: 205px;
         left: 10px;
         right: 10px;
         text-align: center;
-    }
-    .input_right{
-        width: 150px;
-    }
-    .input_wrong{
-        width: 150px;
-    }
-    .input_input_edit{
-        width: 150px;
     }
     .input_input{
         width: 150px;
     }
     .input_div{
+        width: 100%;
+    }
+    .textarea_input_edit{
+        width: 100%;
+    }
+    .textarea_input{
+        width: 100%;
+    }
+    .textarea_input_wrong{
         width: 100%;
     }
 }

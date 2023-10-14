@@ -37,8 +37,8 @@ const NoPage = (props) => {
                 </div>
                 :props.object==="re_subscritption"?
                 <div className={styles.blank_flex} style={{marginTop:"20px"}}>
-                    <span className={styles.blank_text}>Desativaste a tua subscrição</span>
-                    <Sad className={styles.blank_face_small}/>
+                    <span className={styles.blank_text} style={{color:"#fff"}}>A tua subscrição terminou.</span>
+                    {/* <Sad className={styles.blank_face_small} style={{color:"white"}}/> */}
                     <span className={styles.button} onClick={() => props.activateSub()}>
                         Re-ativar Subscrição
                     </span>

@@ -111,7 +111,7 @@ const UserSidebar = (props) => {
                         </ListItemButton >
                     }
                     
-                    <ListItemButton style={{borderTop:props.user?.type?"3px solid #71848d":null}} onClick={() => sidebarNavigate("personal")} 
+                    <ListItemButton onClick={() => sidebarNavigate("personal")} 
                         //className={selectedSidebar==="personal"?styles.button:""}
                     >
                         <ListItemIcon>
@@ -184,17 +184,17 @@ const UserSidebar = (props) => {
                                 <span className={styles.status_div_val}>
                                 {
                                     !props.incompleteUser?
-                                    "VERIFICADO"
+                                    "COMPLETO"
                                     :props.incompleteUser===false?
                                     "A VERIFICAR"
                                     :"INCOMPLETO"
                                 }
                                 </span>
-                                {
+                                {/* {
                                     !props.incompleteUser?
                                     <CheckCircleOutlineOutlinedIcon className={styles.status_icon}/>
                                     :<UnpublishedOutlinedIcon className={styles.status_icon}/>
-                                }
+                                } */}
                             </div>
                         </div>
                         <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:props.hasSubscription?"#0358e5":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
@@ -207,11 +207,11 @@ const UserSidebar = (props) => {
                                     :"DESATIVADA"
                                 }
                                 </span>
-                                {
+                                {/* {
                                     props.hasSubscription?
                                     <CheckCircleOutlineOutlinedIcon className={styles.status_icon}/>
                                     :<UnpublishedOutlinedIcon className={styles.status_icon}/>
-                                }
+                                } */}
                             </div>
                         </div>
                     </div>

@@ -1,7 +1,6 @@
 .blank{
     width: 100%;
     margin: 0 auto;
-    border-top: 1px solid #ccc;
 }
 .blank_flex{
     margin: auto;
@@ -12,10 +11,10 @@
 }
 .blank_text{
     align-self: center;
-    font-size: 1.1rem;
-    font-style: italic;
+    font-size: 1rem;
     color: #00000070;
     text-align: center;
+    font-weight: 400;
 }
 .blank_face{
     width: 100px !important;
@@ -42,11 +41,11 @@
     box-sizing: border-box;
     cursor: pointer;
     font-size: 0.8rem;
+    font-weight: 600;
 }
 .button:hover{
-    background-color: white;
-    transform: scale(1.05);
-    transition: 150ms;
+    transform: scale(1.03);
+    transition: 50ms;
 }
 .blank_request{
     margin: 60px auto;

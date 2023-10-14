@@ -20,6 +20,7 @@
 }
 .right{
     flex-grow: 1;
+    overflow: hidden;
 }
 .worker_area{
     width: 100%;
@@ -45,7 +46,7 @@
 }
 .area{
     height: calc(100vh - 68px);
-    overflow: auto;
+    overflow: hidden;
 }
 
 @media (min-width: 1024px) {

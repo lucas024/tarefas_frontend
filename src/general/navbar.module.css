@@ -44,7 +44,7 @@
 }
 .flex_end_publicar:hover{
     background-color: rgb(196, 68, 0);
-    transition: 150ms;
+    transition: 50ms;
 }
 .publicar{
     color: white;
@@ -113,8 +113,7 @@
     border: 3px solid var(--brand);
 }
 .user_button:hover{
-    transform: scale(1.01);
-    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    opacity: 0.8;
     transition: 150ms;
 }
 .user_login:before {
@@ -127,7 +126,7 @@
     background-color: var(--action);
     visibility: hidden;
     transform: scaleX(0);
-    transition: all 0.3s ease-in-out;
+    transition: all 50ms ease-in-out;
 }
 
 .user_login:hover:before {

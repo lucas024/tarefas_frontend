@@ -285,12 +285,13 @@ const Personal = (props) => {
 
     const getPercentagem = () => {
         let val = 0
-        if(phone!==""&&!edit) val += 1
+        if(props.user?.phone_verified&&!edit) val += 1
+        if(props.user?.email_verified&&!editBottom) val += 1
         if(photo!=="") val += 1
         if(selectedProf?.length>0&&!editBottom) val += 1
         if(selectedReg?.length>0&&!editBottom) val += 1
         if(radioSelected!==null&&!editBottom) val += 1
-        return Math.ceil((val/5)*100)
+        return Math.ceil((val/6)*100)
     }
 
     return (
@@ -404,17 +405,34 @@ const Personal = (props) => {
                                             }
                                         </div>
                                         <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                            <PhoneIcon className={styles.line_icon}/>
+                                            <EmailVerified className={styles.line_icon}/>
                                             {
-                                                phone!==""?
+                                                props.user?.email_verified?
                                                 <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text_complete}>telefone</span>
+                                                    <span className={styles.line_text_complete}>E-mail Verificado</span>
                                                     <CheckIcon className={styles.line_val_complete}></CheckIcon>
                                                 </div>
                                                 
                                                 :
                                                 <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text}>telefone</span>
+                                                    <span className={styles.line_text}>E-mail Verificado</span>
+                                                    <ClearIcon className={styles.line_val}></ClearIcon>
+                                                </div>
+
+                                            }
+                                        </div>
+                                        <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                            <PhoneVerified className={styles.line_icon}/>
+                                            {
+                                                props.user?.phone_verified?
+                                                <div style={{display:"flex", alignItems:"center"}}>
+                                                    <span className={styles.line_text_complete}>Telemóvel Verificado</span>
+                                                    <CheckIcon className={styles.line_val_complete}></CheckIcon>
+                                                </div>
+                                                
+                                                :
+                                                <div style={{display:"flex", alignItems:"center"}}>
+                                                    <span className={styles.line_text}>Telemóvel Verificado</span>
                                                     <ClearIcon className={styles.line_val}></ClearIcon>
                                                 </div>
 
@@ -500,11 +518,11 @@ const Personal = (props) => {
                                 <div className={edit?styles.input_flex_edit:styles.input_flex}>
                                     {
                                         !edit?
-                                            <span className={styles.edit_top}  onClick={() => setEdit(true)}>
+                                            <span className={props.user?.type===0?styles.edit_top:styles.edit_top_worker}  onClick={() => setEdit(true)}>
                                                 EDITAR
                                             </span>
                                             :
-                                            <span className={styles.save_top} onClick={() => editDoneHandler()}>
+                                            <span className={props.user?.type===0?styles.save_top:styles.save_top_worker} onClick={() => editDoneHandler()}>
                                                 GUARDAR
                                             </span>
                                     }
@@ -519,7 +537,14 @@ const Personal = (props) => {
                                     </div>
                                     <div className={styles.top_edit_area}>
                                         <div className={styles.input_div}>
-                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#71848d':'#ffffff'}}>
+                                            {
+                                                !props.user?.email_verified?
+                                                <div className={styles.input_div_button} onClick={() => setVerifyPhone(1)}>
+                                                    <span className={styles.input_div_button_text}>Verificar</span>
+                                                </div>
+                                                :null
+                                            }
+                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#FF785A':!props.user?.email_verified?'#fdd835':'#ffffff',}}>
                                                 <div className={styles.input_icon_div}>
                                                     {
                                                         props.user?.email_verified?
@@ -537,7 +562,7 @@ const Personal = (props) => {
                                             {
                                                 !props.user?.phone_verified?
                                                 <div className={styles.input_div_button} onClick={() => setVerifyPhone(1)}>
-                                                    <span className={styles.input_div_button_text}>Verificar Telemóvel</span>
+                                                    <span className={styles.input_div_button_text}>Verificar</span>
                                                 </div>
                                                 :null
                                             }
@@ -618,26 +643,26 @@ const Personal = (props) => {
                                     <span className={styles.personal_subtitle}>Detalhes Trabalhador</span>
                                     <div className={styles.radio_div}>
                                         <SelectWorker 
-                                                editBottom={editBottom} 
-                                                worker_type={radioSelected} 
-                                                changeType={val => {
-                                                    setRadioSelected(val)
-                                                    setEntityWrong(false)
-                                                }}/>
+                                            editBottom={editBottom} 
+                                            worker_type={radioSelected} 
+                                            changeType={val => {
+                                                setRadioSelected(val)
+                                                setEntityWrong(false)
+                                            }}/>
                                         {
                                             radioSelected===1?
                                             <div 
                                                 className={styles.input_div_wrapper_editable} 
-                                                style={{borderColor:entityWrong&&entityName.length<=1?'#fdd835':'#FF785A', marginLeft:'10px', borderColor:!editBottom?'#FF785Ac3':entityWrong||entityName.length<=1?'#fdd835':'#FF785A'}}>
+                                                style={{borderColor:entityWrong&&entityName.length<=1?'#fdd835':'#0358e5', marginLeft:'10px', borderColor:!editBottom?'#0358e590':entityWrong||entityName.length<=1?'#fdd835':'#0358e5'}}>
                                                 <div className={styles.input_icon_div}>
                                                     {
                                                         entityWrong||entityName.length<=1?
-                                                        <PhoneUnverified className={styles.input_icon} style={{color:'#fdd835'}}/>
+                                                        <PhoneUnverified className={styles.input_icon} style={{color:'#0358e5'}}/>
                                                         :
-                                                        <PhoneVerified className={styles.input_icon} style={{color:!editBottom?'#FF785Ac3':'#FF785A'}}/>
+                                                        <PhoneVerified className={styles.input_icon} style={{color:!editBottom?'#0358e590':'#0358e5'}}/>
                                                     }
                                                 </div>
-                                                <span className={styles.input_icon_seperator} style={{backgroundColor:!editBottom?'#FF785Ac3':entityWrong||entityName.length<=1?'#fdd835':'#FF785A'}}>.</span>
+                                                <span className={styles.input_icon_seperator} style={{backgroundColor:!editBottom?'#0358e590':entityWrong||entityName.length<=1?'#fdd835':'#0358e5'}}>.</span>
                                                 <input className={styles.input_input}
                                                         style={{color:!editBottom?'#71848d':'#fff'}}
                                                         value={entityName}
