@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import styles from './verificationBanner.module.css'
+import styles from './banner.module.css'
 import Lottie from 'react-lottie';
 import * as sendPhone from '../assets/lotties/send-phone.json'
 import * as wrongCode from '../assets/lotties/error-email.json'
@@ -16,17 +16,9 @@ const VerificationBannerPhone = (props) => {
     // const [success, setSuccess] = useState(false)
 
     const {
-        totalSeconds,
         seconds,
-        minutes,
-        hours,
-        days,
-        isRunning,
-        start,
-        pause,
-        resume,
         restart,
-      } = useTimer({ expiryTimestamp, onExpire: () => setExpired(true) });
+    } = useTimer({ expiryTimestamp, onExpire: () => setExpired(true) })
 
     useEffect(() => {
     }, [code])
@@ -68,7 +60,7 @@ const VerificationBannerPhone = (props) => {
     return (
         <div className={styles.verification} onClick={() => props.cancel()}>
             <div className={styles.main} onClick={e => e.stopPropagation()}>
-                <p className={styles.phone_title}>Verificar Telemóvel</p>
+                <p className={styles.title}>Verificar Telemóvel</p>
                 <span className={styles.title_separator}/>
                 {
                     props.next===1?

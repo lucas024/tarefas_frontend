@@ -27,6 +27,8 @@ import {
 import Loader from '../general/loader';
 import ClearIcon from '@mui/icons-material/Clear';
 import NoPage from '../general/noPage';
+import SubscriptionAlterar from './subscription_alterar';
+import ConfirmBanner from '../general/confirmBanner';
 
 const Subscription = props => {
 
@@ -62,6 +64,8 @@ const Subscription = props => {
     const [subscriptionStatus, setSubscriptionStatus] = useState(null)
     const [schedule, setSchedule] = useState(null)
     const [subscriptionPlanObj, setSubscriptionPlanObj] = useState({})
+
+    const [confirmBanner, setConfirmBanner] = useState(false)
 
     const stripe = useStripe();
     const elements = useElements();
@@ -282,6 +286,7 @@ const Subscription = props => {
     }
 
     const cancelPlanChange = async () => {
+        setConfirmBanner(false)
         setLoading(true)
         if (!stripe || !elements) {
             return;
@@ -397,6 +402,12 @@ const Subscription = props => {
         <div className={styles.subscription}>
             <Loader loading={loading}/>
             {
+                confirmBanner?
+                <ConfirmBanner cancel={() => setConfirmBanner(false)} confirm={() => cancelPlanChange()} color={'#FF785A'}/>
+                :null
+            }
+            
+            {
                 isLoaded?
                 <div style={{position:"relative", height:'100%'}}>
                     {
@@ -465,16 +476,16 @@ const Subscription = props => {
                                     <div className={styles.divider}/>
                                     <div>
                                         <div style={{display:"flex", margin:"10px 0", alignItems:"center"}}>
-                                            <span className={styles.subtitle_sub} style={{margin:"0"}}><span style={{fontWeight:"500"}}>Plano Ativo - </span></span>
+                                            <span className={styles.subtitle_sub} style={{margin:"0"}}><span style={{fontWeight:"500"}}>Plano Atual - </span></span>
                                             <span className={styles.ya}>{
-                                                schedule.phases.length===2&&subscriptionPlanObj.selected_plan===1?"PLANO MENSAL"
-                                                :!schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)===1?"PLANO MENSAL"
+                                                schedule.phases.length===2&&subscriptionPlanObj.selected_plan===1?"MENSAL"
+                                                :subscriptionPlanObj.selected_plan===1?"MENSAL"
                                                 :
-                                                schedule.phases.length===2&&subscriptionPlanObj.selected_plan===2?"PLANO SEMESTRAL"
-                                                :!schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)===2?"PLANO SEMESTRAL"
+                                                schedule.phases.length===2&&subscriptionPlanObj.selected_plan===2?"SEMESTRAL"
+                                                :subscriptionPlanObj.selected_plan===2?"SEMESTRAL"
                                                 :
-                                                schedule.phases.length===2&&subscriptionPlanObj.selected_plan===3?"PLANO ANUAL"
-                                                :!schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)===3?"PLANO ANUAL"
+                                                schedule.phases.length===2&&subscriptionPlanObj.selected_plan===3?"ANUAL"
+                                                :subscriptionPlanObj.selected_plan===3?"ANUAL"
                                                 :null
                                                 }
                                             </span>
@@ -490,108 +501,76 @@ const Subscription = props => {
                                         <div className={styles.selected_plan_info}>
                                                 {
                                                     schedule&&schedule.phases.length>1&&!schedule.phases[0].metadata.from_canceled?
-                                                    <div className={styles.plan_meio}>
-                                                        <span className={styles.prox_cobr}>Data da próxima cobrança e <span style={{fontWeight:600}}>alteração de plano</span></span>
-                                                        <span className={styles.prox_cobr_val} style={{color:"white"}}> {extenseDate(endDate/1000)}</span>
-                                                    </div>
-                                                    :
-                                                    <div className={`${styles.sub_val_wrap}`} onClick={() => setSelectedMenu(0)}>
+                                                    <div className={`${styles.sub_val_wrap}`}>
                                                         <div className={styles.sub_val_wrap_image}>
                                                             <img src={subscriptionPlanObj.image} className={styles.section_img_small}/>
                                                         </div>
-                                                        <p className={styles.sub_val_date}>Plano {subscriptionPlanObj.type}</p>
+                                                        <p className={styles.sub_val_date}>{subscriptionPlanObj.type}</p>
                                                         <div className={styles.selected_plan_value_wrap}>
                                                             <div className={styles.info_div} style={{marginTop:'10px'}}>
                                                                 <div className={styles.info_subdiv}>
                                                                     <span className={styles.info_text_helper}>VALOR:</span>
-                                                                    <span className={styles.info_text}>€{subscriptionPlanObj.value}</span><span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}> (equivalente a €{subscriptionPlanObj.monthly}/mês)</span>
+                                                                    <span className={styles.info_text}>€{subscriptionPlanObj.value}</span>
                                                                 </div>
                                                             </div>
                                                             <div className={styles.info_div}>
                                                                 <div className={styles.info_subdiv}>
                                                                     <span className={styles.info_text_helper}>Modelo:</span>
-                                                                    <span className={styles.info_text}>{subscriptionPlanObj.type}<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:'400'}}>(a cada {subscriptionPlanObj.a_cada})</span></span>
+                                                                    <span className={styles.info_text}>A cada {subscriptionPlanObj.a_cada}</span>
                                                                 </div>
                                                             </div>
-                                                            {/* <div className={styles.info_div}>
-                                                                <div className={styles.info_subdiv} style={{marginTop:'10px'}}>
-                                                                    <span className={styles.info_text_helper} style={{width:'180px'}}>Próxima cobrança:</span>
+                                                            <div className={styles.info_div_pay}>
+                                                                <span className={styles.info_text_helper} style={{width:'fit-content'}}><span className={styles.prox_cobr}>alteração de plano</span></span>
+                                                                <span className={styles.info_text} style={{marginTop:'5px', color:"#FF785A"}}>{extenseDate(endDate/1000)}</span>
+                                                                <span className={styles.info_text_days_charge}>{daysTillCharge} dias</span>
+                                                            </div>
+
+                                                            <p className={styles.selected_plan_value_information}>O cancelamento desta alteração ou da subscrição pode ser feito a qualquer altura.</p>
+                                                        </div>
+                                                    </div>
+                                                    :
+                                                    <div className={`${styles.sub_val_wrap}`}>
+                                                        <div className={styles.sub_val_wrap_image}>
+                                                            <img src={subscriptionPlanObj.image} className={styles.section_img_small}/>
+                                                        </div>
+                                                        <p className={styles.sub_val_date}>{subscriptionPlanObj.type}</p>
+                                                        <div className={styles.selected_plan_value_wrap}>
+                                                            <div className={styles.info_div} style={{marginTop:'10px'}}>
+                                                                <div className={styles.info_subdiv}>
+                                                                    <span className={styles.info_text_helper}>VALOR:</span>
+                                                                    <span className={styles.info_text}>€{subscriptionPlanObj.value}</span>
                                                                 </div>
-                                                            </div> */}
+                                                            </div>
+                                                            <div className={styles.info_div}>
+                                                                <div className={styles.info_subdiv}>
+                                                                    <span className={styles.info_text_helper}>Modelo:</span>
+                                                                    <span className={styles.info_text}>A cada {subscriptionPlanObj.a_cada}</span>
+                                                                </div>
+                                                            </div>
                                                             <div className={styles.info_div_pay}>
                                                                 <span className={styles.info_text_helper} style={{width:'fit-content'}}>Próxima cobrança</span>
                                                                 <span className={styles.info_text} style={{marginTop:'5px', color:"#0358e5"}}>{extenseDate(endDate/1000)}</span>
-                                                                <span className={styles.info_text} style={{color:"#ffffff", fontWeight:400, fontSize:"0.9rem", marginTop:'-2px'}}>({daysTillCharge} dias)</span>
+                                                                <span className={styles.info_text_days_charge}>({daysTillCharge} dias)</span>
                                                             </div>
-
                                                             <p className={styles.selected_plan_value_information}>O cancelamento da subscrição pode ser feito a qualquer altura.</p>
                                                         </div>
                                                     </div>
-                                                    
-                                                    // <div className={styles.plan_meio}>
-                                                    //     <span className={styles.prox_cobr}>Data da próxima cobrança </span>
-                                                    //     <span className={styles.prox_cobr_val} style={{color:"white"}}>{extenseDate(endDate/1000)}</span>
-                                                    // </div>
 
                                                 }
                                             {
                                                 schedule&&schedule.phases.length>1&&!schedule.phases[0].metadata.from_canceled?
-                                                <div className={styles.changing_plan} style={{marginTop:"15px"}}>
-                                                    <span className={styles.prox_cobr} style={{color:"#ccc", fontSize:"0.8rem", textTransform:"uppercase"}}>Alteração Pendente</span>
-                                                    <div style={{display:"flex", alignItems:"center", marginTop:"5px", justifyContent:"center"}}>
-                                                        <div>
-                                                            <span className={styles.prox_cobr_val} style={{fontWeight:"400"}}>{getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)===1?"PLANO MENSAL":getPlanFromPriceId(schedule.phases[0]?.plans[0].price)===2?"PLANO SEMESTRAL":"PLANO ANUAL"}</span>
-                                                            <div>
-                                                                <div className={styles.info_div}>
-                                                                    <CircleIcon className={styles.info_icon}/>
-                                                                    <div className={styles.info_subdiv}>
-                                                                        <span className={styles.info_text}>{getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)===1?<span>€12.99 <span style={{fontSize:"0.7rem", color:"#ccc"}}>(€12.99/mês)</span></span>:getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)===2?<span>€68.89 <span style={{fontSize:"0.7rem", color:"#ccc"}}>(€10.49/mês)</span></span>:getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)===3?<span>€119.89 <span style={{fontSize:"0.7rem", color:"#ccc"}}>(€9.99/mês)</span></span>:""}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div className={styles.info_div}>
-                                                                    <CircleIcon className={styles.info_icon}/>
-                                                                    <div className={styles.info_subdiv}>
-                                                                        <span className={styles.info_text}>
-                                                                            {getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)===1?
-                                                                                "Cobranças mensais"
-                                                                            :getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)===2?
-                                                                                "Cobranças semestrais"
-                                                                            :getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)===3?
-                                                                                "Cobranças anuais"
-                                                                            :""}
-                                                                            </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <ArrowRightAltIcon style={{width:"20px !important", height:"20px !important", margin:"0 5px"}}/>
-                                                        <div>
-                                                            <span className={styles.prox_cobr_val} style={{fontWeight:"400"}}>{getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===1?"PLANO MENSAL":getPlanFromPriceId(schedule.phases[1].plans[0].price)===2?"PLANO SEMESTRAL":"PLANO ANUAL"}</span>
-                                                            <div>
-                                                                <div className={styles.info_div}>
-                                                                    <CircleIcon className={styles.info_icon}/>
-                                                                    <div className={styles.info_subdiv}>
-                                                                        <span className={styles.info_text}>{getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===1?<span>€12.99 <span style={{fontSize:"0.7rem", color:"#ccc"}}>(€12.99/mês)</span></span>:getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===2?<span>€68.89 <span style={{fontSize:"0.7rem", color:"#ccc"}}>(€10.49/mês)</span></span>:getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===3?<span>€119.89 <span style={{fontSize:"0.7rem", color:"#ccc"}}>(€9.99/mês)</span></span>:""}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div className={styles.info_div}>
-                                                                    <CircleIcon className={styles.info_icon}/>
-                                                                    <div className={styles.info_subdiv}>
-                                                                        <span className={styles.info_text}>
-                                                                            {getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===1?
-                                                                                "Cobranças mensais"
-                                                                            :getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===2?
-                                                                                "Cobranças semestrais"
-                                                                            :getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)===3?
-                                                                                "Cobranças anuais"
-                                                                            :""}
-                                                                            </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                <div className={styles.changing_plan}>
+                                                    <span className={styles.prox_cobr}>Alteração de PLANO</span>
+                                                    <SubscriptionAlterar 
+                                                        subscriptionPlanObj={subscriptionPlanObj}
+                                                        selectedPlan={false}
+                                                        nextPlan={getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)}/>
                                                 </div>
+                                                :null
+                                            }
+                                            {
+                                                schedule&&schedule.phases.length>1&&!schedule.phases[0].metadata.from_canceled?
+                                                <p className={styles.selected_plan_value_information}>O <span style={{color:"#FF785A"}}>plano novo</span> entrará em vigor a {getDateToString(endDate/1000)}.</p>
                                                 :null
                                             }
                                         </div>
@@ -637,7 +616,7 @@ const Subscription = props => {
                                     <div className={styles.card_right}>
                                         {
                                             schedule&&schedule.phases[1]&&!schedule.phases[0].metadata.from_canceled?
-                                            <div className={styles.card_right_button_remove_plan} onClick={() => cancelPlanChange()}>
+                                            <div className={styles.card_right_button} onClick={() => setConfirmBanner(true)}>
                                                 <span>Cancelar <span style={{fontWeight:600}}>Alteração de plano</span></span>
                                             </div>
                                             :
@@ -904,7 +883,7 @@ const Subscription = props => {
                                                                 <span className={styles.info_text}>Cobranças mensais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}>(a cada mês)</span></span>
                                                             </div>
                                                         </div>
-                                                        <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura..</p>
+                                                        <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
                                                     </div>
                                                 </div>
                                                 :selectedPlan===2?
@@ -926,7 +905,7 @@ const Subscription = props => {
                                                                 <span className={styles.info_text}>Cobranças semestrais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}>(a cada 6 meses)</span></span>
                                                             </div>
                                                         </div>
-                                                        <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura..</p>
+                                                        <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
                                                     </div>
                                                 </div>
                                                 :selectedPlan===3?
@@ -952,7 +931,7 @@ const Subscription = props => {
                                                             isCanceled&&endDate>currentDate?
                                                             <span className={styles.selected_plan_value_information}>Esta nova subscrição apenas será cobrada no fim da sua subscrição atual (<span style={{color:"#FF785A", fontWeight:"400"}}>{getDateToString(endDate/1000)}</span>)</span>
                                                             :
-                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura..</p>
+                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
                                                         }
                                                     </div>
                                                 </div>
@@ -1089,133 +1068,29 @@ const Subscription = props => {
                                             <span className={styles.selected_plan_title}>
                                                 ALTERAÇÃO
                                             </span>
-                                            <div className={styles.change_plan_wrap}>
-                                                <div style={{flex:'1'}}>
-                                                    <div className={`${styles.sub_val_wrap}`}>
-                                                        <div className={styles.sub_val_wrap_image}>
-                                                            <img src={subscriptionPlanObj.image} className={styles.section_img_small}/>
-                                                        </div>
-                                                        <p className={styles.sub_val_date} style={{fontWeight:400, fontSize:'0.9rem'}}>Plano ATUAL</p>
-                                                        <p className={styles.sub_val_date} style={{marginTop:'3px', fontSize:'0.9rem'}}>{subscriptionPlanObj.type}</p>
-                                                        <div className={styles.selected_plan_value_wrap}>
-                                                            <div className={styles.info_div} style={{marginTop:'10px'}}>
-                                                                <div className={styles.info_subdiv}>
-                                                                    <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>VALOR:</span>
-                                                                    <span className={styles.info_text} style={{fontSize:'0.8rem'}}>€{subscriptionPlanObj.value}</span>
-                                                                    <span className={styles.info_text} style={{fontSize:'0.7rem', fontWeight:400, marginLeft:'5px'}}>(€{subscriptionPlanObj.monthly}/mês)</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className={styles.info_div}>
-                                                                <div className={styles.info_subdiv}>
-                                                                    <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>Modelo:</span>
-                                                                    <span className={styles.info_text} style={{fontSize:'0.8rem'}}>A cada {subscriptionPlanObj.a_cada}</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <ArrowRightAltIcon className={styles.arrow}/>
-                                                {
-                                                    selectedPlan===1&&subscriptionPlanObj.selected_plan!==1?
-                                                    <div style={{flex:'1'}}>
-                                                        <div className={`${styles.sub_val_wrap}`} style={{backgroundColor:"#FF785A90", borderColor:"#FF785A"}}>
-                                                            <div className={styles.sub_val_wrap_image} style={{backgroundColor:"#FF785A"}}>
-                                                                <img src={basic} className={styles.section_img_small}/>
-                                                            </div>
-                                                            <p className={styles.sub_val_date} style={{fontWeight:400, fontSize:'0.9rem'}}>Plano NOVO</p>
-                                                            <p className={styles.sub_val_date} style={{marginTop:'3px', fontSize:'0.9rem'}}>Mensal</p>
-                                                            <div className={styles.selected_plan_value_wrap}>
-                                                                <div className={styles.info_div} style={{marginTop:'10px'}}>
-                                                                    <div className={styles.info_subdiv}>
-                                                                        <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>VALOR:</span>
-                                                                        <span className={styles.info_text} style={{fontSize:'0.8rem'}}>€12.99</span>
-                                                                        <span className={styles.info_text} style={{fontSize:'0.7rem', fontWeight:400, marginLeft:'5px'}}>(€12.99/mês)</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div className={styles.info_div}>
-                                                                    <div className={styles.info_subdiv}>
-                                                                        <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>Modelo:</span>
-                                                                        <span className={styles.info_text} style={{fontSize:'0.8rem'}}>A cada mês</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    :
-                                                    selectedPlan===2&&subscriptionPlanObj.selected_plan!==2?
-                                                    <div style={{flex:'1'}}>
-                                                        <div className={`${styles.sub_val_wrap}`} style={{backgroundColor:"#FF785A90", borderColor:"#FF785A"}}>
-                                                            <div className={styles.sub_val_wrap_image} style={{backgroundColor:"#FF785A"}}>
-                                                                <img src={basic} className={styles.section_img_small}/>
-                                                            </div>
-                                                            <p className={styles.sub_val_date} style={{fontWeight:400, fontSize:'0.9rem'}}>Plano NOVO</p>
-                                                            <p className={styles.sub_val_date} style={{marginTop:'3px', fontSize:'0.9rem'}}>Semestral</p>
-                                                            <div className={styles.selected_plan_value_wrap}>
-                                                                <div className={styles.info_div} style={{marginTop:'10px'}}>
-                                                                    <div className={styles.info_subdiv}>
-                                                                        <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>VALOR:</span>
-                                                                        <span className={styles.info_text} style={{fontSize:'0.8rem'}}>€68.89</span>
-                                                                        <span className={styles.info_text} style={{fontSize:'0.7rem', fontWeight:400, marginLeft:'5px'}}>(€11.49/mês)</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div className={styles.info_div}>
-                                                                    <div className={styles.info_subdiv}>
-                                                                        <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>Modelo:</span>
-                                                                        <span className={styles.info_text} style={{fontSize:'0.8rem'}}>A cada 6 meses</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    :
-                                                    selectedPlan===3&&subscriptionPlanObj.selected_plan!==3?
-                                                    <div style={{flex:'1'}}>
-                                                        <div className={`${styles.sub_val_wrap}`} style={{backgroundColor:"#FF785A90", borderColor:"#FF785A"}}>
-                                                            <div className={styles.sub_val_wrap_image} style={{backgroundColor:"#FF785A"}}>
-                                                                <img src={basic} className={styles.section_img_small}/>
-                                                            </div>
-                                                            <p className={styles.sub_val_date} style={{fontWeight:400, fontSize:'0.9rem'}}>Plano NOVO</p>
-                                                            <p className={styles.sub_val_date} style={{marginTop:'3px', fontSize:'0.9rem'}}>Anual</p>
-                                                            <div className={styles.selected_plan_value_wrap}>
-                                                                <div className={styles.info_div} style={{marginTop:'10px'}}>
-                                                                    <div className={styles.info_subdiv}>
-                                                                        <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>VALOR:</span>
-                                                                        <span className={styles.info_text} style={{fontSize:'0.8rem'}}>€119.89</span>
-                                                                        <span className={styles.info_text} style={{fontSize:'0.7rem', fontWeight:400, marginLeft:'5px'}}>(€9.99/mês)</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div className={styles.info_div}>
-                                                                    <div className={styles.info_subdiv}>
-                                                                        <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>Modelo:</span>
-                                                                        <span className={styles.info_text} style={{fontSize:'0.8rem'}}>A cada 12 meses</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    :<span className={styles.selected_plan_no_value} style={{flex:1}}>Selecione um plano diferente</span>
-                                                }
-                                            </div>
+                                            <SubscriptionAlterar 
+                                                subscriptionPlanObj={subscriptionPlanObj}
+                                                selectedPlan={selectedPlan}/>
                                             
                                         </div>
                                         <div style={{marginTop:"80px"}}>
-                                            <span className={styles.alterar_plano}>A alteração do plano terá efeito imediato, mas <span style={{fontWeight:"600"}}>apenas será cobrado na data da próxima cobrança. </span></span>
-                                            <p className={styles.alterar_plano}>Próxima cobrança do PLANO ATUAL - <span style={{color:"#0358e5", fontWeight:600}}>{extenseDate(endDate/1000)}</span> <span style={{color:"#ffffff", fontWeight:500}}>({daysTillCharge} dias)</span></p>
+                                            <p className={styles.alterar_plano}>A alteração do plano pode ser cancelada a qualquer altura. </p>
+                                            <span className={styles.alterar_plano}>A alteração do plano terá efeito imediato, mas <span style={{fontWeight:"600"}}>apenas será cobrado na data da próxima cobrança do plano atual. </span></span>
+                                            <p className={styles.alterar_plano}>Data da próxima cobrança do plano atual: <span style={{color:"#0358e5", fontWeight:700, fontSize:'1rem'}}>{extenseDate(endDate/1000)}</span> <span className={styles.info_text_days_charge}>({daysTillCharge} dias)</span></p>
                                         </div>
                                         <div className={styles.buttons}>
                                             <span className={
                                                 selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan?
                                                 styles.button_add
                                                 :
-                                                selectedPlan&&!schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)!==selectedPlan?
+                                                selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan?
                                                 styles.button_add
                                                 :
                                                 styles.button_add_disabled} 
                                                 
                                                 onClick={() => {
                                                 selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan&&updatePlan()
-                                                selectedPlan&&!schedule.phases[0].metadata.from_canceled&&getPlanFromPriceId(schedule&&schedule.phases[0].plans[0].price)!==selectedPlan&&updatePlan()
+                                                selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan&&updatePlan()
                                                 }}>Alterar</span>
                                             <span className={styles.button_cancel} onClick={() => {
                                                 setDisplay(0)

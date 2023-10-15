@@ -20,9 +20,12 @@ import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import AssignmentdIcon from '@mui/icons-material/Assignment';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useSelector } from 'react-redux'
 
 
 const UserSidebar = (props) => {
+
+    const user_profile_complete = useSelector(state => {return state.user_profile_complete})
 
     const [searchParams] = useSearchParams()
     const [selectedSidebar, setSelectedSidebar] = useState("pedidos")
@@ -44,24 +47,6 @@ const UserSidebar = (props) => {
             setLoadingSub(false)
         }
     }, [props.hasSubscription])
-
-    // useEffect(() => {
-    //     if(props.user?.subscription && props.user.type){
-    //         setLoading(true)
-    //         axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
-    //             subscription_id: props.user.subscription.id,
-    //             schedule_id: props.user.subscription.sub_schedule
-    //         })
-    //         .then(res => {
-    //             if(res.data.schedule){
-    //                 if(new Date().getTime() < new Date(res.data.schedule.current_phase.end_date*1000)){
-    //                     setSubscriptionIsActive(true)
-    //                     setLoading(false)
-    //                 }
-    //             }
-    //         })
-    //     }
-    // }, [props.user])
     
 
     const sidebarNavigate = (val) => {
@@ -121,7 +106,7 @@ const UserSidebar = (props) => {
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
                                 <span className={styles.prox}>Perfil</span>
                                 {
-                                !props.incompleteUser&&props.user?.type?
+                                user_profile_complete&&props.user?.type?
                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
                                 :props.user?.type?
                                 <UnpublishedOutlinedIcon className={styles.off_icon}/>
@@ -170,31 +155,26 @@ const UserSidebar = (props) => {
                     <div className={styles.status}>
                         <Loader loading={loadingSub}/>
                         <div className={styles.status_top}>
-                            <span className={styles.status_top_val} style={{color:!props.incompleteUser&&props.user?.state===1&&props.hasSubscription?"#0358e5":"#fdd835"}}>
+                            <span className={styles.status_top_val} style={{color:user_profile_complete&&props.user?.state===1&&props.hasSubscription?"#0358e5":"#fdd835"}}>
                                 {
-                                    !props.incompleteUser&&props.user?.state===1&&props.hasSubscription?
+                                    user_profile_complete&&props.user?.state===1&&props.hasSubscription?
                                     "CONTA ATIVA"
                                     :"CONTA INATIVA"
                                 }
                             </span>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:!props.incompleteUser&&props.user?.state===1?"#0358e5":props.incompleteUser===false?"#0358e5bb":"#fdd835bb"}}>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:user_profile_complete&&props.user?.state===1?"#0358e5":!user_profile_complete?"#0358e5bb":"#fdd835bb"}}>
                             <span className={styles.status_div_title}>Perfil</span>
                             <div className={styles.status_div_flex}>
                                 <span className={styles.status_div_val}>
                                 {
-                                    !props.incompleteUser?
+                                    user_profile_complete?
                                     "COMPLETO"
-                                    :props.incompleteUser===false?
+                                    :!user_profile_complete?
                                     "A VERIFICAR"
                                     :"INCOMPLETO"
                                 }
                                 </span>
-                                {/* {
-                                    !props.incompleteUser?
-                                    <CheckCircleOutlineOutlinedIcon className={styles.status_icon}/>
-                                    :<UnpublishedOutlinedIcon className={styles.status_icon}/>
-                                } */}
                             </div>
                         </div>
                         <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:props.hasSubscription?"#0358e5":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>

@@ -19,40 +19,57 @@ import Trabalho from './main/trabalho';
 import AuthWorker from './auth/authWorker';
 import Trabalhador from './main/trabalhador';
 import Admin from './admin/admin';
-import { Provider } from 'react-redux';
-import { store } from './store';
+
+
+import { useDispatch, useSelector } from 'react-redux'
+import { 
+        worker_update_profile_complete, 
+        user_load,
+        user_reset
+      } from './store';
+
 
 function App() {
   const api_url = "http://localhost:5200" //"https://docker-image-fixed-v2-z4uucaddha-ew.a.run.app"
+
+  const dispatch = useDispatch()
+
+  const user = useSelector(state => {return state.user})
   
-  
-  const [user, setUser] = useState(null)
   const [userGoogle, setUserGoogle] = useState(null)
   const [loading, setLoading] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [userLoadAttempt, setUserLoadAttempt] = useState(false)
-  const [incompleteUser, setIncompleteUser] = useState(false)
   const [hasTexts, setHasTexts] = useState(false)
   const [hasSubscription, setHasSubscription] = useState(null)
 
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setUserGoogle(user)
+onAuthStateChanged(auth, (user_google) => {
+    if (user_google) {
+      setUserGoogle(user_google)
     } else {
       setUserGoogle(null)
-      setUser(null)
+      dispatch(user_reset())
       setUserLoadAttempt(true)
     }
-});
+})
+
+const checkWorkerComplete = (worker) => {
+  if(worker.regioes?.length===0||worker.trabalhos?.length===0||worker.phone===""||worker.photoUrl===""||!worker.phone_verified||!worker.email_verified){
+    dispatch(worker_update_profile_complete(false))
+  }
+  else{
+    dispatch(worker_update_profile_complete(true))
+  }
+}
 
 const updateChatReadLocal = chat_id => {
   let has = false
-  if(user.chats.length>0){
+  if(user?.chats.length>0){
     let arr = user.chats
     for(let el of arr){
       if(el.chat_id === chat_id){
-        if(user.type===1){
+        if(user?.type===1){
           el.worker_read = true
         }
         else{
@@ -60,26 +77,25 @@ const updateChatReadLocal = chat_id => {
         }
       }
       else{
-        if(user.type===1&&!el.worker_read){
+        if(user?.type===1&&!el.worker_read){
           has=true
         }
-        else if(user.type===0&&!el.user_read){
+        else if(user?.type===0&&!el.user_read){
           has=true
         }
       }
     }
     setHasTexts(has)
-    setUser(user)
+    dispatch(user_load(user))
   }
 }
-
 
 useEffect(() => {
   setLoading(true)
   if(userGoogle){
     axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
       if(res.data != null){
-        setUser(res.data)
+        dispatch(user_load(res.data))
         if(res.data.chats?.length>0){
           for(const el of res.data.chats){
             if(el.user_read){
@@ -95,7 +111,7 @@ useEffect(() => {
         axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
           console.log('here')
           if(res.data !== null){
-            setUser(res.data)
+            dispatch(user_load(res.data))
             if(res.data.subscription){
               setLoading(true)
               axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
@@ -121,13 +137,8 @@ useEffect(() => {
                 }
               }
             }
-            if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
-              setIncompleteUser(true)
-            }
-            else{
-              console.log('complete')
-              setIncompleteUser(false)
-            }
+            checkWorkerComplete(res.data)
+            
             setUserLoadAttempt(true)
             setLoading(false)
           }
@@ -149,7 +160,7 @@ const refreshUser = async () => {
   window.history.replaceState({}, document.title)
   let res = await axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} })
   if(res.data !== null){
-    setUser(res.data)
+    dispatch(user_load(res.data))
   }
 }
 
@@ -157,7 +168,7 @@ const refreshWorker = () => {
   window.history.replaceState({}, document.title)
   axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
     if(res.data !== null){
-      setUser(res.data)
+      dispatch(user_load(res.data))
       if(res.data.subscription){
         setLoading(true)
         axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
@@ -175,12 +186,11 @@ const refreshWorker = () => {
       else{
         setHasSubscription(false)
       }
-      if(res.data.regioes?.length===0||res.data.trabalhos?.length===0||res.data.phone===""||res.data.photoUrl===""){
-        setIncompleteUser(true)
-      }
-      else{
-        setIncompleteUser(false)
-      }
+
+      //user complete
+      checkWorkerComplete(res.data)
+
+
       setUserLoadAttempt(true)
       setLoading(false)
     }
@@ -190,48 +200,37 @@ const refreshWorker = () => {
   })
 }
 
-  const updateUser = (val, what) => {
-    let userAux = user
-    userAux[what] = val
-    setUser(userAux)
-    if(user.regioes?.length>0&&user.trabalhos?.length>0&&user.phone!==""&&user.photoUrl!==""){
-      setIncompleteUser(false)
-    }
-    else{
-      setIncompleteUser(true)
-    }
-  }
+const updateUser = (val, what) => {
+  let userAux = user
+  userAux[what] = val
+  dispatch(user_load(userAux))
+  checkWorkerComplete(userAux)
+}
 
   return (
     <div className="App">
-      <Provider store={store}>
+      
         <BrowserRouter>
           <Navbar 
-            user={user} 
             hasTexts={hasTexts} 
             hasSubscription={hasSubscription}
-            incompleteUser={incompleteUser} 
             userLoadAttempt={userLoadAttempt}/>
           <Routes>
               <Route exact path="/main/publications/publication" 
                 element={<Trabalho
                   refreshWorker={() => refreshWorker()}
-                  user={user}
                   api_url={api_url}
-                  incompleteUser={incompleteUser}
                   userLoadAttempt={userLoadAttempt}
                   />}
               />
               <Route exact path="/main/publications/trabalhador" 
                 element={<Trabalhador
-                  user={user}
                   api_url={api_url}
                   userLoadAttempt={userLoadAttempt}
                   />}
               />
               <Route exact path="/main/publications/*" 
                 element={<Main
-                  user={user}
                   api_url={api_url}
                   userLoadAttempt={userLoadAttempt}
                   />}
@@ -239,7 +238,6 @@ const refreshWorker = () => {
               <Route exact path="/publicar/:editar/*" 
                 key={'single'}
                 element={<Publicar
-                  user={user}
                   api_url={api_url}
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}
@@ -248,7 +246,6 @@ const refreshWorker = () => {
               <Route exact path="/publicar/novo/*" 
                 key={'all'}
                 element={<Publicar
-                  user={user}
                   api_url={api_url}
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}
@@ -259,11 +256,9 @@ const refreshWorker = () => {
                   <User
                     refreshUser={() => refreshUser()}
                     refreshWorker={() => refreshWorker()}
-                    incompleteUser={incompleteUser}
                     hasSubscription={hasSubscription}
                     userLoadAttempt={userLoadAttempt}
                     updateChatReadLocal={chat_id => updateChatReadLocal(chat_id)}
-                    user={user}
                     api_url={api_url}
                     loadingHandler={bool => setLoading(bool)}
                     updateUser={(val, what) => updateUser(val, what)}
@@ -273,14 +268,12 @@ const refreshWorker = () => {
               <Route exact path="/authentication/worker" 
                 element={<AuthWorker
                   refreshWorker={() => refreshWorker()}
-                  setUser = {user => setUser(user)}
                   api_url={api_url}
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}/>}
               />
               <Route path="/authentication/*" 
                 element={<Auth
-                  setUser = {user => setUser(user)}
                   api_url={api_url}
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}/>}
@@ -288,20 +281,17 @@ const refreshWorker = () => {
               <Route path="/admin/*" 
                 element={<Admin 
                   api_url={api_url}
-                  user={user} 
                   userLoadAttempt={userLoadAttempt}/>} />
               <Route path="/" 
                 element={<Home
                   refreshUser={() => refreshUser()}
                   refreshWorker={() => refreshWorker()}
-                  user={user} 
                   notifications={notifications}
-                  incompleteUser={incompleteUser}
                   userLoadAttempt={userLoadAttempt}/>} />
               <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
-      </Provider>
+      
     </div>
   );
 }
