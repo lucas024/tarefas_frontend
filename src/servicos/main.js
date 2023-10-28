@@ -22,13 +22,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { search_save, search_scroll_save } from '../store';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
-
 require('dayjs/locale/pt')
 
 const Main = (props) => {
-
+    const api_url = useSelector(state => {return state.api_url})
     const search_context = useSelector(state => {return state.search_context})
     const search_scroll = useSelector(state => {return state.search_scroll})
+    const user = useSelector(state => {return state.user})
+    
     const dispatch = useDispatch()
 
     const {id} = useParams()
@@ -167,7 +168,7 @@ const Main = (props) => {
 
     const fetchJobs = () => {
         setLoading(true)
-        axios.get(`${props.api_url}/reservations`).then(res => {
+        axios.get(`${api_url}/reservations`).then(res => {
             if(res.data!==null){
                 setListAnim(true)
                 let all_items = {data: res.data.data, type: 'trabalhos'}
@@ -195,7 +196,7 @@ const Main = (props) => {
                     searchValFinal += `\"${el}\" `
                 }
             }
-            axios.post(`${props.api_url}/reservations/get_reservations_by_filter`, {
+            axios.post(`${api_url}/reservations/get_reservations_by_filter`, {
                 region: ((params.region==null) || (params.region===undefined))?false:params.region!=='none'?params.region:false,
                 trabalho: ((params.work==null) || (params.work===undefined))?false:params.work!=='none'?params.work:false,
                 search: searchValFinal
@@ -222,7 +223,7 @@ const Main = (props) => {
                 searchValFinal += `\"${el}\" `
             }
         }
-        axios.post(`${props.api_url}/worker/get_workers_by_filter`, {
+        axios.post(`${api_url}/worker/get_workers_by_filter`, {
             region: ((params_aux.region==null) || (params_aux.region===undefined))?false:params_aux.region!=='none'?params_aux.region:false,
             trabalho: ((params_aux.work==null) || (params_aux.work===undefined))?false:params_aux.work!=='none'?params_aux.work:false,
             search: searchValFinal
@@ -241,7 +242,7 @@ const Main = (props) => {
 
     const fetchWorkers = () => {
         setLoading(true)
-        axios.get(`${props.api_url}/workers`).then(res => {
+        axios.get(`${api_url}/workers`).then(res => {
             if(res.data!==null){
                 let arr = res.data.data
                 arr = fisher_yates_shuffle(arr)
@@ -323,7 +324,7 @@ const Main = (props) => {
                             item={item}
                             locationActive={params.region}
                             workerActive={params.work}
-                            user={props.user}
+                            user_id={user._id}
                             trabalhoVisto={trabalhosVistos.includes(item._id)}
                         />
                     </div>
@@ -344,7 +345,7 @@ const Main = (props) => {
                                                                     })}
                                                                 }>
                     <Carta
-                        user={props.user}
+                        user_id={user._id}
                         id={id}
                         worker={worker}
                         locationActive={params.region}

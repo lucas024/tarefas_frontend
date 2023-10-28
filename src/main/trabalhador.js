@@ -9,10 +9,14 @@ import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import {regioesOptions, profissoesOptions, profissoesPngs} from '../general/util'
 import ChatIcon from '@mui/icons-material/Chat';
+import { useSelector } from 'react-redux'
 
 const ObjectID = require("bson-objectid");
 
 const Trabalhador = props => {
+    const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
+
     const navigate = useNavigate()
 
     const messageRef = useRef(null)
@@ -37,8 +41,8 @@ const Trabalhador = props => {
         setPage(paramsAux.page)
         paramsAux.region&&setLocationActive(paramsAux.region)
         paramsAux.work&&setWorkerActive(paramsAux.work)
-        props.user?._id===paramsAux.id&&setOwnPost(true)
-        axios.get(`${props.api_url}/worker/get_worker_by_mongo_id`, { params: {_id: paramsAux.id} }).then(res => {
+        user?._id===paramsAux.id&&setOwnPost(true)
+        axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: paramsAux.id} }).then(res => {
             res.data!=""&&setWorker(res.data)
             setLoading(false)
         })
@@ -49,29 +53,29 @@ const Trabalhador = props => {
     }, [props.userLoadAttempt])
 
     const sendMessageHandler = async () => {
-        if(text!==""&&worker.type!==props.user.type&&worker._id!==props.user._id){
+        if(text!==""&&worker.type!==user.type&&worker._id!==user._id){
             setLoadingChat(true)
 
             let time = new Date().getTime()
             let text_object = {
-                origin_type : props.user.type,
+                origin_type : user.type,
                 timestamp : time,
                 text: text,
             }
 
             var repeated = false
 
-            if(props.user.chats)
+            if(user.chats)
             {
-                for(let chat of props.user.chats)
+                for(let chat of user.chats)
                 {
                     if(chat.worker_id === worker._id && chat.reservation_id === null)
                     {
                         console.log("repeated chat")
                         repeated=true
-                        await axios.post(`${props.api_url}/chats/update_common_chat`, {
-                            worker_read: props.user.type===1?true:false,
-                            user_read: props.user.type===0?true:false,
+                        await axios.post(`${api_url}/chats/update_common_chat`, {
+                            worker_read: user.type===1?true:false,
+                            user_read: user.type===0?true:false,
                             chat_id: chat.chat_id,
                             text: text_object,
                             updated: time
@@ -85,17 +89,17 @@ const Trabalhador = props => {
             {
                 let chatId = ObjectID()
 
-                await axios.post(`${props.api_url}/chats/create_chat`, {
+                await axios.post(`${api_url}/chats/create_chat`, {
                     worker_name: worker.name,
                     worker_surname: worker.surname,
                     worker_photoUrl: worker.photoUrl,
                     worker_phone: worker.phone,
                     worker_id: worker._id,
-                    user_name: props.user.name,
-                    user_surname: props.user.surname,
-                    user_photoUrl: props.user.photoUrl,
-                    user_phone: props.user.phone,
-                    user_id: props.user._id,
+                    user_name: user.name,
+                    user_surname: user.surname,
+                    user_photoUrl: user.photoUrl,
+                    user_phone: user.phone,
+                    user_id: user._id,
                     text: text_object,
                     updated: time,
                     chat_id: chatId
@@ -292,10 +296,10 @@ const Trabalhador = props => {
                             <span className={styles.user_info_number} style={{opacity:"0.6"}}>Mensagem</span> 
                         </div>
                         {
-                            !props.user?
+                            !user?
                             <div className={styles.textarea_wrapper}>
                                 <textarea   
-                                        disabled={!props.user}
+                                        disabled={!user}
                                         ref={messageAreaRef}
                                         className={styles.message_textarea_disabled}
                                         placeholder="Escrever mensagem..."

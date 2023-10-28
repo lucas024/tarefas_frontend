@@ -13,9 +13,11 @@ import { useSearchParams } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
 import ScrollToBottom, { useScrollToBottom, useSticky } from 'react-scroll-to-bottom';
 import Face3Icon from '@mui/icons-material/Face';
+import { useSelector } from 'react-redux';
+
 
 const Messages = (props) => {
-    
+    const user = useSelector(state => {return state.user})
     
     const [currentText, setCurrentText] = useState("")
     const [adminOn, setAdminOn] = useState(false)
@@ -72,16 +74,16 @@ const Messages = (props) => {
     }
 
     useEffect(() => {
-        if(props.user){
+        if(user){
             const newSocket = io(
                 'http://localhost:5500',
-                { query: {id: props.user._id} }
+                { query: {id: user._id} }
             )
             setS(newSocket)
         }
         return () => s&&s.close()
         
-    }, [props.user])
+    }, [user])
 
     useEffect(() => {
         if(!s) return
@@ -106,8 +108,8 @@ const Messages = (props) => {
 
         let chatId = ObjectID()
         await axios.post(`${props.api_url}/admin_chats/create_or_update_chat`, {
-            admin_name: props.user.name,
-            admin_id: props.user._id,
+            admin_name: user.name,
+            admin_id: user._id,
             user_id: selectedChat.user_id,
             user_type: selectedChat.user_type,
             user_name: selectedChat.user_name,
@@ -313,7 +315,7 @@ const Messages = (props) => {
     }
 
     const getOtherUserId = () => {
-        if(selectedChat&&props.user?.type===1){
+        if(selectedChat&&user?.type===1){
             return selectedChat.user_id
         }
         else if(selectedChat){
@@ -438,14 +440,14 @@ const Messages = (props) => {
                                             {/* <span className={styles.top_left_indicator} style={{backgroundColor:isUserOnline()?"#6EB241":"white", border:!isUserOnline()?"1px solid #F40009":"1px solid transparent"}}></span> */}
                                             {/* drena do ultima vez online */}
                                             {
-                                                props.user?.type===0?
+                                                user?.type===0?
                                                     <FaceIcon style={{marginLeft:"5px"}} className={styles.chatbox_user_img}/>
                                                 :
                                                 <FaceIcon style={{marginLeft:"5px"}} className={styles.chatbox_user_img}/>
 
                                             }
                                             {
-                                                props.user?.type===0?
+                                                user?.type===0?
                                                 <div className={styles.name_indicator}>
                                                     <span className={styles.top_left_name}>{selectedChat.user_name} <span style={{fontSize:"0.8rem", color:"#ccc", fontWeight:"500"}}>({selectedChat.user_id})</span></span>
                                                     <span className={styles.type_indicator}>CLIENTE</span>
@@ -458,7 +460,7 @@ const Messages = (props) => {
                                                 
                                             }
                                             {/* {
-                                                props.user?.type===1?
+                                                user?.type===1?
                                                 <span className={styles.type_indicator}>CLIENTE</span>
                                                 :
                                                 <span className={styles.type_indicator}>TRABALHADOR</span>
@@ -498,9 +500,9 @@ const Messages = (props) => {
                                     </div>
                                 </div>
                             </div>
-                            :(!chats||chats?.length===0)&&props.user?.type===1?
+                            :(!chats||chats?.length===0)&&user?.type===1?
                             <NoPage object={"mensagens"}/>
-                            :(!chats||chats?.length===0)&&props.user?.type===0?
+                            :(!chats||chats?.length===0)&&user?.type===0?
                             <NoPage object={"mensagens_user"}/>
                             :null
                         }

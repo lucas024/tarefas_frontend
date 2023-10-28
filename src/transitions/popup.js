@@ -5,9 +5,12 @@ import {CSSTransition}  from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import SelectAdmin from '../selects/selectAdmin';
+import { useSelector } from 'react-redux';
 
 
 const Popup = (props) => {
+    const user = useSelector(state => {return state.user})
+    const api_url = useSelector(state => {return state.api_url})
 
     const [refuseMessage, setRefuseMessage] = useState(`Olá ${props.reservation?.user_name}, 
     
@@ -46,12 +49,12 @@ Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
                 reservation_title: props.reservation.title
             }
 
-            var userWithAdminChat = await axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: props.user_id} })
+            var userWithAdminChat = await axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: props.user_id} })
 
             let chatId = ObjectID()
-            await axios.post(`${props.api_url}/admin_chats/create_or_update_chat`, {
-                admin_name: props.user.name,
-                admin_id: props.user._id,
+            await axios.post(`${api_url}/admin_chats/create_or_update_chat`, {
+                admin_name: user.name,
+                admin_id: user._id,
                 user_id: props.user_id,
                 user_type: 0,
                 user_name: props.reservation.user_name,

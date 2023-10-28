@@ -30,6 +30,20 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
+}
+.own{
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: var(--action);
+    padding: 5px;
+    border-radius: 3px;
+}
+.own_text{
+    font-size: 0.8rem;
+    color: white;
+    font-weight: 600;
 }
 .top_flex{
     display: flex;
@@ -110,7 +124,7 @@
 }
 .top_image_div{
     margin: 0 0px;
-    background-color: white;
+    background-color: transparent;
     border-radius: 5px;
     position: relative;
     display: flex;

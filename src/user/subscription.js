@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import styles from './subscription.module.css'
 import Check from '@mui/icons-material/Check';
 import chip from '../assets/chip.png'
@@ -29,12 +29,19 @@ import ClearIcon from '@mui/icons-material/Clear';
 import NoPage from '../general/noPage';
 import SubscriptionAlterar from './subscription_alterar';
 import ConfirmBanner from '../general/confirmBanner';
+import { useSelector } from 'react-redux'
+import BuildIcon from '@mui/icons-material/Build';
+import PersonIcon from '@mui/icons-material/Person';
+import MessageIcon from '@mui/icons-material/Message';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 const Subscription = props => {
+    const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
 
     const [cardName, setCardName] = useState("")
     const [cardNumberDisplay, setCardNumberDisplay] = useState("")
-    const [display, setDisplay] = useState(null)
+    const [display, setDisplay] = useState(4)
     const [selectedMenu, setSelectedMenu] = useState(0)
     const [selectedPlan, setSelectedPlan] = useState(null)
     const [cardIssuer, setCardIssuer] = useState(null)
@@ -66,19 +73,29 @@ const Subscription = props => {
     const [subscriptionPlanObj, setSubscriptionPlanObj] = useState({})
 
     const [confirmBanner, setConfirmBanner] = useState(false)
+    const [confirmFreeBanner, setConfirmFreeBanner] = useState(false)
+    const [applyDiscount, setApplyDiscount] = useState(false)
 
     const stripe = useStripe();
     const elements = useElements();
 
+    const display_one_ref = useRef(null)
+
     const monthNames = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
+    //display 4 - welcome tab
+    //display 3 - canceled
+    //display 2 - alterar
+    //display 1 - ativar
+    //display 0 - atual
+
     useEffect(() => {
         setLoading(true)
-        if(props.user.subscription){
-            axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
-                subscription_id: props.user.subscription.id,
-                schedule_id: props.user.subscription.sub_schedule
+        if(user.subscription){
+            axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
+                subscription_id: user.subscription.id,
+                schedule_id: user.subscription.sub_schedule
             })
             .then(res => {
                 console.log(res);
@@ -87,7 +104,7 @@ const Subscription = props => {
                     setIsCanceled(true)
                 }
                 else{
-                    setDisplay(0)
+                    setDisplay(4)
                     setIsCanceled(false)
                 }
                 console.log(res.data.subscription.current_period_end)
@@ -97,7 +114,7 @@ const Subscription = props => {
                 setSubscriptionStatus(res.data.subscription.status)
                 
                 let value_pay = res.data.subscription.plan.amount_decimal
-                let value_pay_read = '12.99'
+                let value_pay_read = "12.99"
                 if(res.data.subscription.plan.amount_decimal.length===3)
                     value_pay_read = value_pay.slice(0, 1) + "." + value_pay.slice(1)
                 if(res.data.subscription.plan.amount_decimal.length===4)
@@ -117,8 +134,6 @@ const Subscription = props => {
                 value_pay_read==="12.99"&&setSelectedPlan(1)
                 value_pay_read==="68.89"&&setSelectedPlan(2)||setSelectedPlan(3)
                 
-
-                
                 setSchedule(res.data.schedule)
                 setIsLoaded(true)
                 setLoading(false)
@@ -127,12 +142,12 @@ const Subscription = props => {
             })
         }
         else{
-            setDisplay(3)
+            setDisplay(4)
             setIsLoaded(true)
             setLoading(false)
         }
         
-    }, [props.user])
+    }, [user])
 
     const getDateToString = date => {
         let val = new Date(date*1000).toISOString()
@@ -147,8 +162,8 @@ const Subscription = props => {
             return;
         }
 
-        let sub_obj = await axios.post(`${props.api_url}/create-subscription`, {
-            stripe_id: props.user.stripe_id,
+        let sub_obj = await axios.post(`${api_url}/create-subscription`, {
+            stripe_id: user.stripe_id,
             amount: selectedPlan&&selectedPlan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":selectedPlan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj"
         })
 
@@ -165,10 +180,10 @@ const Subscription = props => {
 
         switch (paymentConfirmation.paymentIntent.status) {
             case "succeeded":
-                await axios.post(`${props.api_url}/confirm-subscription`, {
+                await axios.post(`${api_url}/confirm-subscription`, {
                     pm_id: paymentConfirmation.paymentIntent.payment_method,
                     plan: selectedPlan,
-                    _id: props.user._id,
+                    _id: user._id,
                     name: cardName,
                     sub_id: sub_obj.data.subscriptionId
                 })
@@ -205,8 +220,8 @@ const Subscription = props => {
 
     const updateCard = async () => {
         setLoading(true)
-        let val = await axios.post(`${props.api_url}/create-setup-intent`, {
-            stripe_id: props.user.stripe_id,
+        let val = await axios.post(`${api_url}/create-setup-intent`, {
+            stripe_id: user.stripe_id,
         })
         
         let final = await stripe.confirmCardSetup(val.data.clientSecret, {
@@ -223,14 +238,14 @@ const Subscription = props => {
 
         switch (final.setupIntent.status) {
             case "succeeded":
-                axios.post(`${props.api_url}/update-subscription-plan`, {
-                    subscription: props.user.subscription,
-                    current_amount: props.user.subscription.plan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":props.user.subscription.plan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
+                axios.post(`${api_url}/update-subscription-plan`, {
+                    subscription: user.subscription,
+                    current_amount: user.subscription.plan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":user.subscription.plan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
                     new_amount: selectedPlan&&selectedPlan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":selectedPlan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
-                    plan: props.user.subscription.plan,
+                    plan: user.subscription.plan,
                     new_plan: selectedPlan,
                     payment_method: final.setupIntent.payment_method,
-                    _id: props.user._id,
+                    _id: user._id,
                     from_canceled: schedule.phases[0].metadata.from_canceled
                 }).then(() => {
                     props.refreshWorker()
@@ -247,14 +262,14 @@ const Subscription = props => {
             return;
         }
 
-        let val = await axios.post(`${props.api_url}/update-subscription-plan`, {
-            subscription: props.user.subscription,
-            current_amount: props.user.subscription.plan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":props.user.subscription.plan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
+        let val = await axios.post(`${api_url}/update-subscription-plan`, {
+            subscription: user.subscription,
+            current_amount: user.subscription.plan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":user.subscription.plan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
             new_amount: selectedPlan&&selectedPlan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":selectedPlan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
-            plan: props.user.subscription.plan,
+            plan: user.subscription.plan,
             new_plan: selectedPlan,
-            payment_method: props.user.subscription.payment_method_id,
-            _id: props.user._id,
+            payment_method: user.subscription.payment_method_id,
+            _id: user._id,
             from_canceled: schedule.phases[0].metadata.from_canceled
         })
 
@@ -292,9 +307,9 @@ const Subscription = props => {
             return;
         }
 
-        let val = await axios.post(`${props.api_url}/cancel-subscription-plan-update`, {
-            subscription: props.user.subscription,
-            current_amount: props.user.subscription.plan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":props.user.subscription.plan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
+        let val = await axios.post(`${api_url}/cancel-subscription-plan-update`, {
+            subscription: user.subscription,
+            current_amount: user.subscription.plan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":user.subscription.plan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
         })
 
         switch (val.status) {
@@ -340,12 +355,10 @@ const Subscription = props => {
             return;
         }
 
-        let val = await axios.post(`${props.api_url}/cancel-subscription`, {
-            subscription: props.user.subscription,
-            current_amount: props.user.subscription.plan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":props.user.subscription.plan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
+        let val = await axios.post(`${api_url}/cancel-subscription`, {
+            subscription: user.subscription,
+            current_amount: user.subscription.plan===1?"price_1LKQUSKC1aov6F9p9gL1euLW":user.subscription.plan===2?"price_1LKQUyKC1aov6F9pTpM3gn0l":"price_1LKQVEKC1aov6F9p4RgyXAqj",
         })
-
-        console.log(val);
 
         switch (val.status) {
             case 200:
@@ -395,18 +408,34 @@ const Subscription = props => {
         }
     }
 
+    const setFreePlanHandler = () => {
+        setApplyDiscount(false)
+        setConfirmFreeBanner(false)
+    }
+
 
     
 
     return (
         <div className={styles.subscription}>
             <Loader loading={loading}/>
-            {
-                confirmBanner?
-                <ConfirmBanner cancel={() => setConfirmBanner(false)} confirm={() => cancelPlanChange()} color={'#FF785A'}/>
-                :null
-            }
-            
+            <div className={confirmFreeBanner||confirmBanner?styles.backdrop:null} onClick={() => setConfirmFreeBanner(false)&&setConfirmBanner(false)}/>
+            <CSSTransition 
+                in={confirmBanner}
+                timeout={1000}
+                classNames="transition"
+                unmountOnExit
+                >
+                <ConfirmBanner type={'alterar'} cancel={() => setConfirmBanner(false)} confirm={() => cancelPlanChange()} color={'#ffffff'}/>
+            </CSSTransition>
+            <CSSTransition
+                in={confirmFreeBanner}
+                timeout={1000}
+                classNames="transition"
+                unmountOnExit
+                >
+                <ConfirmBanner type={'three_months'} cancel={() => setConfirmFreeBanner(false)} confirm={() => setFreePlanHandler()} color={'#ffffff'}/>
+            </CSSTransition>
             {
                 isLoaded?
                 <div style={{position:"relative", height:'100%'}}>
@@ -424,7 +453,7 @@ const Subscription = props => {
                         <span className={styles.top_title}>Subscrição</span>
                     </div>
                     {
-                        display!==1?
+                        display!==1&&display!==4?
                         <div className={styles.display} style={{backgroundColor:endDate>currentDate?"#0358e5":"#fdd835"}}>
                             <div className={styles.display_top}>
                                 <div className={styles.display_user}>
@@ -468,338 +497,206 @@ const Subscription = props => {
                                         ""}/>
                     </CSSTransition>
 
-                        <div className={styles.mid_content}>
-                            {
-                                display===0&&schedule&&!isCanceled?
-                                <div className={display===0?styles.display_zero:`${styles.display_zero} ${styles.display_zero_hide}`}>
-                                    <span className={styles.subtitle}>Plano</span>
-                                    <div className={styles.divider}/>
-                                    <div>
-                                        <div style={{display:"flex", margin:"10px 0", alignItems:"center"}}>
-                                            <span className={styles.subtitle_sub} style={{margin:"0"}}><span style={{fontWeight:"500"}}>Plano Atual - </span></span>
-                                            <span className={styles.ya}>{
-                                                schedule.phases.length===2&&subscriptionPlanObj.selected_plan===1?"MENSAL"
-                                                :subscriptionPlanObj.selected_plan===1?"MENSAL"
-                                                :
-                                                schedule.phases.length===2&&subscriptionPlanObj.selected_plan===2?"SEMESTRAL"
-                                                :subscriptionPlanObj.selected_plan===2?"SEMESTRAL"
-                                                :
-                                                schedule.phases.length===2&&subscriptionPlanObj.selected_plan===3?"ANUAL"
-                                                :subscriptionPlanObj.selected_plan===3?"ANUAL"
-                                                :null
-                                                }
-                                            </span>
-                                            <span>
-                                                {
-                                                    schedule.phases.length===2&&schedule.phases[0].metadata.from_canceled?
-                                                    <span className={styles.helper_two}>(Início a {getDateToString(schedule.current_phase?.end_date)} - fim da subscrição previamente cancelada)</span>
-                                                    :null
-                                                }
-                                            </span>
-                                        </div>
-                                        
-                                        <div className={styles.selected_plan_info}>
-                                                {
-                                                    schedule&&schedule.phases.length>1&&!schedule.phases[0].metadata.from_canceled?
-                                                    <div className={`${styles.sub_val_wrap}`}>
-                                                        <div className={styles.sub_val_wrap_image}>
-                                                            <img src={subscriptionPlanObj.image} className={styles.section_img_small}/>
-                                                        </div>
-                                                        <p className={styles.sub_val_date}>{subscriptionPlanObj.type}</p>
-                                                        <div className={styles.selected_plan_value_wrap}>
-                                                            <div className={styles.info_div} style={{marginTop:'10px'}}>
-                                                                <div className={styles.info_subdiv}>
-                                                                    <span className={styles.info_text_helper}>VALOR:</span>
-                                                                    <span className={styles.info_text}>€{subscriptionPlanObj.value}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className={styles.info_div}>
-                                                                <div className={styles.info_subdiv}>
-                                                                    <span className={styles.info_text_helper}>Modelo:</span>
-                                                                    <span className={styles.info_text}>A cada {subscriptionPlanObj.a_cada}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className={styles.info_div_pay}>
-                                                                <span className={styles.info_text_helper} style={{width:'fit-content'}}><span className={styles.prox_cobr}>alteração de plano</span></span>
-                                                                <span className={styles.info_text} style={{marginTop:'5px', color:"#FF785A"}}>{extenseDate(endDate/1000)}</span>
-                                                                <span className={styles.info_text_days_charge}>{daysTillCharge} dias</span>
-                                                            </div>
-
-                                                            <p className={styles.selected_plan_value_information}>O cancelamento desta alteração ou da subscrição pode ser feito a qualquer altura.</p>
-                                                        </div>
-                                                    </div>
-                                                    :
-                                                    <div className={`${styles.sub_val_wrap}`}>
-                                                        <div className={styles.sub_val_wrap_image}>
-                                                            <img src={subscriptionPlanObj.image} className={styles.section_img_small}/>
-                                                        </div>
-                                                        <p className={styles.sub_val_date}>{subscriptionPlanObj.type}</p>
-                                                        <div className={styles.selected_plan_value_wrap}>
-                                                            <div className={styles.info_div} style={{marginTop:'10px'}}>
-                                                                <div className={styles.info_subdiv}>
-                                                                    <span className={styles.info_text_helper}>VALOR:</span>
-                                                                    <span className={styles.info_text}>€{subscriptionPlanObj.value}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className={styles.info_div}>
-                                                                <div className={styles.info_subdiv}>
-                                                                    <span className={styles.info_text_helper}>Modelo:</span>
-                                                                    <span className={styles.info_text}>A cada {subscriptionPlanObj.a_cada}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className={styles.info_div_pay}>
-                                                                <span className={styles.info_text_helper} style={{width:'fit-content'}}>Próxima cobrança</span>
-                                                                <span className={styles.info_text} style={{marginTop:'5px', color:"#0358e5"}}>{extenseDate(endDate/1000)}</span>
-                                                                <span className={styles.info_text_days_charge}>({daysTillCharge} dias)</span>
-                                                            </div>
-                                                            <p className={styles.selected_plan_value_information}>O cancelamento da subscrição pode ser feito a qualquer altura.</p>
-                                                        </div>
-                                                    </div>
-
-                                                }
-                                            {
-                                                schedule&&schedule.phases.length>1&&!schedule.phases[0].metadata.from_canceled?
-                                                <div className={styles.changing_plan}>
-                                                    <span className={styles.prox_cobr}>Alteração de PLANO</span>
-                                                    <SubscriptionAlterar 
-                                                        subscriptionPlanObj={subscriptionPlanObj}
-                                                        selectedPlan={false}
-                                                        nextPlan={getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)}/>
-                                                </div>
-                                                :null
-                                            }
-                                            {
-                                                schedule&&schedule.phases.length>1&&!schedule.phases[0].metadata.from_canceled?
-                                                <p className={styles.selected_plan_value_information}>O <span style={{color:"#FF785A"}}>plano novo</span> entrará em vigor a {getDateToString(endDate/1000)}.</p>
-                                                :null
-                                            }
-                                        </div>
-                                    </div>
-                                    <span className={styles.subtitle}>Método de Pagamento</span>
-                                    <div className={styles.divider}/>
-                                    <span className={styles.subtitle_sub}><span style={{fontWeight:"500"}}>Cartão</span> <span style={{marginLeft:"5px"}}>-</span> <span style={{color:subscriptionStatus==="active"?"#0358e5":"#fdd835", marginLeft:"5px"}}>{subscriptionStatus==="active"?<span style={{display:"flex", alignItems:"center"}}>ATIVO</span>:<span style={{display:"flex", alignItems:"center"}}>ERRO</span>}</span></span>
-                                    <div className={styles.initial}>
-
-                                        <div className={styles.card} style={{marginTop:"10px", border:subscriptionStatus==="delay"?"6px solid #fdd835":""}}>
-                                            <div className={styles.card_top}>
-                                                {
-                                                    props.user.subscription.payment_method.card.brand==="visa"?
-                                                    <img src={visa} className={styles.brand}/>
-                                                    :
-                                                    props.user.subscription.payment_method.card.brand==="mastercard"?
-                                                    <img src={mastercard} className={styles.brand_master}/>
-                                                    :
-                                                    props.user.subscription.payment_method.card.brand==="american"?
-                                                    <img src={american} className={styles.brand_american}/>
-                                                    :null
-                                                }
-                                            </div>
-                                            <div className={styles.card_mid}>
-                                                <img src={chip} className={styles.chip}/>
-                                            </div>
-                                            <div className={styles.card_number}>
-                                                <span className={styles.card_number_value}>**** **** **** {props.user.subscription.payment_method.card.last4}</span>
-                                            </div>
-                                            <div className={styles.card_name_date}>
-                                                <div className={styles.card_name}>
-                                                    <span className={styles.name_helper}>Nome</span>
-                                                    <span className={styles.name_val}>{props.user.subscription.payment_method.billing_details.name}</span>
-                                                </div>
-                                                <div className={styles.card_name}>
-                                                    <span className={styles.name_helper}>Data</span>
-                                                    <span className={styles.name_val}>{props.user.subscription.payment_method.card.exp_month}/{props.user.subscription.payment_method.card.exp_year}</span>
-                                                </div>
-                                            </div>
-                                        </div>                                
-                                    </div>
-                                    
-                                    <div className={styles.card_right}>
+                        {
+                            display===4||display===1?
+                            <div className={styles.sub_info_main}>
+                                <div className={styles.sub_info_wrap}>
+                                    <div className={styles.sub_info}>
+                                        <span className={styles.sub_info_title}>Trabalhador na SERVIÇOS</span>
                                         {
-                                            schedule&&schedule.phases[1]&&!schedule.phases[0].metadata.from_canceled?
-                                            <div className={styles.card_right_button} onClick={() => setConfirmBanner(true)}>
-                                                <span>Cancelar <span style={{fontWeight:600}}>Alteração de plano</span></span>
+                                            display===4?
+                                            <div className={styles.activate_info}>
+                                                <div className={styles.line}>
+                                                    <div className={styles.line_left}>
+                                                        <BuildIcon className={styles.line_circle}/>
+                                                        <span className={styles.helper_text}>Trabalhos</span>
+                                                    </div>
+                                                    <span className={styles.connector}/>
+                                                    <span className={styles.line_text}>Acesso desbloqueado aos detalhes de <strong>contacto</strong> e <strong>localização</strong> de todos os trabalhos publicados.</span>
+                                                </div>
+                                                <div className={styles.line} style={{margin:'10px 0'}}>
+                                                    <div className={styles.line_left}>
+                                                        <MessageIcon className={styles.line_circle}/>
+                                                        <span className={styles.helper_text}>Mensagens</span>
+                                                    </div>
+                                                    <span className={styles.connector}/>
+                                                    <span className={styles.line_text}>Acesso à <strong>plataforma de mensagens</strong>, onde pode contactar os seus clientes de forma fácil e direta.</span>
+                                                </div>
+                                                <div className={styles.line}>
+                                                    <div className={styles.line_left}>
+                                                        <PersonIcon className={styles.line_circle}/>
+                                                        <span className={styles.helper_text}>Perfil</span>
+                                                    </div>
+                                                    <span className={styles.connector}/>
+                                                    <span className={styles.line_text}>Criação do seu <strong>perfil de trabalhador</strong>, que será acessível a todos utilizadores do SERVIÇOS. Maior exposição ao seu negócio!</span>
+                                                </div>
                                             </div>
-                                            :
-                                            <div className={styles.card_right_button} onClick={() => {
-                                                setDisplay(2)
-                                                setAlterarPlano(true)}}>
-                                                <span style={{fontWeight:600}}>Ver Planos</span>
-                                            </div>
+                                            :null
                                         }
-                                        {/* <div className={styles.card_right_button} onClick={() => {
-                                            setDisplay(1)
-                                            setSelectedMenu(1)
-                                            setAlterarPagamento(true)}}>
-                                            <span>Alterar <span style={{fontWeight:600}}>Método de Pagamento</span></span>
-                                        </div> */}
-                                        <div className={styles.card_right_button_remove} onClick={() => cancelSubscriptionHandler()}>
-                                            <span>Cancelar Subscrição</span>
-                                        </div>
-                                        <div className={styles.card_right_bottom}>
-                                            
-                                        </div>
+                                        
                                     </div>
                                 </div>
-                                :display===1?
-                                <div className={styles.display_one}>
-                                    <span className={styles.subtitle_sub} style={{marginTop:"0px"}}>
-                                        <span style={{fontWeight:"500"}}>Ativar Subscrição</span>
-                                    </span>
-                                    <div className={selectedMenu===0?styles.indicator_div:`${styles.indicator_div} ${styles.indicator_div_plan_selected}`}>
-                                            <div className={styles.indicator_subdiv} onClick={() => setSelectedMenu(0)} style={{transform:selectedMenu===1?"scale(1)":"scale(1.3)", transition:"ease-in-out all"}}>
-                                                {/* {
-                                                    selectedPlan?
-                                                    <Check className={styles.indicator_check}/>
-                                                    :null
-                                                } */}
-                                                <p className={styles.indicator_text} style={{color:selectedMenu===0||(selectedPlan&&selectedMenu===null)?"#0358e5":"#ffffff"}}>PLANO</p>
-                                                <span className={styles.indicator} style={{backgroundColor:!selectedMenu||(selectedPlan&&selectedMenu===null)?"#0358e5":"#ffffff"}}></span>
-                                            </div>
-                                            <div className={styles.indicator_subdiv} style={{transform:selectedMenu===0?"scale(1)":"scale(1.1)", transition:"ease-in-out all"}} onClick={() => selectedPlan&&setSelectedMenu(1)}>
-                                                <p className={styles.indicator_text} style={{color:selectedMenu===1?"#0358e5":""}}>
-                                                    PAGAMENTO
-                                                </p>
-                                                <span className={styles.indicator} style={{backgroundColor:selectedMenu?"#0358e5":""}}></span>
-                                            </div>
-                                        </div>
-                                    <div className={!selectedMenu?styles.plans:`${styles.plans} ${styles.plans_hide}`}>                                        
-                                        <div className={styles.plans_area}>
-                                            <p className={styles.plans_title}>Escolher o plano</p>
-                                            <div className={styles.plans_sections}>
-                                                <div className={selectedPlan===1?styles.section_selected:styles.section} onClick={() => setSelectedPlan(1)}>
-                                                    <img src={basic} className={styles.section_img}/>                                         
-                                                    <span className={styles.section_type}>Mensal</span>
-                                                    <span className={styles.section_type_desc}>Pagamento a cada mês</span>
-                                                    <div className={styles.section_valor_div}>
-                                                        <div className={styles.section_valor_top}>
-                                                            <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                            <span className={styles.section_valor_top_number}>12</span>
-                                                            <span className={styles.section_valor_top_number_decimal}>.99</span>
-                                                        </div>
-                                                        <span className={styles.section_desc_of_pay}>12.99€/mês</span>
-                                                    </div>
-                                                    {
-                                                        selectedPlan===1?
-                                                        <div className={styles.section_button_selected}>
-                                                            <Check className={styles.section_button_selected_icon}/>
-                                                        </div>
-                                                        
-                                                        :null
-                                                    }
-                                                    
-                                                </div>
-                                                <div className={selectedPlan===2?styles.section_selected:styles.section} onClick={() => setSelectedPlan(2)}>
-                                                    <span className={styles.popular}>POPULAR</span>
-                                                    <img src={medium} className={styles.section_img}/>
-                                                    <span className={styles.section_type}>Semestral</span>
-                                                    <span className={styles.section_type_desc}>Pagamento a cada 6 meses</span>
-                                                    <div className={styles.section_valor_div}>
-                                                        <div className={styles.section_valor_top}>
-                                                            <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                            <span className={styles.section_valor_top_number}>68</span>
-                                                            <span className={styles.section_valor_top_number_decimal}>.89</span>
-                                                        </div>
-                                                        <span className={styles.section_desc_of_pay}>11.49€/mês</span>
-                                                    </div>
-                                                    {
-                                                        selectedPlan===2?
-                                                        <div className={styles.section_button_selected}>
-                                                            <Check className={styles.section_button_selected_icon}/>
-                                                        </div>
-                                                        
-                                                        :null
-                                                    }
-                                                </div>
-                                                <div className={selectedPlan===3?styles.section_selected:styles.section} onClick={() => setSelectedPlan(3)}>
-                                                    <img src={pro} className={styles.section_img}/>
-                                                    <span className={styles.section_type}>Anual</span>
-                                                    <span className={styles.section_type_desc}>Pagamento a cada 12 meses</span>
-                                                    <div className={styles.section_valor_div}>
-                                                        <div className={styles.section_valor_top}>
-                                                            <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                            <span className={styles.section_valor_top_number}>119</span>
-                                                            <span className={styles.section_valor_top_number_decimal}>.89</span>
-                                                        </div>
-                                                        <span className={styles.section_desc_of_pay}>9.99€/mês</span>
-                                                    </div>
-                                                    {
-                                                        selectedPlan===3?
-                                                        <div className={styles.section_button_selected}>
-                                                            <Check className={styles.section_button_selected_icon}/>
-                                                        </div>
-                                                        
-                                                        :null
-                                                        // <span className={styles.section_button}>Selecionar</span>
-                                                    }
+                                {
+                                    display===4?
+                                    <div className={styles.sub_info_bottom_wrapper}>
+                                        <div className={styles.sub_info_bottom}>
+                                            <div className={styles.info_bottom_text_wrapper}>
+                                                <div className={styles.info_bottom_text}>
+                                                    <p>Ative a sua conta durante <strong>3 meses de forma gratuita</strong>.</p>
+                                                    <p style={{fontWeight:300}}>Depois continue a usar a sua conta com um plano regular.</p>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className={styles.selected_plan}>
-                                            <span className={styles.selected_plan_title}>
-                                                PLANO
-                                            </span>
-                                            {
-                                                selectedPlan===1?
-                                                <div className={styles.sub_val_wrap}>
-                                                    <div className={styles.sub_val_wrap_image}>
-                                                        <img src={basic} className={styles.section_img_small}/>
-                                                    </div>
-                                                    <p className={styles.sub_val_date}>Plano Mensal</p>
-                                                    <div className={styles.selected_plan_value_wrap}>
-                                                        <p className={styles.selected_plan_value} style={{marginTop:'10px'}}>Pagamento de <span style={{fontWeight:600}}>12.99€ a cada mês</span>.</p>
-                                                        <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura..</p>
-                                                    </div>
+                                            <div className={styles.trial_button} onClick={() => setConfirmFreeBanner(true)}>
+                                                {/* <span className={styles.trial_button_banner}>GRATUITO</span> */}
+                                                <span className={styles.trial_button_text}>ATIVAR SUBSCRIÇÃO 3 MESES</span>
+                                            </div>
+                                            <p className={styles.info_bottom_or}>OU</p>
+                                            <div className={styles.info_bottom_text_wrapper}>
+                                                <div className={styles.info_bottom_text}>
+                                                    <p>Ative a sua conta com um <strong>desconto de 50% </strong> sobre qualquer plano, para sempre.</p>
+                                                    <p style={{fontWeight:300}}>Aproveite o desconto vitalício e exclusivo <span style={{fontStyle:'italic'}}>(primeiros 500 trabalhadores)</span> de
+                                                    primeira ativação de conta.</p>
                                                 </div>
-                                                :selectedPlan===2?
-                                                <div className={styles.sub_val_wrap}>
-                                                    <div className={styles.sub_val_wrap_image}>
-                                                        <img src={medium} className={styles.section_img_small}/>
-                                                    </div>
-                                                    <p className={styles.sub_val_date}>Plano Semestral</p>
-                                                    <div className={styles.selected_plan_value_wrap}>
-                                                        <p className={styles.selected_plan_value} style={{marginTop:'10px'}}>Pagamento de <span style={{fontWeight:600}}>68.89€ a cada 6 meses</span>.</p>
-                                                        <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura..</p>
-                                                    </div>
-                                                </div>
-                                                :selectedPlan===3?
-                                                <div className={styles.sub_val_wrap}>
-                                                    <div className={styles.sub_val_wrap_image}>
-                                                        <img src={pro} className={styles.section_img_small}/>
-                                                    </div>
-                                                    <p className={styles.sub_val_date}>Plano Anual</p>
-                                                    <div className={styles.selected_plan_value_wrap}>
-                                                        <p className={styles.selected_plan_value} style={{marginTop:'10px'}}>Pagamento de <span style={{fontWeight:600}}>119.89€ a cada 12 meses</span>.</p>
-                                                        <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura..</p>
-                                                    </div>
-                                                </div>
-                                                :<span className={styles.selected_plan_no_value}>Sem Plano Selecionado</span>
-                                            }
-                                            
-                                        </div>
-                                        <div className={styles.buttons}>
-                                            <span className={selectedPlan?styles.button_add:styles.button_add_disabled} onClick={() => {
-                                                selectedPlan&&setSelectedMenu(1)
-                                                }}>Continuar</span>
-                                            <span className={styles.button_cancel} onClick={() => {
-                                                !isCanceled?setDisplay(0):setDisplay(3)
-                                                setSelectedMenu(0)
-                                                setSelectedPlan(null)
-                                                }}>CANCELAR</span>
+                                            </div>
+                                            <div className={styles.trial_button}>
+                                                <span className={styles.trial_button_banner}>DESCONTO FUNDADOR 50%</span>
+                                                <span className={styles.trial_button_text} onClick={() => {
+                                                    setApplyDiscount(true)
+                                                    setDisplay(1)}}>ATIVAR SUBSCRIÇÃO EXCLUSIVA</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    {/* CARTAO */}
-                                    <div className={selectedMenu?styles.details:`${styles.details} ${styles.details_hide}`}>
-                                        <div className={styles.details_area}>
-                                            <div className={styles.card}>
+                                    :null
+                                }
+                                
+                            </div>
+                            
+                            :null
+                        }
+                        {
+                            display!==4?
+                                <div className={styles.mid_content}>
+                                {
+                                    display===0&&schedule&&!isCanceled?
+                                    <div className={display===0?styles.display_zero:`${styles.display_zero} ${styles.display_zero_hide}`}>
+                                        <span className={styles.subtitle}>Plano</span>
+                                        <div className={styles.divider}/>
+                                        <div>
+                                            <div style={{display:"flex", margin:"10px 0", alignItems:"center"}}>
+                                                <span className={styles.subtitle_sub} style={{margin:"0"}}><span style={{fontWeight:"500"}}>Plano Atual - </span></span>
+                                                <span className={styles.ya}>{
+                                                    schedule.phases.length===2&&subscriptionPlanObj.selected_plan===1?"MENSAL"
+                                                    :subscriptionPlanObj.selected_plan===1?"MENSAL"
+                                                    :
+                                                    schedule.phases.length===2&&subscriptionPlanObj.selected_plan===2?"SEMESTRAL"
+                                                    :subscriptionPlanObj.selected_plan===2?"SEMESTRAL"
+                                                    :
+                                                    schedule.phases.length===2&&subscriptionPlanObj.selected_plan===3?"ANUAL"
+                                                    :subscriptionPlanObj.selected_plan===3?"ANUAL"
+                                                    :null
+                                                    }
+                                                </span>
+                                                <span>
+                                                    {
+                                                        schedule.phases.length===2&&schedule.phases[0].metadata.from_canceled?
+                                                        <span className={styles.helper_two}>(Início a {getDateToString(schedule.current_phase?.end_date)} - fim da subscrição previamente cancelada)</span>
+                                                        :null
+                                                    }
+                                                </span>
+                                            </div>
+                                            
+                                            <div className={styles.selected_plan_info}>
+                                                    {
+                                                        schedule&&schedule.phases.length>1&&!schedule.phases[0].metadata.from_canceled?
+                                                        <div className={`${styles.sub_val_wrap}`}>
+                                                            <div className={styles.sub_val_wrap_image}>
+                                                                <img src={subscriptionPlanObj.image} className={styles.section_img_small}/>
+                                                            </div>
+                                                            <p className={styles.sub_val_date}>{subscriptionPlanObj.type}</p>
+                                                            <div className={styles.selected_plan_value_wrap}>
+                                                                <div className={styles.info_div} style={{marginTop:'10px'}}>
+                                                                    <div className={styles.info_subdiv}>
+                                                                        <span className={styles.info_text_helper}>VALOR:</span>
+                                                                        <span className={styles.info_text}>€{subscriptionPlanObj.value}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className={styles.info_div}>
+                                                                    <div className={styles.info_subdiv}>
+                                                                        <span className={styles.info_text_helper}>Modelo:</span>
+                                                                        <span className={styles.info_text}>A cada {subscriptionPlanObj.a_cada}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className={styles.info_div_pay}>
+                                                                    <span className={styles.info_text_helper} style={{width:'fit-content'}}><span className={styles.prox_cobr}>alteração de plano</span></span>
+                                                                    <span className={styles.info_text} style={{marginTop:'5px', color:"#FF785A"}}>{extenseDate(endDate/1000)}</span>
+                                                                    <span className={styles.info_text_days_charge}>{daysTillCharge} dias</span>
+                                                                </div>
+
+                                                                <p className={styles.selected_plan_value_information}>O cancelamento desta alteração ou da subscrição pode ser feito a qualquer altura.</p>
+                                                            </div>
+                                                        </div>
+                                                        :
+                                                        <div className={`${styles.sub_val_wrap}`}>
+                                                            <div className={styles.sub_val_wrap_image}>
+                                                                <img src={subscriptionPlanObj.image} className={styles.section_img_small}/>
+                                                            </div>
+                                                            <p className={styles.sub_val_date}>{subscriptionPlanObj.type}</p>
+                                                            <div className={styles.selected_plan_value_wrap}>
+                                                                <div className={styles.info_div} style={{marginTop:'10px'}}>
+                                                                    <div className={styles.info_subdiv}>
+                                                                        <span className={styles.info_text_helper}>VALOR:</span>
+                                                                        <span className={styles.info_text}>€{subscriptionPlanObj.value}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className={styles.info_div}>
+                                                                    <div className={styles.info_subdiv}>
+                                                                        <span className={styles.info_text_helper}>Modelo:</span>
+                                                                        <span className={styles.info_text}>A cada {subscriptionPlanObj.a_cada}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className={styles.info_div_pay}>
+                                                                    <span className={styles.info_text_helper} style={{width:'fit-content'}}>Próxima cobrança</span>
+                                                                    <span className={styles.info_text} style={{marginTop:'5px', color:"#0358e5"}}>{extenseDate(endDate/1000)}</span>
+                                                                    <span className={styles.info_text_days_charge}>({daysTillCharge} dias)</span>
+                                                                </div>
+                                                                <p className={styles.selected_plan_value_information}>O cancelamento da subscrição pode ser feito a qualquer altura.</p>
+                                                            </div>
+                                                        </div>
+
+                                                    }
+                                                {
+                                                    schedule&&schedule.phases.length>1&&!schedule.phases[0].metadata.from_canceled?
+                                                    <div className={styles.changing_plan}>
+                                                        <span className={styles.prox_cobr}>Alteração de PLANO</span>
+                                                        <SubscriptionAlterar 
+                                                            subscriptionPlanObj={subscriptionPlanObj}
+                                                            selectedPlan={false}
+                                                            nextPlan={getPlanFromPriceId(schedule&&schedule.phases[1].plans[0].price)}/>
+                                                    </div>
+                                                    :null
+                                                }
+                                                {
+                                                    schedule&&schedule.phases.length>1&&!schedule.phases[0].metadata.from_canceled?
+                                                    <p className={styles.selected_plan_value_information}>O <span style={{color:"#FF785A"}}>plano novo</span> entrará em vigor a {getDateToString(endDate/1000)}.</p>
+                                                    :null
+                                                }
+                                            </div>
+                                        </div>
+                                        <span className={styles.subtitle}>Método de Pagamento</span>
+                                        <div className={styles.divider}/>
+                                        <span className={styles.subtitle_sub}><span style={{fontWeight:"500"}}>Cartão</span> <span style={{marginLeft:"5px"}}>-</span> <span style={{color:subscriptionStatus==="active"?"#0358e5":"#fdd835", marginLeft:"5px"}}>{subscriptionStatus==="active"?<span style={{display:"flex", alignItems:"center"}}>ATIVO</span>:<span style={{display:"flex", alignItems:"center"}}>ERRO</span>}</span></span>
+                                        <div className={styles.initial}>
+
+                                            <div className={styles.card} style={{marginTop:"10px", border:subscriptionStatus==="delay"?"6px solid #fdd835":""}}>
                                                 <div className={styles.card_top}>
                                                     {
-                                                        cardIssuer==="visa"?
+                                                        user.subscription.payment_method.card.brand==="visa"?
                                                         <img src={visa} className={styles.brand}/>
                                                         :
-                                                        cardIssuer==="mastercard"?
+                                                        user.subscription.payment_method.card.brand==="mastercard"?
                                                         <img src={mastercard} className={styles.brand_master}/>
                                                         :
-                                                        cardIssuer==="american"?
+                                                        user.subscription.payment_method.card.brand==="american"?
                                                         <img src={american} className={styles.brand_american}/>
                                                         :null
                                                     }
@@ -808,322 +705,653 @@ const Subscription = props => {
                                                     <img src={chip} className={styles.chip}/>
                                                 </div>
                                                 <div className={styles.card_number}>
-                                                    <span className={styles.card_number_value}>{cardNumberDisplay}</span>
+                                                    <span className={styles.card_number_value}>**** **** **** {user.subscription.payment_method.card.last4}</span>
                                                 </div>
                                                 <div className={styles.card_name_date}>
                                                     <div className={styles.card_name}>
                                                         <span className={styles.name_helper}>Nome</span>
-                                                        <span className={styles.name_val}>{cardName}</span>
+                                                        <span className={styles.name_val}>{user.subscription.payment_method.billing_details.name}</span>
                                                     </div>
                                                     <div className={styles.card_name}>
                                                         <span className={styles.name_helper}>Data</span>
-                                                        {
-                                                            validDate?
-                                                            <div className={styles.name_val}>
-                                                                <Check style={{width:"20px !important", height:"20px !important", color:"white"}}/>
-                                                            </div>
-                                                            :null
-                                                        }
+                                                        <span className={styles.name_val}>{user.subscription.payment_method.card.exp_month}/{user.subscription.payment_method.card.exp_year}</span>
                                                     </div>
                                                 </div>
+                                            </div>                                
+                                        </div>
+                                        
+                                        <div className={styles.card_right}>
+                                            {
+                                                schedule&&schedule.phases[1]&&!schedule.phases[0].metadata.from_canceled?
+                                                <div className={styles.card_right_button} onClick={() => setConfirmBanner(true)}>
+                                                    <span>Cancelar <span style={{fontWeight:600}}>Alteração de plano</span></span>
+                                                </div>
+                                                :
+                                                <div className={styles.card_right_button} onClick={() => {
+                                                    setDisplay(2)
+                                                    setAlterarPlano(true)}}>
+                                                    <span style={{fontWeight:600}}>Ver Planos</span>
+                                                </div>
+                                            }
+                                            <div className={styles.card_right_button_remove} onClick={() => cancelSubscriptionHandler()}>
+                                                <span>Cancelar Subscrição</span>
                                             </div>
-                                            <div className={styles.details_right}>
-                                                {/* <span className={styles.details_title}>Detalhes de Pagamento</span> */}
-                                                <div className={styles.right_sections_div}>
-                                                    <div className={styles.right_section}>
-                                                        <span className={styles.right_helper}>Nome no Cartão</span>
-                                                        <input className={styles.right_input} maxLength={35} value={cardName} onChange={e => setCardName(e.target.value)} placeholder="Nome Apelido"/>
-                                                    </div>
-                                                    <div className={styles.right_section}>
-                                                        <span className={styles.right_helper}>Número do Cartão</span>
-                                                        <CardNumberElement 
-                                                            onChange={e => cardValidHanlder(e)} 
-                                                            className={styles.right_input} 
-                                                            style={{borderColor:validCard?"#0358e5":!validCard?"#ff3b30":""}}
-                                                            options={{style:{base:{color:"#fff"}}}}/>
-                                                        {/* {
-                                                            !validCard?
-                                                            <span className={styles.card_wrong}>Este número de cartão é inválido</span>
-                                                            :null
-                                                        } */}
-                                                    </div>
-                                                    <div className={styles.right_section_short_div}>
-                                                        <div className={styles.right_section_short}>
-                                                            <span className={styles.right_helper}>Válido até</span>
-                                                            <CardExpiryElement onChange={e => dateValidHanlder(e)} className={styles.right_input_short} options={{style:{base:{color:"#fff"}}}}/>
-                                                        </div>
-                                                        <div className={styles.right_section_short}>
-                                                            <span className={styles.right_helper}>CVV</span>
-                                                            <CardCvcElement onChange={e => cvcValidHanlder(e)} className={styles.right_input_short} options={{style:{base:{color:"#fff"}}}}/>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div className={styles.card_right_bottom}>
                                                 
                                             </div>
                                         </div>
-                                        <div className={styles.selected_plan}>      
-                                            <span className={styles.selected_plan_title}>Plano</span>
-                                            {
-                                                selectedPlan===1?
-                                                <div className={`${styles.sub_val_wrap} ${styles.sub_val_wrap_hover}`} onClick={() => setSelectedMenu(0)}>
-                                                    <div className={styles.sub_val_wrap_image}>
-                                                        <img src={basic} className={styles.section_img_small}/>
-                                                    </div>
-                                                    <p className={styles.sub_val_date}>Plano Mensal</p>
-                                                    <div className={styles.selected_plan_value_wrap}>
-                                                        <div className={styles.info_div} style={{marginTop:'10px'}}>
-                                                            <div className={styles.info_subdiv}>
-                                                                <span className={styles.info_text_helper}>VALOR:</span>
-                                                                <span className={styles.info_text}>€12.99</span><span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}> (equivalente a €12.99/mês)</span>
-                                                            </div>
-                                                        </div>
-                                                        <div className={styles.info_div}>
-                                                            <div className={styles.info_subdiv}>
-                                                                <span className={styles.info_text_helper}>Modelo:</span>
-                                                                <span className={styles.info_text}>Cobranças mensais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}>(a cada mês)</span></span>
-                                                            </div>
-                                                        </div>
-                                                        <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
-                                                    </div>
+                                    </div>
+                                    :display===1?
+                                    <div className={styles.display_one}>
+                                        <span className={styles.subtitle_sub} style={{marginTop:"20px"}}>
+                                            <span style={{color:"#fff"}}>Ativar Subscrição ({selectedMenu+1}/2)</span>
+                                        </span>
+                                        <div className={selectedMenu===0?styles.indicator_div:`${styles.indicator_div} ${styles.indicator_div_plan_selected}`}>
+                                                <div className={styles.indicator_subdiv} onClick={() => setSelectedMenu(0)} style={{transform:selectedMenu===1?"scale(1)":"scale(1.3)", transition:"ease-in-out all"}}>
+                                                    {/* {
+                                                        selectedPlan?
+                                                        <Check className={styles.indicator_check}/>
+                                                        :null
+                                                    } */}
+                                                    <p className={styles.indicator_text} style={{color:selectedMenu===0||(selectedPlan&&selectedMenu===null)?"#0358e5":"#ffffff"}}>PLANO</p>
+                                                    <span className={styles.indicator} style={{backgroundColor:!selectedMenu||(selectedPlan&&selectedMenu===null)?"#0358e5":"#ffffff"}}></span>
                                                 </div>
-                                                :selectedPlan===2?
-                                                <div className={`${styles.sub_val_wrap} ${styles.sub_val_wrap_hover}`} onClick={() => setSelectedMenu(0)}>
-                                                    <div className={styles.sub_val_wrap_image}>
-                                                        <img src={medium} className={styles.section_img_small}/>
-                                                    </div>
-                                                    <p className={styles.sub_val_date}>Plano Semestral</p>
-                                                    <div className={styles.selected_plan_value_wrap}>
-                                                        <div className={styles.info_div} style={{marginTop:'10px'}}>
-                                                            <div className={styles.info_subdiv}>
-                                                                <span className={styles.info_text_helper}>VALOR:</span>
-                                                                <span className={styles.info_text}>€68.89</span><span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}> (equivalente a €11.49/mês)</span>
-                                                            </div>
-                                                        </div>
-                                                        <div className={styles.info_div}>
-                                                            <div className={styles.info_subdiv}>
-                                                                <span className={styles.info_text_helper}>Modelo:</span>
-                                                                <span className={styles.info_text}>Cobranças semestrais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}>(a cada 6 meses)</span></span>
-                                                            </div>
-                                                        </div>
-                                                        <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
-                                                    </div>
+                                                <div className={styles.indicator_subdiv} style={{transform:selectedMenu===0?"scale(1)":"scale(1.1)", transition:"ease-in-out all"}} onClick={() => selectedPlan&&setSelectedMenu(1)}>
+                                                    <p className={styles.indicator_text} style={{color:selectedMenu===1?"#0358e5":""}}>
+                                                        PAGAMENTO
+                                                    </p>
+                                                    <span className={styles.indicator} style={{backgroundColor:selectedMenu?"#0358e5":""}}></span>
                                                 </div>
-                                                :selectedPlan===3?
-                                                <div className={`${styles.sub_val_wrap} ${styles.sub_val_wrap_hover}`} onClick={() => setSelectedMenu(0)}>
-                                                    <div className={styles.sub_val_wrap_image}>
-                                                        <img src={pro} className={styles.section_img_small}/>
-                                                    </div>
-                                                    <p className={styles.sub_val_date}>Plano Anual</p>
-                                                    <div className={styles.selected_plan_value_wrap}>
-                                                        <div className={styles.info_div} style={{marginTop:'10px'}}>
-                                                            <div className={styles.info_subdiv}>
-                                                                <span className={styles.info_text_helper}>VALOR:</span>
-                                                                <span className={styles.info_text}>€119.89</span><span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}> (equivalente a €9.99/mês)</span>
-                                                            </div>
-                                                        </div>
-                                                        <div className={styles.info_div}>
-                                                            <div className={styles.info_subdiv}>
-                                                                <span className={styles.info_text_helper}>Modelo:</span>
-                                                                <span className={styles.info_text}>Cobranças anuais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}>(a cada 6 meses)</span></span>
-                                                            </div>
+                                        </div>
+                                        <div className={selectedMenu===0?styles.plans:`${styles.plans} ${styles.plans_hide}`}>                                        
+                                            <div className={styles.plans_area}>
+                                                <p className={styles.plans_title}>Escolher o plano</p>
+                                                <div className={styles.plans_sections}>
+                                                    <div className={selectedPlan===1?styles.section_selected:styles.section} onClick={() => setSelectedPlan(1)}>
+                                                        <img src={basic} className={styles.section_img}/>                                         
+                                                        <span className={styles.section_type}>Mensal</span>
+                                                        <span className={styles.section_type_desc}>Pagamento a cada mês</span>
+                                                        <div className={styles.section_valor_div}>
+                                                            {
+                                                                applyDiscount?
+                                                                <div className={styles.section_discount}>
+                                                                    <div className={styles.section_valor_top}>
+                                                                        <EuroSymbolIcon className={styles.section_valor_top_symbol_discount}/>
+                                                                        <span className={styles.section_valor_top_number_discount}>12</span>
+                                                                        <span className={styles.section_valor_top_number_decimal_discount}>.99</span>
+                                                                    </div>
+                                                                    <ArrowRightIcon className={styles.discount_arrow}/>
+                                                                    <div className={styles.section_valor_top}>
+                                                                        <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                                                                        <span className={styles.section_valor_top_number}>6</span>
+                                                                        <span className={styles.section_valor_top_number_decimal}>.49</span>
+                                                                    </div>
+                                                                </div>
+                                                                :
+                                                                <div className={styles.section_valor_top}>
+                                                                    <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                                                                    <span className={styles.section_valor_top_number}>12</span>
+                                                                    <span className={styles.section_valor_top_number_decimal}>.99</span>
+                                                                </div>
+                                                            }
+                                                            {
+                                                                applyDiscount?
+                                                                <div style={{display:'flex', alignItems:'center'}}>
+                                                                    <span className={styles.section_desc_of_pay_discount}>12.99€/mês</span>
+                                                                    <ArrowRightIcon className={styles.discount_arrow_small}/>
+                                                                    <span className={styles.section_desc_of_pay_discount_new}>6.49€/mês</span>
+                                                                </div>
+                                                                :
+                                                                <span className={styles.section_desc_of_pay}>12.99€/mês</span>
+                                                            }
+                                                            
                                                         </div>
                                                         {
-                                                            isCanceled&&endDate>currentDate?
-                                                            <span className={styles.selected_plan_value_information}>Esta nova subscrição apenas será cobrada no fim da sua subscrição atual (<span style={{color:"#FF785A", fontWeight:"400"}}>{getDateToString(endDate/1000)}</span>)</span>
-                                                            :
-                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
+                                                            selectedPlan===1?
+                                                            <div className={styles.section_button_selected}>
+                                                                <Check className={styles.section_button_selected_icon}/>
+                                                            </div>
+                                                            
+                                                            :null
+                                                        }
+                                                        
+                                                    </div>
+                                                    <div className={selectedPlan===2?styles.section_selected:styles.section} onClick={() => setSelectedPlan(2)}>
+                                                        <span className={styles.popular}>POPULAR</span>
+                                                        <img src={medium} className={styles.section_img}/>
+                                                        <span className={styles.section_type}>Semestral</span>
+                                                        <span className={styles.section_type_desc}>Pagamento a cada 6 meses</span>
+                                                        <div className={styles.section_valor_div}>
+                                                            {
+                                                                applyDiscount?
+                                                                <div className={styles.section_discount}>
+                                                                    <div className={styles.section_valor_top}>
+                                                                        <EuroSymbolIcon className={styles.section_valor_top_symbol_discount}/>
+                                                                        <span className={styles.section_valor_top_number_discount}>68</span>
+                                                                        <span className={styles.section_valor_top_number_decimal_discount}>.89</span>
+                                                                    </div>
+                                                                    <ArrowRightIcon className={styles.discount_arrow}/>
+                                                                    <div className={styles.section_valor_top}>
+                                                                        <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                                                                        <span className={styles.section_valor_top_number}>34</span>
+                                                                        <span className={styles.section_valor_top_number_decimal}>.45</span>
+                                                                    </div>
+                                                                </div>
+                                                                :
+                                                                <div className={styles.section_valor_top}>
+                                                                    <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                                                                    <span className={styles.section_valor_top_number}>68</span>
+                                                                    <span className={styles.section_valor_top_number_decimal}>.89</span>
+                                                                </div>
+                                                            }
+                                                            {
+                                                                applyDiscount?
+                                                                <div style={{display:'flex', alignItems:'center'}}>
+                                                                    <span className={styles.section_desc_of_pay_discount}>11.49€/mês</span>
+                                                                    <ArrowRightIcon className={styles.discount_arrow_small}/>
+                                                                    <span className={styles.section_desc_of_pay_discount_new}>5.75€/mês</span>
+                                                                </div>
+                                                                :
+                                                                <span className={styles.section_desc_of_pay}>68.89€/mês</span>
+                                                            }
+                                                        </div>
+                                                        {
+                                                            selectedPlan===2?
+                                                            <div className={styles.section_button_selected}>
+                                                                <Check className={styles.section_button_selected_icon}/>
+                                                            </div>
+                                                            
+                                                            :null
+                                                        }
+                                                    </div>
+                                                    <div className={selectedPlan===3?styles.section_selected:styles.section} onClick={() => setSelectedPlan(3)}>
+                                                        <img src={pro} className={styles.section_img}/>
+                                                        <span className={styles.section_type}>Anual</span>
+                                                        <span className={styles.section_type_desc}>Pagamento a cada 12 meses</span>
+                                                        <div className={styles.section_valor_div}>
+                                                            {
+                                                                applyDiscount?
+                                                                <div className={styles.section_discount}>
+                                                                    <div className={styles.section_valor_top}>
+                                                                        <EuroSymbolIcon className={styles.section_valor_top_symbol_discount}/>
+                                                                        <span className={styles.section_valor_top_number_discount}>119</span>
+                                                                        <span className={styles.section_valor_top_number_decimal_discount}>.89</span>
+                                                                    </div>
+                                                                    <ArrowRightIcon className={styles.discount_arrow}/>
+                                                                    <div className={styles.section_valor_top}>
+                                                                        <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                                                                        <span className={styles.section_valor_top_number}>59</span>
+                                                                        <span className={styles.section_valor_top_number_decimal}>.95</span>
+                                                                    </div>
+                                                                </div>
+                                                                :
+                                                                <div className={styles.section_valor_top}>
+                                                                    <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                                                                    <span className={styles.section_valor_top_number}>119</span>
+                                                                    <span className={styles.section_valor_top_number_decimal}>.89</span>
+                                                                </div>
+                                                            }
+                                                            {
+                                                                applyDiscount?
+                                                                <div style={{display:'flex', alignItems:'center'}}>
+                                                                    <span className={styles.section_desc_of_pay_discount}>9.99€/mês</span>
+                                                                    <ArrowRightIcon className={styles.discount_arrow_small}/>
+                                                                    <span className={styles.section_desc_of_pay_discount_new}>4.99€/mês</span>
+                                                                </div>
+                                                                :
+                                                                <span className={styles.section_desc_of_pay}>119.89€/mês</span>
+                                                            }
+                                                        </div>
+                                                        {
+                                                            selectedPlan===3?
+                                                            <div className={styles.section_button_selected}>
+                                                                <Check className={styles.section_button_selected_icon}/>
+                                                            </div>
+                                                            
+                                                            :null
                                                         }
                                                     </div>
                                                 </div>
-                                                :<span className={styles.selected_plan_no_value}>Sem Plano Selecionado</span>
-                                            }
-                                            
-                                        </div>
-                                        <div className={styles.buttons} style={{marginTop:"80px"}}>
-                                            <span></span>
-                                            {
-                                                isCanceled&&endDate>currentDate?
-                                                <span className={cardName.length>2&&validCard&&validDate&&validCvc?styles.button_add:styles.button_add_disabled} onClick={() => cardName.length>2&&validCard&&validDate&&validCvc&&updateCard()}>ADICIONAR CARTÃO E FINALIZAR</span>
-                                                :
-                                                <span className={cardName.length>2&&validCard&&validDate&&validCvc?styles.button_add:styles.button_add_disabled} onClick={() => cardName.length>2&&validCard&&validDate&&validCvc&&handlePayment()}>ADICIONAR CARTÃO E PAGAR</span>
-
-                                            }
-                                            <span className={styles.button_cancel} onClick={() => {
-                                                !isCanceled?setDisplay(0):setDisplay(3)
-                                                setSelectedMenu(0)
-                                                setSelectedPlan(null)
-                                                }}>CANCELAR</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                // alterar plano area
-                                :display===2?
-                                <div style={{marginTop:"20px"}}>
-                                    <span className={styles.subtitle_sub}>
-                                        <span style={{fontWeight:"500"}}>ALTERAR PLANO</span>
-                                    </span>
-                                    <div className={styles.plans} style={{marginTop:'-40px'}}>
-
-                                        <div className={styles.plans_area}>
-                                            <p className={styles.plans_title}>ALTERAR o plano</p>
-                                            <div className={styles.plans_sections}>
-                                                <div 
-                                                    className={selectedPlan===1?styles.section_selected:styles.section} 
-                                                    style={{borderColor:selectedPlan===1&&subscriptionPlanObj.selected_plan!==1?"#FF785A":subscriptionPlanObj.selected_plan===1?"#0358e5":""}} 
-                                                    onClick={() => setSelectedPlan(1)}>
-                                                    {
-                                                        subscriptionPlanObj.selected_plan===1?
-                                                        <span className={styles.ativo}>Ativo</span>
-                                                        :props.user.subscription?.plan===1&&!schedule.phases[0].metadata.from_canceled?
-                                                        <span className={styles.ativo}>Ativo</span>
-                                                        :null
-                                                    }
-                                                    <img src={basic} className={styles.section_img}/>
-                                                    <span className={styles.section_type}>Mensal</span>
-                                                    <span className={styles.section_type_desc}>Pagamento a cada mês</span>
-                                                    <div className={styles.section_valor_div}>
-                                                        <div className={styles.section_valor_top}>
-                                                            <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                            <span className={styles.section_valor_top_number}>12</span>
-                                                            <span className={styles.section_valor_top_number_decimal}>.99</span>
+                                            </div>
+                                            <div className={styles.selected_plan}>
+                                                <span className={styles.selected_plan_title}>
+                                                    PLANO
+                                                </span>
+                                                {
+                                                    selectedPlan===1?
+                                                    <div className={styles.sub_val_wrap}>
+                                                        <div className={styles.sub_val_wrap_image}>
+                                                            <img src={basic} className={styles.section_img_small}/>
                                                         </div>
-                                                        <span className={styles.section_desc_of_pay}>12.99€/mês</span>
+                                                        <p className={styles.sub_val_date}>Plano Mensal</p>
+                                                        <div className={styles.selected_plan_value_wrap}>
+                                                            <div className={styles.selected_plan_discount_wrap}>
+                                                                <span className={styles.selected_plan_value}>Pagamento de </span>
+                                                                {
+                                                                    applyDiscount?
+                                                                    <span style={{display:'flex', alignItems:'center'}}>
+                                                                        <span className={styles.section_desc_of_pay_discount_bottom}>12.99€</span>
+                                                                        <ArrowRightIcon className={styles.discount_arrow_small_bottom}/>
+                                                                        <span className={styles.section_desc_of_pay_discount_new_bottom}>6.49€</span>
+                                                                    </span>
+                                                                    :
+                                                                    <span>12.99€</span>
+                                                                }
+                                                                <span className={styles.selected_plan_value}> a cada mês.</span>
+                                                            </div>
+                                                            
+                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura..</p>
+                                                        </div>
                                                     </div>
-                                                    {
-                                                        selectedPlan===1?
-                                                        <div className={styles.section_button_selected}>
-                                                            <Check className={styles.section_button_selected_icon}/>
+                                                    :selectedPlan===2?
+                                                    <div className={styles.sub_val_wrap}>
+                                                        <div className={styles.sub_val_wrap_image}>
+                                                            <img src={medium} className={styles.section_img_small}/>
                                                         </div>
-                                                        :props.user.subscription.plan===1?
-                                                        <span className={styles.section_button_active}>Ativo</span>
-                                                        :null
-                                                    }
+                                                        <p className={styles.sub_val_date}>Plano Semestral</p>
+                                                        <div className={styles.selected_plan_value_wrap}>
+                                                            <div className={styles.selected_plan_discount_wrap}>
+                                                                <span className={styles.selected_plan_value}>Pagamento de </span>
+                                                                {
+                                                                    applyDiscount?
+                                                                    <span style={{display:'flex', alignItems:'center'}}>
+                                                                        <span className={styles.section_desc_of_pay_discount_bottom}>68.89€</span>
+                                                                        <ArrowRightIcon className={styles.discount_arrow_small_bottom}/>
+                                                                        <span className={styles.section_desc_of_pay_discount_new_bottom}>34.45€</span>
+                                                                    </span>
+                                                                    :
+                                                                    <span>68.89€</span>
+                                                                }
+                                                                <span className={styles.selected_plan_value}> a cada 6 meses.</span>
+                                                            </div>
+                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura..</p>
+                                                        </div>
+                                                    </div>
+                                                    :selectedPlan===3?
+                                                    <div className={styles.sub_val_wrap}>
+                                                        <div className={styles.sub_val_wrap_image}>
+                                                            <img src={pro} className={styles.section_img_small}/>
+                                                        </div>
+                                                        <p className={styles.sub_val_date}>Plano Anual</p>
+                                                        <div className={styles.selected_plan_value_wrap}>
+                                                        <div className={styles.selected_plan_discount_wrap}>
+                                                                <span className={styles.selected_plan_value}>Pagamento de </span>
+                                                                {
+                                                                    applyDiscount?
+                                                                    <span style={{display:'flex', alignItems:'center'}}>
+                                                                        <span className={styles.section_desc_of_pay_discount_bottom}>119.89€</span>
+                                                                        <ArrowRightIcon className={styles.discount_arrow_small_bottom}/>
+                                                                        <span className={styles.section_desc_of_pay_discount_new_bottom}>59.95€</span>
+                                                                    </span>
+                                                                    :
+                                                                    <span>119.89€</span>
+                                                                }
+                                                                <span className={styles.selected_plan_value}> a cada 12 meses.</span>
+                                                            </div>
+                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura..</p>
+                                                        </div>
+                                                    </div>
+                                                    :<span className={styles.selected_plan_no_value}>Sem Plano Selecionado</span>
+                                                }
+                                                
+                                            </div>
+                                            <div className={styles.buttons}>
+                                                <span className={selectedPlan?styles.button_add:styles.button_add_disabled} 
+                                                    style={{width:isCanceled?'70%':'100%'}}
+                                                onClick={() => {
+                                                    selectedPlan&&setSelectedMenu(1)
+                                                    }}>Continuar</span>
+                                                    <span className={styles.button_cancel} onClick={() => {
+                                                        !isCanceled?setDisplay(4):setDisplay(3)
+                                                        setSelectedMenu(0)
+                                                        setSelectedPlan(null)
+                                                        setApplyDiscount(false)
+                                                        }}>CANCELAR</span>
+                                            </div>
+                                        </div>
+                                        {/* CARTAO */}
+                                        <div className={selectedMenu?styles.details:`${styles.details} ${styles.details_hide}`}>
+                                            <div className={styles.details_area}>
+                                                <div className={styles.card}>
+                                                    <div className={styles.card_top}>
+                                                        {
+                                                            cardIssuer==="visa"?
+                                                            <img src={visa} className={styles.brand}/>
+                                                            :
+                                                            cardIssuer==="mastercard"?
+                                                            <img src={mastercard} className={styles.brand_master}/>
+                                                            :
+                                                            cardIssuer==="american"?
+                                                            <img src={american} className={styles.brand_american}/>
+                                                            :null
+                                                        }
+                                                    </div>
+                                                    <div className={styles.card_mid}>
+                                                        <img src={chip} className={styles.chip}/>
+                                                    </div>
+                                                    <div className={styles.card_number}>
+                                                        <span className={styles.card_number_value}>{cardNumberDisplay}</span>
+                                                    </div>
+                                                    <div className={styles.card_name_date}>
+                                                        <div className={styles.card_name}>
+                                                            <span className={styles.name_helper}>Nome</span>
+                                                            <span className={styles.name_val}>{cardName}</span>
+                                                        </div>
+                                                        <div className={styles.card_name}>
+                                                            <span className={styles.name_helper}>Data</span>
+                                                            {
+                                                                validDate?
+                                                                <div className={styles.name_val}>
+                                                                    <Check style={{width:"20px !important", height:"20px !important", color:"white"}}/>
+                                                                </div>
+                                                                :null
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className={styles.details_right}>
+                                                    {/* <span className={styles.details_title}>Detalhes de Pagamento</span> */}
+                                                    <div className={styles.right_sections_div}>
+                                                        <div className={styles.right_section}>
+                                                            <span className={styles.right_helper}>Nome no Cartão</span>
+                                                            <input className={styles.right_input} maxLength={35} value={cardName} onChange={e => setCardName(e.target.value)} placeholder="Nome Apelido"/>
+                                                        </div>
+                                                        <div className={styles.right_section}>
+                                                            <span className={styles.right_helper}>Número do Cartão</span>
+                                                            <CardNumberElement 
+                                                                onChange={e => cardValidHanlder(e)} 
+                                                                className={styles.right_input} 
+                                                                style={{borderColor:validCard?"#0358e5":!validCard?"#ff3b30":""}}
+                                                                options={{style:{base:{color:"#fff"}}}}/>
+                                                            {/* {
+                                                                !validCard?
+                                                                <span className={styles.card_wrong}>Este número de cartão é inválido</span>
+                                                                :null
+                                                            } */}
+                                                        </div>
+                                                        <div className={styles.right_section_short_div}>
+                                                            <div className={styles.right_section_short}>
+                                                                <span className={styles.right_helper}>Válido até</span>
+                                                                <CardExpiryElement onChange={e => dateValidHanlder(e)} className={styles.right_input_short} options={{style:{base:{color:"#fff"}}}}/>
+                                                            </div>
+                                                            <div className={styles.right_section_short}>
+                                                                <span className={styles.right_helper}>CVV</span>
+                                                                <CardCvcElement onChange={e => cvcValidHanlder(e)} className={styles.right_input_short} options={{style:{base:{color:"#fff"}}}}/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     
                                                 </div>
-                                                <div 
-                                                    className={selectedPlan===2?styles.section_selected:styles.section}
-                                                    style={{borderColor:selectedPlan===2&&subscriptionPlanObj.selected_plan!==2?"#FF785A":subscriptionPlanObj.selected_plan===2?"#0358e5":""}} 
-                                                    onClick={() => setSelectedPlan(2)}>
-                                                    {
-                                                        subscriptionPlanObj.selected_plan===2?
-                                                        <span className={styles.ativo}>Ativo</span>
-                                                        :props.user.subscription?.plan===2&&!schedule.phases[0].metadata.from_canceled?
-                                                        <span className={styles.ativo}>Ativo</span>
-                                                        :null
-                                                    }
-                                                    <img src={medium} className={styles.section_img}/>
-                                                    <span className={styles.section_type}>Semestral</span>
-                                                    <span className={styles.section_type_desc}>Pagamento a cada 6 meses</span>
-                                                    <div className={styles.section_valor_div}>
-                                                        <div className={styles.section_valor_top}>
-                                                            <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                            <span className={styles.section_valor_top_number}>68</span>
-                                                            <span className={styles.section_valor_top_number_decimal}>.89</span>
+                                            </div>
+                                            <div className={styles.selected_plan}>      
+                                                <span className={styles.selected_plan_title}>Plano</span>
+                                                {
+                                                    selectedPlan===1?
+                                                    <div className={`${styles.sub_val_wrap} ${styles.sub_val_wrap_hover}`} onClick={() => setSelectedMenu(0)}>
+                                                        <div className={styles.sub_val_wrap_image}>
+                                                            <img src={basic} className={styles.section_img_small}/>
                                                         </div>
-                                                        <span className={styles.section_desc_of_pay}>11.49€/mês</span>
+                                                        <p className={styles.sub_val_date}>Plano Mensal</p>
+                                                        <div className={styles.selected_plan_value_wrap}>
+                                                            <div className={styles.info_div} style={{marginTop:'10px'}}>
+                                                                <div className={styles.info_subdiv}>
+                                                                    <span className={styles.info_text_helper}>VALOR:</span>
+                                                                    <span className={styles.info_text}>€12.99</span><span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}> (equivalente a €12.99/mês)</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className={styles.info_div}>
+                                                                <div className={styles.info_subdiv}>
+                                                                    <span className={styles.info_text_helper}>Modelo:</span>
+                                                                    <span className={styles.info_text}>Cobranças mensais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}>(a cada mês)</span></span>
+                                                                </div>
+                                                            </div>
+                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
+                                                        </div>
                                                     </div>
-                                                    {
-                                                        selectedPlan===2?
-                                                        <div className={styles.section_button_selected}>
-                                                            <Check className={styles.section_button_selected_icon}/>
+                                                    :selectedPlan===2?
+                                                    <div className={`${styles.sub_val_wrap} ${styles.sub_val_wrap_hover}`} onClick={() => setSelectedMenu(0)}>
+                                                        <div className={styles.sub_val_wrap_image}>
+                                                            <img src={medium} className={styles.section_img_small}/>
                                                         </div>
-                                                        
-                                                        :null
-                                                    }
-                                                </div>
-                                                <div 
-                                                    className={selectedPlan===3?styles.section_selected:styles.section} 
-                                                    style={{borderColor:selectedPlan===3&&subscriptionPlanObj.selected_plan!==3?"#FF785A":subscriptionPlanObj.selected_plan===3?"#0358e5":""}} 
-                                                    onClick={() => setSelectedPlan(3)}>
-                                                    {
-                                                        subscriptionPlanObj.selected_plan===3?
-                                                        <span className={styles.ativo}>Ativo</span>
-                                                        :props.user.subscription?.plan===3&&!schedule.phases[0].metadata.from_canceled?
-                                                        <span className={styles.ativo}>Ativo</span>
-                                                        :null
-                                                    }
-                                                    <img src={pro} className={styles.section_img}/>
-                                                    <span className={styles.section_type}>Anual</span>
-                                                    <span className={styles.section_type_desc}>Pagamento a cada 12 meses</span>
-                                                    <div className={styles.section_valor_div}>
-                                                        <div className={styles.section_valor_top}>
-                                                            <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                            <span className={styles.section_valor_top_number}>119</span>
-                                                            <span className={styles.section_valor_top_number_decimal}>.89</span>
+                                                        <p className={styles.sub_val_date}>Plano Semestral</p>
+                                                        <div className={styles.selected_plan_value_wrap}>
+                                                            <div className={styles.info_div} style={{marginTop:'10px'}}>
+                                                                <div className={styles.info_subdiv}>
+                                                                    <span className={styles.info_text_helper}>VALOR:</span>
+                                                                    <span className={styles.info_text}>€68.89</span><span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}> (equivalente a €11.49/mês)</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className={styles.info_div}>
+                                                                <div className={styles.info_subdiv}>
+                                                                    <span className={styles.info_text_helper}>Modelo:</span>
+                                                                    <span className={styles.info_text}>Cobranças semestrais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}>(a cada 6 meses)</span></span>
+                                                                </div>
+                                                            </div>
+                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
                                                         </div>
-                                                        <span className={styles.section_desc_of_pay}>9.99€/mês</span>
                                                     </div>
-                                                    {
-                                                        selectedPlan===3?
-                                                        <div className={styles.section_button_selected}>
-                                                            <Check className={styles.section_button_selected_icon}/>
+                                                    :selectedPlan===3?
+                                                    <div className={`${styles.sub_val_wrap} ${styles.sub_val_wrap_hover}`} onClick={() => setSelectedMenu(0)}>
+                                                        <div className={styles.sub_val_wrap_image}>
+                                                            <img src={pro} className={styles.section_img_small}/>
                                                         </div>
-                                                        
-                                                        :null
-                                                    }
-                                                </div>
+                                                        <p className={styles.sub_val_date}>Plano Anual</p>
+                                                        <div className={styles.selected_plan_value_wrap}>
+                                                            <div className={styles.info_div} style={{marginTop:'10px'}}>
+                                                                <div className={styles.info_subdiv}>
+                                                                    <span className={styles.info_text_helper}>VALOR:</span>
+                                                                    <span className={styles.info_text}>€119.89</span><span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}> (equivalente a €9.99/mês)</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className={styles.info_div}>
+                                                                <div className={styles.info_subdiv}>
+                                                                    <span className={styles.info_text_helper}>Modelo:</span>
+                                                                    <span className={styles.info_text}>Cobranças anuais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}>(a cada 6 meses)</span></span>
+                                                                </div>
+                                                            </div>
+                                                            {
+                                                                isCanceled&&endDate>currentDate?
+                                                                <span className={styles.selected_plan_value_information}>Esta nova subscrição apenas será cobrada no fim da sua subscrição atual (<span style={{color:"#FF785A", fontWeight:"400"}}>{getDateToString(endDate/1000)}</span>)</span>
+                                                                :
+                                                                <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    :<span className={styles.selected_plan_no_value}>Sem Plano Selecionado</span>
+                                                }
+                                                
+                                            </div>
+                                            <div className={styles.buttons} style={{marginTop:"85px"}}>
+                                                <span></span>
+                                                {
+                                                    isCanceled&&endDate>currentDate?
+                                                    <span className={cardName.length>2&&validCard&&validDate&&validCvc?styles.button_add:styles.button_add_disabled} onClick={() => cardName.length>2&&validCard&&validDate&&validCvc&&updateCard()}>ADICIONAR CARTÃO E FINALIZAR</span>
+                                                    :
+                                                    <span className={cardName.length>2&&validCard&&validDate&&validCvc?styles.button_add:styles.button_add_disabled} onClick={() => cardName.length>2&&validCard&&validDate&&validCvc&&handlePayment()}>ADICIONAR CARTÃO E PAGAR</span>
+
+                                                }
+                                                {
+                                                    isCanceled?
+                                                    <span className={styles.button_cancel} onClick={() => {
+                                                        !isCanceled?setDisplay(0):setDisplay(3)
+                                                        setSelectedMenu(0)
+                                                        setSelectedPlan(null)
+                                                        }}>CANCELAR</span>
+                                                    :
+                                                    <span className={styles.button_cancel} onClick={() => {
+                                                        setSelectedMenu(0)
+                                                        }}>VOLTAR</span>
+                                                }
                                             </div>
                                         </div>
-                                        <div className={styles.selected_plan} style={{marginTop:"20px"}}>
-                                            <span className={styles.selected_plan_title}>
-                                                ALTERAÇÃO
-                                            </span>
-                                            <SubscriptionAlterar 
-                                                subscriptionPlanObj={subscriptionPlanObj}
-                                                selectedPlan={selectedPlan}/>
+                                    </div>
+                                    // alterar plano area
+                                    :display===2?
+                                    <div style={{marginTop:"20px"}}>
+                                        <span className={styles.subtitle_sub}>
+                                            <span style={{fontWeight:"500"}}>ALTERAR PLANO</span>
+                                        </span>
+                                        <div className={styles.plans} style={{marginTop:'-40px'}}>
+
+                                            <div className={styles.plans_area}>
+                                                <p className={styles.plans_title}>ALTERAR o plano</p>
+                                                <div className={styles.plans_sections}>
+                                                    <div 
+                                                        className={selectedPlan===1?styles.section_selected:styles.section} 
+                                                        style={{borderColor:selectedPlan===1&&subscriptionPlanObj.selected_plan!==1?"#FF785A":subscriptionPlanObj.selected_plan===1?"#0358e5":""}} 
+                                                        onClick={() => setSelectedPlan(1)}>
+                                                        {
+                                                            subscriptionPlanObj.selected_plan===1?
+                                                            <span className={styles.ativo}>Ativo</span>
+                                                            :user.subscription?.plan===1&&!schedule.phases[0].metadata.from_canceled?
+                                                            <span className={styles.ativo}>Ativo</span>
+                                                            :null
+                                                        }
+                                                        <img src={basic} className={styles.section_img}/>
+                                                        <span className={styles.section_type}>Mensal</span>
+                                                        <span className={styles.section_type_desc}>Pagamento a cada mês</span>
+                                                        <div className={styles.section_valor_div}>
+                                                            <div className={styles.section_valor_top}>
+                                                                <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                                                                <span className={styles.section_valor_top_number}>12</span>
+                                                                <span className={styles.section_valor_top_number_decimal}>.99</span>
+                                                            </div>
+                                                            <span className={styles.section_desc_of_pay}>12.99€/mês</span>
+                                                        </div>
+                                                        {
+                                                            selectedPlan===1?
+                                                            <div className={styles.section_button_selected}>
+                                                                <Check className={styles.section_button_selected_icon}/>
+                                                            </div>
+                                                            :user.subscription.plan===1?
+                                                            <span className={styles.section_button_active}>Ativo</span>
+                                                            :null
+                                                        }
+                                                        
+                                                    </div>
+                                                    <div 
+                                                        className={selectedPlan===2?styles.section_selected:styles.section}
+                                                        style={{borderColor:selectedPlan===2&&subscriptionPlanObj.selected_plan!==2?"#FF785A":subscriptionPlanObj.selected_plan===2?"#0358e5":""}} 
+                                                        onClick={() => setSelectedPlan(2)}>
+                                                        {
+                                                            subscriptionPlanObj.selected_plan===2?
+                                                            <span className={styles.ativo}>Ativo</span>
+                                                            :user.subscription?.plan===2&&!schedule.phases[0].metadata.from_canceled?
+                                                            <span className={styles.ativo}>Ativo</span>
+                                                            :null
+                                                        }
+                                                        <img src={medium} className={styles.section_img}/>
+                                                        <span className={styles.section_type}>Semestral</span>
+                                                        <span className={styles.section_type_desc}>Pagamento a cada 6 meses</span>
+                                                        <div className={styles.section_valor_div}>
+                                                            <div className={styles.section_valor_top}>
+                                                                <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                                                                <span className={styles.section_valor_top_number}>68</span>
+                                                                <span className={styles.section_valor_top_number_decimal}>.89</span>
+                                                            </div>
+                                                            <span className={styles.section_desc_of_pay}>11.49€/mês</span>
+                                                        </div>
+                                                        {
+                                                            selectedPlan===2?
+                                                            <div className={styles.section_button_selected}>
+                                                                <Check className={styles.section_button_selected_icon}/>
+                                                            </div>
+                                                            
+                                                            :null
+                                                        }
+                                                    </div>
+                                                    <div 
+                                                        className={selectedPlan===3?styles.section_selected:styles.section} 
+                                                        style={{borderColor:selectedPlan===3&&subscriptionPlanObj.selected_plan!==3?"#FF785A":subscriptionPlanObj.selected_plan===3?"#0358e5":""}} 
+                                                        onClick={() => setSelectedPlan(3)}>
+                                                        {
+                                                            subscriptionPlanObj.selected_plan===3?
+                                                            <span className={styles.ativo}>Ativo</span>
+                                                            :user.subscription?.plan===3&&!schedule.phases[0].metadata.from_canceled?
+                                                            <span className={styles.ativo}>Ativo</span>
+                                                            :null
+                                                        }
+                                                        <img src={pro} className={styles.section_img}/>
+                                                        <span className={styles.section_type}>Anual</span>
+                                                        <span className={styles.section_type_desc}>Pagamento a cada 12 meses</span>
+                                                        <div className={styles.section_valor_div}>
+                                                            <div className={styles.section_valor_top}>
+                                                                <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                                                                <span className={styles.section_valor_top_number}>119</span>
+                                                                <span className={styles.section_valor_top_number_decimal}>.89</span>
+                                                            </div>
+                                                            <span className={styles.section_desc_of_pay}>9.99€/mês</span>
+                                                        </div>
+                                                        {
+                                                            selectedPlan===3?
+                                                            <div className={styles.section_button_selected}>
+                                                                <Check className={styles.section_button_selected_icon}/>
+                                                            </div>
+                                                            
+                                                            :null
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className={styles.selected_plan} style={{marginTop:"20px"}}>
+                                                <span className={styles.selected_plan_title}>
+                                                    ALTERAÇÃO
+                                                </span>
+                                                <SubscriptionAlterar 
+                                                    subscriptionPlanObj={subscriptionPlanObj}
+                                                    selectedPlan={selectedPlan}/>
+                                                
+                                            </div>
+                                            <div style={{marginTop:"80px"}}>
+                                                <p className={styles.alterar_plano}>A alteração do plano pode ser cancelada a qualquer altura. </p>
+                                                <span className={styles.alterar_plano}>A alteração do plano terá efeito imediato, mas <span style={{fontWeight:"600"}}>apenas será cobrado na data da próxima cobrança do plano atual. </span></span>
+                                                <p className={styles.alterar_plano}>Data da próxima cobrança do plano atual: <span style={{color:"#0358e5", fontWeight:700, fontSize:'1rem'}}>{extenseDate(endDate/1000)}</span> <span className={styles.info_text_days_charge}>({daysTillCharge} dias)</span></p>
+                                            </div>
+                                            <div className={styles.buttons}>
+                                                <span className={
+                                                    selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan?
+                                                    styles.button_add
+                                                    :
+                                                    selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan?
+                                                    styles.button_add
+                                                    :
+                                                    styles.button_add_disabled} 
+                                                    
+                                                    onClick={() => {
+                                                    selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan&&updatePlan()
+                                                    selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan&&updatePlan()
+                                                    }}>Alterar</span>
+                                                <span className={styles.button_cancel} onClick={() => {
+                                                    setDisplay(0)
+                                                    setSelectedMenu(0)
+                                                    setSelectedPlan(subscriptionPlanObj.selected_plan)
+                                                    setAlterarPlano(false)
+                                                    }}>FECHAR</span>
+                                            </div>
+                                            
                                             
                                         </div>
-                                        <div style={{marginTop:"80px"}}>
-                                            <p className={styles.alterar_plano}>A alteração do plano pode ser cancelada a qualquer altura. </p>
-                                            <span className={styles.alterar_plano}>A alteração do plano terá efeito imediato, mas <span style={{fontWeight:"600"}}>apenas será cobrado na data da próxima cobrança do plano atual. </span></span>
-                                            <p className={styles.alterar_plano}>Data da próxima cobrança do plano atual: <span style={{color:"#0358e5", fontWeight:700, fontSize:'1rem'}}>{extenseDate(endDate/1000)}</span> <span className={styles.info_text_days_charge}>({daysTillCharge} dias)</span></p>
-                                        </div>
-                                        <div className={styles.buttons}>
-                                            <span className={
-                                                selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan?
-                                                styles.button_add
-                                                :
-                                                selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan?
-                                                styles.button_add
-                                                :
-                                                styles.button_add_disabled} 
-                                                
-                                                onClick={() => {
-                                                selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan&&updatePlan()
-                                                selectedPlan&&subscriptionPlanObj.selected_plan!==selectedPlan&&updatePlan()
-                                                }}>Alterar</span>
-                                            <span className={styles.button_cancel} onClick={() => {
-                                                setDisplay(0)
-                                                setSelectedMenu(0)
-                                                setSelectedPlan(subscriptionPlanObj.selected_plan)
-                                                setAlterarPlano(false)
-                                                }}>FECHAR</span>
-                                        </div>
-                                        
-                                        
                                     </div>
-                                </div>
-                                :display===3&&isLoaded&&isCanceled?
-                                <div className={styles.display_three_canceled}>
-                                    <div className={styles.sub_val_wrap} style={{backgroundColor:"#fdd83590", border:"3px solid #fdd835"}}>
-                                        <p className={styles.sub_val_date}>Subscrição desativada</p>
-                                        <div className={styles.selected_plan_value_wrap}>
-                                            <p className={styles.selected_plan_value} style={{marginTop:'10px', textAlign:'center'}}>Fim da subscrição a <span style={{fontWeight:600}}>{endDate&&extenseDate(endDate/1000)}</span>.</p>
+                                    :display===3&&isLoaded&&isCanceled?
+                                    <div className={styles.display_three_canceled}>
+                                        <div className={styles.sub_val_wrap} style={{backgroundColor:"#fdd83590", border:"3px solid #fdd835"}}>
+                                            <p className={styles.sub_val_date}>Subscrição desativada</p>
+                                            <div className={styles.selected_plan_value_wrap}>
+                                                <p className={styles.selected_plan_value} style={{marginTop:'10px', textAlign:'center'}}>Fim da subscrição a <span style={{fontWeight:600}}>{endDate&&extenseDate(endDate/1000)}</span>.</p>
+                                            </div>
                                         </div>
+                                        <span className={styles.display_three_button} onClick={() => {
+                                            setSelectedMenu(0)
+                                            setDisplay(1)}}>
+                                            RE-ATIVAR SUBSCRIÇÃO
+                                        </span>
                                     </div>
-                                    <span className={styles.display_three_button} onClick={() => {
-                                        setSelectedMenu(0)
-                                        setDisplay(1)}}>
-                                        RE-ATIVAR SUBSCRIÇÃO
-                                    </span>
+                                    :null
+                                }
                                 </div>
-                                :display===3&&isLoaded&&!isCanceled?
-                                <div style={{marginTop:"30px"}}>
-                                    <NoPage object="no_subscritption" activateSub={() => setDisplay(1)}/>
-                                </div>
-                                :null
-                            }
-                        </div>
+                            :null
+                        }
+                        
                     </div>
                 </div>
                 :null

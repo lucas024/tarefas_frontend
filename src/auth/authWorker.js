@@ -20,8 +20,10 @@ import {
     } from "firebase/auth"
 import { useSearchParams } from 'react-router-dom';
 import Loader from '../general/loader'
+import { useSelector } from 'react-redux'
 
 const AuthWorker = (props) => {
+    const api_url = useSelector(state => {return state.api_url})
 
     const [selectedAuth, setSelectedAuth] = useState(1)
 
@@ -159,7 +161,7 @@ const AuthWorker = (props) => {
         setEmailLoginWrong(false)
         setLoading(true)
 
-        let res = await axios.get(`${props.api_url}/auth/get_user_by_email`, { params: {email: emailLogin} })
+        let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: emailLogin} })
         setEmailLoginWrong(false)
         if(res.data != null){
             setLoginError("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Faça login na Àrea Utlizador.")
@@ -210,12 +212,12 @@ const AuthWorker = (props) => {
 
     const registerHelper = async (user_uid, from_signup) => {
         //stripe obj
-        const obj = await axios.post(`${props.api_url}/create-customer`, {
+        const obj = await axios.post(`${api_url}/create-customer`, {
             name: from_signup?from_signup.name:name,
             phone: from_signup?from_signup.phone:phone,
             email: from_signup?from_signup.email.toLocaleLowerCase():email.toLocaleLowerCase(),
         })
-        await axios.post(`${props.api_url}/auth/register/worker`, 
+        await axios.post(`${api_url}/auth/register/worker`, 
             {
                 name: from_signup?from_signup.name:name,
                 surname: from_signup?from_signup.name:surname,
@@ -255,7 +257,7 @@ const AuthWorker = (props) => {
             }
             catch (err) {
                 if(err.code == "auth/email-already-in-use"){
-                    axios.get(`${props.api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                    axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
                         setLoading(false)
                         if(res.data != null){
                             setEmailWrong("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Por-favor, utilize outro email.")
@@ -296,8 +298,8 @@ const AuthWorker = (props) => {
         setLoading(true)
         try{
             let res = await signInWithPopup(auth, type==="google"?provider:providerFacebook)
-            let existing_user = await axios.get(`${props.api_url}/auth/get_user_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
-            let existing_worker = await axios.get(`${props.api_url}/auth/get_worker_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
+            let existing_user = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
+            let existing_worker = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
             
             console.log(existing_user, existing_worker)
             if(existing_user.data == null && existing_worker.data == null){

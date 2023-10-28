@@ -8,8 +8,10 @@ const slice = createSlice({
     search_context: null,
     search_scroll: 0,
     worker_profile_complete: false,
+    worker_is_subscribed: false,
     user_subscription_active: false,
     user_admin_verified: false,
+    api_url: "http://localhost:5200" //"https://docker-image-fixed-v2-z4uucaddha-ew.a.run.app"
   },
   reducers: {
     user_load: (state, action) => {
@@ -48,21 +50,33 @@ const slice = createSlice({
     user_update_chats: (state, action) => {
       state.user.chats = action.payload
     },
+    user_update_field: (state, action) => {
+      for(let el of action.payload)
+      {
+        state.user.chats[el.field] = el.value
+      }
+    },
     search_save: (state, action) => {
         state.search_context = action.payload
     },
     search_scroll_save: (state, action) => {
         state.search_scroll = action.payload
     },
-    worker_update_profile_complete: (state, action) => {
-      state.worker_profile_complete = action.payload
-    },
     user_update_subscription_active: (state, action) => {
       state.user_subscription_active = action.payload
     },
     user_update_admin_verified: (state, action) => {
       state.user_admin_verified = action.payload
-    }
+    },
+
+
+    ///////////////////////// worker
+    worker_update_profile_complete: (state, action) => {
+      state.worker_profile_complete = action.payload
+    },
+    worker_update_is_subscribed: (state, action) => {
+      state.worker_is_subscribed = action.payload
+    },
   }
 })
 
@@ -72,12 +86,16 @@ export const {
     user_reset, 
     user_update_phone, 
     set_socket, 
-    user_update_chats, 
+    user_update_chats,
+    user_update_field,
     search_save,
     search_scroll_save,
-    worker_update_profile_complete,
     user_update_subscription_active,
-    user_update_admin_verified
+    user_update_admin_verified,
+
+    ////////////////////// worker
+    worker_update_profile_complete,
+    worker_update_is_subscribed,
   } = slice.actions
 
 

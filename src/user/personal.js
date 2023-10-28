@@ -29,13 +29,16 @@ import PhoneUnverified from '@mui/icons-material/PhonelinkErase';
 import VerificationBannerPhone from '../general/verificationBannerPhone';
 import SelectWorker from '../selects/selectWorker';
 import { useTimer } from 'react-timer-hook';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { user_update_field } from '../store';
 
 
 const Personal = (props) => {
-
+    const api_url = useSelector(state => {return state.api_url})
     const user_profile_complete = useSelector(state => {return state.user_profile_complete})
     const user = useSelector(state => {return state.user})
+
+    const dispatch = useDispatch()
     
     const [name, setName] = useState("")
     const [surname, setSurname] = useState("")
@@ -126,14 +129,10 @@ const Personal = (props) => {
     } = useTimer({ onExpire: () => setExpired(true) })
 
     const handlerVerifyPressed = () => {
-        if(expired)
-        {   
-            setExpired(false)
-            const time = new Date()
-            time.setSeconds(time.getSeconds() + 59)
-            restart(time)
-            setVerifyPhone(1)
-        }
+        setExpired(false)
+        const time = new Date()
+        time.setSeconds(time.getSeconds() + 59)
+        restart(time)
     }
 
     const getCheckedProf = trab => {
@@ -215,24 +214,34 @@ const Personal = (props) => {
             if(phone!==user.phone || description!==user.description){
                 setLoadingRight(true)
                 if(user?.type===0){
-                    axios.post(`${props.api_url}/user/update_phone`, {
+                    axios.post(`${api_url}/user/update_phone`, {
                         user_id : user._id,
                         phone: phone
                     }).then(() => {
-                        props.updateUser(phone, "phone")
+                        dispatch(
+                            user_update_field(
+                                [{field: 'phone', value: phone}]
+                            )
+                        )
                         setLoadingRight(false)
                         setRightPop(true)
                         setTimeout(() => setRightPop(false), 4000)
                     })
                 }
                 else {
-                    axios.post(`${props.api_url}/worker/update_phone_and_description`, {
+                    axios.post(`${api_url}/worker/update_phone_and_description`, {
                         user_id : user._id,
                         phone: phone,
                         description: description
                     }).then(() => {
-                        props.updateUser(phone, "phone")
-                        props.updateUser(description, "description")
+                        dispatch(
+                            user_update_field(
+                                [
+                                    {field: 'phone', value: phone},
+                                    {field: 'description', value: description}
+                                ]
+                            )
+                        )
                         setLoadingRight(false)
                         setRightPop(true)
                         setTimeout(() => setRightPop(false), 4000)
@@ -251,17 +260,23 @@ const Personal = (props) => {
             if((radioSelected===1 && entityName.length>2)||radioSelected===0){
                 setEditBottom(false)
                 setLoadingBottom(true)
-                axios.post(`${props.api_url}/worker/update_selected`, {
+                axios.post(`${api_url}/worker/update_selected`, {
                     user_id : user._id,
                     trabalhos : selectedProf,
                     regioes: selectedReg,
                     entity: radioSelected,
                     entity_name: entityName
-                }).then(res => {
-                    props.updateUser(selectedProf, "trabalhos")
-                    props.updateUser(selectedReg, "regioes")
-                    props.updateUser(radioSelected, "entity")
-                    props.updateUser(entityName, "entity_name")
+                }).then(() => {
+                    dispatch(
+                        user_update_field(
+                            [
+                                {field: 'trabalhos', value: selectedProf},
+                                {field: 'regioes', value: selectedReg},
+                                {field: 'entity', value: radioSelected},
+                                {field: 'entity_name', value: entityName}
+                            ]
+                        )
+                    )
                     setLoadingBottom(false)
                     setBottomPop(true)
                     setTimeout(() => setBottomPop(false), 4000)
@@ -282,23 +297,31 @@ const Personal = (props) => {
         uploadBytes(storageRef, img).then(() => {
             getDownloadURL(storageRef).then(url => {
                 if(user?.type===0){
-                    axios.post(`${props.api_url}/user/update_photo`, {
+                    axios.post(`${api_url}/user/update_photo`, {
                         user_id : user._id,
                         photoUrl: url
                     }).then(res => {
                         setPhoto(url)
-                        props.updateUser(url, "photoUrl")
+                        dispatch(
+                            user_update_field(
+                                [{field: 'photoUrl', value: url}]
+                            )
+                        )
                         setPhotoPop(true)
                         setTimeout(() => setPhotoPop(false), 4000)
                     })
                 }
                 else{
-                    axios.post(`${props.api_url}/worker/update_photo`, {
+                    axios.post(`${api_url}/worker/update_photo`, {
                         user_id : user._id,
                         photoUrl: url
                     }).then(res => {
                         setPhoto(url)
-                        props.updateUser(url, "photoUrl")
+                        dispatch(
+                            user_update_field(
+                                [{field: 'photoUrl', value: url}]
+                            )
+                        )
                         setPhotoPop(true)
                         setTimeout(() => setPhotoPop(false), 4000)
                     })
@@ -324,16 +347,6 @@ const Personal = (props) => {
         <div className={styles.personal}>
             <Loader loading={false}/>
             {/* !props.loaded em vez de false */}
-            {
-                verifyPhone?
-                <VerificationBannerPhone 
-                    cancel={() => setVerifyPhone(0)}
-                    setNext={val => setVerifyPhone(val)}
-                    next={verifyPhone} 
-                    phone={phone}
-                    />
-                :null
-            }
             {
                 props.loaded?
                 <div>
@@ -391,6 +404,26 @@ const Personal = (props) => {
                     </div>
                     :null
                 }
+                <div className={verifyPhone?styles.backdrop:null} onClick={() => setVerifyPhone(false)}/>
+                <CSSTransition
+                    in={verifyPhone}
+                    timeout={1000}
+                    classNames="transition"
+                    unmountOnExit
+                    >
+                    <VerificationBannerPhone 
+                        cancel={() => setVerifyPhone(0)}
+                        setNext={val => {
+                            if(val===2)
+                            {
+                                setVerifyPhone(2)
+                                handlerVerifyPressed()
+                            }
+                        }}
+                        next={verifyPhone} 
+                        phone={phone}
+                        />
+                </CSSTransition>
                 <div className={styles.mid}>
                     {
                         user?.type===1?
@@ -407,9 +440,9 @@ const Personal = (props) => {
                                 </div>
                                 {
                                     displayTop?
-                                    <div>
+                                    <div className={getPercentagem()<100?styles.top_wrap_incomplete:styles.top_wrap_complete}>
                                         <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                            <FaceIcon className={styles.line_icon}/>
+                                            <FaceIcon className={photo!==""?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 photo!==""?
                                                 <div style={{display:"flex", alignItems:"center"}}>
@@ -426,7 +459,7 @@ const Personal = (props) => {
                                             }
                                         </div>
                                         <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                            <EmailVerified className={styles.line_icon}/>
+                                            <EmailVerified className={user?.email_verified?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 user?.email_verified?
                                                 <div style={{display:"flex", alignItems:"center"}}>
@@ -443,7 +476,7 @@ const Personal = (props) => {
                                             }
                                         </div>
                                         <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                            <PhoneVerified className={styles.line_icon}/>
+                                            <PhoneVerified className={user?.phone_verified?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 user?.phone_verified?
                                                 <div style={{display:"flex", alignItems:"center"}}>
@@ -460,7 +493,7 @@ const Personal = (props) => {
                                             }
                                         </div>
                                         <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                            <CorporateFareIcon className={styles.line_icon}/>
+                                            <CorporateFareIcon className={radioSelected!==""&&!editBottom?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 radioSelected!==""&&!editBottom?
                                                 <div style={{display:"flex", alignItems:"center"}}>
@@ -477,7 +510,7 @@ const Personal = (props) => {
                                             }
                                         </div>
                                         <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                            <HandymanIcon className={styles.line_icon}/>
+                                            <HandymanIcon className={selectedProf?.length>0&&!editBottom?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 selectedProf?.length>0&&!editBottom?
                                                 <div style={{display:"flex", alignItems:"center"}}>
@@ -494,7 +527,7 @@ const Personal = (props) => {
                                             }
                                         </div>
                                         <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                            <LocationOnIcon className={styles.line_icon}/>
+                                            <LocationOnIcon className={selectedReg?.length>0&&!editBottom?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 selectedReg?.length>0&&!editBottom?
                                                 <div style={{display:"flex", alignItems:"center"}}>
@@ -585,7 +618,7 @@ const Personal = (props) => {
                                         <div className={styles.input_div} style={{marginTop:'10px'}}>
                                             {
                                                 !user?.phone_verified?
-                                                <div className={styles.input_div_button} onClick={() => handlerVerifyPressed()}>
+                                                <div className={styles.input_div_button} onClick={() => expired&&setVerifyPhone(1)}>
                                                     <span className={styles.input_div_button_text} style={{textTransform:expired&&'uppercase'||'none'}}>{expired&&"Verificar"||`${seconds}s`}</span>
                                                 </div>
                                                 :null

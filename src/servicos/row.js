@@ -36,7 +36,7 @@ const Row = (props) => {
     }
 
     return (
-        <div className={styles.row} style={{border:props.item.user_id===props.user?._id?`3px solid ${getTypeColor(props.item.type)}`:"none"}}>
+        <div className={styles.row} style={{border:props.item.user_id===props.user_id?`3px solid ${getTypeColor(props.item.type)}`:"none"}}>
             <div className={props.trabalhoVisto?styles.row_time_seen:styles.row_time}>
                 {
                     props.trabalhoVisto?
@@ -47,7 +47,7 @@ const Row = (props) => {
                     :null
                 }
                 {
-                    props.item.user_id===props.user?._id?
+                    props.item.user_id===props.user_id?
                     <div className={styles.item_user}>
                         <div className={styles.item_flex_indicator} style={{backgroundColor:getTypeColor(props.item.type)}}>
                             <span className={styles.item_indicator}></span>

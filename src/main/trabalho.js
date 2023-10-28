@@ -28,11 +28,16 @@ import Sessao from '../transitions/sessao';
 import EditIcon from '@mui/icons-material/Edit';
 import Popup from '../transitions/popup';
 import {profissoesPngs} from '../general/util'
+import { useSelector } from 'react-redux'
 
 const ObjectID = require("bson-objectid");
 
 
 const Trabalho = (props) => {
+
+    const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
+
     const [reservation, setReservation] = useState({})
     const [images, setImages] = useState(null)
     const [text, setText] = useState("")
@@ -94,7 +99,7 @@ const Trabalho = (props) => {
         paramsAux.region&&setLocationActive(paramsAux.region)
         paramsAux.work&&setWorkerActive(paramsAux.work)
         setPage(paramsAux.page)
-        paramsAux.id&&axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
+        paramsAux.id&&axios.get(`${api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
             if(res.data){
                 setReservation(res.data)
                 let arr = []
@@ -132,18 +137,18 @@ const Trabalho = (props) => {
     }, [searchParams])
 
     useEffect(() => {
-        props.user!=null&&reservation&&axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: reservation.user_id} })
+        user!=null&&reservation&&axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: reservation.user_id} })
             .then(res => {
                 setPublicationUser(res.data)
-                if(props.user?._id === reservation.user_id){
+                if(user?._id === reservation.user_id){
                     setViewTo('user')
                     setLoading(false)
                 }
             })
         
-        if(props.user?.chats)
+        if(user?.chats)
         {
-            for(let chat of props.user.chats)
+            for(let chat of user.chats)
             {
                 if(chat.reservation_id === reservation._id)
                 {
@@ -153,34 +158,34 @@ const Trabalho = (props) => {
                 }
             }
         }
-    }, [reservation, props.user])
+    }, [reservation, user])
 
     useEffect(() => {
         if(loaded)
         {
-            if(props.user?.admin)
+            if(user?.admin)
             {
                 setViewTo("showFull")
                 setLoading(false)
             }
-            else if(!props.user||props.user.type===0){
+            else if(!user||user.type===0){
                 setViewTo('noAccount')
                 setLoading(false)
             }
-            else if((props.user?.subscription==null&&props.incompleteUser)){
+            else if((user?.subscription==null&&props.incompleteUser)){
                 setViewTo('none')
                 setLoading(false)                
             }
-            else if(props.user?.subscription&&!props.incompleteUser){
-                axios.post(`${props.api_url}/retrieve-subscription-and-schedule`, {
-                    subscription_id: props.user.subscription.id,
-                    schedule_id: props.user.subscription.sub_schedule
+            else if(user?.subscription&&!props.incompleteUser){
+                axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
+                    subscription_id: user.subscription.id,
+                    schedule_id: user.subscription.sub_schedule
                 })
                 .then(res2 => {
                     if(!isActiveSub(res2.data.schedule.current_phase?.end_date)){
                         setViewTo('noSub')
                     }
-                    else if(isActiveSub(res2.data.schedule.current_phase?.end_date)&&props.user.state===1)
+                    else if(isActiveSub(res2.data.schedule.current_phase?.end_date)&&user.state===1)
                     {
                         setViewTo("showFull")
                     }
@@ -206,7 +211,7 @@ const Trabalho = (props) => {
                 setLoading(false)
             }
         }
-    }, [props.user, props.incompleteUser, loaded])
+    }, [user, props.incompleteUser, loaded])
 
     useEffect(() => {
         props.userLoadAttempt&&setLoaded(true)
@@ -308,7 +313,7 @@ const Trabalho = (props) => {
             const deleteRef = ref(storage, `/posts/${reservation._id}/${key}`)
             return deleteObject(deleteRef)
         }))
-        axios.post(`${props.api_url}/reservations/remove`, obj)
+        axios.post(`${api_url}/reservations/remove`, obj)
             .then(() => {
                 setEliminationPopup(false)
                 setLoading(false)
@@ -322,24 +327,24 @@ const Trabalho = (props) => {
     }
 
     const sendMessageHandler = async () => {
-        if(text!==""&&reservation.user_id!==props.user._id){
+        if(text!==""&&reservation.user_id!==user._id){
             setLoadingChat(true)
 
             let time = new Date().getTime()
             let text_object = {
-                origin_type : props.user.type,
+                origin_type : user.type,
                 timestamp : time,
                 text: text,
                 starter: true
             }
             let chatId = ObjectID()
 
-            await axios.post(`${props.api_url}/chats/create_chat`, {
-                worker_name: props.user.name,
-                worker_surname: props.user.surname,
-                worker_photoUrl: props.user.photoUrl,
-                worker_phone: props.user.phone,
-                worker_id: props.user._id,
+            await axios.post(`${api_url}/chats/create_chat`, {
+                worker_name: user.name,
+                worker_surname: user.surname,
+                worker_photoUrl: user.photoUrl,
+                worker_phone: user.phone,
+                worker_id: user._id,
                 user_name: publicationUser.name,
                 user_surname: publicationUser.surname,
                 user_photoUrl: publicationUser.photoUrl,
@@ -411,8 +416,8 @@ const Trabalho = (props) => {
                         cancelHandler={() => setRefusePopup(false)}
                         user_id={refuseUserReservationId}
                         reservation={refuseReservation}
-                        api_url={props.api_url}
-                        user={props.user}
+                        api_url={api_url}
+                        user={user}
                         />
                     :null
             }
@@ -468,7 +473,7 @@ const Trabalho = (props) => {
                                     })}>Página {page}</span>
                                 </div>
                                 {
-                                    props.user?.admin&&reservation?.type===0?
+                                    user?.admin&&reservation?.type===0?
                                     <div className={styles.admin_area}>
                                         <span className={styles.admin_button}>ACEITAR</span>
                                         <span className={styles.admin_button} 
@@ -742,7 +747,7 @@ const Trabalho = (props) => {
                                             navigate(`/user?t=messages&id=${chatId}`, {
                                                 state: {
                                                     from_page: true,
-                                                    worker_id: props.user._id,
+                                                    worker_id: user._id,
                                                     user_id: reservation.user_id
                                                 }})}>Ir para Conversa</span>
                                         </div>

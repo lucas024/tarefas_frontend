@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react'
 import styles from './navbar.module.css'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useNavigate } from 'react-router-dom';
-import FaceIcon from '@mui/icons-material/Face';
 import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
 import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import CircleIcon from '@mui/icons-material/Circle';
 import {Tooltip} from 'react-tooltip';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -15,17 +13,40 @@ import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
+import { useSelector } from 'react-redux'
+
 
 const Navbar = (props) => {
+
+    const user_profile_complete = useSelector(state => {return state.user_profile_complete})
+    const user = useSelector(state => {return state.user})
+    const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
     const navigate = useNavigate()
     const [dropdown, setDropdown] = useState(false)
     const [loaded, setLoaded] = useState(false)
+    const [hasUnreadTexts, setHasUnreadTexts] = useState(false)
 
     useEffect(() => {
         setLoaded(props.userLoadAttempt)
-        console.log(props.incompleteUser);
     }, [props.userLoadAttempt])
+
+    useEffect(() => {
+        if(user.chats?.length>0){
+            for(const el of user.chats){
+                //user
+                if(user.type===0&&!el.user_read){
+                    setHasUnreadTexts(true)
+                    break
+                }
+                //worker
+                else if(user.type===1&&!el.worker_read){
+                    setHasUnreadTexts(true)
+                    break
+                }
+            }
+        }
+    }, [user])
 
     const logoutHandler = () => {
         setDropdown(false)
@@ -43,15 +64,15 @@ const Navbar = (props) => {
                     <div className={styles.flex_end}>
                         <div className={styles.flex_right}>
                             {
-                                props.user?.admin?
+                                user?.admin?
                                 <span className={styles.user_button} onClick={() => {navigate('/admin')}}>
                                         ADMIN
                                 </span>
-                                :props.user?.type?
+                                :user?.type?
                                 <span className={styles.user_button} onClick={() => {navigate('/main/publications/trabalhos')}}>
                                         TRABALHOS
                                 </span>
-                                :loaded&&props.user?
+                                :loaded&&user?
                                 <span className={styles.user_button} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
                                         PUBLICAR
                                 </span>
@@ -68,10 +89,10 @@ const Navbar = (props) => {
                                 
                             }
                             {
-                                props.user?
+                                user?
                                 <div className={styles.chat_div} onClick={() => navigate('/user?t=messages')}>
                                     {
-                                        props.hasTexts?
+                                        hasUnreadTexts?
                                         <span className={styles.chat_notification}></span>
                                         :null
                                     }   
@@ -85,7 +106,7 @@ const Navbar = (props) => {
                             }
                             <div className={styles.flex_end}>
                                 {
-                                    props.user?
+                                    user?
                                     <div className={styles.user_main} 
                                             onMouseEnter={() => setDropdown(true)} 
                                             onMouseOut={() => setDropdown(false)}
@@ -94,11 +115,10 @@ const Navbar = (props) => {
  
                                         <div className={styles.user}>
                                             {
-                                                props.hasSubscription!=null &&
-                                                (props.incompleteUser&&props.user.type || !props.hasSubscription&&props.user.type)?
+                                                (user_profile_complete&&user.type || !worker_is_subscribed&&user.type)?
                                                 <span className={styles.drop_div_notification_big}/>
                                                 :
-                                                props.user.phone===""?
+                                                user.phone===""?
                                                 <span className={styles.drop_div_notification_big}/>                                                
                                                 :null
                                             }
@@ -112,10 +132,10 @@ const Navbar = (props) => {
                                             </div>
                                             <div className={styles.user_dropdown}>   
                                             <div className={styles.drop_user}>
-                                                <span className={styles.drop_user_text}>{props.user.name} {props.user.surname}</span>
+                                                <span className={styles.drop_user_text}>{user.name} {user.surname}</span>
                                             </div>
                                             {
-                                                props.user?.type===0?
+                                                user?.type===0?
                                                 <div className={styles.drop_div_main} onClick={() => {
                                                     navigate('/user?t=publications')
                                                     setDropdown(false)}
@@ -145,11 +165,11 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
-                                                                !props.incompleteUser&&props.user.type?
+                                                                user_profile_complete===false&&user.type===1?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                                                :props.user.phone===""?
-                                                                <CircleIcon className={styles.off_icon}/>
-                                                                :props.user.type?
+                                                                :user.type===0&&user.phone===""?
+                                                                <UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                                                :user.type===1?
                                                                 <UnpublishedOutlinedIcon className={styles.off_icon}/>
                                                                 :null
                                                             }
@@ -158,7 +178,7 @@ const Navbar = (props) => {
                                                 </div>
                                             </div>
                                             {
-                                                props.user?.type===1?
+                                                user?.type===1?
                                                 <div className={styles.drop_div_main} onClick={() => {
                                                     navigate('/user?t=subscription')
                                                     setDropdown(false)}
@@ -170,9 +190,9 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Subscrição</span>
                                                             </div>
                                                             {
-                                                                props.hasSubscription?
+                                                                worker_is_subscribed?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                                                :props.user.type?
+                                                                :user.type?
                                                                 <UnpublishedOutlinedIcon className={styles.off_icon}/>
                                                                 :null
                                                             }

@@ -47,6 +47,7 @@
 .area{
     height: calc(100vh - 68px);
     overflow: hidden;
+    position: relative;
 }
 
 @media (min-width: 1024px) {

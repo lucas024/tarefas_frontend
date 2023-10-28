@@ -16,13 +16,18 @@ import ScrollToBottom, { useScrollToBottom, useSticky, useAtBottom, useAtEnd, us
 import letter_t from '../assets/letter-t.png'
 import BackHandIcon from '@mui/icons-material/BackHand';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import { useSelector, useDispatch } from 'react-redux'
+import {user_update_chats} from '../store'
 
 
 const URL = "http://localhost:5500";
 
 const AdminMessages = (props) => {
-    
-    
+    const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
+
+    const dispatch = useDispatch()
+
     const [currentText, setCurrentText] = useState("")
     const [adminOn, setAdminOn] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -84,11 +89,11 @@ const AdminMessages = (props) => {
 
 
     useEffect(() => {
-        if(props.user){
+        if(user){
             setLoading(true)
             setLoadingChats(true)
-            if(props.user.type===1){
-                axios.get(`${props.api_url}/worker/get_worker_by_mongo_id`, { params: {_id: props.user._id} })
+            if(user.type===1){
+                axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: user._id} })
                 .then(res => {
                     if(res.data!==''){
                         setChats(res.data.chats?.sort(sortByTimestamp))
@@ -99,7 +104,7 @@ const AdminMessages = (props) => {
                 })
             }
             else{
-                axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: props.user._id} })
+                axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
                 .then(res => {
                     if(res.data!==''){
                         setChats(res.data.chats?.sort(sortByTimestamp))
@@ -112,7 +117,7 @@ const AdminMessages = (props) => {
 
             const newSocket = io(
                 'http://localhost:5500',
-                { query: {id: props.user._id} }
+                { query: {id: user._id} }
             )
             setS(newSocket)
             
@@ -121,7 +126,7 @@ const AdminMessages = (props) => {
         
         return () => s&&s.close()
         
-    }, [props.user])
+    }, [user])
 
     useEffect(() => {
         if(!s) return
@@ -136,13 +141,13 @@ const AdminMessages = (props) => {
     const sendSynchronousAndUpdateDatabaseHandler = async (new_text) => {
         const sent_timestamp = new Date().getTime()
         const text = {
-            origin_type : props.user.type,
+            origin_type : user.type,
             timestamp : sent_timestamp,
             text: new_text
         }
-        // await axios.post(`${props.api_url}/chats/update_common_chat`, {
-        //     worker_read: props.user.type===1?true:false,
-        //     user_read: props.user.type===0?true:false,
+        // await axios.post(`${api_url}/chats/update_common_chat`, {
+        //     worker_read: user.type===1?true:false,
+        //     user_read: user.type===0?true:false,
         //     chat_id: selectedChatId,
         //     text: text,
         //     updated: sent_timestamp
@@ -153,7 +158,7 @@ const AdminMessages = (props) => {
             text: new_text,
             time: new Date().getTime(),
             chat_id: selectedChatId,
-            type: props.user.type,
+            type: user.type,
         })        
     }
 
@@ -204,7 +209,7 @@ const AdminMessages = (props) => {
     const messageHandler = () => {
         if(currentText !== ""){
             let text = {
-                origin_type : props.user.type,
+                origin_type : user.type,
                 timestamp : new Date().getTime(),
                 text: currentText
             }
@@ -215,7 +220,7 @@ const AdminMessages = (props) => {
             for(let chat of arr){
                 if(chat.chat_id === selectedChat._id){
                     chat.last_text = text
-                    if(props.user.type===1){
+                    if(user.type===1){
                         chat.user_read = false
                         chat.worker_read = true
                     }
@@ -432,7 +437,7 @@ const AdminMessages = (props) => {
     }
 
     const getOtherUserId = () => {
-        if(chatInformation&&props.user?.type===1){
+        if(chatInformation&&user?.type===1){
             return chatInformation.user_id
         }
         else if(chatInformation){
@@ -442,26 +447,26 @@ const AdminMessages = (props) => {
     
     // const removeNotificationHandler = (chat_id, other_user_id, bool) => {
     //     let val = []
-    //     if(props.user.notifications){
-    //         val = [...props.user.notifications]
+    //     if(user.notifications){
+    //         val = [...user.notifications]
     //     }
     //     if(val.length>0) val?.splice(val.indexOf(chat_id), 1)
 
-    //     if(props.user.type===0){
-    //         axios.post(`${props.api_url}/user/set_user_notifications`, {
+    //     if(user.type===0){
+    //         axios.post(`${api_url}/user/set_user_notifications`, {
     //             notification_array: val,
-    //             _id: props.user._id
+    //             _id: user._id
     //         })
     //     }
     //     else{
-    //         axios.post(`${props.api_url}/worker/set_worker_notifications`, {
+    //         axios.post(`${api_url}/worker/set_worker_notifications`, {
     //             notification_array: val,
-    //             _id: props.user._id
+    //             _id: user._id
     //         })
     //     }
         
-    //     axios.post(`${props.api_url}/chats/update_user_notifications`, {
-    //         user_id: props.user._id,
+    //     axios.post(`${api_url}/chats/update_user_notifications`, {
+    //         user_id: user._id,
     //         other_user_id: other_user_id,
     //         chat_id: chat_id
     //     })
@@ -469,7 +474,7 @@ const AdminMessages = (props) => {
     //         let arr = [...chats]
     //         for(let el of arr){
     //             if(el._id === chat_id){
-    //                 el[`${props.user._id}_read`] = true
+    //                 el[`${user._id}_read`] = true
     //                 break
     //             }
     //         }
@@ -481,7 +486,7 @@ const AdminMessages = (props) => {
     const updateReadDatabaseAndNavigate = async (chat_id, type) => {
         //type 0 == user
         //type 1 == worker
-        await axios.post(`${props.api_url}/chats/update_text_read`, {
+        await axios.post(`${api_url}/chats/update_text_read`, {
             chat_id: chat_id,
             type: type
         })
@@ -506,7 +511,18 @@ const AdminMessages = (props) => {
         }
         let sorted = arrChats.sort(sortByTimestamp)
         setChats(sorted)
-        props.updateChatReadLocal(chat_id)
+        let arr = user.chats
+        for(let el of arr){
+            if(el.chat_id === chat_id){
+                if(user?.type===1)
+                    el.worker_read = true
+                else
+                    el.user_read = true
+
+                break
+            }
+        }
+        dispatch(user_update_chats(arr))
     }
 
     const setChatDisplayInformation = (chat, type) => {
@@ -644,7 +660,7 @@ const AdminMessages = (props) => {
         {
             setLoadingNew(true)
             setDisplayLoadingNew(true)
-            axios.get(`${props.api_url}/chats/get_chat`, { params: {chat_id: paramsAux.id, skip: selectedChatTexts.length===0?0:skip*limit, limit: limit} })
+            axios.get(`${api_url}/chats/get_chat`, { params: {chat_id: paramsAux.id, skip: selectedChatTexts.length===0?0:skip*limit, limit: limit} })
             .then(res => {
                 if(res.data!==''){
                     console.log(res.data)
@@ -700,7 +716,7 @@ const AdminMessages = (props) => {
     
 
         return(
-                props.user?.type===1&&selectedChatTexts?
+                user?.type===1&&selectedChatTexts?
                 workerMessageDisplay()
                 :
                 selectedChatTexts?
@@ -723,7 +739,7 @@ const AdminMessages = (props) => {
                             </div>
                             <Loader loading={loadingChats}/>
                             {
-                                props.user?.type===1?
+                                user?.type===1?
                                 workerChatsDisplay()
                                 :
                                 userChatsDisplay()
@@ -736,13 +752,13 @@ const AdminMessages = (props) => {
                                 <div className={styles.chat_wrapper}>
                                     <div className={styles.top}>
                                         <div 
-                                            className={props.user?.type===0?styles.top_left_flex_for_user:styles.top_left_flex}
-                                            onClick={() => props.user?.type===0&&navigate(`/main/publications/trabalhador?id=${chatInformation.worker_id}`)}
+                                            className={user?.type===0?styles.top_left_flex_for_user:styles.top_left_flex}
+                                            onClick={() => user?.type===0&&navigate(`/main/publications/trabalhador?id=${chatInformation.worker_id}`)}
                                             >
                                             {/* <span className={styles.top_left_indicator} style={{backgroundColor:isUserOnline()?"#6EB241":"white", border:!isUserOnline()?"1px solid #F40009":"1px solid transparent"}}></span> */}
                                             {/* drena do ultima vez online */}
                                             {
-                                                props.user?.type===0?
+                                                user?.type===0?
                                                 chatInformation.worker_photo!==""?
                                                 <img 
                                                     style={{marginLeft:"5px", border:"2px solid #FF785A"}} 
@@ -756,7 +772,7 @@ const AdminMessages = (props) => {
                                                 <FaceIcon style={{marginLeft:"5px", border:"2px solid #0358e5"}} className={styles.chatbox_user_img}/>
                                             }
                                             {
-                                                props.user?.type===0?
+                                                user?.type===0?
                                                 <div className={styles.name_indicator}>
                                                     <span className={styles.top_left_name}>{chatInformation.worker_name}</span>
                                                     <span className={styles.type_indicator}>
@@ -790,7 +806,7 @@ const AdminMessages = (props) => {
                                             
                                         }
                                     </div>
-                                    <div className={props.user?.type===1?styles.top_separator_user:chatInformation.reservation_title?styles.top_separator_worker_reservation:styles.top_separator_worker}/>
+                                    <div className={user?.type===1?styles.top_separator_user:chatInformation.reservation_title?styles.top_separator_worker_reservation:styles.top_separator_worker}/>
                                     <ScrollToBottom className={styles.chat_area}>
                                         <Loader loading={loadingChatBox}/>
                                             <Content />
@@ -806,15 +822,15 @@ const AdminMessages = (props) => {
                                                 onChange={e => setCurrentText(e.target.value)} 
                                                 />
                                             <div className={styles.bot_right_flex}>
-                                                <SendOutlinedIcon className={props.user?.type===1?styles.send_icon_worker:styles.send_icon_user} onClick={() => messageHandler()}/>
+                                                <SendOutlinedIcon className={user?.type===1?styles.send_icon_worker:styles.send_icon_user} onClick={() => messageHandler()}/>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            :(!chats||chats?.length===0)&&props.user?.type===1?
+                            :(!chats||chats?.length===0)&&user?.type===1?
                             <NoPage object={"mensagens"}/>
-                            :(!chats||chats?.length===0)&&props.user?.type===0?
+                            :(!chats||chats?.length===0)&&user?.type===0?
                             <NoPage object={"mensagens_user"}/>
                             :!selectedChat?<NoPage object={"select_message"}/>
                             :null

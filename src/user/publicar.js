@@ -21,12 +21,16 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {profissoesPngs} from '../general/util'
 import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
+import { useSelector } from 'react-redux'
 
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
 dayjs.locale('pt')
 
+
 const Publicar = (props) => {
+    const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
 
     const [selectedWorker, setSelectedWorker] = useState('eletricista')
     const [titulo, setTitulo] = useState('')
@@ -139,15 +143,15 @@ const Publicar = (props) => {
     }, [location])
 
     useEffect(() => {
-        if(props.user){
-            setNome(`${props.user.name} ${props.user.surname}`)
-            setEmail(props.user.email)
-            if(props.user.phone){
-                setPhone(props.user.phone)
-                setPhoneVisual(props.user.phone)
+        if(user){
+            setNome(`${user.name} ${user.surname}`)
+            setEmail(user.email)
+            if(user.phone){
+                setPhone(user.phone)
+                setPhoneVisual(user.phone)
             }            
         }
-    }, [props.user])
+    }, [user])
 
     useEffect(() => {
         props.loadingHandler(true)
@@ -162,7 +166,7 @@ const Publicar = (props) => {
         if(paramsAux.editar && paramsAux.res_id)
         {   
             setEdit(true)
-            axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.res_id} }).then(res => {
+            axios.get(`${api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.res_id} }).then(res => {
                 if(res.data){
                     !editReservation&&setSelectedWorker(res.data.workerType)
                     setEditReservation(res.data)
@@ -319,10 +323,10 @@ const Publicar = (props) => {
         let time = new Date()
         let reserva = {
             _id: postId,
-            user_id: props.user._id,
-            user_name: props.user.name,
+            user_id: user._id,
+            user_name: user.name,
             user_phone: phone,
-            user_email: props.user.email,
+            user_email: user.email,
             title: titulo,
             desc: description,
             localizacao: address || editAddress,
@@ -334,17 +338,17 @@ const Publicar = (props) => {
             photos: arr,
             lat: lat,
             lng: lng,
-            photoUrl: props.user.photoUrl,
+            photoUrl: user.photoUrl,
             timestamp: time.getTime(),
             district: district
         }
-        axios.post(`${props.api_url}/reservations/add`, reserva).then(() => {
+        axios.post(`${api_url}/reservations/add`, reserva).then(() => {
             setConfirmationPopup(false)
             setConfirmationEditPopup(false)
             props.loadingHandler(false)
-            if(props.user.phone === "" || props.user.phone !== phone){
-                axios.post(`${props.api_url}/user/update_phone`, {
-                    user_id : props.user._id,
+            if(user.phone === "" || user.phone !== phone){
+                axios.post(`${api_url}/user/update_phone`, {
+                    user_id : user._id,
                     phone: phone
                 }).then(res => {
                     console.log(res);
@@ -355,7 +359,7 @@ const Publicar = (props) => {
     }
 
     const confirmarHandler = () => {
-        if(!props.user && checkAll()){
+        if(!user && checkAll()){
             navigate('/authentication?type=0',
                 {
                     state: {
@@ -378,7 +382,7 @@ const Publicar = (props) => {
     }
 
     const checkPendingReservations = () => {
-        axios.get(`${props.api_url}/reservations/get_by_id`, { params: {user_id: props.user._id} }).then(res => {
+        axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} }).then(res => {
             if(edit)
             {
                 props.loadingHandler(false)
@@ -752,7 +756,7 @@ const Publicar = (props) => {
                                     }
                                     <div className={styles.bot_input_div} style={{marginTop:"0"}}>
                                         <span style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"", borderRight:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"transparent"}} className={styles.area_label_inverse}>Nome<span className={styles.asterisc}>*</span></span>
-                                        <input placeholder='Nome...' style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":""}} disabled={props.user} onFocus={() => {nameFocused()}} maxLength={36} onChange={e => setNome(e.target.value)} value={nome} className={styles.bot_input_short}></input>
+                                        <input placeholder='Nome...' style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":""}} disabled={user} onFocus={() => {nameFocused()}} maxLength={36} onChange={e => setNome(e.target.value)} value={nome} className={styles.bot_input_short}></input>
                                     </div>
                                     <div className={styles.bot_input_div}>
                                         <span style={{borderColor:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"", borderRight:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"transparent"}} className={styles.area_label_inverse}>Telefone<span className={styles.asterisc}>*</span></span>
@@ -760,7 +764,7 @@ const Publicar = (props) => {
                                     </div>
                                     <div className={styles.bot_input_div}>
                                         <span style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"", borderRight:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"transparent"}} className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
-                                        <input placeholder='Email...' style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":""}} disabled={props.user} onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
+                                        <input placeholder='Email...' style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":""}} disabled={user} onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
                                     </div>
                                     
                                 </div>
@@ -916,7 +920,7 @@ const Publicar = (props) => {
                         </div>
                         <div ref={divRef} data-tip={complete?"":"Preenche todos os campos assinalados com *"} style={{backgroundColor:edit?"#FF785A":""}} className={complete?styles.bot_button:styles.bot_button_disabled} onClick={() => {
                                     if(complete) confirmarHandler()}}>
-                            <span className={complete?styles.bot_button_text:styles.bot_button_text_disabled}>{edit?"Confirmar edição do Trabalho":props.user?"Publicar Trabalho":"Criar conta e Publicar trabalho" }</span>
+                            <span className={complete?styles.bot_button_text:styles.bot_button_text_disabled}>{edit?"Confirmar edição do Trabalho":user?"Publicar Trabalho":"Criar conta e Publicar trabalho" }</span>
                         </div>
                         {
                             edit?

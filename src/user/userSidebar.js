@@ -24,13 +24,14 @@ import { useSelector } from 'react-redux'
 
 
 const UserSidebar = (props) => {
-
     const user_profile_complete = useSelector(state => {return state.user_profile_complete})
+    const user = useSelector(state => {return state.user})
+    const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
     const [searchParams] = useSearchParams()
     const [selectedSidebar, setSelectedSidebar] = useState("pedidos")
     const [loading, setLoading] = useState(false)
-    const [loadingSub, setLoadingSub] = useState(true)
+    const [loadingSub, setLoadingSub] = useState(false)
 
     const navigate = useNavigate()
 
@@ -40,13 +41,6 @@ const UserSidebar = (props) => {
             setSelectedSidebar(val)
         }
     }, [searchParams])
-
-    useEffect(() => {
-        if(props.hasSubscription!=null || props.hasSubscription===false)
-        {
-            setLoadingSub(false)
-        }
-    }, [props.hasSubscription])
     
 
     const sidebarNavigate = (val) => {
@@ -68,15 +62,15 @@ const UserSidebar = (props) => {
             <div className={styles.sidebar_data_flex}>
                 <div className={styles.align}>
                     {
-                        props.user&&props.user.photoUrl?
-                        <img className={styles.sidebar_img} src={props.user.photoUrl}/>
+                        user&&user.photoUrl?
+                        <img className={styles.sidebar_img} src={user.photoUrl}/>
                         :!loading?
                         <FaceIcon className={styles.sidebar_img_icon}/>
                         :null
                     }
                 </div>
                 <div className={styles.align}>
-                    <span className={styles.name}>{props.user?props.user.name:null}</span>
+                    <span className={styles.name}>{user?user.name:null}</span>
                 </div>
             </div>
             <div className={styles.flex_10px}></div>
@@ -86,112 +80,122 @@ const UserSidebar = (props) => {
                     component="nav" className={styles.sidebar_list}
                 >
                     {
-                        props.user?.type?
+                        user?.type?
                         null:
-                        <ListItemButton style={{borderTop:"1px solid #ffffff50"}} onClick={() => sidebarNavigate("publications")}  className={selectedSidebar==="publications"?styles.button:""}>
+                        <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("publications")}>
+                            {
+                                selectedSidebar==="publications"?
+                                    <div className={styles.sidebar_item_opacity}/>
+                                :null
+                            }
                             <ListItemIcon>
-                            <AssignmentdIcon sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
+                                <AssignmentdIcon sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
                             </ListItemIcon>
                             <ListItemText primary={<span className={styles.prox}>Meus Trabalhos</span>} sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
                         </ListItemButton >
                     }
                     
-                    <ListItemButton onClick={() => sidebarNavigate("personal")} 
-                        //className={selectedSidebar==="personal"?styles.button:""}
-                    >
+                    <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("personal")}>
+                        {
+                            selectedSidebar==="personal"?
+                                <div className={styles.sidebar_item_opacity}/>
+                            :null
+                        }
                         <ListItemIcon>
-                        <AccountCircleIcon sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
+                            <AccountCircleIcon sx={{color:"#ffffff", zIndex:1}}/>
                         </ListItemIcon>
                         <ListItemText primary={
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
                                 <span className={styles.prox}>Perfil</span>
                                 {
-                                user_profile_complete&&props.user?.type?
-                                <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                :props.user?.type?
-                                <UnpublishedOutlinedIcon className={styles.off_icon}/>
-                                :null
+                                    user_profile_complete&&user?.type?
+                                    <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
+                                    :user?.type?
+                                    <UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                    :null
                                 }
                             </div>
-                            } sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
+                            } sx={{color:"#ffffff"}}/>
                     </ListItemButton >
                     {
-                        props.user?.type?
-                        <ListItemButton onClick={() => sidebarNavigate("subscription")}  className={selectedSidebar==="subscription"?styles.button:""}>
+                        user?.type?
+                        <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("subscription")}>
+                            {
+                                selectedSidebar==="subscription"?
+                                    <div className={styles.sidebar_item_opacity}/>
+                                :null
+                            }
                             <ListItemIcon>
-                            <CardMembershipIcon sx={{color:selectedSidebar==="subscription"?"#FF785A":"#fff"}}/>
+                                <CardMembershipIcon sx={{color:"#fff", zIndex:1}}/>
                             </ListItemIcon>
                             <ListItemText primary={
                                 <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
                                     <span className={styles.prox}>Subscrição</span>
                                     {
-                                    props.hasSubscription?
+                                    worker_is_subscribed?
                                     <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
                                     :
                                     <div style={{position:"relative"}}>
-                                        {/* <Loader small={true} loading={true}/> */}
                                         <UnpublishedOutlinedIcon className={styles.off_icon}/>
                                     </div>
                                     }
                                 </div>
-                            } sx={{color:selectedSidebar==="subscription"?"#FF785A":"#fff"}}/>
+                            } sx={{color:"#fff", zIndex:1}}/>
                         </ListItemButton >
                         :null
                     }
-                    <ListItemButton onClick={() => sidebarNavigate("messages")} className={selectedSidebar==="messages"?styles.button:""}>
+                    <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("messages")}>
+                        {
+                            selectedSidebar==="messages"?
+                                <div className={styles.sidebar_item_opacity}/>
+                            :null
+                        }
                         <ListItemIcon>
-                        <ChatIcon sx={{color:selectedSidebar==="messages"?"#FF785A":"#fff"}}/>
+                            <ChatIcon sx={{color:"#fff", zIndex:1}}/>
                         </ListItemIcon>
                         <ListItemText primary={
                             <span style={{display:"flex"}}>
                                 <span className={styles.prox}>Mensagens</span>
                                 {props.notifications?.length>0? <CircleIcon className={styles.drop_div_notification}></CircleIcon>:null}
                             </span>
-                        } sx={{color:selectedSidebar==="messages"?"#FF785A":"#fff"}}/>
+                        } sx={{color:"#fff", zIndex:1}}/>
                     </ListItemButton >
                 </List>
                 {
-                    props.user?.type?
+                    user?.type?
                     <div className={styles.status}>
                         <Loader loading={loadingSub}/>
                         <div className={styles.status_top}>
-                            <span className={styles.status_top_val} style={{color:user_profile_complete&&props.user?.state===1&&props.hasSubscription?"#0358e5":"#fdd835"}}>
+                            <span className={styles.status_top_val} style={{color:user_profile_complete&&user?.state===1&&worker_is_subscribed?"#0358e5":"#fdd835"}}>
                                 {
-                                    user_profile_complete&&props.user?.state===1&&props.hasSubscription?
+                                    user_profile_complete&&user?.state===1&&worker_is_subscribed?
                                     "CONTA ATIVA"
                                     :"CONTA INATIVA"
                                 }
                             </span>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:user_profile_complete&&props.user?.state===1?"#0358e5":!user_profile_complete?"#0358e5bb":"#fdd835bb"}}>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:user_profile_complete&&user?.state===1?"#0358e5":"#fdd835bb"}}>
                             <span className={styles.status_div_title}>Perfil</span>
                             <div className={styles.status_div_flex}>
                                 <span className={styles.status_div_val}>
                                 {
                                     user_profile_complete?
                                     "COMPLETO"
-                                    :!user_profile_complete?
-                                    "A VERIFICAR"
                                     :"INCOMPLETO"
                                 }
                                 </span>
                             </div>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:props.hasSubscription?"#0358e5":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:worker_is_subscribed?"#0358e5":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
                             <span className={styles.status_div_title}>Subscrição</span>
                             <div className={styles.status_div_flex}>
                                 <span className={styles.status_div_val}>
                                 {
-                                    props.hasSubscription?
+                                    worker_is_subscribed?
                                     "ATIVADA"
                                     :"DESATIVADA"
                                 }
                                 </span>
-                                {/* {
-                                    props.hasSubscription?
-                                    <CheckCircleOutlineOutlinedIcon className={styles.status_icon}/>
-                                    :<UnpublishedOutlinedIcon className={styles.status_icon}/>
-                                } */}
                             </div>
                         </div>
                     </div>
@@ -204,18 +208,28 @@ const UserSidebar = (props) => {
                 <List
                     component="nav" className={styles.sidebar_list_bottom}
                 >
-                    <ListItemButton onClick={() => sidebarNavigate("support")} className={selectedSidebar==="support"?styles.button:""}>
+                    <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("support")}>
+                    {
+                                selectedSidebar==="support"?
+                                    <div className={styles.sidebar_item_opacity}/>
+                                :null
+                            }
                         <ListItemIcon>
-                        <SupportAgentIcon sx={{color:selectedSidebar==="support"?"#FF785A":"#fff"}}/>
+                            <SupportAgentIcon sx={{color:"#fff", zIndex:1}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Suporte</span>} sx={{color:selectedSidebar==="support"?"#FF785A":"#fff"}} />
+                        <ListItemText primary={<span className={styles.prox}>Suporte</span>} sx={{color:"#fff", zIndex:1}} />
                     </ListItemButton>
-                    <ListItemButton onClick={() => logoutHandler()} >
+                    <ListItemButton className={styles.sidebar_item} onClick={() => logoutHandler()}>
+                        {
+                            selectedSidebar===""?
+                                <div className={styles.sidebar_item_opacity}/>
+                            :null
+                        }
                         <ListItemIcon>
-                        <LogoutIcon sx={{color:"#fff"}} style={{transform:'rotate(180deg)'}}/>
+                            <LogoutIcon sx={{color:"#fff", zIndex:1}} style={{transform:'rotate(180deg)'}}/>
                         </ListItemIcon>
-                        <ListItemText primary={<span className={styles.prox}>Logout</span>} sx={{color:selectedSidebar===""?"#FF785A":"#fff"}}/>
-                    </ListItemButton >
+                        <ListItemText primary={<span className={styles.prox}>Logout</span>} sx={{color:"#fff", zIndex:1}}/>
+                    </ListItemButton>
                 </List>
             </div>            
         </div>

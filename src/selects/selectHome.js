@@ -6,7 +6,7 @@ const SelectHome = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: props.option==='trabalhos'?"#0358e5":props.option==='trabalhadores'?"#FF785A":props.option?"#161F28":"#989898",
+            backgroundColor: props.option==='trabalhos'?"#0358e5":props.option==='trabalhadores'?"#FF785A":props.option?"#161F28":"#71848d",
             borderColor: "#ffffff",
             fontSize: "0.7rem",
             textTransform: "uppercase",

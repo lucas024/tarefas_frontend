@@ -18,9 +18,9 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import SearchIcon from '@mui/icons-material/Search';
 import BackHandIcon from '@mui/icons-material/BackHand';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
+import { useSelector } from 'react-redux';
 
 const firstOptions = [
     { value: 'trabalhadores', label: 'Trabalhadores' },
@@ -29,6 +29,8 @@ const firstOptions = [
 
 
 const Home = (props) => {
+    const user = useSelector(state => {return state.user})
+
     const [workerBanner, setWorkerBanner] = useState(false)
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
@@ -43,7 +45,7 @@ const Home = (props) => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if(loaded&&props.user?.type&&props.incompleteUser){
+        if(loaded&&user?.type&&props.incompleteUser){
             setMensagemPopup(true)
             setTimeout(() => setMensagemPopup(false), 4000)
         }
@@ -59,7 +61,7 @@ const Home = (props) => {
             setTimeout(() => setLoginPopup(false), 4000)
         }
         // Tooltip.rebuild()
-    }, [props.incompleteUser, location, props.user, loaded])
+    }, [props.incompleteUser, location, user, loaded])
 
     useEffect(() => {
         props.userLoadAttempt&&setLoaded(true)
@@ -156,7 +158,7 @@ const Home = (props) => {
                         loaded?
                         <div className={styles.main_wrapper}>
                             <div className={styles.main}>
-                                <div className={styles.search_clear_wrapper} style={{backgroundColor:second||third?'#161F28':"#989898"}} onClick={() => clearTopSearch()}>
+                                <div className={styles.search_clear_wrapper} style={{backgroundColor:second||third?'#161F28':"#71848d"}} onClick={() => clearTopSearch()}>
                                     <SearchOffIcon className={styles.search_clear_icon}/>
                                 </div>
                                 <div className={styles.zone}>
@@ -184,8 +186,8 @@ const Home = (props) => {
                                     </span>
                                 </div>
                                 <div className={styles.zone}>
-                                    <div className={styles.zone_img} style={{borderColor:second?first==="trabalhadores"?"#FF785A":"#0358e5":"#989898",
-                                                backgroundColor:second?'#161F28':'#989898'}}>
+                                    <div className={styles.zone_img} style={{borderColor:second?first==="trabalhadores"?"#FF785A":"#0358e5":"#71848d",
+                                                backgroundColor:second?'#161F28':'#71848d'}}>
                                         {
                                             second? 
                                             <img src={profissoesPngs[second]} className={styles.zone_image_prof}/>
@@ -211,8 +213,8 @@ const Home = (props) => {
                                     </span>
                                 </div>
                                 <div className={styles.zone}>
-                                    <div className={styles.zone_img} style={{borderColor:third?first==="trabalhadores"?"#FF785A":"#0358e5":"#989898",
-                                                backgroundColor:third?'#161F28':'#989898'}}>
+                                    <div className={styles.zone_img} style={{borderColor:third?first==="trabalhadores"?"#FF785A":"#0358e5":"#71848d",
+                                                backgroundColor:third?'#161F28':'#71848d'}}>
                                         {
                                             third? 
                                             <span className={styles.zone_image_region}>{regioesOptions[third]}</span>
@@ -231,9 +233,9 @@ const Home = (props) => {
                                 </div>
                             </div>
                             <div onClick={() => second&&third&&searchHandler()} className={second&&third?styles.search_wrapper:styles.search_wrapper_disabled} 
-                                            style={{backgroundColor:second&&third?first==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff20"}}>
-                                <SearchIcon className={styles.zone_search_icon} style={{color:second&&third?"white":"#989898"}}/>
-                                <span className={styles.zone_search_button} style={{color:second&&third?"white":"#989898"}}>PROCURAR</span>
+                                            style={{backgroundColor:second&&third?first==="trabalhadores"?"#FF785A":"#0358e5":"#71848daa"}}>
+                                <SearchIcon className={styles.zone_search_icon} style={{color:second&&third?"white":"#ffffff"}}/>
+                                <span className={styles.zone_search_button} style={{color:second&&third?"white":"#ffffff"}}>PROCURAR</span>
                             </div>
                         </div>
                         
@@ -252,15 +254,15 @@ const Home = (props) => {
                     {
                         loaded?
                         <div className={styles.back_publish_div}>
-                            {
-                                props.user?.type===1?
+                            {/* {
+                                user?.type===1?
                                 <span className={styles.back_publish_div_frontdrop}></span>
                                 :null
-                            }
+                            } */}
                             <PostAddIcon className={styles.section_img_mini}/>
                             <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
                             {
-                                props.user?
+                                user?
                                 <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar')}>PUBLICAR</span>
                                 :
                                 <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
@@ -286,7 +288,7 @@ const Home = (props) => {
                     <div className={styles.home_back_bottom}>
                         <div className={styles.section_one}>
                             {
-                                props.user || loaded?
+                                user || loaded?
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
                                         <AssignmentIcon className={styles.section_img}/>
@@ -313,7 +315,7 @@ const Home = (props) => {
                         </div>
                         <span className={styles.section_spacer}></span>
                         {
-                            props.user?.type===1?
+                            user?.type===1?
                             <div className={styles.section_two}>
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
@@ -333,7 +335,7 @@ const Home = (props) => {
                                 </div>
                             </div>
                             :
-                            props.user?.type===0 || loaded?
+                            user?.type===0 || loaded?
                             <div className={styles.section_two}>
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
@@ -365,36 +367,19 @@ const Home = (props) => {
                         }
                     </div>
                 </div>
-                <div className={styles.back_bottom_trabalhador}>
-                    <div className={styles.home_back_publish} style={{paddingBottom:"20px", marginTop:"10px"}}>
-                        <span className={styles.back_publish_title} style={{color:"white", opacity:"0.9"}}>TRABALHADOR</span>
-
-                        {
-                            loaded?
-                            <div className={styles.back_publish_div}>
-                                <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
-                                <span className={styles.back_publish_button_action} style={{fontSize: '0.9rem'}} onClick={() => setWorkerBanner(true)}>TORNAR-ME TRABALHADOR</span>
-                            </div>
-                            :
-                            <div className={styles.section_content}>
-                                <p className={styles.skeleton_content_in}></p>
-                                <p className={styles.skeleton_content_in}></p>
-                            </div>
-                        }
-                    </div>
-                </div>
-
                 <div className={styles.footer}>
                     <div className={styles.footer_div}>
-                        <div className={styles.footer_div_1}>
+                        <div className={styles.footer_div_column}>
                             <p className={styles.footer_div_text}>APP Serviços</p>
-                        </div>
-                        <div className={styles.footer_div_2}>
                             <p className={styles.footer_div_text}>Ajuda e contactos</p>
+                            <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me trabalhador</p>
                         </div>
-                        <div className={styles.footer_div_3}>
+                        {/* <div className={styles.footer_div_column}>
+                            
+                        </div> */}
+                        <div className={styles.footer_div_column}>
                             <div>
-                                <p className={styles.footer_div_text_3}>Segue-nos nas redes:</p>
+                                <p className={styles.footer_div_text} style={{fontWeight:400}}>Segue-nos nas redes:</p>
                                 <div className={styles.footer_icon_div}>
                                     <InstagramIcon className={styles.footer_icon}/>
                                 </div>
