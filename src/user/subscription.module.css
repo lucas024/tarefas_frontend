@@ -45,6 +45,26 @@
     position: relative;
     height: calc(100vh - 150px);
 }
+.discount{
+    background-color: var(--action);
+    padding: 5px 10px;
+    color: white;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 5px;
+}
+.discount_number{
+    background-color: var(--action);
+    padding: 3px 5px;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 5px;
+    margin-left: 5px;
+}
 .sub_info_main{
     width: 100%;
 }
@@ -70,6 +90,13 @@
     text-transform: uppercase;
     margin: 30px auto;
     font-size: 1.2rem;
+}
+.sub_info_title_discount{
+    margin-top: -30px;
+    color: var(--neutral);
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin-bottom: 30px;
 }
 .sub_info_divider{
     height: 20px;
@@ -102,8 +129,8 @@
 }
 .trial_button_banner{
     position: absolute;
-    right: -25px;
-    top: -20px;
+    right: -60px;
+    top: -22px;
     padding: 5px 10px;
     background-color: var(--brand);
     color: var(--neutral);
@@ -322,7 +349,7 @@
     text-transform: uppercase;
     color: var(--neutral);
     margin: auto;
-    margin-top: 20px;
+    margin-top: 30px;
     font-size: 1rem;
     margin-bottom: 5px;
 }
@@ -343,11 +370,18 @@
     font-size: 0.7rem;
     margin-top: 10px;
     font-weight: 400;
-    color: white;
+    color: #ffffffaa;
 }
 .selected_plan_no_value{
-    color: var(--grey);
+    color: var(--neutral);
     font-size: 0.9rem;
+    margin: 30px auto;
+    background: #0358e590;
+    padding: 10px 20px;
+    border-radius: 5px;
+    width: min-content;
+    text-align: center;
+    box-sizing: border-box;
 }
 .selected_plan_info{
     display: flex;
@@ -526,9 +560,21 @@
 }
 .sub_val_date{
     font-size: 1.1rem;
-    color: var(--action);
+    color: var(--neutral);
     text-transform: uppercase;
     font-weight: 600;
+}
+.sub_val_date_discount{
+    font-size: 0.7rem;
+    color: var(--neutral);
+    text-transform: uppercase;
+    font-weight: 600;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--action);
+    border-radius: 2px;
+    padding: 5px;
 }
 .plano_text{
     font-size: 0.9rem;
@@ -572,7 +618,6 @@
     width: 100%;
     margin: 0 auto;
     display: flex;
-    height: 225px;
 }
 .card{
     border-radius: 10px;
@@ -657,9 +702,10 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
 .details_title{
     align-self: flex-start;
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: 1rem;
     text-transform: uppercase;
     color: white;
+    padding-top: 30px;
 }
 .right_sections_div{
     height: 190px;
@@ -736,7 +782,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 65px;
+    margin-top: 85px;
 }
 .buttons_plan{
 
@@ -764,6 +810,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     cursor: pointer;
     text-transform: uppercase;
     transition: all 150ms;
+    font-weight: 600;
 }
 .button_add:hover{
     opacity: 0.8;
@@ -787,10 +834,9 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     display: flex;
     justify-content: space-around;
     margin-top: 0px;
-    background-color: var(--neutral);
+    background-color: #ffffff10;
     padding: 10px 0;
-    border-radius: 5px;
-    border: 1px solid var(--job);
+    border-radius: 2px;
     box-sizing: border-box;
 }
 .indicator_div_plan_selected{
@@ -862,18 +908,17 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     font-weight: 500;
     display: inline-block;
     text-transform: uppercase;
-    text-align: center;
     color: white;
     font-size: 1rem;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 .plans_sections{
-    width: 99%;
+    width: 98%;
     display: flex;
     justify-content: space-between;
     height: 100%;
     margin-top: 10px;
-    margin: 10px auto;
+    margin: 30px auto;
 }
 .popular{
     position: absolute;
@@ -944,7 +989,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     font-weight: 700;
     margin: 0 auto;
     font-size: 1.5rem;
-    color: var(--action);
+    color: var(--neutral);
 }
 .section_type_desc{
     color: #ffffffaa;
@@ -1014,17 +1059,19 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     margin-left: 5px;
 }
 .section_desc_of_pay{
-    color: white;
-    font-size: 0.7rem;
+    color: var(--brand);
+    font-size: 0.8rem;
     margin: 0 auto;
     width: 70px;
+    font-weight: 600;
 }
 .section_desc_of_pay_discount{
     color: grey;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     width: 70px;
     text-decoration: line-through;
     text-align: center;
+    font-weight: 600;
 }
 .section_desc_of_pay_discount_new{
     color: white;
@@ -1179,6 +1226,11 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
 .display_zero_hide{
     height: 0;
     transition: all 400ms ease-in-out;
+}
+.alterar_plano_wrap{
+    width: 100%;
+    margin-top: 80px;
+    margin-bottom: -50px;
 }
 .alterar_plano{
     margin-top: 5px;
