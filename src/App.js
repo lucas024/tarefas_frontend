@@ -85,6 +85,10 @@ useEffect(() => {
                   }
               })
             }
+            else if(new Date(res.data.trial?.end_date) > new Date())
+            {
+              dispatch(worker_update_is_subscribed(true))
+            }
             checkWorkerComplete(res.data)
             setUserLoadAttempt(true)
             setLoading(false)
@@ -129,6 +133,10 @@ const refreshWorker = () => {
                 }
             }
         })
+      }
+      else if(new Date(res.data.trial?.end_date) > new Date())
+      {
+        dispatch(worker_update_is_subscribed(true))
       }
       else{
         dispatch(worker_update_is_subscribed(false))

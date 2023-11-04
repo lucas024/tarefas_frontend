@@ -24,9 +24,9 @@ const ConfirmBanner = (props) => {
                     <p className={styles.title}>Ativar Subscrição gratuita</p>
                     <span className={styles.title_separator}/>
                     <div className={styles.main_inner}>
-                        <p className={styles.phone_description}>Ao proceder com a <strong>subscrição gratuita de 3 meses</strong>, não poderá usufruir do desconto exclusivo de primeira ativação após o periodo gratuíto.</p>                     
+                        <p className={styles.phone_description}>Ao proceder com a <strong>subscrição gratuita de 100 dias</strong>, não poderá usufruir do desconto exclusivo de primeira ativação após o periodo gratuíto.</p>                     
                         <div className={styles.button} style={{backgroundColor:'#FF785A'}} onClick={() => props.confirm()}>
-                            <span className={styles.button_text}>Ativar 3 meses Gratuitos</span>
+                            <span className={styles.button_text}>Ativar 100 dias Gratuitos</span>
                         </div>
                     </div>
                     <p className={styles.cancel} onClick={() => props.cancel()}>Cancelar</p>

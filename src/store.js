@@ -33,7 +33,8 @@ const slice = createSlice({
         "type": null,
         "email_verified": false,
         "admin": true,
-        "chats": []
+        "chats": [],
+        "trial": {}
     }
   },
     user_update_photo_and_phone: (state, action) => {
@@ -77,6 +78,9 @@ const slice = createSlice({
     worker_update_is_subscribed: (state, action) => {
       state.worker_is_subscribed = action.payload
     },
+    worker_update_trial: (state, action) => {
+      state.trial = action.payload
+    },
   }
 })
 
@@ -96,6 +100,7 @@ export const {
     ////////////////////// worker
     worker_update_profile_complete,
     worker_update_is_subscribed,
+    worker_update_trial,
   } = slice.actions
 
 
