@@ -228,7 +228,7 @@ const Publicar = (props) => {
         else{
             setPhoneWrong(false)
         }
-        if(!validator.isEmail(email) && emailFocused){
+        if(email&& !validator.isEmail(email) && emailFocused){
             if(!emailWrong) setEmailWrong(true)
         }
         else{
@@ -763,8 +763,8 @@ const Publicar = (props) => {
                                         <input placeholder='91...' style={{borderColor:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":""}} onFocus={() => {setPhoneFocused(true)}} maxLength={11} onChange={e => setPhoneHandler(e.target.value)} value={phoneVisual} className={styles.bot_input_short}></input>
                                     </div>
                                     <div className={styles.bot_input_div}>
-                                        <span style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"", borderRight:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"transparent"}} className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
-                                        <input placeholder='Email...' style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":""}} disabled={user} onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
+                                        <span style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email?.length>3?"#26B282":"", borderRight:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email?.length>3?"#26B282":"transparent"}} className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
+                                        <input placeholder='Email...' style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email?.length>3?"#26B282":""}} disabled={user} onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
                                     </div>
                                     
                                 </div>

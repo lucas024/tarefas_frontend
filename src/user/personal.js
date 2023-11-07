@@ -21,7 +21,8 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 import {regioes, profissoes} from '../general/util'
-
+import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import EmailVerified from '@mui/icons-material/MarkEmailRead';
 import EmailUnverified from '@mui/icons-material/Unsubscribe';
 import PhoneVerified from '@mui/icons-material/MobileFriendly';
@@ -390,10 +391,10 @@ const Personal = (props) => {
                 </CSSTransition>
                 {
                     user?.type===1?
-                    <div className={styles.status_div} style={{backgroundColor:user_profile_complete&&user?.verified?"#0358e5":!user_profile_complete?"#fdd835":"#fdd835"}}>
+                    <div className={styles.status_div}>
                         <span className={styles.status_div_title}>Estado do Perfil</span>
                         <div className={styles.status_div_flex}>
-                            <span className={styles.status_div_flex_title}>
+                            <span className={styles.status_div_flex_title} style={{color:user_profile_complete?"#0358e5":"#fdd835"}}>
                                 {
                                     user_profile_complete?
                                     "COMPLETO"
@@ -714,9 +715,9 @@ const Personal = (props) => {
                                                 <div className={styles.input_icon_div}>
                                                     {
                                                         entityWrong||entityName.length<=1?
-                                                        <PhoneUnverified className={styles.input_icon} style={{color:'#0358e5'}}/>
+                                                        <AccountBalanceOutlinedIcon className={styles.input_icon} style={{color:'#ffffff'}}/>
                                                         :
-                                                        <PhoneVerified className={styles.input_icon} style={{color:!editBottom?'#0358e590':'#0358e5'}}/>
+                                                        <AccountBalanceIcon className={styles.input_icon} style={{color:!editBottom?'#0358e590':'#0358e5'}}/>
                                                     }
                                                 </div>
                                                 <span className={styles.input_icon_seperator} style={{backgroundColor:!editBottom?'#0358e590':entityWrong||entityName.length<=1?'#fdd835':'#0358e5'}}>.</span>
@@ -732,9 +733,9 @@ const Personal = (props) => {
                                         }
                                     </div>
                                     {
-                                        entityWrong&&entityName.length<=1?
+                                        radioSelected===1&&entityWrong&&entityName.length<=1?
                                         <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escreva pelo menos 2 caracteres.</span>
-                                        :entityWrong?
+                                        :radioSelected===1&&entityWrong?
                                         <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor defina a sua situação de trabalho.</span>
                                         :null
                                     }

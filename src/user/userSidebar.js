@@ -163,7 +163,7 @@ const UserSidebar = (props) => {
                 </List>
                 {
                     user?.type?
-                    <div className={styles.status}>
+                    <div className={styles.status} style={{borderColor:user_profile_complete&&user?.state===1&&worker_is_subscribed?"#0358e5":"#fdd835"}}>
                         <Loader loading={loadingSub}/>
                         <div className={styles.status_top}>
                             <span className={styles.status_top_val} style={{color:user_profile_complete&&user?.state===1&&worker_is_subscribed?"#0358e5":"#fdd835"}}>
@@ -174,10 +174,10 @@ const UserSidebar = (props) => {
                                 }
                             </span>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:user_profile_complete&&user?.state===1?"#0358e5":"#fdd835bb"}}>
-                            <span className={styles.status_div_title}>Perfil</span>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:user_profile_complete?"#0358e540":"#fdd83540"}}>
+                            <AccountCircleIcon sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>
                             <div className={styles.status_div_flex}>
-                                <span className={styles.status_div_val}>
+                                <span className={styles.status_div_val} style={{color:user_profile_complete?"#0358e5":"#fdd835"}}>
                                 {
                                     user_profile_complete?
                                     "COMPLETO"
@@ -186,10 +186,10 @@ const UserSidebar = (props) => {
                                 </span>
                             </div>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:worker_is_subscribed?"#0358e5":"#fdd835bb", borderBottom:"none", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
-                            <span className={styles.status_div_title}>Subscrição</span>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:worker_is_subscribed?"#0358e540":"#fdd83540"}}>
+                            <CardMembershipIcon sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>
                             <div className={styles.status_div_flex}>
-                                <span className={styles.status_div_val}>
+                                <span className={styles.status_div_val} style={{color:worker_is_subscribed?"#0358e5":"#fdd835"}}>
                                 {
                                     worker_is_subscribed?
                                     "ATIVADA"

@@ -23,19 +23,19 @@ const slice = createSlice({
     user_reset : (state) => {
       state.user = {
         "_id": null,
-        "name": null,
-        "surname": null,
-        "phone": null,
-        "email": null,
+        "name": "",
+        "surname": "",
+        "phone": "",
+        "email": "",
         "google_uid": null,
-        "address": null,
-        "photoUrl": null,
+        "address": "",
+        "photoUrl": "",
         "type": null,
         "email_verified": false,
-        "admin": true,
+        "admin": false,
         "chats": [],
         "trial": {}
-    }
+      }
   },
     user_update_photo_and_phone: (state, action) => {
         state.user.photoUrl = action.payload.photo
@@ -54,7 +54,7 @@ const slice = createSlice({
     user_update_field: (state, action) => {
       for(let el of action.payload)
       {
-        state.user.chats[el.field] = el.value
+        state.user[el.field] = el.value
       }
     },
     search_save: (state, action) => {
@@ -79,7 +79,7 @@ const slice = createSlice({
       state.worker_is_subscribed = action.payload
     },
     worker_update_trial: (state, action) => {
-      state.trial = action.payload
+      state.user.trial = action.payload
     },
   }
 })

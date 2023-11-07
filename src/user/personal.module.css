@@ -517,7 +517,7 @@ input[type=file]{
     transition: all 150ms ease-in-out;
 }
 .helper{
-    color: var(--action);
+    color: var(--yellow);
     font-size: 0.8rem;
     font-weight: 500;
     margin-top: 5px;
@@ -827,6 +827,7 @@ transform: rotate(45deg);
     padding: 5px;
     display: flex;
     flex-direction: column;
+    background-color: #ffffff10;
 }
 .status_div_title{
     font-size: 0.8rem;

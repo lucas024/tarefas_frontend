@@ -248,40 +248,45 @@ const Home = (props) => {
                 </div>
                 <div className={styles.home_divider} style={{backgroundColor:first==="trabalhadores"?"#FF785A":"#0358e5"}}>_</div>
                 <span className={styles.home_explorar}>EXPLORAR</span>
-                <div className={styles.home_back_publish}>
-                    <p className={styles.back_publish_title}>PUBLICAR</p>
+                {
+                    user.type===0?
+                    <div className={styles.home_back_publish}>
+                        <p className={styles.back_publish_title}>PUBLICAR</p>
 
-                    {
-                        loaded?
-                        <div className={styles.back_publish_div}>
-                            {/* {
-                                user?.type===1?
-                                <span className={styles.back_publish_div_frontdrop}></span>
-                                :null
-                            } */}
-                            <PostAddIcon className={styles.section_img_mini}/>
-                            <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
-                            {
-                                user?
-                                <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar')}>PUBLICAR</span>
-                                :
-                                <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
-                                    <div className={styles.back_publish_button_disabled} data-tooltip-id='home' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
-                                        <span className={styles.back_publish_div_frontdrop}></span>
-                                        <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
+                        {
+                            loaded?
+                            <div className={styles.back_publish_div}>
+                                {/* {
+                                    user?.type===1?
+                                    <span className={styles.back_publish_div_frontdrop}></span>
+                                    :null
+                                } */}
+                                <PostAddIcon className={styles.section_img_mini}/>
+                                <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
+                                {
+                                    user?
+                                    <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar')}>PUBLICAR</span>
+                                    :
+                                    <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                        <div className={styles.back_publish_button_disabled} data-tooltip-id='home' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
+                                            <span className={styles.back_publish_div_frontdrop}></span>
+                                            <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
+                                        </div>
+                                        <span className={styles.auth}><span onClick={() => handleMoveAuth(1)} className={styles.auth_specific}>Iniciar Sessão</span> | <span onClick={() => handleMoveAuth(0)} className={styles.auth_specific}>Criar Conta</span></span>
                                     </div>
-                                    <span className={styles.auth}><span onClick={() => handleMoveAuth(1)} className={styles.auth_specific}>Iniciar Sessão</span> | <span onClick={() => handleMoveAuth(0)} className={styles.auth_specific}>Criar Conta</span></span>
-                                </div>
-                            }
-                        </div>
-                        :
-                        <div className={styles.section_content}>
-                            <p className={styles.skeleton_content_in}></p>
-                            <p className={styles.skeleton_content_in}></p>
-                        </div>    
-                    }
-                    
-                </div>
+                                }
+                            </div>
+                            :
+                            <div className={styles.section_content}>
+                                <p className={styles.skeleton_content_in}></p>
+                                <p className={styles.skeleton_content_in}></p>
+                            </div>    
+                        }
+                        
+                    </div>
+                    :null
+                }
+
                 
                 <div className={styles.home_geral}>
                     <p className={styles.back_publish_title}>VER</p>

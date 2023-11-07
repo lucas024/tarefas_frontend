@@ -102,6 +102,7 @@ const Subscription = props => {
 
     useEffect(() => {
         setLoading(true)
+        console.log(user)
         if(user.subscription){
             axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
                 subscription_id: user.subscription.id,
@@ -114,6 +115,11 @@ const Subscription = props => {
                     setIsCanceled(true)
                 }
                 else if(res.data.schedule.end_behavior){
+                    setDisplay(0)
+                    setIsCanceled(false)
+                }
+                else if(user.trial)
+                {
                     setDisplay(0)
                     setIsCanceled(false)
                 }
@@ -207,7 +213,6 @@ const Subscription = props => {
                 }
             )
             
-        console.log(paymentConfirmation)
         switch (paymentConfirmation.paymentIntent.status) {
             case "succeeded":
                 await axios.post(`${api_url}/confirm-subscription`, {
@@ -478,6 +483,9 @@ const Subscription = props => {
         setTrialActive(true)
         setLoading(false)
         setDisplay(0)
+        setSuccessPopin(true)
+        setIsCanceled(false)
+        setTimeout(() => setSuccessPopin(false), 4000)
     }
 
 
@@ -570,7 +578,7 @@ const Subscription = props => {
                                 <div className={styles.sub_info_wrap}>
                                     <div className={styles.sub_info}>
                                         <span className={styles.sub_info_title}>Trabalhador na SERVIÇOS</span>
-                                        {display===1?
+                                        {display===1 && applyDiscount?
                                             <p className={styles.sub_info_title_discount}>SUBSCRIÇÃO EXCLUSICA FUNDADOR</p>
                                             :null
                                         }

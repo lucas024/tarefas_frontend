@@ -13,10 +13,11 @@ import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
-import { useSelector } from 'react-redux'
-
+import { useSelector, useDispatch } from 'react-redux'
+import { user_reset } from '../store';
 
 const Navbar = (props) => {
+    const dispatch = useDispatch()
 
     const user_profile_complete = useSelector(state => {return state.user_profile_complete})
     const user = useSelector(state => {return state.user})
@@ -51,6 +52,7 @@ const Navbar = (props) => {
     const logoutHandler = () => {
         setDropdown(false)
         logout()
+        dispatch(user_reset())
         navigate('/authentication?type=1')
     }
 
@@ -69,11 +71,11 @@ const Navbar = (props) => {
                                         ADMIN
                                 </span>
                                 :user?.type?
-                                <span className={styles.user_button} onClick={() => {navigate('/main/publications/trabalhos')}}>
+                                <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/main/publications/trabalhos')}}>
                                         TRABALHOS
                                 </span>
                                 :loaded&&user?
-                                <span className={styles.user_button} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
+                                <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
                                         PUBLICAR
                                 </span>
                                 :loaded?
@@ -89,7 +91,7 @@ const Navbar = (props) => {
                                 
                             }
                             {
-                                user?
+                                user._id?
                                 <div className={styles.chat_div} onClick={() => navigate('/user?t=messages')}>
                                     {
                                         hasUnreadTexts?
@@ -106,7 +108,7 @@ const Navbar = (props) => {
                             }
                             <div className={styles.flex_end}>
                                 {
-                                    user?
+                                    user._id?
                                     <div className={styles.user_main} 
                                             onMouseEnter={() => setDropdown(true)} 
                                             onMouseOut={() => setDropdown(false)}
