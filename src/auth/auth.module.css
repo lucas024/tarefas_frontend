@@ -269,6 +269,7 @@
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
     border-bottom: 2px solid var(--neutral);
+    font-family: 'Montserrat', sans-serif;
 }
 .login_input:focus{
     border: none;
@@ -277,6 +278,9 @@
 }
 .login_input::placeholder{
     color: #ccc;
+    font-style: normal;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
 }
 .recup_password{
     font-size: 0.9rem;
@@ -311,11 +315,13 @@
     width: 100%;
     border: none;
     outline: none;
+    font-family: 'Montserrat', sans-serif;
 }
 .login_input_new::placeholder{
     font-style: normal;
     font-weight: 400;
     font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
 }
 .input_wrapper_divider{
     height: 20px;
@@ -490,4 +496,130 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+.verification_zone{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+.verification_zone_wrapper{
+    margin: 0 auto;
+    text-align: center;
+}
+.verification_title_helper{
+    font-size: 0.8rem;
+    color: var(--neutral);
+    font-weight: 400;
+}
+.verification_title{
+    font-size: 1.3rem;
+    color: var(--job);
+    font-weight: 600;
+    margin-top: 5px;
+}
+.verification_desc{
+    font-size: 1rem;
+    color: var(--neutral);
+    font-weight: 400;
+    margin-top: 20px;
+}
+.verification_desc_strong{
+    font-size: 1rem;
+    color: var(--job);
+    font-weight: 600;
+}
+.verification_button{
+    display: flex;
+    align-items: center;
+    width: max-content;
+    background-color: var(--job);
+    padding: 15px 15px;
+    color: white;
+    margin: 100px auto 0 auto;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.verification_button:hover{
+    opacity: 0.8;
+    transition: 150ms ease-in-out;
+}
+.verification_button_helper{
+    width: max-content;
+    color: white;
+    margin: 5px auto 0 auto;
+    border-radius: 5px;
+    font-weight: 400;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.verification_button_helper:hover{
+    opacity: 0.8;
+    transition: 150ms ease-in-out;
+}
+.verification_button_disabled{
+    display: flex;
+    align-items: center;
+    width: max-content;
+    margin: 0 auto;
+    height: 50px;
+    padding: 0 15px;
+    background-color: rgb(168, 168, 168);
+    margin: 100px auto 0 auto;
+    cursor: default;
+    color: var(--neutral);
+    border-radius: 5px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.phone_input_wrapper{
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    margin-top: 5px;
+    padding: 5px;
+    border: 3px solid var(--job);
+    border-radius: 3px;
+    position: relative;
+    z-index: 0;
+    width: 290px;
+    margin-top: 20px;
+}
+.main_code_placeholder{
+    position:absolute;
+    left:0;
+    top:5px;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-around;
+    width:100%;
+    z-index:1;
+}
+.main_code_placeholder_value{
+    color:#ffffff50;
+    font-size:1.4rem;
+    font-family: 'Roboto Mono', monospace;
+}
+.phone_input_title{
+    font-size: 1rem;
+    text-align: center;
+    color: var(--job);
+    font-weight: 600;
+    margin-top: 30px;
+}
+.phone_input{
+    outline: none;
+    border: none;
+    color: var(--neutral);
+    font-size: 1.4rem;
+    letter-spacing: 32px;
+    font-family: 'Roboto Mono', monospace;
+    caret-color: var(--job);
+    overflow: hidden;
+    margin-right: -35px;
+    margin-left: 5px;
+    z-index: 1;
+    background-color: transparent;
 }

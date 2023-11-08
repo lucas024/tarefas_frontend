@@ -28,11 +28,15 @@ import CheckIcon from '@mui/icons-material/Check';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import portugal from '../assets/portugal.png'
+import Lottie from 'react-lottie';
+import * as sendEmail from '../assets/lotties/plane-email.json'
+import * as sendPhone from '../assets/lotties/send-phone.json'
+
 
 const Auth = (props) => {
     const api_url = useSelector(state => {return state.api_url})
 
-    const [selectedAuth, setSelectedAuth] = useState(1)
+    const [selectedAuth, setSelectedAuth] = useState(2)
 
     const [emailLogin, setEmailLogin] = useState("")
     const [emailLoginWrong, setEmailLoginWrong] = useState(false)
@@ -66,18 +70,24 @@ const Auth = (props) => {
 
     const location = useLocation()
 
-    useEffect(() => {
-        if(validator.isEmail(email)){
-            setEmailWrong(false)
-        }
-    }, [email])
+
+    const codePlaceholder = [0,0,0,0,0,0]
+
+    const [code, setCode] = useState('')
+    const [expiryTimestamp, setExpiryTimestamp] = useState(null)
+    const [expired, setExpired] = useState(false)
+    const [newCodeSent, setNewCodeSent] = useState(false)
+    const [wrongCodeInserted, setWrongCodeInserted] = useState(false)
+    // const [success, setSuccess] = useState(false)
+
+    const [verificationTab, setVerificationTab] = useState(0)
+
 
     useEffect(() => {
         setPasswordRepeatWrong(false)
     }, [passwordRepeat, password])
 
     useEffect(() => {
-        console.log(location);
         if(location.state && location.state.nameCarry){
             setSelectedAuth(0)
             setName(location.state.nameCarry)
@@ -90,15 +100,10 @@ const Auth = (props) => {
         const paramsAux = Object.fromEntries([...searchParams])
         if(paramsAux)
         {
-            setSelectedAuth(parseInt(paramsAux.type))
+            // setSelectedAuth(parseInt(paramsAux.type))
+            setSelectedAuth(parseInt(2))
         }
     }, [searchParams])
-
-    useEffect(() => {
-        if(name.length>1){
-            setNameWrong(false)
-        }
-    }, [name])
 
     useEffect(() => {
         if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
@@ -135,22 +140,52 @@ const Auth = (props) => {
 
     //helper funcs
     const setPhoneHandler = (val) => {
-        let phone = val.replace(/\s/g, '')
+        setPhoneWrong(false)
+        let phone = val.replace(/\D/g, "")
+        phone.replace(/\s/g, '')
         setPhone(phone)
     }
 
     const validateNameHandler = () => {
-        if(name.length<2){
-            setNameWrong(true)
+        if(name.length>0)
+        {
+            let val = name.split(' ')
+            if(val[0].length>1&&val.length===2&&val[1]?.length>0){
+                setNameWrong(false)
+                return true
+            }
+            else{
+                setNameWrong(true)
+                return false
+            }
         }
+        
+    }
+
+    const setEmailHandler = val => {
+        setEmailWrong(false)
+        if(val[0]===' ') val = val.replace(/ /g, '')
+        else setEmail(val)
+    }
+
+    const setNameHandler = val => {
+        setNameWrong(false)
+        if(val[0]===' ') {val = val.replace(/ /g, '')}
         else{
-            setNameWrong(false)
+            val = val.replace(/[0-9]/g, '')
+            setName(val)
         }
+        
     }
 
     const validatePhoneHandler = () => {
         if(validator.isMobilePhone(phone, "pt-PT")){
             setPhoneWrong(false)
+            return true
+        }
+        else{
+            setPhoneWrong(true)
+            return false
         }
     }
 
@@ -255,40 +290,63 @@ const Auth = (props) => {
                 photoUrl: from_signup?from_signup.photoURL:"",
                 type: 0,
                 email_verified: false,
+                phone_verified: false,
                 registerMethod: from_signup?from_signup.register_type:"email"
             })
 
-        if(location.state && location.state.carry)
-        {
-            navigateHandler()
-        } 
-        else{
-            navigate('/', {
-                state: {
-                    carry: true,
-                    refreshUser: true
-                }
-            })
-        }
+        // if(location.state && location.state.carry)
+        // {
+        //     navigateHandler()
+        // } 
+        // else{
+        //     navigate('/', {
+        //         state: {
+        //             carry: true,
+        //             refreshUser: true
+        //         }
+        //     })
+        // }
     }
 
     const registerHandler = async () => {
+        let val = name.split(' ')
         if(validator.isMobilePhone(phone, "pt-PT")
-            && name.length>1
+            && val[0].length>1&&val.length===2&&val[1]?.length>0
             && validator.isEmail(email)
             && validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
+                setLoading(true)
+                try{
+                    let res = await registerWithEmailAndPassword(email.toLocaleLowerCase(), password)
+                    await registerHelper(res.user.uid, false)
+                    setLoading(false)
+                    setSelectedAuth(2)
+                }
+                catch (err) {
+                    if(err.code == "auth/email-already-in-use"){
+                        axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                            setLoading(false)
+                            if(res.data != null){
+                                setEmailWrong("Este e-mail já se encontra associado a uma conta de TRABALHADOR. Por-favor, utilize outro email.")
+                            }
+                            else{
+                                axios.get(`${props.api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                                    if(res.data.registerMethod != "email"){
+                                        setEmailWrong('Este e-mail encontra-se registado através da Google.')
+                                    }
+                                })
+                                setEmailWrong("Este e-mail já se encontra registado. Esqueceu-se da palavra passe?")
+                            }
+                        })
+                    }
+                    else{
+                        setLoginError("Problema no servidor.")
+                        setLoading(false)
+                    }
+                }
             }
+
         else{
             setLoading(false)
-            if(name.length<2){
-                setNameWrong(true)
-            }
-            else if(!validator.isMobilePhone(phone, "pt-PT")){
-                setPhoneWrong(true)
-            }
-            else if(!validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
-                setPasswordWrong(true)
-            }
         }
     }
 
@@ -348,59 +406,44 @@ const Auth = (props) => {
             clearWarnings()
         }
         
-        // if(validator.isEmail(email)){
-        //     setLoading(true)
-        //     try{
-        //         let res = await registerWithEmailAndPassword(email.toLocaleLowerCase(), password)
-        //         await registerHelper(res.user.uid, false)
-        //         setLoading(false)
-        //         setEmailWrong(false)
-        //         setRegistarTab(1)
-        //         clearWarnings()
-        //     }
-        //     catch (err) {
-        //         if(err.code == "auth/email-already-in-use"){
-        //             axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
-        //                 setLoading(false)
-        //                 if(res.data != null){
-        //                     setEmailWrong("Este e-mail já se encontra associado a uma conta de TRABALHADOR. Por-favor, utilize outro email.")
-        //                 }
-        //                 else{
-        //                     axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
-        //                         if(res.data.registerMethod != "email"){
-        //                             setEmailWrong('Este e-mail encontra-se registado através da Google.')
-        //                         }
-        //                     })
-        //                     setEmailWrong("Este e-mail já se encontra registado. Esqueceu-se da palavra passe?")
-        //                 }
-        //             })
-        //         }
-        //         else{
-        //             setEmailWrong("Problema no servidor.")
-        //             setLoading(false)
-        //         }
-        //     }
-        // }
-        // else{
-        //     setEmailWrong("Este e-mail é inválido.")
-        // }
+    }
+
+    const mapPlaceholder = () => {
+        return codePlaceholder.map((val, i) => {
+            return(
+                <span key={i} className={styles.main_code_placeholder_value} style={{opacity:i<code.length?0:1}}>{val}</span>
+            )
+        })
+    }
+
+    
+    const setCodeHandler = value => {
+        if(value.length<7)
+        {
+            setWrongCodeInserted(false)
+            setCode(value)
+        }
     }
 
     return (
         <div className={styles.auth}>
             <div className={styles.auth_main}>
-                <div className={styles.area}>
+                <div className={styles.area} style={{backgroundColor:selectedAuth===2?'#161F28':'#fff'}}>
                     <Loader radius={true} loading={loading}/>
-                    <div className={styles.area_top}>
-                        <ul>
-                            <li onClick={() => setSelectedAuth(1)} className={selectedAuth?styles.li_active:""}>
-                                <span className={selectedAuth?styles.li_text_active:styles.li_text}>Login</span>
-                            </li>
-                            <li onClick={() => setSelectedAuth(0)} className={!selectedAuth?styles.li_active:""}>
-                                <span className={!selectedAuth?styles.li_text_active:styles.li_text}>Registar</span>
-                            </li>
-                        </ul>
-                    </div>
+                    {
+                        selectedAuth!==2?
+                        <div className={styles.area_top}>
+                            <ul>
+                                <li onClick={() => setSelectedAuth(1)} className={selectedAuth?styles.li_active:""}>
+                                    <span className={selectedAuth?styles.li_text_active:styles.li_text}>Login</span>
+                                </li>
+                                <li onClick={() => setSelectedAuth(0)} className={!selectedAuth?styles.li_active:""}>
+                                    <span className={!selectedAuth?styles.li_text_active:styles.li_text}>Registar</span>
+                                </li>
+                            </ul>
+                        </div>
+                        :null
+                    }
                     {
                         selectedAuth===1?
                         <div className={styles.area_bot}>
@@ -470,9 +513,9 @@ const Auth = (props) => {
                                 <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Registar</span>
                             </div>
                         </div>
-                        :
+                        :selectedAuth===0?
                         <div className={styles.area_bot}>
-                            <Loader radius={true} loading={loading}/>
+                            <Loader loading={loading}/>
                             <div className={styles.area_bot_wrapper}>
                                 <p className={styles.area_bot_title}>Criar conta de utilizador</p>
                                 <p className={styles.area_bot_title_helper}>({registarTab+1}/3)</p>
@@ -489,7 +532,7 @@ const Auth = (props) => {
                                         <input 
                                             autoComplete="new-password"
                                             maxLength={80} 
-                                            onChange={e => setEmail(e.target.value)} 
+                                            onChange={e => setEmailHandler(e.target.value)} 
                                             className={styles.login_input} 
                                             placeholder="email@email.com" 
                                             value={email}
@@ -550,19 +593,18 @@ const Auth = (props) => {
                                             <span className={styles.area_bot_intro_strong_two}>************</span>
                                         </span>
 
-                                        <p className={styles.register_title}>Nome</p>
+                                        <p className={styles.register_title}>Nome e Apelido</p>
                                         <input 
                                             autoComplete="new-password"
                                             maxLength={12}
-                                            onChange={e => setName(e.target.value)} 
+                                            onChange={e => setNameHandler(e.target.value)} 
                                             className={styles.login_input} 
-                                            placeholder="Nome" 
+                                            placeholder="Nome e Apelido"
                                             value={name}
-                                            onBlur={() => validateNameHandler()}
                                             style={{borderBottom:nameWrong?"2PX solid red":!nameWrong&&name.length>1?"2PX solid #0358e5":""}}></input>
                                         {
                                             nameWrong?
-                                            <span className={styles.field_error}>Por favor, escreva pelo menos 2 caracteres.</span>
+                                            <span className={styles.field_error}>Por favor, escreva o seu nome e apelido.</span>
                                             :null
                                         }
 
@@ -593,17 +635,13 @@ const Auth = (props) => {
                             </div>
                             <div className={styles.buttons}>
                                 {
-                                    registarTab===3?
-                                    <div className={!loading?styles.login_button:styles.login_button_disabled} 
-                                        onClick={() => {!loading&&registerHandler()&&clearWarnings()}}>
-                                        <p className={styles.login_text}>Registar no Arranja</p>
-                                    </div>
-                                    :registarTab===0?
+                                    registarTab===0?
                                     <div className={!emailWrong?styles.login_button:styles.login_button_disabled} 
                                         onClick={() => {validateEmailHandler()&&checkEmail()}}>
                                         <p className={styles.login_text}>Continuar</p>
                                     </div>
                                     :
+                                    registarTab===1?
                                     <div className={styles.buttons_flex}>
                                         <div className={styles.login_button_voltar}
                                             onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
@@ -615,6 +653,20 @@ const Auth = (props) => {
                                             <p className={styles.login_text}>Continuar</p>
                                         </div>
                                     </div>
+                                    :
+                                    registarTab===2?
+                                    <div className={styles.buttons_flex}>
+                                        <div className={styles.login_button_voltar}
+                                            onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                        <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                        </div>
+                                        <div className={!nameWrong?styles.login_button:styles.login_button_disabled}
+                                            style={{marginLeft:'10px'}}
+                                            onClick={() => {validateNameHandler()&&validatePhoneHandler()&&registerHandler()}}>
+                                            <p className={styles.login_text}>Concluir</p>
+                                        </div>
+                                    </div>
+                                    :null
                                     
                                 }  
                             </div>
@@ -624,11 +676,88 @@ const Auth = (props) => {
                                 <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(1)}>Login</span>
                             </div>
                         </div>
+                        :null
                     }
                 </div>
-                <div className={styles.button_area}>
-                    <span className={styles.worker_button} onClick={() => navigate('/authentication/worker?type=1')}>Àrea Trabalhador</span>
-                </div>
+                {
+                    selectedAuth===2?
+                    <Carousel 
+                        showArrows={false} 
+                        showStatus={false} 
+                        showIndicators={false} 
+                        showThumbs={false}
+                        selectedItem={verificationTab}>
+                        <div className={styles.verification_zone}>
+                            <div className={styles.verification_zone_wrapper}>
+                                <p className={styles.verification_title_helper}>Conta registada com sucesso.</p>
+                                <p className={styles.verification_title} style={{marginBottom:'20px'}}>Verifique o seu e-mail</p>
+                                <Lottie options={{
+                                    loop:false,
+                                    autoplay:true,
+                                    animationData:sendEmail,
+                                    rendererSettings: {
+                                        preserveAspectRatio: 'xMidYMid slice'
+                                    }
+                                    }}
+                                    height={80}
+                                    width={80}
+                                    // isStopped={this.state.isStopped}
+                                    // isPaused={this.state.isPaused}
+                                />
+                                <p className={styles.verification_desc}>
+                                    Envíamos um e-mail de verificação para o <span className={styles.verification_desc_strong}>{email}</span>, por-favor açeda ao seu e-mail e proceda com a verificação.
+                                </p>
+                                <p className={styles.verification_button} onClick={() => setVerificationTab(1)}>
+                                    Já verifiquei o meu e-mail
+                                </p>
+                                <p className={styles.verification_button_helper} onClick={() => setVerificationTab(1)}>
+                                    Verificar depois
+                                </p>
+                            </div>
+                        </div>
+                        <div className={styles.verification_zone}>
+                            <div className={styles.verification_zone_wrapper}>
+                                <p className={styles.verification_title_helper}>Conta registada com sucesso.</p>
+                                <p className={styles.verification_title} style={{marginBottom:'20px'}}>Verifique o seu telemóvel</p>
+                                <Lottie options={{
+                                    loop:false,
+                                    autoplay:verificationTab===1,
+                                    animationData:sendPhone,
+                                    rendererSettings: {
+                                        preserveAspectRatio: 'xMidYMid slice'
+                                    }
+                                    }}
+                                    height={80}
+                                    width={80}
+                                    // isStopped={this.state.isStopped}
+                                    // isPaused={this.state.isPaused}
+                                />
+                                <p className={styles.verification_desc}>
+                                    Envíamos uma mensagem com o código de verificação para o <span className={styles.verification_desc_strong}>{phone}</span>, por-favor insira o código enviádo a baixo.
+                                </p>
+
+                                <div className={styles.phone_input_wrapper}>
+                                    <div className={styles.main_code_placeholder}>
+                                        {mapPlaceholder()}
+                                    </div>
+                                    <input className={styles.phone_input} value={code} type="number" onChange={e => setCodeHandler(e.target.value)} maxLength={6}/>
+                                </div>
+
+                                <p className={code.length===6?styles.verification_button:styles.verification_button_disabled} onClick={() => setVerificationTab(1)} style={{marginTop:'30px'}}>
+                                    Validar código
+                                </p>
+                                <p className={styles.verification_button_helper} onClick={() => setVerificationTab(1)}>
+                                    Verificar depois
+                                </p>
+
+                            </div>
+                        </div>
+                    </Carousel>                    
+                    :
+                    <div className={styles.button_area}>
+                        <span className={styles.worker_button} onClick={() => navigate('/authentication/worker?type=1')}>Àrea Trabalhador</span>
+                    </div>
+                }
             </div>
         </div>
     )
