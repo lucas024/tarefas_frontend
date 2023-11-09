@@ -31,12 +31,19 @@ import portugal from '../assets/portugal.png'
 import Lottie from 'react-lottie';
 import * as sendEmail from '../assets/lotties/plane-email.json'
 import * as sendPhone from '../assets/lotties/send-phone.json'
-
+import * as wrongCode from '../assets/lotties/error-email.json'
+import * as successLottie from '../assets/lotties/success-blue.json'
+import { useTimer } from 'react-timer-hook';
+import { useDispatch } from 'react-redux'
+import { 
+    user_load,
+  } from '../store';
 
 const Auth = (props) => {
     const api_url = useSelector(state => {return state.api_url})
+    const dispatch = useDispatch()
 
-    const [selectedAuth, setSelectedAuth] = useState(2)
+    const [selectedAuth, setSelectedAuth] = useState(0)
 
     const [emailLogin, setEmailLogin] = useState("")
     const [emailLoginWrong, setEmailLoginWrong] = useState(false)
@@ -78,10 +85,10 @@ const Auth = (props) => {
     const [expired, setExpired] = useState(false)
     const [newCodeSent, setNewCodeSent] = useState(false)
     const [wrongCodeInserted, setWrongCodeInserted] = useState(false)
-    // const [success, setSuccess] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [skippedVerification, setSkippedVerification] = useState(false)
 
     const [verificationTab, setVerificationTab] = useState(0)
-
 
     useEffect(() => {
         setPasswordRepeatWrong(false)
@@ -100,8 +107,8 @@ const Auth = (props) => {
         const paramsAux = Object.fromEntries([...searchParams])
         if(paramsAux)
         {
-            // setSelectedAuth(parseInt(paramsAux.type))
-            setSelectedAuth(parseInt(2))
+            setSelectedAuth(parseInt(paramsAux.type))
+            // setSelectedAuth(parseInt(2))
         }
     }, [searchParams])
 
@@ -249,7 +256,7 @@ const Auth = (props) => {
                                 else{
                                     navigate('/', {
                                         state: {
-                                            carry: true
+                                            carry: 'login'
                                         }
                                     })
                                 }
@@ -293,19 +300,10 @@ const Auth = (props) => {
                 phone_verified: false,
                 registerMethod: from_signup?from_signup.register_type:"email"
             })
-
-        // if(location.state && location.state.carry)
-        // {
-        //     navigateHandler()
-        // } 
-        // else{
-        //     navigate('/', {
-        //         state: {
-        //             carry: true,
-        //             refreshUser: true
-        //         }
-        //     })
-        // }
+        let res = await axios.get(`${api_url}/auth/get_user`, { params: {google_uid: user_uid} })
+        if(res.data !== null){
+          dispatch(user_load(res.data))
+        }
     }
 
     const registerHandler = async () => {
@@ -408,6 +406,13 @@ const Auth = (props) => {
         
     }
 
+    ////////////////////////////////// TIMER //////////////////////////////////
+
+    const {
+        seconds,
+        restart,
+    } = useTimer({ expiryTimestamp, onExpire: () => setExpired(true) })
+
     const mapPlaceholder = () => {
         return codePlaceholder.map((val, i) => {
             return(
@@ -416,13 +421,38 @@ const Auth = (props) => {
         })
     }
 
-    
     const setCodeHandler = value => {
+        setWrongCodeInserted(false)
         if(value.length<7)
         {
-            setWrongCodeInserted(false)
             setCode(value)
         }
+    }
+
+    const handleSendCode = () => {
+        const time = new Date()
+        time.setSeconds(time.getSeconds() + 59)
+        restart(time)
+        setExpired(false)
+        setWrongCodeInserted(false)
+        setSuccess(false)
+        setCode('')
+    }
+
+    const handleNext = (skipped) => {
+        if(skipped) setSkippedVerification(true)
+        setVerificationTab(1)
+        const time = new Date()
+        time.setSeconds(time.getSeconds() + 59)
+        restart(time)
+        setExpired(false)
+        setWrongCodeInserted(false)
+        setCode('')
+    }
+
+    const verifyCodeHandler = () => {
+        // setWrongCodeInserted(true)
+        setSuccess(true)
     }
 
     return (
@@ -694,23 +724,26 @@ const Auth = (props) => {
                                 <Lottie options={{
                                     loop:false,
                                     autoplay:true,
-                                    animationData:sendEmail,
+                                    animationData:JSON.parse(JSON.stringify(sendEmail)),
                                     rendererSettings: {
                                         preserveAspectRatio: 'xMidYMid slice'
                                     }
                                     }}
-                                    height={80}
-                                    width={80}
+                                    height={120}
+                                    width={120}
                                     // isStopped={this.state.isStopped}
                                     // isPaused={this.state.isPaused}
                                 />
                                 <p className={styles.verification_desc}>
                                     Envíamos um e-mail de verificação para o <span className={styles.verification_desc_strong}>{email}</span>, por-favor açeda ao seu e-mail e proceda com a verificação.
                                 </p>
-                                <p className={styles.verification_button} onClick={() => setVerificationTab(1)}>
+                                <p className={styles.verification_button} onClick={() => handleNext(false)}>
                                     Já verifiquei o meu e-mail
                                 </p>
-                                <p className={styles.verification_button_helper} onClick={() => setVerificationTab(1)}>
+                                <p className={styles.verification_button_helper_or}>
+                                    OU
+                                </p>
+                                <p className={styles.verification_button_helper} onClick={() => handleNext(true)}>
                                     Verificar depois
                                 </p>
                             </div>
@@ -722,34 +755,93 @@ const Auth = (props) => {
                                 <Lottie options={{
                                     loop:false,
                                     autoplay:verificationTab===1,
-                                    animationData:sendPhone,
+                                    animationData:wrongCodeInserted?JSON.parse(JSON.stringify(wrongCode)):success?successLottie:sendPhone,
                                     rendererSettings: {
                                         preserveAspectRatio: 'xMidYMid slice'
                                     }
                                     }}
-                                    height={80}
-                                    width={80}
+                                    height={120}
+                                    width={120}
                                     // isStopped={this.state.isStopped}
                                     // isPaused={this.state.isPaused}
                                 />
-                                <p className={styles.verification_desc}>
-                                    Envíamos uma mensagem com o código de verificação para o <span className={styles.verification_desc_strong}>{phone}</span>, por-favor insira o código enviádo a baixo.
-                                </p>
-
-                                <div className={styles.phone_input_wrapper}>
-                                    <div className={styles.main_code_placeholder}>
-                                        {mapPlaceholder()}
+                                {
+                                    success?
+                                        <p className={styles.verification_desc}>
+                                            Telemóvel verificado com sucesso.
+                                        </p>
+                                    :
+                                    <div>
+                                        <p className={styles.verification_desc}>
+                                            Envíamos uma mensagem com o código de verificação para o <span className={styles.verification_desc_strong}>{phone}</span>, por-favor insira o código enviádo a baixo.
+                                        </p>
+                                        <div className={styles.phone_input_wrapper} style={{borderColor:wrongCodeInserted?"#fdd835":"#0358e5"}}>
+                                            <div className={styles.main_code_placeholder}>
+                                                {mapPlaceholder()}
+                                            </div>
+                                            <input className={styles.phone_input} value={code} type="number" onChange={e => setCodeHandler(e.target.value)} maxLength={6}/>
+                                        </div>
                                     </div>
-                                    <input className={styles.phone_input} value={code} type="number" onChange={e => setCodeHandler(e.target.value)} maxLength={6}/>
-                                </div>
 
-                                <p className={code.length===6?styles.verification_button:styles.verification_button_disabled} onClick={() => setVerificationTab(1)} style={{marginTop:'30px'}}>
-                                    Validar código
-                                </p>
-                                <p className={styles.verification_button_helper} onClick={() => setVerificationTab(1)}>
-                                    Verificar depois
-                                </p>
+                                }
+                                
+                                
+                                {
+                                    wrongCodeInserted?
+                                    <p className={styles.main_code_error}>
+                                        O código inserido está inválido.
+                                    </p>
+                                    :
+                                    null
+                                }
 
+                                {
+                                    success?
+                                    <p className={styles.verification_button} onClick={() => navigate('/', {
+                                            state: {
+                                                carry: 'register',
+                                                skippedVerification: skippedVerification
+                                            }
+                                        })} style={{marginTop:'40px'}}>
+                                        Continuar
+                                    </p>
+                                    :
+                                    <div>
+                                        <p className={code.length===6&&!wrongCodeInserted?styles.verification_button:styles.verification_button_disabled} onClick={() => code.length===6&&verifyCodeHandler()} style={{marginTop:'40px'}}>
+                                            Validar código
+                                        </p>
+                                        <div className={expired?styles.resend_button:styles.resend_button_disabled} 
+                                        onClick={() => {
+                                            expired&&setNewCodeSent(true)
+                                            expired&&handleSendCode()
+                                        }}>
+                                            <div className={styles.resend_text}>
+                                                {
+                                                    !expired?
+                                                    <span className={styles.resend_seconds}>{seconds}s</span>
+                                                    :null
+                                                }
+                                                {
+                                                    !expired?
+                                                    <span className={styles.resend_seconds}> | </span>
+                                                    :null
+                                                }
+                                                <span className={styles.resend_text_value}>Re-enviar código</span>
+                                            </div>
+                                        </div>
+                                        <p className={styles.verification_button_helper_or}>
+                                            OU
+                                        </p>
+                                        <p className={styles.verification_button_helper} onClick={() => navigate('/', {
+                                                state: {
+                                                    carry: 'register',
+                                                    skippedVerification: true
+                                                }
+                                            })}> 
+                                            Verificar depois
+                                        </p>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </Carousel>                    

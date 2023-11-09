@@ -35,6 +35,7 @@ const Home = (props) => {
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
     const [loginPopup, setLoginPopup] = useState(false)
+    const [registerPopup, setRegisterPopup] = useState(false)
     const [loaded, setLoaded] = useState(false)
 
     const [first, setFirst] = useState('trabalhadores')
@@ -49,10 +50,17 @@ const Home = (props) => {
             setMensagemPopup(true)
             setTimeout(() => setMensagemPopup(false), 4000)
         }
-        else if(location.state?.carry){
+        else if(location.state?.carry==="login"){
             props.refreshUser()
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
+            navigate(location.pathname, {}); 
+        }
+        else if(location.state?.carry==="register"){
+            props.refreshUser()
+            console.log(location.state)
+            setRegisterPopup(location.state?.skippedVerification?"skippedVerification":"didVerification")
+            setTimeout(() => setRegisterPopup(false), 4000)
             navigate(location.pathname, {}); 
         }
         else if(location.state?.refreshWorker){
@@ -130,6 +138,14 @@ const Home = (props) => {
                 unmountOnExit
                 >
                 <Sessao text={"Sessão iniciada com Sucesso!"}/>
+            </CSSTransition>
+            <CSSTransition 
+                in={registerPopup}
+                timeout={1000}
+                classNames="transition"
+                unmountOnExit
+                >
+                <Sessao text={registerPopup==="skippedVerification"?"Conta criada com sucesso! Não se esqueça de verificar os seus dados de contacto.":"Conta criada com sucesso!"}/>
             </CSSTransition>
             <CSSTransition 
                 in={mensagemPopup}
