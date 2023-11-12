@@ -168,7 +168,7 @@ const Trabalho = (props) => {
                 setViewTo("showFull")
                 setLoading(false)
             }
-            else if(!user||user.type===0){
+            else if(!user._id||user.type===0){
                 setViewTo('noAccount')
                 setLoading(false)
             }

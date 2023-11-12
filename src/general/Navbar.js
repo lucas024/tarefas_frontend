@@ -20,6 +20,7 @@ const Navbar = (props) => {
     const dispatch = useDispatch()
 
     const user_profile_complete = useSelector(state => {return state.user_profile_complete})
+    const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
     const user = useSelector(state => {return state.user})
     const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
@@ -30,6 +31,7 @@ const Navbar = (props) => {
 
     useEffect(() => {
         setLoaded(props.userLoadAttempt)
+        console.log(user_profile_complete)
     }, [props.userLoadAttempt])
 
     useEffect(() => {
@@ -117,7 +119,7 @@ const Navbar = (props) => {
  
                                         <div className={styles.user}>
                                             {
-                                                (user_profile_complete&&user.type || !worker_is_subscribed&&user.type)?
+                                                (!user_profile_complete || !worker_is_subscribed&&user.type)?
                                                 <span className={styles.drop_div_notification_big}/>
                                                 :
                                                 user.phone===""?
@@ -167,12 +169,10 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
-                                                                user_profile_complete===false&&user.type===1?
+                                                                worker_profile_complete||user_profile_complete?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                                                :user.type===0&&user.phone===""?
-                                                                <UnpublishedOutlinedIcon className={styles.off_icon}/>
-                                                                :user.type===1?
-                                                                <UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                                                :!worker_profile_complete&&!user_profile_complete?
+                                                                <span className={styles.drop_div_notification}/>
                                                                 :null
                                                             }
                                                             
@@ -192,10 +192,8 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Subscrição</span>
                                                             </div>
                                                             {
-                                                                worker_is_subscribed?
-                                                                <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                                                :user.type?
-                                                                <UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                                                !worker_is_subscribed?
+                                                                <span className={styles.drop_div_notification}/>
                                                                 :null
                                                             }
                                                         </div>

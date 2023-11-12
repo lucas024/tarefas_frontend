@@ -294,15 +294,15 @@
 }
 .market{
     position: absolute;
-    right: -180px;
-    bottom: -65px;
+    right: -210px;
+    bottom: -100px;
     display: flex;
     flex-direction: column;
     font-size: 0.8rem;
     background-color: var(--action);
     border-radius: 5px;
     text-align: center;
-    padding: 5px 10px;
+    padding: 10px 15px;
     box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
     0 2px 2px rgba(0,0,0,0.12), 
     0 3px 3px rgba(0,0,0,0.12),
@@ -312,6 +312,8 @@
 .market_text{
     color: var(--brand);
     font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
 }
 .market_arrow{
     position: absolute;
@@ -606,9 +608,9 @@
 }
 .frontdrop_text_action{
     margin: 10px auto;
-    color: var(--action);
+    color: var(--neutral);
     font-weight: 600;
-    background-color: white;
+    background-color: var(--action);
     border-radius: 5px;
     padding: 10px;
     text-transform: uppercase;
@@ -616,8 +618,8 @@
 }
 .frontdrop_text_action:hover{
     cursor: pointer;
-    color: var(--neutral);
-    background-color: var(--action);
+    opacity: 0.6;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
     transition: all 150ms ease-in-out;
 }
 
@@ -633,8 +635,9 @@
 }
 .frontdrop_text_action_top:hover{
     cursor: pointer;
-    transform: scale(1.03);
-    transition: transform 100ms ease-in-out;
+    opacity: 0.7;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    transition: all 150ms ease-in-out;
 }
 .message_enviar_div{
     display: flex;

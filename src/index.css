@@ -222,19 +222,19 @@ p{
 }
 .transition-enter-active {
   opacity: 1;
-  transform: translateY(40%);
+  transform: translateY(30%);
   transition: 600ms;
 }
 .transition-enter-done{
-  transform: translateY(40%);
+  transform: translateY(30%);
 }
 .transition-exit {
   opacity: 1;
-  transform: translateY(40%);
+  transform: translateY(30%);
 }
 .transition-exit-active {
   opacity: 0;
-  transform: translateY(-40%);
+  transform: translateY(-30%);
   transition: 200ms;
 }
 

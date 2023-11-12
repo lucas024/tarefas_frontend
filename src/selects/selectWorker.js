@@ -6,13 +6,13 @@ const SelectWorker = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: props.editBottom?"#0358e5":"#0358e590",
-            borderColor: "#0358e5",
+            backgroundColor: props.worker?"#ffffff":props.editBottom?"#0358e5":"#0358e590",
+            borderColor: props.worker?"#FF785A":"#0358e5",
             fontSize: "0.9rem",
             textTransform: "uppercase",
-            color: "#0358e5",
+            color: props.worker?"#161F28":"#0358e5",
             fontWeight: 600,
-            width:"170px",
+            width:props.worker?"300px":"170px",
             transition: "0.2s all ease-in-out",
             borderRadius: "5px",
             borderBottomLeftRadius: state.isFocused? 0: "5px",
@@ -30,12 +30,12 @@ const SelectWorker = (props) => {
             cursor: "pointer",
             color: state.isSelected?"#fff":"#161F28",
             fontWeight: state.isSelected? 600: 500,
-            backgroundColor: state.isSelected? "#0358e5 ": state.isFocused? '#0358e550': "transparent",
+            backgroundColor: state.isSelected?props.worker?"#FF785A":"#0358e5":state.isFocused?props.worker?"#FF785A50":'#0358e550':"transparent",
         }),
         menu: base => ({
             ...base,
             textTransform: "uppercase",
-            width:"170px",
+            width:props.worker?"300px":"170px",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
@@ -49,7 +49,7 @@ const SelectWorker = (props) => {
         }),
         dropdownIndicator : base => ({
             ...base,
-            color: !props.editBottom?"#71848d":"#fff",
+            color: props.worker?"#161F28":!props.editBottom?"#71848d":"#fff",
             transition: "0.15s all ease-in-out",
             "&:hover": {
                 color: "#ffffff",
@@ -60,12 +60,12 @@ const SelectWorker = (props) => {
         }),
         singleValue: base => ({
             ...base,
-            color: !props.editBottom?"#71848d":"#fff",
+            color: props.worker?"#161F28":!props.editBottom?"#71848d":"#fff",
             margin: "auto"
         }),
         indicatorSeparator : base => ({
             ...base,
-            backgroundColor: "#0358e5"
+            backgroundColor: props.worker?"#161F28":"#0358e5"
         }),
         valueContainer: base => ({
             ...base,

@@ -49,7 +49,6 @@
     overflow: hidden;
     position: relative;
 }
-
 @media (min-width: 1024px) {
     .left{
         min-width: 250px;

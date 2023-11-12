@@ -7,6 +7,7 @@ const slice = createSlice({
     user_google: {},
     search_context: null,
     search_scroll: 0,
+    user_profile_complete: false,
     worker_profile_complete: false,
     worker_is_subscribed: false,
     user_subscription_active: false,
@@ -69,6 +70,9 @@ const slice = createSlice({
     user_update_admin_verified: (state, action) => {
       state.user_admin_verified = action.payload
     },
+    user_update_profile_complete: (state, action) => {
+      state.user_profile_complete = action.payload
+    },
 
 
     ///////////////////////// worker
@@ -96,6 +100,7 @@ export const {
     search_scroll_save,
     user_update_subscription_active,
     user_update_admin_verified,
+    user_update_profile_complete,
 
     ////////////////////// worker
     worker_update_profile_complete,

@@ -23,11 +23,13 @@ import Admin from './admin/admin';
 
 import { useDispatch, useSelector } from 'react-redux'
 import { 
+        user_update_profile_complete,
         worker_update_profile_complete,
         worker_update_is_subscribed,
         user_load,
         user_reset,
       } from './store';
+import ProtectedRoute from './protectedRoute';
 
 
 function App() {
@@ -39,11 +41,14 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [userLoadAttempt, setUserLoadAttempt] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
 onAuthStateChanged(auth, (user_google) => {
     if (user_google) {
       setUserGoogle(user_google)
+      window.localStorage.setItem('loggedIn', true)
     } else {
+      window.localStorage.setItem('loggedIn', false)
       setUserGoogle(null)
       dispatch(user_reset())
       setUserLoadAttempt(true)
@@ -57,6 +62,12 @@ const checkWorkerComplete = (worker) => {
     dispatch(worker_update_profile_complete(true))
 }
 
+const checkUserComplete = (user) => {
+  if(!user.phone_verified||!user.email_verified)
+    dispatch(user_update_profile_complete(false))
+  else
+    dispatch(user_update_profile_complete(true))
+}
 
 useEffect(() => {
   setLoading(true)
@@ -64,6 +75,8 @@ useEffect(() => {
     axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
       if(res.data != null){
         dispatch(user_load(res.data))
+        setIsAdmin(res.data.admin)
+        checkUserComplete(res.data)
         setUserLoadAttempt(true)
         setLoading(false)
       }
@@ -112,6 +125,7 @@ const refreshUser = async () => {
   let res = await axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} })
   if(res.data !== null){
     dispatch(user_load(res.data))
+    checkUserComplete(res.data)
   }
 }
 
@@ -178,26 +192,48 @@ const refreshWorker = () => {
               />
               <Route exact path="/publicar/:editar/*" 
                 key={'single'}
-                element={<Publicar
-                  loading={loading}
-                  loadingHandler={bool => setLoading(bool)}
-                  />}
+                element={
+                  <ProtectedRoute
+                    redirectPath='/'
+                    isAllowed={
+                      window.localStorage.getItem('loggedIn')
+                    }>
+                    <Publicar
+                      loading={loading}
+                      loadingHandler={bool => setLoading(bool)}
+                      />
+                  </ProtectedRoute>
+                  }
               />
               <Route exact path="/publicar/novo/*" 
                 key={'all'}
-                element={<Publicar
-                  loading={loading}
-                  loadingHandler={bool => setLoading(bool)}
-                  />}
+                element={
+                  <ProtectedRoute
+                    redirectPath='/'
+                    isAllowed={
+                      window.localStorage.getItem('loggedIn')
+                    }>
+                    <Publicar
+                      loading={loading}
+                      loadingHandler={bool => setLoading(bool)}
+                      />
+                  </ProtectedRoute>
+                  }
               />
               <Route exact path="/user" 
                 element={
-                  <User
-                    refreshUser={() => refreshUser()}
-                    refreshWorker={() => refreshWorker()}
-                    userLoadAttempt={userLoadAttempt}
-                    loadingHandler={bool => setLoading(bool)}
-                    />
+                  <ProtectedRoute
+                    redirectPath='/'
+                    isAllowed={
+                      window.localStorage.getItem('loggedIn')
+                    }>
+                    <User
+                      refreshUser={() => refreshUser()}
+                      refreshWorker={() => refreshWorker()}
+                      userLoadAttempt={userLoadAttempt}
+                      loadingHandler={bool => setLoading(bool)}
+                      />
+                  </ProtectedRoute>
                 }
               />
               <Route exact path="/authentication/worker" 
@@ -213,8 +249,16 @@ const refreshWorker = () => {
                   loadingHandler={bool => setLoading(bool)}/>}
               />
               <Route path="/admin/*" 
-                element={<Admin 
-                  userLoadAttempt={userLoadAttempt}/>} />
+                element={
+                  <ProtectedRoute
+                    redirectPath='/'
+                    isAllowed={
+                      window.localStorage.getItem('loggedIn')&&isAdmin
+                    }>
+                    <Admin 
+                        userLoadAttempt={userLoadAttempt}/>
+                  </ProtectedRoute>
+                } />
               <Route path="/" 
                 element={<Home
                   refreshUser={() => refreshUser()}

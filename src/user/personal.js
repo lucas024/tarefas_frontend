@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import styles from './personal.module.css'
 import FaceIcon from '@mui/icons-material/Face';
-import PhoneIcon from '@mui/icons-material/Phone';
-import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EditIcon from '@mui/icons-material/Edit';
 import validator from 'validator'
 import CheckIcon from '@mui/icons-material/Check';
@@ -17,9 +15,6 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from './../transitions/sessao';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import RotateRightIcon from '@mui/icons-material/RotateRight';
 import {regioes, profissoes} from '../general/util'
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
@@ -762,7 +757,7 @@ const Personal = (props) => {
                                         :null
                                     }
                                     <div className={styles.flex_select_div}>
-                                            {mapTrabalhos()}
+                                        {mapTrabalhos()}
                                     </div>
                                 </div>
                                 <div className={styles.flex_left}>

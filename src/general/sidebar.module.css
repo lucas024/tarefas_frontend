@@ -222,6 +222,27 @@
 .flex_10px{
     margin-top: 10px;
 }
+.drop_div_notification{
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    align-self: center;
+    background-color: var(--yellow);
+    animation-name: yellow;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+@keyframes yellow {
+    0% {
+      background-color: #fdd835;
+    }
+    50% {
+        background-color: #fdd83540;
+    }
+    100% {
+        background-color: #fdd835;
+    }
+}
 @keyframes rotation {
     from {
       transform: rotate(0deg);

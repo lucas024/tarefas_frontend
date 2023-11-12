@@ -21,23 +21,17 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import Loader from '../general/loader'
 import { useSelector } from 'react-redux'
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { Carousel } from 'react-responsive-carousel';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import CheckIcon from '@mui/icons-material/Check';
-import EmailIcon from '@mui/icons-material/Email';
-import LockIcon from '@mui/icons-material/Lock';
-import portugal from '../assets/portugal.png'
-import Lottie from 'react-lottie';
-import * as sendEmail from '../assets/lotties/plane-email.json'
-import * as sendPhone from '../assets/lotties/send-phone.json'
-import * as wrongCode from '../assets/lotties/error-email.json'
-import * as successLottie from '../assets/lotties/success-blue.json'
 import { useTimer } from 'react-timer-hook';
 import { useDispatch } from 'react-redux'
 import { 
     user_load,
   } from '../store';
+import AuthCarousel from './authCarousel'
+import AuthCarouselVerification from './authCarouselVerification'
+import {CSSTransition}  from 'react-transition-group';
+import Sessao from '../transitions/sessao'
+
 
 const Auth = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -90,9 +84,7 @@ const Auth = (props) => {
 
     const [verificationTab, setVerificationTab] = useState(0)
 
-    useEffect(() => {
-        setPasswordRepeatWrong(false)
-    }, [passwordRepeat, password])
+    const [registerPopup, setRegisterPopup] = useState(false)
 
     useEffect(() => {
         if(location.state && location.state.nameCarry){
@@ -111,6 +103,7 @@ const Auth = (props) => {
             // setSelectedAuth(parseInt(2))
         }
     }, [searchParams])
+    
 
     useEffect(() => {
         if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
@@ -122,6 +115,10 @@ const Auth = (props) => {
             setPhoneWrong(false)
         }
     }, [phone])
+
+    useEffect(() => {
+        setPasswordRepeatWrong(false)
+    }, [passwordRepeat, password])
 
     useEffect(() => {
         if(validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
@@ -157,7 +154,7 @@ const Auth = (props) => {
         if(name.length>0)
         {
             let val = name.split(' ')
-            if(val[0].length>1&&val.length===2&&val[1]?.length>0){
+            if(val[0].length>1&&val[1]?.length>0){
                 setNameWrong(false)
                 return true
             }
@@ -166,7 +163,9 @@ const Auth = (props) => {
                 return false
             }
         }
-        
+        else{
+            setNameWrong(true)
+        }
     }
 
     const setEmailHandler = val => {
@@ -188,6 +187,7 @@ const Auth = (props) => {
     const validatePhoneHandler = () => {
         if(validator.isMobilePhone(phone, "pt-PT")){
             setPhoneWrong(false)
+            setRegistarTab(2)
             return true
         }
         else{
@@ -211,7 +211,7 @@ const Auth = (props) => {
         if(validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
             setPasswordWrong(false)
             if(passwordRepeat===password)
-                setRegistarTab(2)
+                registerHandler()
             else
                 setPasswordRepeatWrong(true)
         }
@@ -226,6 +226,57 @@ const Auth = (props) => {
             event.preventDefault()
             loginHandler()
         }
+    }
+
+    const handleKeyDownRegister = (from, event) => {
+        console.log(from, event)
+        if (event.key === 'Enter') {
+            event.target.blur()
+            event.preventDefault()
+            if(from === 'email'){
+                validateEmailHandler()&&checkEmail()
+            }
+            else if(from === 'password'){
+                validatePasswordHandler()
+            }
+            else if(from === 'name'){
+                validateNameHandler()&&validatePhoneHandler()
+            }
+        }
+    }
+
+    const checkEmail = async () => {
+        setLoading(true)
+        let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} })
+        console.log(res)
+
+        if(res.data){
+            setEmailWrong('Este e-mail já se encontra registado a uma conta de utilizador.')
+            setLoading(false)
+        }
+        else
+        {
+            res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} })
+            console.log(res)
+            if(res.data){
+                setEmailWrong('Este e-mail já se encontra registado a uma conta de trabalhador.')
+                setLoading(false)
+            }
+            else{
+                setLoading(false)
+                setEmailWrong(false)
+                setRegistarTab(1)
+                clearWarnings()
+            }
+        }
+    }
+
+    const clearWarnings = () => {
+        setNameWrong(false)
+        setEmailWrong(false)
+        setPhoneWrong(false)
+        setPasswordWrong(false)
+        setPasswordRepeatWrong(false)
     }
 
     const loginHandler = async () => {
@@ -263,13 +314,13 @@ const Auth = (props) => {
                                 setLoading(false)
                             })
                             .catch(err => {
-                                setLoginError('O e-mail ou a Password estão incorretos.')
+                                setLoginError('O e-mail ou a palavra-passe estão incorretos.')
                                 setLoading(false)
                             })
                         }
                     }
                     else{
-                        setLoginError('O e-mail ou a Password estão incorretos.')
+                        setLoginError('O e-mail ou a palavra-passe estão incorretos.')
                         setLoading(false)
                     }                  
                 })
@@ -307,17 +358,22 @@ const Auth = (props) => {
     }
 
     const registerHandler = async () => {
+        console.log('hmm')
         let val = name.split(' ')
         if(validator.isMobilePhone(phone, "pt-PT")
             && val[0].length>1&&val.length===2&&val[1]?.length>0
             && validator.isEmail(email)
             && validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
                 setLoading(true)
+                console.log('oioioi')
                 try{
                     let res = await registerWithEmailAndPassword(email.toLocaleLowerCase(), password)
                     await registerHelper(res.user.uid, false)
                     setLoading(false)
+                    setRegisterPopup(true)
+                    setTimeout(() => setRegisterPopup(false), 4000)
                     setSelectedAuth(2)
+                    setRegistarTab(0)
                 }
                 catch (err) {
                     if(err.code == "auth/email-already-in-use"){
@@ -334,6 +390,13 @@ const Auth = (props) => {
                                 })
                                 setEmailWrong("Este e-mail já se encontra registado. Esqueceu-se da palavra passe?")
                             }
+                            setLoading(false)
+                            setPassword(null)
+                            setPasswordRepeat(null)
+                            setName(null)
+                            setPhone(null)
+                            setPhoneVisual(null)
+                            setRegistarTab(0)
                         })
                     }
                     else{
@@ -344,6 +407,7 @@ const Auth = (props) => {
             }
 
         else{
+            console.log('no')
             setLoading(false)
         }
     }
@@ -376,34 +440,14 @@ const Auth = (props) => {
         }
     }
 
-    const clearWarnings = () => {
-        setNameWrong(false)
-        setEmailWrong(false)
-        setPhoneWrong(false)
-        setPasswordWrong(false)
-    }
 
-    const checkEmail = async () => {
-        setLoading(true)
-        let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} })
-
-        console.log(res)
-
-        if(res.data){
-            if(res.data.registerMethod!=='email')
-                setEmailWrong('Este e-mail encontra-se registado através da Google. Por-favor inicie a sessão através da Google, na página anterior.')
-            else
-                setEmailWrong('Este e-mail já se encontra associado a uma conta.')
-            setLoading(false)
-        }
-        else
-        {
-            setLoading(false)
-            setEmailWrong(false)
-            setRegistarTab(1)
-            clearWarnings()
-        }
-        
+    const clearFields = () => {
+        setPassword(null)
+        setPasswordRepeat(null)
+        setName(null)
+        setEmail(null)
+        setPhone(null)
+        setPhoneVisual(null)
     }
 
     ////////////////////////////////// TIMER //////////////////////////////////
@@ -457,6 +501,14 @@ const Auth = (props) => {
 
     return (
         <div className={styles.auth}>
+            <CSSTransition 
+                in={registerPopup}
+                timeout={1000}
+                classNames="transition"
+                unmountOnExit
+                >
+                <Sessao text={"Conta criada com sucesso!"}/>
+            </CSSTransition>
             <div className={styles.auth_main}>
                 <div className={styles.area} style={{backgroundColor:selectedAuth===2?'#161F28':'#fff'}}>
                     <Loader radius={true} loading={loading}/>
@@ -497,9 +549,9 @@ const Auth = (props) => {
                             <div className={styles.login_div}>
                                 <div className={styles.login}>
                                     <p className={styles.login_title}>E-mail</p>
-                                    <input 
+                                    <input
                                         onKeyDown={handleKeyDown}
-                                        style={{borderBottom:emailLoginWrong?"2PX solid red":""}}
+                                        style={{borderBottom:emailLoginWrong?"2PX solid red":"", backgroundColor:"#00000010"}}
                                         className={styles.login_input} 
                                         placeholder="E-mail"
                                         value={emailLogin}
@@ -512,11 +564,12 @@ const Auth = (props) => {
                                             }}></input>
                                 </div>
                                 <div className={styles.login} style={{marginTop:"10px"}}>
-                                    <p className={styles.login_title}>Password</p>
+                                    <p className={styles.login_title}>Palavra-passe</p>
                                     <input 
                                         onKeyDown={handleKeyDown}
-                                        className={styles.login_input} 
-                                        placeholder="Password"
+                                        className={styles.login_input}
+                                        style={{backgroundColor:"#00000010"}}
+                                        placeholder="Palavra-passe"
                                         type="password"
                                         value={passwordLogin}
                                         onChange={e => setPasswordLogin(e.target.value)}></input>
@@ -532,11 +585,11 @@ const Auth = (props) => {
                                 :null
                             }
                             <div style={{marginTop:"20px"}}>
-                                <span className={styles.recup_password}>Recuperar password</span>
+                                <span className={styles.recup_password}>Recuperar palavra-passe</span>
                             </div>
                             <div className={!loading?styles.login_button:styles.login_button_disabled} onClick={() => {
                                 if(!loading) loginHandler()}}>
-                                <p className={styles.login_text}>Efectue o seu login</p>
+                                <p className={styles.login_text}>LOGIN</p>
                             </div>
                             <div className={styles.bottom_switch}>
                                 <span className={styles.bottom_switch_text}>Não tens conta? </span>
@@ -549,124 +602,35 @@ const Auth = (props) => {
                             <div className={styles.area_bot_wrapper}>
                                 <p className={styles.area_bot_title}>Criar conta de utilizador</p>
                                 <p className={styles.area_bot_title_helper}>({registarTab+1}/3)</p>
-                                <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Palavra-passe', 'Detalhes do utilizador'][registarTab]}</p>
+                                <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Detalhes do utilizador', 'Palavra-passe'][registarTab]}</p>
                                 <div className={styles.login_div}>
-                                <Carousel 
-                                    showArrows={false} 
-                                    showStatus={false} 
-                                    showIndicators={false} 
-                                    showThumbs={false}
-                                    selectedItem={registarTab}>
-                                    <div className={styles.login}>
-                                        <p className={styles.register_title}>E-mail</p>
-                                        <input 
-                                            autoComplete="new-password"
-                                            maxLength={80} 
-                                            onChange={e => setEmailHandler(e.target.value)} 
-                                            className={styles.login_input} 
-                                            placeholder="email@email.com" 
-                                            value={email}
-                                            style={{borderBottom:emailWrong?"2px solid red":validator.isEmail(email)&&email.length>0?"2px solid #0358e5":""}}></input>
-                                            {
-                                                emailWrong?
-                                                <span className={styles.field_error}>{emailWrong}</span>
-                                                :null
-                                            }
-                                    </div>
-                                    <div className={styles.login}>
-                                        <p className={styles.register_title}>Palavra-passe</p>
-                                        <span className={styles.area_bot_intro}>Estás a criar uma palavra-passe para o email <span className={styles.area_bot_intro_strong}>{email}</span>.</span>
-                                        <div className={styles.area_password}>
-                                            <div className={styles.area_password_min_wrapper}>
-                                                <span className={styles.area_password_min}>mín. 8 caracteres</span>
-                                                <CheckIcon className={styles.area_password_min_icon} style={{color:password.length>7?"#0358e5":""}}/>
-                                            </div>
-                                            <input 
-                                                autoComplete="new-password"
-                                                maxLength={40} 
-                                                type="password"
-                                                onChange={e => setPassword(e.target.value)} 
-                                                className={styles.login_input} 
-                                                placeholder="Palavra-passe" 
-                                                value={password}
-                                                style={{borderBottom:passwordWrong?"2PX solid red":!passwordWrong&&password.length>7?"2PX solid #0358e5":""}}></input>
-                                        </div>
-
-                                            {
-                                                passwordWrong?
-                                                <span className={styles.field_error}>Por favor, escreva pelo menos 8 caracteres.</span>
-                                                :null
-                                            }
-                                        <input 
-                                            autoComplete="new-password"
-                                            maxLength={40} 
-                                            type="password"
-                                            onChange={e => setPasswordRepeat(e.target.value)} 
-                                            className={styles.login_input} 
-                                            placeholder="Repetir palavra-passe" 
-                                            value={passwordRepeat}
-                                            style={{borderBottom:passwordRepeatWrong?"2PX solid red":!passwordRepeatWrong&&passwordRepeat.length>7?"2PX solid #0358e5":"", marginTop:'10px'}}></input>
-                                            {
-                                                passwordRepeatWrong?
-                                                <span className={styles.field_error}>As passwords escritas não são identicas.</span>
-                                                :null
-                                            }
-                                    </div>
-                                    <div className={styles.login}>
-                                        <span className={styles.area_bot_intro_wrapper}>
-                                            <EmailIcon className={styles.area_bot_intro_icon}/>
-                                            <span className={styles.area_bot_intro_strong_two}>{email}</span>
-                                        </span>
-                                        
-                                        <span className={styles.area_bot_intro_wrapper} style={{marginBottom:'20px'}}>
-                                            <LockIcon className={styles.area_bot_intro_icon}/>
-                                            <span className={styles.area_bot_intro_strong_two}>************</span>
-                                        </span>
-
-                                        <p className={styles.register_title}>Nome e Apelido</p>
-                                        <input 
-                                            autoComplete="new-password"
-                                            maxLength={12}
-                                            onChange={e => setNameHandler(e.target.value)} 
-                                            className={styles.login_input} 
-                                            placeholder="Nome e Apelido"
-                                            value={name}
-                                            style={{borderBottom:nameWrong?"2PX solid red":!nameWrong&&name.length>1?"2PX solid #0358e5":""}}></input>
-                                        {
-                                            nameWrong?
-                                            <span className={styles.field_error}>Por favor, escreva o seu nome e apelido.</span>
-                                            :null
-                                        }
-
-                                        <p className={styles.register_title} style={{marginTop:'10px'}}>Telemóvel</p>
-                                        <div className={styles.input_wrapper} 
-                                            style={{border:phoneWrong?"2px solid red":validator.isMobilePhone(phone, "pt-PT")&&phone.length===9?"2px solid #0358e5":""}}>
-                                            <img src={portugal} className={styles.flag}/>
-                                            <span className={styles.input_wrapper_divider}>.</span>
-                                            <input 
-                                            autoComplete="new-password"
-                                            maxLength={11} 
-                                            onChange={e => setPhoneHandler(e.target.value)} 
-                                            value={phoneVisual} 
-                                            className={styles.login_input_new} 
-                                            placeholder="912345678">
-                                                
-                                            </input>
-                                        </div>
-                                        {
-                                                phoneWrong?
-                                                <span className={styles.field_error}>O número de telemóvel não é valido.</span>
-                                                :null
-                                            }
-                                        
-                                    </div>
-                                </Carousel>
+                                    <AuthCarousel 
+                                        registarTab={registarTab}
+                                        email={email}
+                                        emailWrong={emailWrong}
+                                        name={name}
+                                        nameWrong={nameWrong}
+                                        password={password}
+                                        passwordWrong={passwordWrong}
+                                        passwordRepeat={passwordRepeat}
+                                        passwordRepeatWrong={passwordRepeatWrong}
+                                        phone={phone}
+                                        phoneVisual={phoneVisual}
+                                        phoneWrong={phoneWrong}
+                                        setEmailHandler={val => setEmailHandler(val)}
+                                        handleKeyDownRegister={(from, e) => handleKeyDownRegister(from, e)}
+                                        setPasswordRepeat={val => setPasswordRepeat(val)}
+                                        setPassword={val => setPassword(val)}
+                                        setNameHandler={val => setNameHandler(val)}
+                                        setPhoneHandler={val => setPhoneHandler(val)}
+                                    />
                                 </div>
                             </div>
                             <div className={styles.buttons}>
                                 {
                                     registarTab===0?
-                                    <div className={!emailWrong?styles.login_button:styles.login_button_disabled} 
+                                    <div className={!emailWrong?styles.login_button:styles.login_button_disabled}
+                                        style={{marginTop:0}}
                                         onClick={() => {validateEmailHandler()&&checkEmail()}}>
                                         <p className={styles.login_text}>Continuar</p>
                                     </div>
@@ -678,22 +642,21 @@ const Auth = (props) => {
                                         <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                         </div>
                                         <div className={!nameWrong?styles.login_button:styles.login_button_disabled}
-                                            style={{marginLeft:'10px'}}
-                                            onClick={() => {validatePasswordHandler()&&clearWarnings()}}>
+                                            style={{marginLeft:'10px', marginTop:0}}
+                                            onClick={() => {validateNameHandler()&&validatePhoneHandler()&&clearWarnings()}}>
                                             <p className={styles.login_text}>Continuar</p>
                                         </div>
                                     </div>
-                                    :
-                                    registarTab===2?
+                                    :registarTab===2?
                                     <div className={styles.buttons_flex}>
                                         <div className={styles.login_button_voltar}
                                             onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
                                         <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                         </div>
                                         <div className={!nameWrong?styles.login_button:styles.login_button_disabled}
-                                            style={{marginLeft:'10px'}}
-                                            onClick={() => {validateNameHandler()&&validatePhoneHandler()&&registerHandler()}}>
-                                            <p className={styles.login_text}>Concluir</p>
+                                            style={{marginLeft:'10px', marginTop:0}}
+                                            onClick={() => {validatePasswordHandler()}}>
+                                            <p className={styles.login_text}>Criar Conta</p>
                                         </div>
                                     </div>
                                     :null
@@ -711,140 +674,24 @@ const Auth = (props) => {
                 </div>
                 {
                     selectedAuth===2?
-                    <Carousel 
-                        showArrows={false} 
-                        showStatus={false} 
-                        showIndicators={false} 
-                        showThumbs={false}
-                        selectedItem={verificationTab}>
-                        <div className={styles.verification_zone}>
-                            <div className={styles.verification_zone_wrapper}>
-                                <p className={styles.verification_title_helper}>Conta registada com sucesso.</p>
-                                <p className={styles.verification_title} style={{marginBottom:'20px'}}>Verifique o seu e-mail</p>
-                                <Lottie options={{
-                                    loop:false,
-                                    autoplay:true,
-                                    animationData:JSON.parse(JSON.stringify(sendEmail)),
-                                    rendererSettings: {
-                                        preserveAspectRatio: 'xMidYMid slice'
-                                    }
-                                    }}
-                                    height={120}
-                                    width={120}
-                                    // isStopped={this.state.isStopped}
-                                    // isPaused={this.state.isPaused}
-                                />
-                                <p className={styles.verification_desc}>
-                                    Envíamos um e-mail de verificação para o <span className={styles.verification_desc_strong}>{email}</span>, por-favor açeda ao seu e-mail e proceda com a verificação.
-                                </p>
-                                <p className={styles.verification_button} onClick={() => handleNext(false)}>
-                                    Já verifiquei o meu e-mail
-                                </p>
-                                <p className={styles.verification_button_helper_or}>
-                                    OU
-                                </p>
-                                <p className={styles.verification_button_helper} onClick={() => handleNext(true)}>
-                                    Verificar depois
-                                </p>
-                            </div>
-                        </div>
-                        <div className={styles.verification_zone}>
-                            <div className={styles.verification_zone_wrapper}>
-                                <p className={styles.verification_title_helper}>Conta registada com sucesso.</p>
-                                <p className={styles.verification_title} style={{marginBottom:'20px'}}>Verifique o seu telemóvel</p>
-                                <Lottie options={{
-                                    loop:false,
-                                    autoplay:verificationTab===1,
-                                    animationData:wrongCodeInserted?JSON.parse(JSON.stringify(wrongCode)):success?successLottie:sendPhone,
-                                    rendererSettings: {
-                                        preserveAspectRatio: 'xMidYMid slice'
-                                    }
-                                    }}
-                                    height={120}
-                                    width={120}
-                                    // isStopped={this.state.isStopped}
-                                    // isPaused={this.state.isPaused}
-                                />
-                                {
-                                    success?
-                                        <p className={styles.verification_desc}>
-                                            Telemóvel verificado com sucesso.
-                                        </p>
-                                    :
-                                    <div>
-                                        <p className={styles.verification_desc}>
-                                            Envíamos uma mensagem com o código de verificação para o <span className={styles.verification_desc_strong}>{phone}</span>, por-favor insira o código enviádo a baixo.
-                                        </p>
-                                        <div className={styles.phone_input_wrapper} style={{borderColor:wrongCodeInserted?"#fdd835":"#0358e5"}}>
-                                            <div className={styles.main_code_placeholder}>
-                                                {mapPlaceholder()}
-                                            </div>
-                                            <input className={styles.phone_input} value={code} type="number" onChange={e => setCodeHandler(e.target.value)} maxLength={6}/>
-                                        </div>
-                                    </div>
-
-                                }
-                                
-                                
-                                {
-                                    wrongCodeInserted?
-                                    <p className={styles.main_code_error}>
-                                        O código inserido está inválido.
-                                    </p>
-                                    :
-                                    null
-                                }
-
-                                {
-                                    success?
-                                    <p className={styles.verification_button} onClick={() => navigate('/', {
-                                            state: {
-                                                carry: 'register',
-                                                skippedVerification: skippedVerification
-                                            }
-                                        })} style={{marginTop:'40px'}}>
-                                        Continuar
-                                    </p>
-                                    :
-                                    <div>
-                                        <p className={code.length===6&&!wrongCodeInserted?styles.verification_button:styles.verification_button_disabled} onClick={() => code.length===6&&verifyCodeHandler()} style={{marginTop:'40px'}}>
-                                            Validar código
-                                        </p>
-                                        <div className={expired?styles.resend_button:styles.resend_button_disabled} 
-                                        onClick={() => {
-                                            expired&&setNewCodeSent(true)
-                                            expired&&handleSendCode()
-                                        }}>
-                                            <div className={styles.resend_text}>
-                                                {
-                                                    !expired?
-                                                    <span className={styles.resend_seconds}>{seconds}s</span>
-                                                    :null
-                                                }
-                                                {
-                                                    !expired?
-                                                    <span className={styles.resend_seconds}> | </span>
-                                                    :null
-                                                }
-                                                <span className={styles.resend_text_value}>Re-enviar código</span>
-                                            </div>
-                                        </div>
-                                        <p className={styles.verification_button_helper_or}>
-                                            OU
-                                        </p>
-                                        <p className={styles.verification_button_helper} onClick={() => navigate('/', {
-                                                state: {
-                                                    carry: 'register',
-                                                    skippedVerification: true
-                                                }
-                                            })}> 
-                                            Verificar depois
-                                        </p>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </Carousel>                    
+                        <AuthCarouselVerification 
+                            verificationTab={verificationTab}
+                            registarTab={registarTab}
+                            email={email}
+                            name={name}
+                            phone={phoneVisual}
+                            handleNext={val => handleNext(val)}
+                            wrongCodeInserted={wrongCodeInserted}
+                            success={success}
+                            mapPlaceholder={() => mapPlaceholder()}
+                            code={code}
+                            skippedVerification={skippedVerification}
+                            expired={expired}
+                            seconds={seconds}
+                            handleSendCode={() => handleSendCode()}
+                            setCodeHandler={val => setCodeHandler(val)}
+                            clearEmailAndPhone={() => clearFields()}
+                        />
                     :
                     <div className={styles.button_area}>
                         <span className={styles.worker_button} onClick={() => navigate('/authentication/worker?type=1')}>Àrea Trabalhador</span>

@@ -1,52 +1,62 @@
 import React, { useEffect, useState } from 'react'
 import styles from './auth.module.css'
-import facebook from '../assets/facebook.png'
-import google from '../assets/google.png'
 import validator from 'validator'
 import axios from 'axios'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
     registerWithEmailAndPassword, 
     loginWithEmailAndPassword,
-    fetchSignInMethodsForEmailHandler,
-    auth,
-    provider,
-    providerFacebook
+    fetchSignInMethodsForEmailHandler
     } from '../firebase/firebase'
-import {
-    GoogleAuthProvider,
-    FacebookAuthProvider,
-    signInWithPopup,
-    } from "firebase/auth"
 import { useSearchParams } from 'react-router-dom';
 import Loader from '../general/loader'
 import { useSelector } from 'react-redux'
+import AuthCarousel from './authCarousel'
+import AuthCarouselVerification from './authCarouselVerification'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import AuthCarouselWorker from './authCarouselWorker';
+
 
 const AuthWorker = (props) => {
     const api_url = useSelector(state => {return state.api_url})
 
-    const [selectedAuth, setSelectedAuth] = useState(1)
+    const [selectedAuth, setSelectedAuth] = useState(0)
 
     const [emailLogin, setEmailLogin] = useState("")
     const [emailLoginWrong, setEmailLoginWrong] = useState(false)
     const [passwordLogin, setPasswordLogin] = useState("")
     const [loginError, setLoginError] = useState(null)
 
+    // email
     const [email, setEmail] = useState("")
     const [emailWrong, setEmailWrong] = useState(false)
-    const [emailFocused, setEmailFocused] = useState(false)
+
+    // password
     const [password, setPassword] = useState("")
     const [passwordWrong, setPasswordWrong] = useState(false)
-    const [passwordFocused, setPasswordFocused] = useState(false)
+    const [passwordRepeat, setPasswordRepeat] = useState("")
+    const [passwordRepeatWrong, setPasswordRepeatWrong] = useState(false)
+
     const [name, setName] = useState("")
     const [nameWrong, setNameWrong] = useState(false)
-    const [surname, setSurname] = useState("")
-    const [surnameWrong, setSurnameWrong] = useState(false)
+    
     const [phone, setPhone] = useState("")
     const [phoneVisual, setPhoneVisual] = useState('')
     const [phoneWrong, setPhoneWrong] = useState(false)
-    const [phoneFocused, setPhoneFocused] = useState(false)
 
+
+    // lists
+    const [selectedProf, setSelectedProf] = useState([])
+    const [selectedReg, setSelectedReg] = useState([])
+    const [selectedType, setSelectedType] = useState(0)
+    const [entityName, setEntityName] = useState('')
+    const [entityNameWrong, setEntityNameWrong] = useState('')
+
+    const [selectedProfWrong, setSelectedProfWrong] = useState(false)
+    const [selectedRegWrong, setSelectedRegWrong] = useState(false)
+    const [selectedTypeWrong, setSelectedTypeWrong] = useState(false)
+
+    const [registarTab, setRegistarTab] = useState(3)
     const [loading, setLoading] = useState(false)
 
     const [searchParams] = useSearchParams()
@@ -54,25 +64,13 @@ const AuthWorker = (props) => {
 
     const navigate = useNavigate()
 
-    useEffect(() => {
-        const paramsAux = Object.fromEntries([...searchParams])
-        if(paramsAux)
-        {
-            setSelectedAuth(parseInt(paramsAux.type))
-        }
-    }, [searchParams])
-    
-    useEffect(() => {
-        if(name.length>1){
-            setNameWrong(false)
-        }
-    }, [name])
-
-    useEffect(() => {
-        if(surname.length>1){
-            setSurnameWrong(false)
-        }
-    }, [surname])
+    // useEffect(() => {
+    //     const paramsAux = Object.fromEntries([...searchParams])
+    //     if(paramsAux)
+    //     {
+    //         setSelectedAuth(parseInt(paramsAux.type))
+    //     }
+    // }, [searchParams])
 
     useEffect(() => {
         if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
@@ -86,67 +84,84 @@ const AuthWorker = (props) => {
     }, [phone])
 
     useEffect(() => {
-        if(validator.isEmail(email)){
-            setEmailWrong(false)
-        }
-    }, [email])
+        setPasswordRepeatWrong(false)
+    }, [passwordRepeat, password])
 
-    useEffect(() => {
-        if(validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
-            setPasswordWrong(false)
+    const validateNameHandler = () => {
+        if(name.length>0)
+        {
+            let val = name.split(' ')
+            if(val[0].length>1&&val[1]?.length>0){
+                setNameWrong(false)
+                return true
+            }
+            else{
+                setNameWrong(true)
+                return false
+            }
         }
-    }, [password])
+        else{
+            setNameWrong(true)
+        }
+    }
 
     const setPhoneHandler = (val) => {
-        let phone = val.replace(/\s/g, '')
+        setPhoneWrong(false)
+        let phone = val.replace(/\D/g, "")
+        phone.replace(/\s/g, '')
         setPhone(phone)
     }
 
-    const validateNameHandler = () => {
-        if(name.length<2){
-            setNameWrong(true)
-        }
-        else{
-            setNameWrong(false)
-        }
+    const setEmailHandler = val => {
+        setEmailWrong(false)
+        if(val[0]===' ') val = val.replace(/ /g, '')
+        else setEmail(val)
     }
 
-    const validateSurnameHandler = () => {
-        if(surname.length<2){
-            setSurnameWrong(true)
-        }
+    const setNameHandler = val => {
+        setNameWrong(false)
+        if(val[0]===' ') {val = val.replace(/ /g, '')}
         else{
-            setSurnameWrong(false)
+            val = val.replace(/[0-9]/g, '')
+            setName(val)
         }
+        
     }
 
     const validatePhoneHandler = () => {
-        setPhoneFocused(false)
         if(validator.isMobilePhone(phone, "pt-PT")){
             setPhoneWrong(false)
+            setRegistarTab(3)
+            return true
         }
         else{
-            if(phoneFocused) setPhoneWrong(true)
+            setPhoneWrong(true)
+            return false
         }
     }
 
     const validateEmailHandler = () => {
-        setEmailFocused(false)
         if(validator.isEmail(email)){
             setEmailWrong(false)
+            return true
         }
         else{
-            if(emailFocused) setEmailWrong("O e-mail não é válido.")
+            setEmailWrong('Este e-mail não é válido')
+            return false
         }
     }
 
     const validatePasswordHandler = () => {
-        setPasswordFocused(false)
         if(validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
             setPasswordWrong(false)
+            if(passwordRepeat===password)
+                setRegistarTab(2)
+            else
+                setPasswordRepeatWrong(true)
         }
-        else{
-            if(passwordFocused) setPasswordWrong(true)
+        else
+        {
+            setPasswordWrong(true)
         }
     }
 
@@ -155,6 +170,89 @@ const AuthWorker = (props) => {
             event.preventDefault()
             loginHandler()
         }
+    }
+
+    const handleKeyDownRegister = (from, event) => {
+        console.log(from, event)
+        if (event.key === 'Enter') {
+            event.preventDefault()
+            if(from === 'email'){
+                validateEmailHandler()&&checkEmail()
+            }
+            else if(from === 'password'){
+                validatePasswordHandler()&&clearWarnings()
+            }
+            else if(from === 'name'){
+                validateNameHandler()&&validatePhoneHandler()&&registerHandler()
+            }
+        }
+    }
+
+    const checkEmail = async () => {
+        setLoading(true)
+        let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} })
+        console.log(res)
+
+        if(res.data){
+            setEmailWrong('Este e-mail já se encontra registado a uma conta de utilizador.')
+            setLoading(false)
+        }
+        else
+        {
+            res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} })
+            console.log(res)
+            if(res.data){
+                setEmailWrong('Este e-mail já se encontra registado a uma conta de trabalhador.')
+                setLoading(false)
+            }
+            else{
+                setLoading(false)
+                setEmailWrong(false)
+                setRegistarTab(1)
+                clearWarnings()
+            }
+        }
+    }
+
+    const verifySelectedType = () => {
+        if(selectedType===0||(selectedType===1&&entityName.length>1)){
+            setSelectedTypeWrong(false)
+            setRegistarTab(4)
+        }
+        else
+        {
+            setSelectedTypeWrong(true)
+        }
+    }
+
+    const verifySelectedProfessions = () => {
+        if(selectedProf.length>0){
+            setSelectedProfWrong(false)
+            setRegistarTab(5)
+        }
+        else
+        {
+            setSelectedProfWrong(true)
+        }
+    }
+
+    const verifySelectedRegions = () => {
+        if(selectedReg.length>0){
+            setSelectedRegWrong(false)
+            setRegistarTab(6)
+        }
+        else
+        {
+            setSelectedRegWrong(true)
+        }
+    }
+
+    const clearWarnings = () => {
+        setNameWrong(false)
+        setEmailWrong(false)
+        setPhoneWrong(false)
+        setPasswordWrong(false)
+        setPasswordRepeatWrong(false)
     }
 
     const loginHandler = async () => {
@@ -187,13 +285,13 @@ const AuthWorker = (props) => {
                                 
                             })
                             .catch(() => {
-                                setLoginError('O e-mail ou a Password estão incorretos.')
+                                setLoginError('O e-mail ou a palavra-passe estão incorretos.')
                                 setLoading(false)
                             })
                         }
                     }
                     else{
-                        setLoginError('O e-mail ou a Password estão incorretos.')
+                        setLoginError('O e-mail ou a palavra-sse estão incorretos.')
                         setLoading(false)
                     }                  
                 })
@@ -220,7 +318,6 @@ const AuthWorker = (props) => {
         await axios.post(`${api_url}/auth/register/worker`, 
             {
                 name: from_signup?from_signup.name:name,
-                surname: from_signup?from_signup.name:surname,
                 phone: phone,
                 email: from_signup?from_signup.email:email.toLocaleLowerCase(),
                 google_uid: user_uid,
@@ -244,84 +341,56 @@ const AuthWorker = (props) => {
     }
 
     const registerHandler = async () => {
-        setLoading(true)
+        let val = name.split(' ')
         if(validator.isMobilePhone(phone, "pt-PT")
-            && name.length>1
-            && surname.length>1
+            && val[0].length>1&&val.length===2&&val[1]?.length>0
             && validator.isEmail(email)
-            && validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
-            try{
-                let res = await registerWithEmailAndPassword(email.toLocaleLowerCase(), password)
-                await registerHelper(res.user.uid, false)
-                setLoading(false)
-            }
-            catch (err) {
-                if(err.code == "auth/email-already-in-use"){
-                    axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
-                        setLoading(false)
-                        if(res.data != null){
-                            setEmailWrong("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Por-favor, utilize outro email.")
-                        }
-                        else{
-                            setEmailWrong("Já se inscreveu com este email. Esqueceu-se da palavra passe?")
-                        }
-                        
-                    })
-                }
-                else{
-                    setLoginError("Problema no servidor.")
+            && validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0}))
+            {
+                setLoading(true)
+                try{
+                    let res = await registerWithEmailAndPassword(email.toLocaleLowerCase(), password)
+                    await registerHelper(res.user.uid, false)
                     setLoading(false)
+                    setLoading(false)
+                    setEmail(null)
+                    setPassword(null)
+                    setPasswordRepeat(null)
+                    setName(null)
+                    setPhone(null)
+                    setPhoneVisual(null)
+                    setSelectedAuth(2)
                 }
-            }
+                catch (err) {
+                    if(err.code == "auth/email-already-in-use"){
+                        axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                            setLoading(false)
+                            if(res.data != null){
+                                setEmailWrong('Este e-mail já se encontra registado a uma conta de utilizador.')
+                            }
+                            else{
+                                setEmailWrong('Este e-mail já se encontra registado a uma conta de trabalhador.')
+                            }
+                            setLoading(false)
+                            setPassword(null)
+                            setPasswordRepeat(null)
+                            setName(null)
+                            setPhone(null)
+                            setPhoneVisual(null)
+                            setRegistarTab(0)
+                        })
+                    }
+                    else{
+                        setLoginError("Problema no servidor. Por-favor tente mais tarde.")
+                        setLoading(false)
+                    }
+                }
             }
         else{
             setLoading(false)
-            if(name.length<2){
-                setNameWrong(true)
-            }
-            else if(surname.length<2){
-                setSurnameWrong(true)
-            }
-            else if(!validator.isMobilePhone(phone, "pt-PT")){
-                setPhoneWrong(true)
-            }
-            else if(email.length===0){
-                setEmailWrong(true)
-            }
-            else if(!validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
-                setPasswordWrong(true)
-            }
         }
     }
-
-    const signInWithPopupHandler = async (type) => {
-        setLoading(true)
-        try{
-            let res = await signInWithPopup(auth, type==="google"?provider:providerFacebook)
-            let existing_user = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
-            let existing_worker = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
-            
-            console.log(existing_user, existing_worker)
-            if(existing_user.data == null && existing_worker.data == null){
-                //conta nao existe - criar
-                let from_signup = {
-                    name: res.user.displayName,
-                    email: res.user.email,
-                    photoURL: res.user.photoURL
-                }
-                await registerHelper(res.user.uid, from_signup)
-                setLoading(false)
-            }
-            else{
-                //conta existe
-                navigate('/')
-                setLoading(false)
-            }
-        }
-        catch (err) {
-            setLoading(false)
-        }
-    }
+    
 
     return (
         <div className={styles.auth}>
@@ -341,30 +410,13 @@ const AuthWorker = (props) => {
                     {
                         selectedAuth===1?
                         <div className={styles.area_bot}>
-                            <div className={styles.area_o2} style={{borderBottom:"1px solid #FF785A50"}}>
-                                <div className={styles.o2_button} onClick={() => signInWithPopupHandler("facebook")}>
-                                    <img src={facebook} className={styles.o2_img}></img>
-                                    <span className={styles.align_vert}>
-                                        <span className={styles.o2_text}>Entrar com Facebook</span>
-                                    </span>
-                                </div>
-                                <div className={styles.o2_button} style={{marginTop:"5px"}}  onClick={() => signInWithPopupHandler("google")}>
-                                    <img src={google} className={styles.o2_img}></img>
-                                    <span className={styles.align_vert}>
-                                        <span className={styles.o2_text}>Entrar com Google</span>
-                                    </span>
-                                </div>
-                                <span className={styles.ou}>
-                                    ou
-                                </span>
-                            </div>
                             <div className={styles.login_div}>
                                 <div className={styles.login}>
                                     <p className={styles.login_title}>E-mail</p>
                                     <input 
                                         onKeyDown={handleKeyDown}
-                                        style={{borderBottom:emailLoginWrong?"3px solid red":""}}
-                                        className={styles.login_input} 
+                                        style={{borderBottom:emailLoginWrong?"2px solid red":"", backgroundColor:"#00000010"}}
+                                        className={styles.login_input}
                                         placeholder="E-mail"
                                         value={emailLogin}
                                         onChange={e => {
@@ -379,8 +431,9 @@ const AuthWorker = (props) => {
                                     <p className={styles.login_title}>Password</p>
                                     <input 
                                         onKeyDown={handleKeyDown}
-                                        className={styles.login_input} 
-                                        placeholder="Password"
+                                        className={styles.login_input}
+                                        style={{backgroundColor:"#00000010"}}
+                                        placeholder="Palavra-passe"
                                         type="password"
                                         value={passwordLogin}
                                         onChange={e => setPasswordLogin(e.target.value)}></input>
@@ -396,120 +449,156 @@ const AuthWorker = (props) => {
                                 :null
                             }
                             <div style={{marginTop:"20px"}}>
-                                <span className={styles.recup_password}>Recuperar password</span>
+                                <span className={styles.recup_password}>Recuperar palavra-passe</span>
                             </div>
                             <div className={!loading?styles.login_button_worker:styles.login_button_disabled} onClick={() => {
                                 if(!loading) loginHandler()}}>
-                                <p className={styles.login_text}>Efectue o seu login</p>
+                                <p className={styles.login_text}>LOGIN TRABALHADOR</p>
                             </div>
                             <div className={styles.bottom_switch}>
-                                <span className={styles.bottom_switch_text}>Não tens conta? </span>
+                                <span className={styles.bottom_switch_text}>Não tens conta de trabalhador? </span>
                                 <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Registar</span>
                             </div>
                         </div>
                         :
                         <div className={styles.area_bot}>
                             <Loader radius={true} loading={loading}/>
-                            <div className={styles.login_div}>
-                                <div className={styles.login}>
-                                    <p className={styles.login_title}>Nome</p>
-                                    <input 
-                                        autoComplete="off"
-                                        maxLength={12}
-                                        onChange={e => setName(e.target.value)} 
-                                        className={styles.login_input} 
-                                        placeholder="Nome" 
-                                        value={name}
-                                        onBlur={() => validateNameHandler()}
-                                        style={{borderBottom:nameWrong?"3px solid black":!nameWrong&&name.length>1?"3px solid #0358e5":""}}></input>
-                                    {
-                                        nameWrong?
-                                        <span className={styles.field_error} style={{color:"black"}}>Por favor, escreva pelo menos 2 caracteres.</span>
-                                        :null
-                                    }
-                                    
-                                </div>
-                                <div className={styles.login} style={{marginTop:"10px"}}>
-                                    <p className={styles.login_title}>Apelido</p>
-                                    <input
-                                        autoComplete="off"
-                                        maxLength={12}
-                                        onChange={e => setSurname(e.target.value)} 
-                                        className={styles.login_input} 
-                                        placeholder="Apelido" 
-                                        value={surname}
-                                        onBlur={() => validateSurnameHandler()}
-                                        style={{borderBottom:surnameWrong?"3px solid black":!surnameWrong&&surname.length>1?"3px solid #0358e5":""}}></input>
-                                    {
-                                        surnameWrong?
-                                        <span className={styles.field_error} style={{color:"black"}}>Por favor, escreva pelo menos 2 caracteres.</span>
-                                        :null
-                                    }
-                                    
-                                </div>
-                                <div className={styles.login} style={{marginTop:"10px"}}>
-                                    <p className={styles.login_title}>Telefone</p>
-                                    <input
-                                        autoComplete="off"
-                                        maxLength={11} 
-                                        onChange={e => setPhoneHandler(e.target.value)} 
-                                        value={phoneVisual} className={styles.login_input} 
-                                        placeholder="Telefone"
-                                        onBlur={() => validatePhoneHandler()}
-                                        style={{borderBottom:phoneWrong?"3px solid black":validator.isMobilePhone(phone, "pt-PT")&&phone.length===9?"3px solid #0358e5":""}}
-                                        onFocus={() => setPhoneFocused(true)}></input>
-                                        {
-                                            phoneWrong?
-                                            <span className={styles.field_error} style={{color:"black"}}>O número de telefone não é valido.</span>
-                                            :null
-                                        }
-                                    
-                                </div>
-                                <div className={styles.login} style={{marginTop:"10px"}}>
-                                    <p className={styles.login_title}>E-mail</p>
-                                    <input 
-                                        autoComplete="off"
-                                        maxLength={80} 
-                                        onChange={e => setEmail(e.target.value)} 
-                                        className={styles.login_input} 
-                                        placeholder="E-mail" 
-                                        value={email}
-                                        onFocus={() => setEmailFocused(true)}
-                                        onBlur={() => validateEmailHandler()}
-                                        style={{borderBottom:emailWrong?"3px solid black":validator.isEmail(email)&&email.length>0?"3px solid #0358e5":""}}></input>
-                                        {
-                                            emailWrong?
-                                            <span className={styles.field_error}>{emailWrong}</span>
-                                            :null
-                                        }
-                                </div>
-                                <div className={styles.login} style={{marginTop:"10px"}}>
-                                    <p className={styles.login_title}>Password</p>
-                                    <input 
-                                        autoComplete="new-password"
-                                        maxLength={40} 
-                                        type="password"
-                                        onChange={e => setPassword(e.target.value)}
-                                        className={styles.login_input} 
-                                        placeholder="Password" 
-                                        value={password}
-                                        onFocus={() => setPasswordFocused(true)}
-                                        onBlur={() => validatePasswordHandler()}
-                                        style={{borderBottom:passwordWrong?"3px solid black":!passwordWrong&&password.length>7?"3px solid #0358e5":""}}></input>
-                                        {
-                                            passwordWrong?
-                                            <span className={styles.field_error} style={{color:"black"}}>Por favor, escreva pelo menos 8 caracteres.</span>
-                                            :null
-                                        }
-                                </div>
+                            <div className={styles.area_bot_wrapper} style={{backgroundColor:"#FF785A30"}}>
+                                {
+                                    registarTab<=2?
+                                    <p className={styles.area_bot_title} style={{backgroundColor:"#FF785A"}}>Criar conta de trabalhador</p>
+                                    :
+                                    <p className={styles.area_bot_title} style={{backgroundColor:"#FF785A"}}>Finalizar detalhes</p>
+                                }
+                                {
+                                    registarTab<=2?
+                                    <p className={styles.area_bot_title_helper} style={{color:"#FF785A"}}>({registarTab+1}/3)</p>
+                                    :
+                                    <p className={styles.area_bot_title_helper} style={{color:"#FF785A"}}>({registarTab-2}/3)</p>
+                                }
+                                
+                                <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Palavra-passe', 'Detalhes do utilizador', 'Particular ou Empresa', 'Serviços que excerço', 'Distritos onde trabalho', 'Concluir'][registarTab]}</p>
+                                {
+                                    registarTab<=2?
+                                    <div className={styles.login_div}>
+                                        <AuthCarousel
+                                            type={'worker'}
+                                            registarTab={registarTab}
+                                            email={email}
+                                            emailWrong={emailWrong}
+                                            name={name}
+                                            nameWrong={nameWrong}
+                                            password={password}
+                                            passwordWrong={passwordWrong}
+                                            passwordRepeat={passwordRepeat}
+                                            passwordRepeatWrong={passwordRepeatWrong}
+                                            phone={phone}
+                                            phoneVisual={phoneVisual}
+                                            phoneWrong={phoneWrong}
+                                            setEmailHandler={val => setEmailHandler(val)}
+                                            handleKeyDownRegister={(from, e) => handleKeyDownRegister(from, e)}
+                                            setPasswordRepeat={val => setPasswordRepeat(val)}
+                                            setPassword={val => setPassword(val)}
+                                            setNameHandler={val => setNameHandler(val)}
+                                            setPhoneHandler={val => setPhoneHandler(val)}
+                                        />
+                                    </div>
+                                    :
+                                    <div className={styles.login_div}>
+                                        <AuthCarouselWorker
+                                            registarTab={registarTab}
+                                            email={email}
+                                            selectedProf={selectedProf}
+                                            selectedProfWrong={selectedProfWrong}
+                                            selectedReg={selectedReg}
+                                            selectedRegWrong={selectedRegWrong}
+                                            selectedType={selectedType}
+                                            selectedTypeWrong={selectedTypeWrong}
+                                            entityName={entityName}
+                                            entityNameWrong={entityNameWrong}
+                                            updateSelectedProfessions={list => setSelectedProf(list)}
+                                            updateSelectedRegions={list => setSelectedReg(list)}
+                                            updateSelectedType={val => setSelectedType(val)&&setEntityNameWrong(false)}
+                                            updateEntityName={val => setEntityName(val)}
+                                            verifySelectedProfessions={() => verifySelectedProfessions()}
+                                            verifySelectedRegions={() => verifySelectedRegions()}
+                                            verifySelectedType={() => verifySelectedType()}
+                                        />
+                                    </div>
+                                }
                             </div>
-                            <div className={!loading?styles.login_button_worker:styles.login_button_disabled} style={{marginTop:"20px"}} onClick={() => {
-                                    if(!loading) registerHandler()}}>
-                                <p className={styles.login_text}>Registar como <span style={{textDecoration:"underline"}}>Trabalhador</span></p>
-                            </div>
-                            <div className={styles.bottom_switch}>
-                                <span className={styles.bottom_switch_text}>Já tens conta? </span>
-                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(1)}>Login</span>
+                            <div className={styles.buttons}>
+                                {
+                                    registarTab===0?
+                                    <div className={!emailWrong?styles.login_button_worker:styles.login_button_disabled}
+                                        style={{marginTop:0}}
+                                        onClick={() => {validateEmailHandler()&&checkEmail()}}>
+                                        <p className={styles.login_text}>Continuar</p>
+                                    </div>
+                                    :
+                                    registarTab===1?
+                                    <div className={styles.buttons_flex}>
+                                        <div className={styles.login_button_voltar}
+                                            onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                        <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                        </div>
+                                        <div className={!nameWrong?styles.login_button_worker:styles.login_button_disabled}
+                                            style={{marginLeft:'10px', marginTop:0}}
+                                            onClick={() => {validatePasswordHandler()&&clearWarnings()}}>
+                                            <p className={styles.login_text}>Continuar</p>
+                                        </div>
+                                    </div>
+                                    :
+                                    registarTab===2?
+                                    <div className={styles.buttons_flex}>
+                                        <div className={styles.login_button_voltar}
+                                            onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                        <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                        </div>
+                                        <div className={!nameWrong?styles.login_button_worker:styles.login_button_disabled}
+                                            style={{marginLeft:'10px', marginTop:0}}
+                                            onClick={() => {validateNameHandler()&&validatePhoneHandler()&&clearWarnings()}}>
+                                            <p className={styles.login_text}>Continuar</p>
+                                        </div>
+                                    </div>
+                                    :
+                                    registarTab===3?
+                                    <div className={styles.buttons_flex}>
+                                        <div className={selectedType===0||(selectedType===1&&entityName.length>1)?styles.login_button_worker:styles.login_button_disabled}
+                                            style={{marginTop:0}}
+                                            onClick={() => {verifySelectedType()&&clearWarnings()}}>
+                                            <p className={styles.login_text}>Continuar</p>
+                                        </div>
+                                    </div>
+                                    :
+                                    registarTab===4?
+                                    <div className={styles.buttons_flex}>
+                                        <div className={styles.login_button_voltar}
+                                            onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                        <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                        </div>
+                                        <div className={selectedProf.length>0?styles.login_button_worker:styles.login_button_disabled}
+                                            style={{marginTop:0, marginLeft:'10px'}}
+                                            onClick={() => {verifySelectedProfessions()&&clearWarnings()}}>
+                                            <p className={styles.login_text}>Continuar</p>
+                                        </div>
+                                    </div>
+                                    :
+                                    registarTab===5?
+                                    <div className={styles.buttons_flex}>
+                                        <div className={styles.login_button_voltar}
+                                            onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                        <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                        </div>
+                                        <div className={selectedReg.length>0?styles.login_button_worker:styles.login_button_disabled}
+                                            style={{marginLeft:'10px', marginTop:0}}
+                                            onClick={() => {verifySelectedRegions()&&clearWarnings()}}>
+                                            <p className={styles.login_text}>Continuar</p>
+                                        </div>
+                                    </div>
+                                    :null
+                                    
+                                }  
                             </div>
                         </div>
 

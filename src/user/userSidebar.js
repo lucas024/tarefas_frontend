@@ -25,6 +25,7 @@ import { useSelector } from 'react-redux'
 
 const UserSidebar = (props) => {
     const user_profile_complete = useSelector(state => {return state.user_profile_complete})
+    const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
     const user = useSelector(state => {return state.user})
     const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
@@ -108,10 +109,8 @@ const UserSidebar = (props) => {
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
                                 <span className={styles.prox}>Perfil</span>
                                 {
-                                    user_profile_complete&&user?.type?
-                                    <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                    :user?.type?
-                                    <UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                    !user_profile_complete&&!worker_profile_complete?
+                                    <span className={styles.drop_div_notification}/>
                                     :null
                                 }
                             </div>

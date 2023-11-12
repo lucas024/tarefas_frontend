@@ -296,7 +296,7 @@ const Trabalhador = props => {
                             <span className={styles.user_info_number} style={{opacity:"0.6"}}>Mensagem</span> 
                         </div>
                         {
-                            !user?
+                            !user._id?
                             <div className={styles.textarea_wrapper}>
                                 <textarea   
                                         disabled={!user}
@@ -307,7 +307,7 @@ const Trabalhador = props => {
                                 <div className={styles.frontdrop}>
                                     <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{textTransform:"capitalize", fontWeight:700}}>{worker?.name?.split(" ")[0]}</span>,</span>
                                     <span className={styles.frontdrop_text}>registe-se ou entre numa conta!</span>
-                                    <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication/worker?type=1')}>autenticar</span>
+                                    <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication?type=1')}>autenticar</span>
                                 </div>
                             </div>
                             :
