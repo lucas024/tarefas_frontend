@@ -22,7 +22,12 @@ const AuthCarouselVerification = props => {
             selectedItem={props.verificationTab}>
             <div className={styles.verification_zone}>
                 <div className={styles.verification_zone_wrapper}>
-                    <p className={styles.verification_title_helper}>Conta registada com sucesso.</p>
+                    {
+                        props.worker?
+                        null
+                        :
+                        <p className={styles.verification_title_helper}>Conta registada com sucesso.</p>
+                    }
                     <p className={styles.verification_title} style={{marginBottom:'20px'}}>Verifique o seu e-mail</p>
                     <Lottie options={{
                         loop:false,

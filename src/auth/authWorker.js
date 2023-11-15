@@ -15,11 +15,22 @@ import AuthCarousel from './authCarousel'
 import AuthCarouselVerification from './authCarouselVerification'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import AuthCarouselWorker from './authCarouselWorker';
+import {CSSTransition}  from 'react-transition-group';
+import Sessao from '../transitions/sessao'
+import { useDispatch } from 'react-redux'
+import { 
+    user_load,
+    user_update_field
+  } from '../store';
+import { useTimer } from 'react-timer-hook';
 
 
 const AuthWorker = (props) => {
     const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
+    const dispatch = useDispatch()
 
+    const [searchParams] = useSearchParams()
     const [selectedAuth, setSelectedAuth] = useState(0)
 
     const [emailLogin, setEmailLogin] = useState("")
@@ -56,21 +67,36 @@ const AuthWorker = (props) => {
     const [selectedRegWrong, setSelectedRegWrong] = useState(false)
     const [selectedTypeWrong, setSelectedTypeWrong] = useState(false)
 
-    const [registarTab, setRegistarTab] = useState(3)
+    const [registarTab, setRegistarTab] = useState(0)
     const [loading, setLoading] = useState(false)
+    const [detailsPopup, setDetailsPopup] = useState(false)
 
-    const [searchParams] = useSearchParams()
+
+    // verification
+    const [code, setCode] = useState('')
+    const [expiryTimestamp, setExpiryTimestamp] = useState(null)
+    const [expired, setExpired] = useState(false)
+    const [newCodeSent, setNewCodeSent] = useState(false)
+    const [wrongCodeInserted, setWrongCodeInserted] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [skippedVerification, setSkippedVerification] = useState(false)
+    const [verificationTab, setVerificationTab] = useState(0)
+
+    const codePlaceholder = [0,0,0,0,0,0]
+
+
+    const [registerPopup, setRegisterPopup] = useState(false)
 
 
     const navigate = useNavigate()
 
-    // useEffect(() => {
-    //     const paramsAux = Object.fromEntries([...searchParams])
-    //     if(paramsAux)
-    //     {
-    //         setSelectedAuth(parseInt(paramsAux.type))
-    //     }
-    // }, [searchParams])
+    useEffect(() => {
+        const paramsAux = Object.fromEntries([...searchParams])
+        if(paramsAux)
+        {
+            setSelectedAuth(parseInt(paramsAux.type))
+        }
+    }, [searchParams])
 
     useEffect(() => {
         if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
@@ -85,6 +111,7 @@ const AuthWorker = (props) => {
 
     useEffect(() => {
         setPasswordRepeatWrong(false)
+        setPasswordWrong(false)
     }, [passwordRepeat, password])
 
     const validateNameHandler = () => {
@@ -131,7 +158,7 @@ const AuthWorker = (props) => {
     const validatePhoneHandler = () => {
         if(validator.isMobilePhone(phone, "pt-PT")){
             setPhoneWrong(false)
-            setRegistarTab(3)
+            setRegistarTab(2)
             return true
         }
         else{
@@ -155,7 +182,7 @@ const AuthWorker = (props) => {
         if(validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
             setPasswordWrong(false)
             if(passwordRepeat===password)
-                setRegistarTab(2)
+                registerHandler()
             else
                 setPasswordRepeatWrong(true)
         }
@@ -173,17 +200,16 @@ const AuthWorker = (props) => {
     }
 
     const handleKeyDownRegister = (from, event) => {
-        console.log(from, event)
         if (event.key === 'Enter') {
             event.preventDefault()
             if(from === 'email'){
                 validateEmailHandler()&&checkEmail()
             }
             else if(from === 'password'){
-                validatePasswordHandler()&&clearWarnings()
+                validatePasswordHandler()
             }
             else if(from === 'name'){
-                validateNameHandler()&&validatePhoneHandler()&&registerHandler()
+                validateNameHandler()&&validatePhoneHandler()&&clearWarnings()
             }
         }
     }
@@ -191,7 +217,6 @@ const AuthWorker = (props) => {
     const checkEmail = async () => {
         setLoading(true)
         let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} })
-        console.log(res)
 
         if(res.data){
             setEmailWrong('Este e-mail já se encontra registado a uma conta de utilizador.')
@@ -200,7 +225,6 @@ const AuthWorker = (props) => {
         else
         {
             res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} })
-            console.log(res)
             if(res.data){
                 setEmailWrong('Este e-mail já se encontra registado a uma conta de trabalhador.')
                 setLoading(false)
@@ -218,10 +242,13 @@ const AuthWorker = (props) => {
         if(selectedType===0||(selectedType===1&&entityName.length>1)){
             setSelectedTypeWrong(false)
             setRegistarTab(4)
+            return true
         }
         else
         {
             setSelectedTypeWrong(true)
+            setLoading(false)
+            return false
         }
     }
 
@@ -229,10 +256,13 @@ const AuthWorker = (props) => {
         if(selectedProf.length>0){
             setSelectedProfWrong(false)
             setRegistarTab(5)
+            return true
         }
         else
         {
             setSelectedProfWrong(true)
+            setLoading(false)
+            return false
         }
     }
 
@@ -240,10 +270,13 @@ const AuthWorker = (props) => {
         if(selectedReg.length>0){
             setSelectedRegWrong(false)
             setRegistarTab(6)
+            return true
         }
         else
         {
             setSelectedRegWrong(true)
+            setLoading(false)
+            return false
         }
     }
 
@@ -332,12 +365,10 @@ const AuthWorker = (props) => {
                 entity_name: "",
                 registerMethod: from_signup?from_signup.register_type:"email"
             })
-
-        navigate('/', {
-                state: {
-                    refreshWorker: true
-                }
-            })
+        let res = await axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: user_uid} })
+        if(res.data !== null){
+            dispatch(user_load(res.data))
+        }
     }
 
     const registerHandler = async () => {
@@ -352,14 +383,9 @@ const AuthWorker = (props) => {
                     let res = await registerWithEmailAndPassword(email.toLocaleLowerCase(), password)
                     await registerHelper(res.user.uid, false)
                     setLoading(false)
-                    setLoading(false)
-                    setEmail(null)
-                    setPassword(null)
-                    setPasswordRepeat(null)
-                    setName(null)
-                    setPhone(null)
-                    setPhoneVisual(null)
-                    setSelectedAuth(2)
+                    setRegisterPopup(true)
+                    setTimeout(() => setRegisterPopup(false), 4000)
+                    setRegistarTab(3)
                 }
                 catch (err) {
                     if(err.code == "auth/email-already-in-use"){
@@ -390,26 +416,144 @@ const AuthWorker = (props) => {
             setLoading(false)
         }
     }
+
+    const updateWorkerDetails = () => {
+        setLoading(true)
+        verifySelectedRegions()&&
+        verifySelectedProfessions()&&
+        verifySelectedType()&&
+        axios.post(`${api_url}/worker/update_selected`, {
+            user_id : user._id,
+            trabalhos : selectedProf,
+            regioes: selectedReg,
+            entity: selectedType,
+            entity_name: entityName
+        }).then(() => {
+            dispatch(
+                user_update_field(
+                    [
+                        {field: 'trabalhos', value: selectedProf},
+                        {field: 'regioes', value: selectedReg},
+                        {field: 'entity', value: selectedType},
+                        {field: 'entity_name', value: entityName}
+                    ]
+                )
+            )
+            setLoading(false)
+            setDetailsPopup(true)
+            setTimeout(() => setDetailsPopup(false), 4000)
+            setSelectedAuth(2)
+        })
+
+    }
+
+    ////////////////////////////////// TIMER //////////////////////////////////
+
+    const {
+        seconds,
+        restart,
+    } = useTimer({ expiryTimestamp, onExpire: () => setExpired(true) })
+
+    const mapPlaceholder = () => {
+        return codePlaceholder.map((val, i) => {
+            return(
+                <span key={i} className={styles.main_code_placeholder_value} style={{opacity:i<code.length?0:1}}>{val}</span>
+            )
+        })
+    }
+
+    const setCodeHandler = value => {
+        setWrongCodeInserted(false)
+        if(value.length<7)
+        {
+            setCode(value)
+        }
+    }
+
+    const handleSendCode = () => {
+        const time = new Date()
+        time.setSeconds(time.getSeconds() + 59)
+        restart(time)
+        setExpired(false)
+        setWrongCodeInserted(false)
+        setSuccess(false)
+        setCode('')
+    }
+
+    const handleNext = (skipped) => {
+        if(skipped) setSkippedVerification(true)
+        setVerificationTab(1)
+        const time = new Date()
+        time.setSeconds(time.getSeconds() + 59)
+        restart(time)
+        setExpired(false)
+        setWrongCodeInserted(false)
+        setCode('')
+    }
+
+    const verifyCodeHandler = () => {
+        // setWrongCodeInserted(true)
+        setSuccess(true)
+    }
+
+    
+    const clearFields = () => {
+        setPassword(null)
+        setPasswordRepeat(null)
+        setName(null)
+        setEmail(null)
+        setPhone(null)
+        setPhoneVisual(null)
+        setEntityName(null)
+        setSelectedProf(null)
+        setSelectedReg(null)
+        setSelectedType(0)
+    }
     
 
     return (
         <div className={styles.auth}>
+            <CSSTransition 
+                in={registerPopup}
+                timeout={1000}
+                classNames="transition"
+                unmountOnExit
+                >
+                <Sessao text={"Conta criada com sucesso!"}/>
+            </CSSTransition>
+            <CSSTransition 
+                    in={detailsPopup}
+                    timeout={1000}
+                    classNames="transition"
+                    unmountOnExit
+                    >
+                    <Sessao text={"Detalhes trabalhador atualizados com sucesso!"}/>
+                </CSSTransition>
             <div className={styles.auth_main_worker}>
-                <div className={styles.area}>
-                    <Loader radius={true} loading={loading}/>
-                    <div className={styles.area_top} style={{borderBottom:"1px solid #FF785A50"}}>
-                        <ul>
-                            <li onClick={() => setSelectedAuth(1)} style={{color:"#FF785A"}} className={selectedAuth?styles.li_active_worker:""}>
-                                <span className={selectedAuth?styles.li_text_active_worker:styles.li_text}>Login</span>
-                            </li>
-                            <li onClick={() => setSelectedAuth(0)} style={{color:"#FF785A"}} className={!selectedAuth?styles.li_active_worker:""}>
-                                <span className={!selectedAuth?styles.li_text_active_worker:styles.li_text}>Registar</span>
-                            </li>
-                        </ul>
-                    </div>
+            
+                <div className={styles.area} style={{backgroundColor:selectedAuth===2?'transparent':'#fff'}}>
+                    {
+                        selectedAuth!==2?
+                        <div className={styles.area_top} style={{borderBottom:"1px solid #FF785A50"}}>
+                            <ul>
+                                <li onClick={() => setSelectedAuth(1)} style={{color:"#FF785A"}} className={selectedAuth?styles.li_active_worker:""}>
+                                    <span className={selectedAuth?styles.li_text_active_worker:styles.li_text}>Login</span>
+                                </li>
+                                <li onClick={() => setSelectedAuth(0)} style={{color:"#FF785A"}} className={!selectedAuth?styles.li_active_worker:""}>
+                                    <span className={!selectedAuth?styles.li_text_active_worker:styles.li_text}>Registar</span>
+                                </li>
+                            </ul>
+                        </div>
+                        :null
+                    }
+                    
                     {
                         selectedAuth===1?
                         <div className={styles.area_bot}>
+                            {
+                                loading&&<div className={styles.verification_backdrop}/>
+                            }
+                            <Loader radius={true} loading={loading}/>
                             <div className={styles.login_div}>
                                 <div className={styles.login}>
                                     <p className={styles.login_title}>E-mail</p>
@@ -461,20 +605,26 @@ const AuthWorker = (props) => {
                             </div>
                         </div>
                         :
+                        selectedAuth===0?
                         <div className={styles.area_bot}>
+                            {
+                                loading&&<div className={styles.verification_backdrop}/>
+                            }
                             <Loader radius={true} loading={loading}/>
                             <div className={styles.area_bot_wrapper} style={{backgroundColor:"#FF785A30"}}>
                                 {
                                     registarTab<=2?
                                     <p className={styles.area_bot_title} style={{backgroundColor:"#FF785A"}}>Criar conta de trabalhador</p>
                                     :
-                                    <p className={styles.area_bot_title} style={{backgroundColor:"#FF785A"}}>Finalizar detalhes</p>
+                                    <div>
+                                        <p className={styles.area_bot_title} style={{backgroundColor:"#FF785A"}}>Preencher detalhes</p>
+                                    </div>
                                 }
                                 {
                                     registarTab<=2?
                                     <p className={styles.area_bot_title_helper} style={{color:"#FF785A"}}>({registarTab+1}/3)</p>
                                     :
-                                    <p className={styles.area_bot_title_helper} style={{color:"#FF785A"}}>({registarTab-2}/3)</p>
+                                    <p className={styles.area_bot_title_helper} style={{color:"#FF785A"}}>({registarTab-2}/4)</p>
                                 }
                                 
                                 <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Palavra-passe', 'Detalhes do utilizador', 'Particular ou Empresa', 'Serviços que excerço', 'Distritos onde trabalho', 'Concluir'][registarTab]}</p>
@@ -508,6 +658,9 @@ const AuthWorker = (props) => {
                                         <AuthCarouselWorker
                                             registarTab={registarTab}
                                             email={email}
+                                            phone={phone}
+                                            name={name}
+                                            phoneVisual={phoneVisual}
                                             selectedProf={selectedProf}
                                             selectedProfWrong={selectedProfWrong}
                                             selectedReg={selectedReg}
@@ -544,7 +697,7 @@ const AuthWorker = (props) => {
                                         </div>
                                         <div className={!nameWrong?styles.login_button_worker:styles.login_button_disabled}
                                             style={{marginLeft:'10px', marginTop:0}}
-                                            onClick={() => {validatePasswordHandler()&&clearWarnings()}}>
+                                            onClick={() => {validateNameHandler()&&validatePhoneHandler()}}>
                                             <p className={styles.login_text}>Continuar</p>
                                         </div>
                                     </div>
@@ -555,10 +708,10 @@ const AuthWorker = (props) => {
                                             onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
                                         <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                         </div>
-                                        <div className={!nameWrong?styles.login_button_worker:styles.login_button_disabled}
+                                        <div className={!passwordWrong||!passwordRepeatWrong?styles.login_button_worker:styles.login_button_disabled}
                                             style={{marginLeft:'10px', marginTop:0}}
-                                            onClick={() => {validateNameHandler()&&validatePhoneHandler()&&clearWarnings()}}>
-                                            <p className={styles.login_text}>Continuar</p>
+                                            onClick={() => {validatePasswordHandler()}}>
+                                            <p className={styles.login_text}>Criar Conta</p>
                                         </div>
                                     </div>
                                     :
@@ -596,15 +749,59 @@ const AuthWorker = (props) => {
                                             <p className={styles.login_text}>Continuar</p>
                                         </div>
                                     </div>
+                                    :
+                                    registarTab===6?
+                                    <div className={styles.buttons_flex}>
+                                        <div className={styles.login_button_voltar}
+                                            onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                        <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                        </div>
+                                        <div className={selectedReg.length>0?styles.login_button_worker:styles.login_button_disabled}
+                                            style={{marginLeft:'10px', marginTop:0}}
+                                            onClick={() => {updateWorkerDetails()}}>
+                                            <p className={styles.login_text}>Concluir</p>
+                                        </div>
+                                    </div>
                                     :null
                                     
                                 }  
                             </div>
                         </div>
+                        :
+                        null
 
                     }
-                    
                 </div>
+                {
+                    selectedAuth===2?
+                    <div className={styles.verification_backdrop}/>
+                    :null
+                }
+                {
+                    selectedAuth===2?
+                        <div className={styles.worker_carousel_verification}>
+                            <AuthCarouselVerification
+                            worker={true}
+                            verificationTab={verificationTab}
+                            registarTab={registarTab}
+                            email={email}
+                            name={name}
+                            phone={phoneVisual}
+                            handleNext={val => handleNext(val)}
+                            wrongCodeInserted={wrongCodeInserted}
+                            success={success}
+                            mapPlaceholder={() => mapPlaceholder()}
+                            code={code}
+                            skippedVerification={skippedVerification}
+                            expired={expired}
+                            seconds={seconds}
+                            handleSendCode={() => handleSendCode()}
+                            setCodeHandler={val => setCodeHandler(val)}
+                            clearEmailAndPhone={() => clearFields()}
+                        />
+                        </div>
+                        :null
+                }
                 <div className={styles.button_area}>
                     <span className={styles.user_button} onClick={() => navigate('/authentication?type=1')}>Àrea Utilizador</span>
                 </div>

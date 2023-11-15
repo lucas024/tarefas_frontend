@@ -2,10 +2,15 @@ import React, { useEffect, useState } from 'react'
 import styles from './auth.module.css'
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import {regioes, profissoes} from '../general/util'
+import {regioes, profissoes, regioesOptions, profissoesOptions} from '../general/util'
 import SelectWorker from '../selects/selectWorker';
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import EmailIcon from '@mui/icons-material/Email';
+import PersonIcon from '@mui/icons-material/Person';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import BuildIcon from '@mui/icons-material/Build';
 
 const AuthCarouselWorker = props => {
 
@@ -75,6 +80,45 @@ const AuthCarouselWorker = props => {
             )
         })
     }
+
+    const mapTrabalhosList = () => {
+        if(props.selectedProf)
+        {
+            let arrTrabalhos = [...props.selectedProf]
+            arrTrabalhos.sort(function(a, b){
+                if(a < b) { return -1; }
+                if(a > b) { return 1; }
+                return 0;
+            })
+            return arrTrabalhos.map((val, i) => {
+                return (
+                    <div key={i} className={styles.list_el_wrapper}>
+                        <span className={styles.list_el}>{profissoesOptions[val]}</span>
+                    </div>
+                )
+            })
+        }
+        
+    }
+
+    const mapRegioesList = () => {
+        if(props.selectedReg)
+        {
+            let arrRegioes = [...props.selectedReg]
+            arrRegioes.sort(function(a, b){
+                if(a < b) { return -1; }
+                if(a > b) { return 1; }
+                return 0;
+            })
+            return arrRegioes.map((val, i) => {
+                return (
+                    <div key={i} className={styles.list_el_wrapper}>
+                        <span className={styles.list_el}>{regioesOptions[val]}</span>
+                    </div>
+                )
+            })
+        }
+    }
     
 
     return (
@@ -100,7 +144,7 @@ const AuthCarouselWorker = props => {
                         props.selectedType===1?
                         <div 
                             className={styles.input_div_wrapper_editable} 
-                            style={{borderColor:props.entityNameWrong&&props.entityName.length<=1?'red':'#FF785A', borderColor:props.entityNameWrong||props.entityName.length<=1?'red':'#FF785A'}}>
+                            style={{borderColor:props.entityNameWrong&&props.entityName.length<=1?'#161F28':'#FF785A', borderColor:props.entityNameWrong||props.entityName.length<=1?'#161F28':'#FF785A'}}>
                             <div className={styles.input_icon_div}>
                                 {
                                     props.entityNameWrong||props.entityName.length<=1?
@@ -109,7 +153,7 @@ const AuthCarouselWorker = props => {
                                     <AccountBalanceIcon className={styles.input_icon} style={{color:'#161F28'}}/>
                                 }
                             </div>
-                            <span className={styles.input_icon_seperator} style={{backgroundColor:props.entityNameWrong||props.entityName.length<=1?'red':'#FF785A'}}>.</span>
+                            <span className={styles.input_icon_seperator} style={{backgroundColor:props.entityNameWrong||props.entityName.length<=1?'#161F28':'#FF785A'}}>.</span>
                             <input className={styles.input_input}
                                     value={props.entityName}
                                     onChange={e => props.updateEntityName(e.target.value)}>
@@ -134,6 +178,35 @@ const AuthCarouselWorker = props => {
                 <span className={styles.selected_number}>({props.selectedReg.length}/18)</span>
                 <div className={styles.map_div}>
                     {mapRegioes()}
+                </div>
+            </div>
+            <div className={styles.login}>
+                <span className={styles.area_bot_intro_wrapper}>
+                    <AccountBalanceIcon className={styles.area_bot_intro_icon}/>
+                    {
+                        props.selectedType===0?
+                        <span className={styles.area_bot_intro_strong_two}>Particular</span>
+                        :
+                        <div>
+                            <span className={styles.area_bot_intro_strong_two}>Empresa - {props.entityName}</span>
+                        </div>
+                    }
+                </span>
+
+                <div className={styles.bottom}>
+                    <div className={styles.bottom_wrapper}>
+                        <span className={styles.bottom_title}>Trabalhos</span>
+                        <div className={styles.list}>
+                            {mapTrabalhosList()}
+                        </div>
+                    </div>
+                    <span className={styles.bottom_divider}></span>
+                    <div className={styles.bottom_wrapper}>
+                        <span className={styles.bottom_title}>Regiões</span>
+                        <div className={styles.list}>
+                            {mapRegioesList()}
+                        </div>
+                    </div>
                 </div>
             </div>
         </Carousel>

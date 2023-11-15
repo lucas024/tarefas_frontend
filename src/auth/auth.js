@@ -511,7 +511,6 @@ const Auth = (props) => {
             </CSSTransition>
             <div className={styles.auth_main}>
                 <div className={styles.area} style={{backgroundColor:selectedAuth===2?'#161F28':'#fff'}}>
-                    <Loader radius={true} loading={loading}/>
                     {
                         selectedAuth!==2?
                         <div className={styles.area_top}>
@@ -529,6 +528,10 @@ const Auth = (props) => {
                     {
                         selectedAuth===1?
                         <div className={styles.area_bot}>
+                            {
+                                loading&&<div className={styles.verification_backdrop}/>
+                            }
+                            <Loader radius={true} loading={loading}/>
                             <div className={styles.area_o2}>
                                 <div className={styles.o2_button} onClick={() => signInWithPopupHandler("facebook")}>
                                     <img src={facebook} className={styles.o2_img}></img>
@@ -598,6 +601,9 @@ const Auth = (props) => {
                         </div>
                         :selectedAuth===0?
                         <div className={styles.area_bot}>
+                            {
+                                loading&&<div className={styles.verification_backdrop}/>
+                            }
                             <Loader loading={loading}/>
                             <div className={styles.area_bot_wrapper}>
                                 <p className={styles.area_bot_title}>Criar conta de utilizador</p>
