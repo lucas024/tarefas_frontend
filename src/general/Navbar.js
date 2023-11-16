@@ -119,10 +119,10 @@ const Navbar = (props) => {
  
                                         <div className={styles.user}>
                                             {
-                                                (!user_profile_complete || !worker_is_subscribed&&user.type)?
-                                                <span className={styles.drop_div_notification_big}/>
+                                                (!worker_is_subscribed&&user.type || !worker_profile_complete&&user.type)?
+                                                <span className={styles.drop_div_notification_text}>CONTA DESATIVADA</span>
                                                 :
-                                                user.phone===""?
+                                                (user_profile_complete || user.phone==="")?
                                                 <span className={styles.drop_div_notification_big}/>                                                
                                                 :null
                                             }

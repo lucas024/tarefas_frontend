@@ -6,11 +6,11 @@ const SelectWorker = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: props.worker?"#ffffff":props.editBottom?"#0358e5":"#0358e590",
-            borderColor: props.worker?"#FF785A":"#0358e5",
+            backgroundColor: props.worker?"#ffffff":props.editBottom?"#FF785A":"#FF785A90",
+            borderColor: props.worker?"#FF785A":"#FF785A",
             fontSize: "0.9rem",
             textTransform: "uppercase",
-            color: props.worker?"#161F28":"#0358e5",
+            color: props.worker?"#161F28":"#FF785A",
             fontWeight: 600,
             width:props.worker?"300px":"170px",
             transition: "0.2s all ease-in-out",
@@ -30,7 +30,7 @@ const SelectWorker = (props) => {
             cursor: "pointer",
             color: state.isSelected?"#fff":"#161F28",
             fontWeight: state.isSelected? 600: 500,
-            backgroundColor: state.isSelected?props.worker?"#FF785A":"#0358e5":state.isFocused?props.worker?"#FF785A50":'#0358e550':"transparent",
+            backgroundColor: state.isSelected?props.worker?"#FF785A":"#FF785A":state.isFocused?props.worker?"#FF785A50":'#FF785A50':"transparent",
         }),
         menu: base => ({
             ...base,
@@ -65,7 +65,7 @@ const SelectWorker = (props) => {
         }),
         indicatorSeparator : base => ({
             ...base,
-            backgroundColor: props.worker?"#161F28":"#0358e5"
+            backgroundColor: props.worker?"#161F28":"#161F28"
         }),
         valueContainer: base => ({
             ...base,

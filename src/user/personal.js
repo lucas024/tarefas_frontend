@@ -26,7 +26,7 @@ import VerificationBannerPhone from '../general/verificationBannerPhone';
 import SelectWorker from '../selects/selectWorker';
 import { useTimer } from 'react-timer-hook';
 import { useSelector, useDispatch } from 'react-redux'
-import { user_update_field } from '../store';
+import { user_update_field, worker_update_profile_complete } from '../store';
 
 
 const Personal = (props) => {
@@ -253,7 +253,7 @@ const Personal = (props) => {
             setEntityWrong(true)
         }
         else if(selectedProf.length>0 && selectedReg.length>0){
-            if((radioSelected===1 && entityName.length>2)||radioSelected===0){
+            if((radioSelected===1 && entityName.length>1)||radioSelected===0){
                 setEditBottom(false)
                 setLoadingBottom(true)
                 axios.post(`${api_url}/worker/update_selected`, {
@@ -276,6 +276,8 @@ const Personal = (props) => {
                     setLoadingBottom(false)
                     setBottomPop(true)
                     setTimeout(() => setBottomPop(false), 4000)
+                    if(user.phone_verified&&user.email_verified)
+                        dispatch(worker_update_profile_complete(true))
                 })
             }
         }
@@ -332,11 +334,11 @@ const Personal = (props) => {
         let val = 0
         if(user?.phone_verified&&!edit) val += 1
         if(user?.email_verified&&!editBottom) val += 1
-        if(photo!=="") val += 1
+        // if(photo!=="") val += 1
         if(selectedProf?.length>0&&!editBottom) val += 1
         if(selectedReg?.length>0&&!editBottom) val += 1
         if(radioSelected!==null&&!editBottom) val += 1
-        return Math.ceil((val/6)*100)
+        return Math.ceil((val/5)*100)
     }
 
     return (
@@ -431,13 +433,13 @@ const Personal = (props) => {
                                     :null
                                 } */}
                                 <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-                                    <span className={styles.top_complete}>O teu perfil está <span style={{color:getPercentagem()<100?"#fdd835":"#0358e5", fontWeight:"600"}}>{getPercentagem()}%</span> completo:</span>
+                                    <span className={styles.top_complete}>O seu perfil está <span style={{color:getPercentagem()<100?"#fdd835":"#0358e5", fontWeight:"600"}}>{getPercentagem()}%</span> completo:</span>
                                     <ArrowForwardIosIcon className={!displayTop?styles.top_complete_arrow:styles.top_complete_arrow_show}/>
                                 </div>
                                 {
                                     displayTop?
                                     <div className={getPercentagem()<100?styles.top_wrap_incomplete:styles.top_wrap_complete}>
-                                        <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        {/* <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
                                             <FaceIcon className={photo!==""?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 photo!==""?
@@ -453,7 +455,7 @@ const Personal = (props) => {
                                                 </div>
 
                                             }
-                                        </div>
+                                        </div> */}
                                         <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
                                             <EmailVerified className={user?.email_verified?styles.line_icon:styles.line_icon_complete}/>
                                             {
@@ -557,7 +559,7 @@ const Personal = (props) => {
                                 {
                                     user&&photo!==""?
                                     <img className={styles.image} src={photo}/>
-                                    :<FaceIcon style={{color:user.type===1?"#fdd83590":""}} className={styles.image_tbd}/>
+                                    :<FaceIcon style={{color:user.type===1?"#ffffff":""}} className={styles.image_tbd}/>
                                 }
                                 <div className={styles.image_input_wrapper}>
                                     <EditIcon className={styles.edit_icon}/>
@@ -592,12 +594,12 @@ const Personal = (props) => {
                                         <div className={styles.input_div}>
                                             {
                                                 !user?.email_verified?
-                                                <div className={styles.input_div_button} onClick={() => setVerifyPhone(1)}>
-                                                    <span className={styles.input_div_button_text} style={{textTransform:expired&&'uppercase'||'none'}}>{expired&&"Verificar"||`${seconds}s`}</span>
+                                                <div className={styles.input_div_button} onClick={() => !edit&&setVerifyPhone(1)}>
+                                                    <span className={styles.input_div_button_text} style={{textTransform:expired&&'uppercase'||'none', backgroundColor:edit?"#71848d":""}}>{expired&&"Verificar"||`${seconds}s`}</span>
                                                 </div>
                                                 :null
                                             }
-                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#FF785A':!user?.email_verified?'#fdd835':'#ffffff',}}>
+                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#71848d':!user?.email_verified?'#fdd835':'#ffffff',}}>
                                                 <div className={styles.input_icon_div}>
                                                     {
                                                         user?.email_verified?
@@ -614,8 +616,8 @@ const Personal = (props) => {
                                         <div className={styles.input_div} style={{marginTop:'10px'}}>
                                             {
                                                 !user?.phone_verified?
-                                                <div className={styles.input_div_button} onClick={() => expired&&setVerifyPhone(1)}>
-                                                    <span className={styles.input_div_button_text} style={{textTransform:expired&&'uppercase'||'none'}}>{expired&&"Verificar"||`${seconds}s`}</span>
+                                                <div className={styles.input_div_button} onClick={() => !edit&&expired&&setVerifyPhone(1)}>
+                                                    <span className={styles.input_div_button_text} style={{textTransform:expired&&'uppercase'||'none', backgroundColor:edit?"#71848d":""}}>{expired&&"Verificar"||`${seconds}s`}</span>
                                                 </div>
                                                 :null
                                             }
@@ -624,16 +626,14 @@ const Personal = (props) => {
                                                 <div className={styles.input_icon_div}>
                                                     {
                                                         user?.phone_verified?
-                                                        <PhoneVerified className={styles.input_icon} style={{color:edit?'#71848d':'#0358e5'}}/>
+                                                        <PhoneVerified className={styles.input_icon} style={{color:edit?'#FF785A':'#0358e5'}}/>
                                                         :
-                                                        <PhoneUnverified className={styles.input_icon} style={{color:edit?'#71848d':'#fdd835'}}/>
+                                                        <PhoneUnverified className={styles.input_icon} style={{color:edit?'#FF785A':'#fdd835'}}/>
                                                     }
                                                 </div>
-                                                <span className={styles.input_icon_seperator} style={{backgroundColor:edit?'#71848d':!user?.phone_verified?'#fdd835':'#0358e5'}}>.</span>
-                                                <input className={  phoneCorrect&&edit?styles.input_input
-                                                                :phoneWrong&&edit?styles.input_input
-                                                                :edit?styles.input_input
-                                                                :styles.input_input}
+                                                <span className={styles.input_icon_seperator} style={{backgroundColor:edit?'#FF785A':!user?.phone_verified?'#fdd835':'#0358e5'}}>.</span>
+                                                <input className={styles.input_input}
+                                                        style={{color:edit?"#ffffff":"#71848d"}}
                                                         value={phoneVisual}
                                                         maxLength={11} 
                                                         onChange={e => setPhoneHandler(e.target.value)}
@@ -706,16 +706,16 @@ const Personal = (props) => {
                                             radioSelected===1?
                                             <div 
                                                 className={styles.input_div_wrapper_editable} 
-                                                style={{borderColor:entityWrong&&entityName.length<=1?'#fdd835':'#0358e5', marginLeft:'10px', borderColor:!editBottom?'#0358e590':entityWrong||entityName.length<=1?'#fdd835':'#0358e5'}}>
+                                                style={{borderColor:entityWrong&&entityName.length<=1?'#fdd835':'#FF785A', marginLeft:'10px', borderColor:!editBottom?'#FF785A90':entityWrong||entityName.length<=1?'#fdd835':'#FF785A'}}>
                                                 <div className={styles.input_icon_div}>
                                                     {
                                                         entityWrong||entityName.length<=1?
                                                         <AccountBalanceOutlinedIcon className={styles.input_icon} style={{color:'#ffffff'}}/>
                                                         :
-                                                        <AccountBalanceIcon className={styles.input_icon} style={{color:!editBottom?'#0358e590':'#0358e5'}}/>
+                                                        <AccountBalanceIcon className={styles.input_icon} style={{color:!editBottom?'#FF785A90':'#FF785A'}}/>
                                                     }
                                                 </div>
-                                                <span className={styles.input_icon_seperator} style={{backgroundColor:!editBottom?'#0358e590':entityWrong||entityName.length<=1?'#fdd835':'#0358e5'}}>.</span>
+                                                <span className={styles.input_icon_seperator} style={{backgroundColor:!editBottom?'#FF785A90':entityWrong||entityName.length<=1?'#fdd835':'#FF785A'}}>.</span>
                                                 <input className={styles.input_input}
                                                         style={{color:!editBottom?'#71848d':'#fff'}}
                                                         value={entityName}

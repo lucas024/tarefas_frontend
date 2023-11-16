@@ -37,6 +37,8 @@ const Trabalho = (props) => {
 
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
+    const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
+    const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
     const [reservation, setReservation] = useState({})
     const [images, setImages] = useState(null)
@@ -172,36 +174,19 @@ const Trabalho = (props) => {
                 setViewTo('noAccount')
                 setLoading(false)
             }
-            else if((user?.subscription==null&&props.incompleteUser)){
+            else if((!worker_profile_complete&&!worker_is_subscribed)){
                 setViewTo('none')
                 setLoading(false)                
             }
-            else if(user?.subscription&&!props.incompleteUser){
-                axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
-                    subscription_id: user.subscription.id,
-                    schedule_id: user.subscription.sub_schedule
-                })
-                .then(res2 => {
-                    if(!isActiveSub(res2.data.schedule.current_phase?.end_date)){
-                        setViewTo('noSub')
-                    }
-                    else if(isActiveSub(res2.data.schedule.current_phase?.end_date)&&user.state===1)
-                    {
-                        setViewTo("showFull")
-                    }
-                    else
-                    {
-                        setViewTo("showFull")
-                    }
-                    setLoading(false)
-                })
-                
+            else if(worker_is_subscribed&&worker_profile_complete){
+                setViewTo("showFull")
+                setLoading(false)
             }
-            else if(!props.incompleteUser){
+            else if(worker_profile_complete){
                 setViewTo('noSub')
                 setLoading(false)
             }
-            else if(props.incompleteUser){
+            else if(!worker_profile_complete){
                 setViewTo('noProfile')
                 setLoading(false)
             }
@@ -603,32 +588,40 @@ const Trabalho = (props) => {
                                             loaded&&noAccountView?
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Gostava de contacar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span>?</span>
-                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                                                <div className={styles.market_background}>
+                                                    <span className={styles.market_text}>Gostava de contacar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>?</span>
+                                                    <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                                                </div>
                                             </div>
                                             :
                                             loaded&&noneView?
-                                            <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
+                                            <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Complete o seu <span className={styles.text_special}>PERFIL</span> e <span  className={styles.text_special}>SUBSCREVE</span> para contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
-                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=personal')}>Ir para Utilizador</span>
+                                                <div className={styles.market_background}>
+                                                    <span className={styles.market_text}>Complete o seu <span className={styles.text_special}>perfil</span> e <span  className={styles.text_special}>subscreva</span> para contactar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>.</span>
+                                                    <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=personal')}>completar perfil</span>
+                                                </div>
                                             </div>
                                             :
                                             loaded&&noSubView?
-                                            <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
+                                            <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Só falta activar a sua <span className={styles.text_special}>SUBSCRIÇÃO</span> para contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
-                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=subscription')}>Ir para Subscrição</span>
+                                                <div>
+                                                    <span className={styles.market_text}>Só falta activar a sua <span className={styles.text_special}>subscrição</span> para contactar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>.</span>
+                                                    <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=subscription')}>ativar subscrição</span>
+                                                </div>
                                             </div>
                                             :
                                             loaded&&noProfileView?
-                                            <div className={styles.market} style={{width:"200px", bottom:"-95px"}}>
+                                            <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <span className={styles.market_text}>Só falta completar o seu <span className={styles.text_special}>PERFIL</span> para contactar <span className={styles.text_special}>{reservation.user_name.split(" ")[0]}</span></span>
-                                                <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=personal')}>Ir para Perfil</span>
+                                                <div className={styles.market_background}>
+                                                    <span className={styles.market_text}>Só falta completar o seu <span className={styles.text_special}>perfil</span> para contactar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>.</span>
+                                                    <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=personal')}>completar perfil</span>
+                                                </div>
                                             </div>
                                             :
-                                            <div className={styles.market_skeleton} style={{width:"200px", bottom:"-95px"}}>
+                                            <div className={styles.market_skeleton}>
                                                 <img src={arrow} className={styles.market_arrow}/>
                                             </div>
                                             
@@ -709,27 +702,27 @@ const Trabalho = (props) => {
                                             placeholder="Escrever mensagem..."
                                         />
                                         <div className={styles.frontdrop}>
-                                            <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"white", textTransform:"capitalize", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>,</span>
+                                            <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"#161F28", textTransform:"capitalize", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>,</span>
                                             {
                                                 noAccountView?
                                                 <span className={styles.frontdrop_text}>crie uma conta de trabalhador</span>
                                                 :noneView?
-                                                <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>PERFIL</span> e <span style={{color:"white"}}>SUBSCRIÇÃO</span>.</span>
+                                                <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>perfil</span> e <span style={{color:"white"}}>subscrição</span>.</span>
                                                 :noSubView?
-                                                <span className={styles.frontdrop_text}>active a sua <span style={{color:"white"}}>SUBSCRIÇÃO</span>.</span>
+                                                <span className={styles.frontdrop_text}>active a sua <span style={{color:"white"}}>subscrição</span>.</span>
                                                 :noProfileView?
-                                                <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>PERFIL</span>.</span>
+                                                <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>perfil</span>.</span>
                                                 :null
                                             }
                                             {
                                                 noAccountView?
                                                 <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
                                                 :noneView?
-                                                <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=personal')}>Ir para Utilizador</span>
+                                                <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=personal')}>completar perfil</span>
                                                 :noSubView?
-                                                <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=subscription')}>Ir para Subscrição</span>
+                                                <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=subscription')}>ativar subscrição</span>
                                                 :noProfileView?
-                                                <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=personal')}>Ir para Perfil</span>
+                                                <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=personal')}>completar perfil</span>
                                                 :null
                                             }
                                         </div>

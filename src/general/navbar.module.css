@@ -259,6 +259,18 @@
     animation-duration: 2s;
     animation-iteration-count: infinite; */
 }
+.drop_div_notification_text{
+    position: absolute;
+    right: 10px;
+    top: 25px;
+    font-weight: 700;
+    width: max-content;
+    font-size: 0.8rem;
+    color: var(--yellow) !important;
+    animation-name: yellow_color;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
 .drop_div_notification_big{
     height: 5px;
     width: 130px;
@@ -284,6 +296,17 @@
     }
 }
 
+/* @keyframes yellow_color {
+    0% {
+      color: #fdd835 ;
+    }
+    50% {
+        color: #fdd83590;
+    }
+    100% {
+        color: #fdd835;
+    }
+} */
 .drop_div_incomplete{
     color: var(--action);
     font-size: 0.6rem;

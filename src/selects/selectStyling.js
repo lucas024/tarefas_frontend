@@ -7,8 +7,8 @@ const TopSelect = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: "#161F28",
-            borderColor: "#161F28",
+            backgroundColor: "#0358e5",
+            borderColor: "#0358e5",
             fontSize: "0.8rem",
             textTransform: "uppercase",
             color: "#FF785A",
@@ -31,7 +31,7 @@ const TopSelect = (props) => {
             cursor: "pointer",
             color: "#fff",
             fontWeight: state.isSelected? 600: 400,
-            backgroundColor: state.isSelected? "#FF785A ": state.isFocused? '#FF785A50': "transparent",
+            backgroundColor: state.isSelected? "#0358e5": state.isFocused? '#0358e550': "transparent",
             fontSize: '0.8rem'
         }),
         menu: base => ({
@@ -51,10 +51,10 @@ const TopSelect = (props) => {
         }),
         dropdownIndicator : base => ({
             ...base,
-            color: "#FF785A",
+            color: "#ffffff",
             transition: "0.15s all ease-in-out",
             "&:hover": {
-                color: "#FF785A",
+                color: "#ffffff",
             }
         }),
         container: base => ({
@@ -68,7 +68,7 @@ const TopSelect = (props) => {
         }),
         indicatorSeparator : base => ({
             ...base,
-            backgroundColor: "#FF785A"
+            backgroundColor: "#ffffff"
         }),
         valueContainer: base => ({
             ...base,

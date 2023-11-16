@@ -199,6 +199,9 @@
     text-transform: uppercase;
     font-weight: 600;
     color: white;
+    font-size: 0.8rem;
+    text-align: center;
+    max-width: 130px;
 }
 .status_icon{
     color: white;
@@ -232,6 +235,18 @@
     animation-duration: 2s;
     animation-iteration-count: infinite;
 }
+.worker_text_div{
+    color: var(--neutral);
+    font-weight: 400;
+    font-size: 0.9rem;
+    width: 90%;
+    margin-left: 5%;
+}
+.worker_text_text{
+    font-weight: 600;
+    color: var(--job);
+}
+
 @keyframes yellow {
     0% {
       background-color: #fdd835;
@@ -286,5 +301,21 @@
     }
     .flex_10px{
         margin-top: 0px;
+    }
+    .status_top{
+        display: none;
+    }
+    .status_div_flex{
+        display: none;
+    }
+    .status_div{
+        display: flex;
+        justify-content: center;
+    }
+    .status_icon{
+        margin: 0;
+    }
+    .worker_text_div{
+        display: none;
     }
 }

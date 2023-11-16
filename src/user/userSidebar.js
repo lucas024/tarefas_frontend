@@ -131,12 +131,9 @@ const UserSidebar = (props) => {
                                 <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
                                     <span className={styles.prox}>Subscrição</span>
                                     {
-                                    worker_is_subscribed?
-                                    <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                    :
-                                    <div style={{position:"relative"}}>
-                                        <UnpublishedOutlinedIcon className={styles.off_icon}/>
-                                    </div>
+                                    !worker_is_subscribed?
+                                    <span className={styles.drop_div_notification}/>
+                                    :null
                                     }
                                 </div>
                             } sx={{color:"#fff", zIndex:1}}/>
@@ -168,8 +165,8 @@ const UserSidebar = (props) => {
                             <span className={styles.status_top_val} style={{color:user_profile_complete&&user?.state===1&&worker_is_subscribed?"#0358e5":"#fdd835"}}>
                                 {
                                     user_profile_complete&&user?.state===1&&worker_is_subscribed?
-                                    "CONTA ATIVA"
-                                    :"CONTA INATIVA"
+                                    "CONTA ATIVADA"
+                                    :"CONTA DESATIVADA"
                                 }
                             </span>
                         </div>
@@ -179,8 +176,8 @@ const UserSidebar = (props) => {
                                 <span className={styles.status_div_val} style={{color:user_profile_complete?"#0358e5":"#fdd835"}}>
                                 {
                                     user_profile_complete?
-                                    "COMPLETO"
-                                    :"INCOMPLETO"
+                                    "PERFIL COMPLETO"
+                                    :"PERFIL INCOMPLETO"
                                 }
                                 </span>
                             </div>
@@ -191,12 +188,22 @@ const UserSidebar = (props) => {
                                 <span className={styles.status_div_val} style={{color:worker_is_subscribed?"#0358e5":"#fdd835"}}>
                                 {
                                     worker_is_subscribed?
-                                    "ATIVADA"
-                                    :"DESATIVADA"
+                                    "SUBSCRIÇÃO ATIVADA"
+                                    :"SUBSCRIÇÃO DESATIVADA"
                                 }
                                 </span>
                             </div>
                         </div>
+                    </div>
+                    :null
+                }
+                {
+                    user?.type?
+                    <div className={styles.worker_text_div}>
+                        Ative a sua conta tendo o seu
+                        <span className={styles.worker_text_text}> perfil completo </span>
+                        e a sua
+                        <span className={styles.worker_text_text}> subcrição ativada</span>.
                     </div>
                     :null
                 }

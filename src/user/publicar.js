@@ -636,7 +636,7 @@ const Publicar = (props) => {
                                             else
                                             {
                                                 navigate({
-                                                    pathname: `/publicar`,
+                                                    pathname: `/publicar/novo`,
                                                     search: `?t=${val}`
                                                 })
                                             }}}

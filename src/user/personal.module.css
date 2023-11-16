@@ -623,7 +623,7 @@ background-color: var(--grey);
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
-background-color: var(--job);
+background-color: var(--action);
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -654,7 +654,7 @@ transform: rotate(45deg);
     
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark_disabled {
-background-color: #0358e590;
+background-color: #FF785A90;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */

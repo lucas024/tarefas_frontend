@@ -566,7 +566,7 @@ input::placeholder{
     font-weight: 600;
 }
 .bot_title_indicator_wrapper{
-    border: 2px solid var(--action);
+    border: 2px solid var(--job);
     border-radius: 50%;
     padding: 3px 8px;
     display: flex;
@@ -799,7 +799,7 @@ input::placeholder{
     color: var(--neutral);
 }
 .action{
-    color: var(--action);
+    color: var(--job);
 }
 
 .info{

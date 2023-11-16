@@ -46,7 +46,7 @@ const Home = (props) => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if(loaded&&user?.type&&props.incompleteUser){
+        if(loaded){
             setMensagemPopup(true)
             setTimeout(() => setMensagemPopup(false), 4000)
         }
@@ -69,7 +69,7 @@ const Home = (props) => {
             setTimeout(() => setLoginPopup(false), 4000)
         }
         // Tooltip.rebuild()
-    }, [props.incompleteUser, location, user, loaded])
+    }, [location, user, loaded])
 
     useEffect(() => {
         props.userLoadAttempt&&setLoaded(true)
@@ -281,7 +281,7 @@ const Home = (props) => {
                                 <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
                                 {
                                     user?
-                                    <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar')}>PUBLICAR</span>
+                                    <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar/novo')}>PUBLICAR</span>
                                     :
                                     <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                         <div className={styles.back_publish_button_disabled} data-tooltip-id='home' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
