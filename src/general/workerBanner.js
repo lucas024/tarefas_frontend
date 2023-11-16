@@ -26,7 +26,7 @@ const WorkerBanner = (props) => {
                     classNames="banner"
                     unmountOnExit
                     >
-            <div className={styles.popup}>
+            <div className={styles.popup}  onClick={e => e.stopPropagation()}>
                 <span className={styles.value}>Trabalhador na SERVIÇOS</span>
                 <div className={styles.divider}/>
                 <div className={styles.line}>
@@ -47,7 +47,7 @@ const WorkerBanner = (props) => {
                 <span className={styles.confirm_button} onClick={() => props.confirm()}>
                     REGISTAR-ME COMO TRABALHADOR
                 </span>
-                <span className={styles.cancel}>cancelar</span>
+                <span className={styles.cancel} onClick={() => props.cancel()}>cancelar</span>
             </div>
             </CSSTransition>
         </div>

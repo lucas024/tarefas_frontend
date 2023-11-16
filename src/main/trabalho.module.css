@@ -35,7 +35,7 @@
     0 3px 3px rgba(0,0,0,0.12),
     0 4px 4px rgba(0,0,0,0.12);
     display: flex;
-    height: 80px;
+    height: 60px;
     padding-left: 3%;
     background-color: white;
     cursor: pointer;
@@ -46,7 +46,7 @@
     background-color: var(--background);
 }
 .reservar_upper_title{
-    font-size: 4rem;
+    font-size: 3rem;
     font-weight: 800;
     color: white;
     margin: auto;
@@ -54,12 +54,12 @@
     margin-top: 20px;
 }
 .previous_symbol{
-    width: 25px;
-    height: 25px;
+    width: 20px !important;
+    height: 20px !important;
     align-self: center;
 }
 .previous_voltar_text{
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 600;
     align-self: center;
 }
@@ -272,17 +272,19 @@
 }
 .top_right_message{
     position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 6px;
+    top: 16px;
+    right: 16px;
     border: 3px solid transparent;
     box-sizing: border-box;
     font-weight: 600;
     background-color: var(--action);
     color: white;
     border-radius: 5px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     cursor: pointer;
+    text-transform: uppercase;
+    padding: 10px;
+    transition: all 150ms ease-in-out;
 }
 .top_right_message:hover{
     border: 3px solid var(--action);
@@ -292,37 +294,40 @@
 }
 .market{
     position: absolute;
-    right: -180px;
-    bottom: -65px;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+.market_text{
+    color: var(--neutral);
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+.market_arrow{
+    width: 30px;
+    height: 30px;
+    margin-left: 200px;
+    margin-top: 35px;
+    transform: scaleX(-1) rotate(-90deg);
+}
+.market_background{
     display: flex;
     flex-direction: column;
     font-size: 0.8rem;
     background-color: var(--action);
-    border-radius: 5px;
+    border-radius: 2px;
     text-align: center;
-    padding: 6px;
+    padding: 10px 15px;
     box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
     0 2px 2px rgba(0,0,0,0.12), 
     0 3px 3px rgba(0,0,0,0.12),
     0 4px 4px rgba(0,0,0,0.12);
-    z-index: 2;
-}
-.market_text{
-    color: var(--brand);
-    font-weight: 600;
-}
-.market_arrow{
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    left: 40px;
-    top: -30px;
-    transform: scaleX(-1) rotate(-90deg);
+    z-index: 3;
+    width: 300px;
+    margin-left: 200px;
 }
 .market_skeleton{
-    position: absolute;
-    right: -180px;
-    bottom: -60px;
     height: 75px;
     display: flex;
     flex-direction: column;
@@ -349,19 +354,20 @@
 .top_desc_text{
     margin-top: 20px;
     font-weight: 600;
+    font-size: 1rem;
 }
 .top_desc{
     margin-top: 5px;
     text-align: left;
     color: var(--brand);
     width: 100%;
-    font-size: 1rem;
+    font-size: 0.8rem;
     white-space: pre-line;
 }
 .top_desc_no{
     margin-top: 5px;
     font-style: italic;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     opacity: 0.6;
 }
 .top_date{
@@ -373,7 +379,7 @@
     text-transform: uppercase;
     font-weight: 600;
     display: inline-block;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 .user_info{
     display: flex;
@@ -390,14 +396,16 @@
     font-size: 1rem !important;
     background-color: var(--action);
     padding: 5px;
-    border-radius: 10px;
+    border-radius: 5px;
     align-self: center;
+    color: var(--neutral);
 }
 .user_info_number{
-    font-size: 1.4rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--brand);
     margin-left: 10px;
+    text-transform: uppercase;
 }
 .user_info_number_blur{
     font-size: 1.4rem;
@@ -433,12 +441,12 @@
     margin-bottom: 10px;
 }
 .location_pin{
-    color: var(--brand);
+    color: var(--neutral);
     font-size: 1rem !important;
     justify-self: flex-start;
     background-color: var(--action);
     padding: 5px;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 .location{
     font-size: 0.9rem;
@@ -539,7 +547,7 @@
     display: flex;
 }
 .message_left_user_name{
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 600;
     text-transform: capitalize;
 }
@@ -573,14 +581,13 @@
     border-radius: 5px;
     resize: none;
     border: none;
-    background-color: var(--background);
+    background-color: #161F2880;
     margin-top: 10px;
     padding: 10px 10px;
     font-family: inherit;
     font-size: 1.1rem;
     border-bottom: 2px solid transparent;
     color: var(--brand);
-    background-color: #FF785A;
     filter: blur(2px);
 }
 .frontdrop{
@@ -596,38 +603,42 @@
 }
 .frontdrop_text{
     margin: 0 auto;
-    color: var(--brand);
-    font-weight: 700;
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 .frontdrop_text_action{
     margin: 10px auto;
-    color: var(--action);
+    color: var(--neutral);
     font-weight: 600;
-    background-color: white;
+    background-color: var(--action);
     border-radius: 5px;
-    padding: 4px;
-    -webkit-box-shadow: 0px 0px 9px -1px rgba(255,255,255,0.46); 
-    box-shadow: 0px 0px 9px -1px rgba(255,255,255,0.46);
+    padding: 10px;
     text-transform: uppercase;
+    font-size: 0.9rem;
 }
 .frontdrop_text_action:hover{
     cursor: pointer;
-    transform: scale(1.05);
-    transition: transform 100ms ease-in-out;
+    opacity: 0.6;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    transition: all 150ms ease-in-out;
 }
+
 .frontdrop_text_action_top{
     margin: 10px auto;
     color: var(--action);
     font-weight: 600;
     background-color: white;
-    border-radius: 5px;
-    padding: 4px;
+    border-radius: 3px;
+    padding: 10px;
     text-transform: uppercase;
+    font-size: 0.8rem;
 }
 .frontdrop_text_action_top:hover{
     cursor: pointer;
-    transform: scale(1.05);
-    transition: transform 100ms ease-in-out;
+    opacity: 0.7;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    transition: all 150ms ease-in-out;
 }
 .message_enviar_div{
     display: flex;
@@ -635,27 +646,32 @@
     margin-top: 10px;
 }
 .message_enviar{
-    padding: 10px 15px;
-    background-color: var(--action);
-    border-radius: 4px;
+    padding: 10px 20px;
+    background-color: var(--brand);
+    border-radius: 5px;
     font-weight: 600;
     color: white;
-    border: 4px solid var(--action);
-    transition: background-color 200ms ease-in-out;
+    border: 3px solid var(--brand);
+    transition: background-color 150ms ease-in-out;
+    text-transform: uppercase;
+    font-size: 0.9rem;
 }
 .message_enviar:hover{
     background-color: white;
-    color: var(--action);
-    border: 4px solid var(--action);
-    transition: 100ms;
+    color: var(--brand);
+    border: 3px solid var(--brand);
     cursor: pointer;
 }
 .message_enviar_disabled{
-    padding: 14px 19px;
+    padding: 10px 20px;
     background-color: var(--background);
-    border-radius: 4px;
+    border-radius: 5px;
     font-weight: 600;
+    border: 3px solid var(--background);
     color: #ccc;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    transition: all 150ms ease-in-out;
 }
 .previous_wrapper{
     display: flex;
@@ -675,7 +691,6 @@
 }
 .text_special{
     color: white;
-    text-transform: capitalize;
 }
 
 .skeleton{

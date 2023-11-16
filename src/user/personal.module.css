@@ -1,34 +1,58 @@
 .personal{
     color: var(--brand);
-    overflow-x: auto !important;
-    min-width: 300px;
-    position: relative;
     height: 100%;
+    width: 100%;
+}
+.backdrop{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #000000aa;
+    z-index: 1;
+    transition: all 500ms ease-in-out;
 }
 .personal_title{
     width: 100%;
-    border-bottom: 1px solid #ccc;
     display: flex;
     height: 80px;
     background-color: white;
+    margin-top: 1px;
 }
 .top_info{
     height: fit-content;
     transition: all 150ms;
     cursor: pointer;
     background-color: var(--brand);
-    padding: 10px;
-    -webkit-box-shadow: 0px 2px 2px -2px #919191; 
-    box-shadow: 0px 2px 2px -2px #919191;
+    padding: 10px 0;
 }
-
+.top_separator{
+    border-radius: 20px;
+    height: 2px;
+    width: 100%;
+    background: var(--yellow);
+    transition: 150ms;
+}
+.top_separator_incomplete{
+    border-radius: 20px;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(270deg, rgba(3,88,229,1) 0%, rgba(253,216,53,1) 100%);
+    transition: 150ms;
+}
+.top_separator_complete{
+    border-radius: 20px;
+    height: 2px;
+    width: 100%;
+    background: var(--job);
+    transition: 150ms;
+}
 .top_title{
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     color: var(--brand);
     font-weight: 600;
     align-self: center;
     text-transform: uppercase;
-    margin-left: 3%;
+    margin-left: 10px;
 }
 .top_title_two{
     font-size: 3rem;
@@ -38,6 +62,18 @@
     text-transform: uppercase;
     opacity: 0.3;
     margin-bottom: 20px;
+}
+.top_wrap_incomplete{
+    background-color: var(--yellow);
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+.top_wrap_complete{
+    background-color: var(--check);
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 5px;
 }
 .top_complete{
     color: white;
@@ -65,10 +101,16 @@
 .mid{
     margin: auto;
     padding: 20px;
+    padding-bottom: 0;
     padding-top: 20px;
     width: 100%;
-    background-color: white;
+    background-color: var(--brand);
     box-sizing: border-box;
+    border-bottom: 1px solid var(--brand);
+    position: relative;
+    overflow-x: scroll !important;
+    overflow-y: auto !important;
+    height: 100vh;
 }
 .top_complete_line{
     display: flex;
@@ -77,11 +119,16 @@
 .line_icon{
     width: 15px !important;
     height: 15px !important;
-    color: white;
+    color: var(--neutral);
+}
+.line_icon_complete{
+    width: 15px !important;
+    height: 15px !important;
+    color: var(--grey);
 }
 .line_text{
     margin-left: 5px;
-    color: #ccc;
+    color: var(--grey);
     text-transform: uppercase;
     font-size: 0.8rem;
 }
@@ -92,15 +139,16 @@
     color: var(--grey);
 }
 .line_text_complete{
-    color: var(--check);
+    color: var(--neutral);
     margin-left: 5px;
     text-transform: uppercase;
     font-size: 0.8rem;
+    font-weight: 600;
 }
 .line_val_complete{
     width: 18px !important;
     height: 18px !important;
-    color: var(--check);
+    color: var(--neutral);
     margin-left: 5px;
 }
 .top_desc{
@@ -113,7 +161,7 @@
     height: 1px;
     width: 100%;
     margin: 10px auto;
-    background-color: #ccc;
+    background-color: var(--grey);
 }
 .special{
     text-decoration: underline;
@@ -122,6 +170,9 @@
     display: flex;
     width: 100%;
     margin-top: 10px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid white;
+    height: 350px;
 }
 .top_right_flex{
     display: flex;
@@ -137,19 +188,26 @@
 .image_wrapper{
     height: 250px;
     width: 250px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--grey);
     display: flex;
     position: relative;
     border-radius: 5px;
     box-sizing: border-box;
-    background-color: var(--background);
+    background-color: #ffffff10;
 }
 .edit_icon{
     position: absolute;
     right: 0;
     top: 0;
-    color: var(--action);
-    font-size: 40px;
+    color: var(--neutral);
+    font-size: 30px !important;
+    cursor: pointer !important;
+    padding: 5px;
+    background-color: var(--action);
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-left: 1px solid white;
+    border-bottom: 1px solid white;
 }
 .image_input_wrapper{
     position: absolute;
@@ -157,7 +215,8 @@
     top: 0;
 }
 .image_input_wrapper:hover > .edit_icon{
-    opacity: 0.7;
+    opacity: 0.8;
+    transition: all 150ms ease-in-out;
 }
 input[type=file]{
     opacity:0;
@@ -180,28 +239,30 @@ input[type=file]{
     margin: auto;
 }
 .input_flex_edit{
-    margin-top: 5px;
     height: calc(100%);
     display: flex;
     flex-direction: column;
     position: relative;
-    padding: 10px;
-    background-color: white;
+    padding-left: 10px;
+    padding-right: 0px;
+    background-color: var(--brand);
 }
 .input_flex{
-    margin-top: 5px;
     height: calc(100%);
     display: flex;
     flex-direction: column;
     position: relative;
-    padding: 10px;
-    background-color: white;
+    padding-left: 10px;
+    padding-right: 0px;
+    background-color: var(--brand);
 }
 .personal_subtitle{
     font-weight: 500;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     text-transform: uppercase;
     display: inline-block;
+    color: white;
+    align-self: flex-start;
 }
 .input_edit_wrapper{
     position: absolute;
@@ -211,61 +272,37 @@ input[type=file]{
 .input_div{
     display: flex;
     flex-direction: column;
-}
-.input_right{
-    border: none;
-    border-bottom: 2px solid var(--check);
-    color: var(--brand);
-    height: 25px;
-    width: 250px;
-    padding-left: 5px;
-    font-size: 1rem;
-    font-weight: 500;
-    font-family: 'Montserrat', sans-serif;
-    background-color: var(--background);
-    outline: none;
-    border-radius: 5px;
-}
-.input_wrong{
-    border: none;
-    border-bottom: 2px solid var(--red);
-    color: var(--brand);
-    height: 25px;
-    width: 250px;
-    padding-left: 5px;
-    font-size: 1rem;
-    font-weight: 500;
-    font-family: 'Montserrat', sans-serif;
-    background-color: var(--background);
-    outline: none;
-    border-radius: 5px;
+    width: 350px;
 }
 .input_input{
     border: none;
-    border-bottom: 1px solid #ccc;
-    color: #ccc;
-    height: 25px;
-    width: 250px;
-    padding-left: 5px;
-    font-size: 1rem;
-    font-weight: 500;
+    color: var(--grey);
+    font-size: 0.95rem;
+    font-weight: 400;
     font-family: 'Montserrat', sans-serif;
-    border-radius: 5px;
-    background-color: #cccccc10;
-}
-.input_input_edit{
-    border: none;
-    border-bottom: 2px solid var(--action);
-    background-color: var(--background);
-    color: var(--brand);
-    height: 25px;
-    width: 250px;
-    padding-left: 5px;
-    font-size: 1rem;
-    font-weight: 500;
-    font-family: 'Montserrat', sans-serif;
-    border-radius: 5px;
+    background-color: var(--brand);
     outline: none;
+}
+.input_div_button{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+.input_div_button_text{
+    color: white;
+    font-size: 0.9rem;
+    background: var(--yellow);
+    padding: 2px 5px;
+    border-radius: 3px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    min-width: 25px;
+    font-weight: 600;
+}
+.input_div_button:hover{
+    opacity: 0.8;
+    transition: all 150ms ease-in-out;
 }
 .textarea_wrong{
     color: var(--brand);
@@ -283,8 +320,8 @@ input[type=file]{
 }
 .textarea_input{
     border: none;
-    border-bottom: 1px solid #ccc;
-    color: #ccc;
+    border-bottom: 1px solid var(--grey);
+    color: var(--grey);
     width: 450px;
     height: 80px;
     padding: 5px;
@@ -292,11 +329,11 @@ input[type=file]{
     font-weight: 400;
     font-family: 'Montserrat', sans-serif;
     border-radius: 5px;
-    background-color: #cccccc10;
+    background-color: var(--grey)ccc10;
 }
 .textarea_input_edit{
     border: none;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--grey);
     color: var(--brand);
     width: 450px;
     height: 80px;
@@ -313,21 +350,31 @@ input[type=file]{
     border-bottom: 2px solid var(--action);
 }
 .textarea_input::placeholder{
-    color: #ccc;
+    color: var(--grey);
 }
 .textarea_input_edit::placeholder{
-    color: #ccc;
+    color: var(--grey);
 }
 .input_div_wrapper{
     display: flex;
     align-items: center;
     margin-top: 2px;
 }
+.input_div_wrapper_editable{
+    display: flex;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 8px 5px;
+    padding-right: 0px;
+    width: 100%;
+    transition: all 150ms ease-in-out;
+    box-sizing: border-box;
+}
 .input_div_top{
     display: flex;
 }
 .top_edit_area{
-    display: flex;
     margin-top: 15px;
 }
 .edit_area_left{
@@ -338,22 +385,37 @@ input[type=file]{
     display: flex;
     flex-direction: column;
 }
+.input_icon_div{
+    width: 30px;
+    display: flex;
+    align-items: center;
+}
+.input_icon_seperator{
+    width: 1px;
+    height: 100%;
+    background-color: var(--job);
+    margin-right: 10px;
+    transition: all 150ms ease-in-out;
+}
 .input_icon{
     width: 20px !important;
     height: 20px !important;
     margin-right: 5px;
-    color: var(--brand);
+    color: var(--neutral);
+    transition: all 150ms ease-in-out;
 }
 .input_title{
     font-weight: 400;
-    font-size: 1rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
     width: 110px;
+    color: var(--neutral);
 }
 .input_email{
     font-weight: 400;
-    color: #ccc;
+    color: var(--grey);
     font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
 }
 .title_flex{
     display: flex;
@@ -362,72 +424,123 @@ input[type=file]{
     align-items: center;
 }
 .edit{
-    padding: 3px 10px;
+    padding: 10px 20px;
     border-radius: 5px;
     box-sizing: border-box;
-    border: 3px solid var(--action);
     background-color: var(--action);
     color: white;
     cursor: pointer;
+    font-weight: 600;
+    align-self: flex-start;
+}
+.edit:hover{
+    opacity: 0.8;
+    transition: all 150ms ease-in-out;
 }
 .save{
-    padding: 3px 10px;
+    padding: 10px 20px;
     border-radius: 5px;
     box-sizing: border-box;
-    border: 3px solid var(--action);
-    background-color: white;
-    color: var(--brand);
-    font-weight: 600;
+    background-color: var(--neutral);
+    color: var(--action);
     cursor: pointer;
+    font-weight: 600;
+    align-self: flex-start;
+}
+.save:hover{
+    opacity: 0.8;
+    transition: all 150ms ease-in-out;
 }
 .edit_top{
     position: absolute;
     top: 0px;
-    right: 0;
-    padding: 3px 10px;
+    right: 0px;
+    padding: 10px 20px;
     border-radius: 5px;
     box-sizing: border-box;
-    border: 3px solid var(--action);
     background-color: var(--action);
     color: white;
     cursor: pointer;
+    font-weight: 600;
+}
+.edit_top:hover{
+    opacity: 0.8;
+    transition: all 150ms ease-in-out;
+}
+.edit_top_worker{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: var(--action);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+.edit_top_worker:hover{
+    opacity: 0.8;
+    transition: all 150ms ease-in-out;
 }
 .save_top{
     position: absolute;
     top: 0px;
-    right: 10px;
-    padding: 3px 10px;
+    right: 0px;
+    padding: 10px 20px;
     border-radius: 5px;
     box-sizing: border-box;
     border: 3px solid var(--action);
     background-color: white;
-    color: var(--brand);
+    color: var(--action);
     font-weight: 600;
     cursor: pointer;
 }
+.save_top:hover{
+    opacity: 0.8;
+    transition: all 150ms ease-in-out;
+}
+.save_top_worker{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: white;
+    color: var(--action);
+    font-weight: 600;
+    cursor: pointer;
+}
+.save_top_worker:hover{
+    opacity: 0.8;
+    transition: all 150ms ease-in-out;
+}
 .helper{
     color: var(--yellow);
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 5px;
 }
 .divider{
     height: 2px;
     width: 100%;
     margin: 10px 0;
-    background-color: #ccc;
+    background-color: var(--grey);
 }
 .divider_active{
     height: 2px;
     width: 100%;
     margin: 10px 0;
-    background-color: var(--action);
+    background-color: var(--job);
 }
 .flex_bottom{
     display: flex;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 30px;
     justify-content: space-between;
     position: relative;
+    height: 100%;
 }
 .radio_area{
     display: flex;
@@ -437,15 +550,19 @@ input[type=file]{
     width: 48%;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    margin-bottom: 180px;
 }
 .flex_title{
     font-size: 1rem;
     font-weight: 400;
     text-transform: uppercase;
+    color: white;
 }
 .flex_select_div{
     width: 50%;
     margin-top: 10px;
+    height: min-content;
 }
 /* Customize the label (the container) */
 .container {
@@ -475,7 +592,8 @@ top: 0;
 left: 0;
 height: 25px;
 width: 25px;
-background-color: var(--background);
+background-color: var(--neutral);
+border-radius: 3px;
 }
 .checkmark_disabled{
 position: absolute;
@@ -483,17 +601,24 @@ top: 0;
 left: 0;
 height: 25px;
 width: 25px;
-background-color: var(--background);
+background-color: var(--grey);
+border-radius: 3px;
 }
 .checkbox_text{
     font-size: 1rem;
+    color: white;
+    width: max-content;
+    display: block;
 }
 .checkbox_text_disabled{
-color: #ccc;
+    color: var(--grey);
+    font-size: 1rem;
+    width: max-content;
+    display: block;
 }
 /* On mouse-over, add a grey background color */
 .container:hover input ~ .checkmark {
-background-color: #ccc;
+background-color: var(--grey);
 }
 
 /* When the checkbox is checked, add a blue background */
@@ -529,7 +654,7 @@ transform: rotate(45deg);
     
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark_disabled {
-background-color: #ff785ac3;
+background-color: #FF785A90;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -580,17 +705,18 @@ transform: rotate(45deg);
 }
 .radio_div{
     display: flex;
-    align-items: flex-start;
-    flex-direction: column;
+    flex-direction: row;
+    margin-top: 10px;
 }
 .radio_text{
     margin-left: 30px;
     font-size: 1rem;
+    color: white;
 }
 .radio_text_disabled{
     margin-left: 30px;
     font-size: 1.2rem;
-    color: #ccc;
+    color: var(--grey);
 }
 .radio_button_input{
     height: 25px;
@@ -606,7 +732,7 @@ transform: rotate(45deg);
     width: fit-content;
     border-radius: 5px;
     border-bottom-left-radius: 0;
-    background-color: #cccccc10;
+    background-color: var(--grey)ccc10;
     font-style: normal !important;
 }
 .radio_button_input:disabled{
@@ -658,7 +784,7 @@ transform: rotate(45deg);
   
   /* On mouse-over, add a grey background color */
   .radio_area:hover input ~ .fake_radio_button {
-    background-color: #ccc;
+    background-color: var(--grey);
   }
 
   
@@ -669,7 +795,7 @@ transform: rotate(45deg);
 
     /* When the radio button is checked, add a blue background */
     .radio_area input:checked ~ .fake_radio_button_disabled {
-        background-color: #ff785ac3;
+        background-color: #0358e590;
       }
       
   
@@ -694,28 +820,28 @@ transform: rotate(45deg);
     border-radius: 50%;
     background: white;
 }
-
 .status_div{
-    border-radius: 5px;
     height: fit-content;
     color: white;
-    padding: 5px 20px;
+    padding: 5px;
     display: flex;
     flex-direction: column;
+    background-color: #ffffff10;
 }
 .status_div_title{
     font-size: 0.8rem;
     text-transform: uppercase;
     margin: auto;
+    font-weight: 500;
 }
 .status_div_flex{
     display: flex;
     align-items: center;
     margin: auto;
-    margin-top: 5px;
 }
 .status_div_flex_title{
     font-weight: 600;
+    font-size: 1.1rem;
 }
 .status_icon{
     color: white;
@@ -738,39 +864,15 @@ transform: rotate(45deg);
 
 @media (max-width: 1024px){
     .top_title{
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
     .item_wrapper{
         font-size: 0.8rem;
     }
-    .personal_subtitle{
-        font-size: 1.2rem;
-    }
-    .input_title{
-        font-size: 0.9rem;
-    }
     .flex_title{
         font-size: 0.9rem;
     }
-    .input_email{
-        font-size: 1rem;
-    }
-    .input_wrong{
-        font-size: 1rem;
-        height: 20px;
-    }
-    .input_input_edit{
-        font-size: 1rem;
-        height: 20px;
-    }
-    .input_input{
-        font-size: 1rem;
-        height: 20px;
-    }
-    .input_icon{
-        width: 15px !important;
-        height: 15px !important;
-    }
+
     .input_flex{
         height: 160px;
     }
@@ -778,28 +880,33 @@ transform: rotate(45deg);
         font-size: 30px;
     }
     .edit_top{
-        top: 130px;
+        top: 205px;
         left: 10px;
         right: 10px;
         text-align: center;
+        width: 98%;
+        box-sizing: border-box;
     }
     .save_top{
-        top: 130px;
+        top: 205px;
         left: 10px;
         right: 10px;
         text-align: center;
-    }
-    .input_right{
-        width: 150px;
-    }
-    .input_wrong{
-        width: 150px;
-    }
-    .input_input_edit{
-        width: 150px;
     }
     .input_input{
         width: 150px;
+    }
+    .input_div{
+        width: 100%;
+    }
+    .textarea_input_edit{
+        width: 100%;
+    }
+    .textarea_input{
+        width: 100%;
+    }
+    .textarea_input_wrong{
+        width: 100%;
     }
 }
 @media (max-width: 850px){

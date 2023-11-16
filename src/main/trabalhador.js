@@ -8,10 +8,15 @@ import Loader from '../general/loader';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import {regioesOptions, profissoesOptions, profissoesPngs} from '../general/util'
+import ChatIcon from '@mui/icons-material/Chat';
+import { useSelector } from 'react-redux'
 
 const ObjectID = require("bson-objectid");
 
 const Trabalhador = props => {
+    const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
+
     const navigate = useNavigate()
 
     const messageRef = useRef(null)
@@ -36,8 +41,8 @@ const Trabalhador = props => {
         setPage(paramsAux.page)
         paramsAux.region&&setLocationActive(paramsAux.region)
         paramsAux.work&&setWorkerActive(paramsAux.work)
-        props.user?._id===paramsAux.id&&setOwnPost(true)
-        axios.get(`${props.api_url}/worker/get_worker_by_mongo_id`, { params: {_id: paramsAux.id} }).then(res => {
+        user?._id===paramsAux.id&&setOwnPost(true)
+        axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: paramsAux.id} }).then(res => {
             res.data!=""&&setWorker(res.data)
             setLoading(false)
         })
@@ -48,29 +53,29 @@ const Trabalhador = props => {
     }, [props.userLoadAttempt])
 
     const sendMessageHandler = async () => {
-        if(text!==""&&worker.type!==props.user.type&&worker._id!==props.user._id){
+        if(text!==""&&worker.type!==user.type&&worker._id!==user._id){
             setLoadingChat(true)
 
             let time = new Date().getTime()
             let text_object = {
-                origin_type : props.user.type,
+                origin_type : user.type,
                 timestamp : time,
                 text: text,
             }
 
             var repeated = false
 
-            if(props.user.chats)
+            if(user.chats)
             {
-                for(let chat of props.user.chats)
+                for(let chat of user.chats)
                 {
                     if(chat.worker_id === worker._id && chat.reservation_id === null)
                     {
                         console.log("repeated chat")
                         repeated=true
-                        await axios.post(`${props.api_url}/chats/update_common_chat`, {
-                            worker_read: props.user.type===1?true:false,
-                            user_read: props.user.type===0?true:false,
+                        await axios.post(`${api_url}/chats/update_common_chat`, {
+                            worker_read: user.type===1?true:false,
+                            user_read: user.type===0?true:false,
                             chat_id: chat.chat_id,
                             text: text_object,
                             updated: time
@@ -84,17 +89,17 @@ const Trabalhador = props => {
             {
                 let chatId = ObjectID()
 
-                await axios.post(`${props.api_url}/chats/create_chat`, {
+                await axios.post(`${api_url}/chats/create_chat`, {
                     worker_name: worker.name,
                     worker_surname: worker.surname,
                     worker_photoUrl: worker.photoUrl,
                     worker_phone: worker.phone,
                     worker_id: worker._id,
-                    user_name: props.user.name,
-                    user_surname: props.user.surname,
-                    user_photoUrl: props.user.photoUrl,
-                    user_phone: props.user.phone,
-                    user_id: props.user._id,
+                    user_name: user.name,
+                    user_surname: user.surname,
+                    user_photoUrl: user.photoUrl,
+                    user_phone: user.phone,
+                    user_id: user._id,
                     text: text_object,
                     updated: time,
                     chat_id: chatId
@@ -110,24 +115,43 @@ const Trabalhador = props => {
             }
     }
 
-    const mapTrabalhosList = list => {
-        return list?.map((val, i) => {
-            return (
-                <div key={i} className={styles.list_el_wrapper}>
-                    <span className={workerActive===val?styles.list_el_active:styles.list_el}>{profissoesOptions[val]}</span>
-                </div>
-            )
-        })
+    const mapTrabalhosList = () => {
+        if(worker.trabalhos)
+        {
+            let arrTrabalhos = [...worker?.trabalhos]
+            arrTrabalhos.sort(function(a, b){
+                if(a < b) { return -1; }
+                if(a > b) { return 1; }
+                return 0;
+            })
+            return arrTrabalhos.map((val, i) => {
+                return (
+                    <div key={i} className={styles.list_el_wrapper}>
+                        <span className={workerActive===val?styles.list_el_active:styles.list_el}>{profissoesOptions[val]}</span>
+                    </div>
+                )
+            })
+        }
+        
     }
 
-    const mapRegioesList = list => {
-        return list?.map((val, i) => {
-            return (
-                <div key={i} className={styles.list_el_wrapper}>
-                    <span className={locationActive===val?styles.list_el_active:styles.list_el}>{regioesOptions[val]}</span>
-                </div>
-            )
-        })
+    const mapRegioesList = () => {
+        if(worker.regioes)
+        {
+            let arrRegioes = [...worker?.regioes]
+            arrRegioes.sort(function(a, b){
+                if(a < b) { return -1; }
+                if(a > b) { return 1; }
+                return 0;
+            })
+            return arrRegioes.map((val, i) => {
+                return (
+                    <div key={i} className={styles.list_el_wrapper}>
+                        <span className={locationActive===val?styles.list_el_active:styles.list_el}>{regioesOptions[val]}</span>
+                    </div>
+                )
+            })
+        }
     }
 
     const getNumberDisplay = number => {
@@ -139,7 +163,7 @@ const Trabalhador = props => {
     }, [props.userLoadAttempt])
 
     const displayTrabalhosImages = () => {
-        if(worker.trabalhos){
+        if(worker?.trabalhos){
             let arrTrabalhos = [...worker.trabalhos]
             arrTrabalhos.sort(function(a, b){
                 if(a < b) { return -1; }
@@ -148,13 +172,11 @@ const Trabalhador = props => {
             })
             return arrTrabalhos.map((val, i) => {
                 return (
-                    <div className={styles.top_image_div}>
-                        <img key={i} className={workerActive===val?styles.top_image:styles.top_image} src={profissoesPngs[val]}/>
-                        {
-                            workerActive===val?
-                            <span className={styles.selected_worker}></span>
-                            :null
-                        }
+                    <div 
+                        key={i} 
+                        className={workerActive===val?styles.top_image_div_selected:styles.top_image_div}
+                        style={{marginLeft:i===0?'-10px':''}}>
+                        <img className={styles.top_image} src={profissoesPngs[val]}/>
                     </div>
                     
                 )
@@ -173,10 +195,7 @@ const Trabalhador = props => {
                     <span className={styles.normal_back_left_text}>VOLTAR</span>
                 </Link>
                 <div className={styles.normal_back_right}>
-                    <span className={styles.normal_back_right_dir} onClick={() => navigate({
-                    pathname: '/main/publications/trabalhadores',
-                    state: {from_page: true}
-                    })}>Trabalhadores</span>
+                    <span className={styles.normal_back_right_dir} onClick={() => navigate(-1)}>Trabalhadores</span>
                     <div className={styles.normal_back_right_sep_wrapper}>
                         <div className={styles.normal_back_right_sep}>|</div>
                     </div>
@@ -197,13 +216,8 @@ const Trabalhador = props => {
                             :<FaceIcon className={styles.left_img}/>
                         }
                         <div className={styles.left_div}>
-                            <div style={{display:"flex", alignItems:"flex-start"}}>
-                                <span className={styles.left_name}>{worker.name}</span>
-                                <div className={styles.middle_images}>
-                                    <div className={styles.middle_images_background}>
-                                        {worker&&displayTrabalhosImages()}
-                                    </div>
-                                </div>
+                            <div className={styles.left_name_wrapper}>
+                                <p className={styles.left_name}>{worker.name}</p>
                             </div>
                             <span className={styles.left_type}>{worker.entity?"Empresa":"Particular"}</span>
                             {
@@ -214,15 +228,25 @@ const Trabalhador = props => {
                         </div>
                     </div>
                     <div className={styles.description_wrapper}>
+                        <div className={styles.middle_images}>
+                            <div className={styles.middle_images_background}>
+                                {worker&&displayTrabalhosImages()}
+                            </div>
+                        </div>
                         <span className={styles.description_title}>Sobre</span>
                         <span className={styles.description}>{worker.description}</span>
                     </div>
                     {
                         !ownPost&&loaded?
-                        <span className={styles.top_message} onClick={() => {
-                            messageAreaRef.current.focus()
-                            messageRef.current.scrollIntoView()
-                            }}>Enviar Mensagem</span>
+                        <span 
+                            className={styles.top_message} 
+                            onClick={() => {
+                                messageAreaRef.current.focus()
+                                messageRef.current.scrollIntoView()
+                            }}>
+                                <span className={styles.top_message_text}>Enviar Mensagem</span>
+                                <ChatIcon className={styles.top_message_icon}/>
+                            </span>                        
                         :ownPost?
                         null
                         :<span className={`${styles.top_message} ${styles.skeleton}`} style={{height:"40px", width:"150px"}}></span>
@@ -245,14 +269,14 @@ const Trabalhador = props => {
                         <div className={styles.bottom_right_wrapper}>
                             <span className={styles.bottom_right_title}>Trabalhos</span>
                             <div className={styles.list}>
-                                {mapTrabalhosList(worker.trabalhos)}
+                                {mapTrabalhosList()}
                             </div>
                         </div>
                         <span className={styles.bottom_right_divider}></span>
                         <div className={styles.bottom_right_wrapper}>
                             <span className={styles.bottom_right_title}>Regiões</span>
                             <div className={styles.list}>
-                                {mapRegioesList(worker.regioes)}
+                                {mapRegioesList()}
                             </div>
                         </div>
                     </div>
@@ -272,17 +296,18 @@ const Trabalhador = props => {
                             <span className={styles.user_info_number} style={{opacity:"0.6"}}>Mensagem</span> 
                         </div>
                         {
-                            !props.user?
+                            !user._id?
                             <div className={styles.textarea_wrapper}>
                                 <textarea   
+                                        disabled={!user}
                                         ref={messageAreaRef}
                                         className={styles.message_textarea_disabled}
                                         placeholder="Escrever mensagem..."
                                         />
                                 <div className={styles.frontdrop}>
-                                    <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"#FF785A", textTransform:"capitalize"}}>{worker?.name?.split(" ")[0]}</span>,</span>
+                                    <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{textTransform:"capitalize", fontWeight:700}}>{worker?.name?.split(" ")[0]}</span>,</span>
                                     <span className={styles.frontdrop_text}>registe-se ou entre numa conta!</span>
-                                    <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication/worker?type=1')}>Ir para autenticação</span>
+                                    <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication?type=1')}>autenticar</span>
                                 </div>
                             </div>
                             :

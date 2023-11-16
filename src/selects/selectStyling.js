@@ -7,17 +7,15 @@ const TopSelect = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: "#161F28",
-            borderColor: "#161F28",
-            fontSize: "0.9rem",
+            backgroundColor: "#0358e5",
+            borderColor: "#0358e5",
+            fontSize: "0.8rem",
             textTransform: "uppercase",
             color: "#FF785A",
             fontWeight: 600,
             width:"170px",
             transition: "0.2s all ease-in-out",
             borderRadius: "10px",
-            borderTopLeftRadius: "0px",
-            borderBottomRightRadius: "0px",
             borderBottomLeftRadius: state.isFocused? 0: "10px",
             borderBottomRightRadius: state.isFocused? 0: "10px",
             border: state.isSelected? "1px solid white": 0,
@@ -33,7 +31,8 @@ const TopSelect = (props) => {
             cursor: "pointer",
             color: "#fff",
             fontWeight: state.isSelected? 600: 400,
-            backgroundColor: state.isSelected? "#FF785A ": state.isFocused? '#FF785A50': "transparent",
+            backgroundColor: state.isSelected? "#0358e5": state.isFocused? '#0358e550': "transparent",
+            fontSize: '0.8rem'
         }),
         menu: base => ({
             ...base,
@@ -52,10 +51,10 @@ const TopSelect = (props) => {
         }),
         dropdownIndicator : base => ({
             ...base,
-            color: "#FF785A",
-            transition: "0.3s all ease-in-out",
+            color: "#ffffff",
+            transition: "0.15s all ease-in-out",
             "&:hover": {
-                color: "#FF785A",
+                color: "#ffffff",
             }
         }),
         container: base => ({
@@ -69,7 +68,7 @@ const TopSelect = (props) => {
         }),
         indicatorSeparator : base => ({
             ...base,
-            backgroundColor: "#FF785A"
+            backgroundColor: "#ffffff"
         }),
         valueContainer: base => ({
             ...base,

@@ -13,8 +13,11 @@ import CircleIcon from '@mui/icons-material/Circle';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { useSelector } from 'react-redux'
 
 const Suporte = (props) => {
+    const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
 
     const [messages, setMessages] = useState()
     const [currentText, setCurrentText] = useState("")
@@ -47,17 +50,17 @@ const Suporte = (props) => {
     top: calc(50% - 75px);
     `;
 
-    useEffect(async () => {      
+    useEffect(() => {      
         setLoading(true)
-        if(props.user && props.user.admin_chat){
-            let chat = await axios.get(`${props.api_url}/admin_chats/get_chat`, { params: {chat_id: props.user.admin_chat} })
+        if(user && user.admin_chat){
+            let chat = axios.get(`${api_url}/admin_chats/get_chat`, { params: {chat_id: user.admin_chat} })
             if(chat.data != null){
                 setChat(chat.data)
                 setMessages(chat.data.texts)
                 checkForRefusalsNoRepetitive(chat.data.texts)
                 scrollToBottom()
             }
-            let reservs = await axios.get(`${props.api_url}/reservations/get_by_id`, { params: {user_id: props.user._id} })
+            let reservs = axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} })
             if(reservs)
             {
                 setReservations(reservs.data)
@@ -69,16 +72,16 @@ const Suporte = (props) => {
             setLoading(false)
         }
 
-        if(props.user){
+        if(user){
             const newSocket = io(
                 'http://localhost:5500',
-                { query: {id: props.user._id} }
+                { query: {id: user._id} }
             )
             setS(newSocket)
         }
         return () => s&&s.close()
 
-    }, [props.user])
+    }, [user])
 
     useEffect(() => {
         if(!s) return
@@ -156,7 +159,7 @@ const Suporte = (props) => {
         if(currentText !== ""){
             let time = new Date().getTime()
             let text_object = {
-                origin_type : props.user.type,
+                origin_type : user.type,
                 timestamp : time,
                 text: currentText
             }
@@ -166,15 +169,15 @@ const Suporte = (props) => {
             setCurrentText("")
 
             let chatId = ObjectID()
-            await axios.post(`${props.api_url}/admin_chats/create_or_update_chat`, {
+            await axios.post(`${api_url}/admin_chats/create_or_update_chat`, {
                 admin_name: chat?.admin_name,
                 admin_id: chat?.admin_id,
-                user_id: props.user._id,
-                user_type: props.user.type,
-                user_name: props.user.name,
+                user_id: user._id,
+                user_type: user.type,
+                user_name: user.name,
                 text: text_object,
                 updated: time,
-                chat_id: props.user.admin_chat || chatId
+                chat_id: user.admin_chat || chatId
             })
 
             scrollToBottom()
@@ -183,8 +186,8 @@ const Suporte = (props) => {
                 recipient: chat?.admin_id,
                 text: currentText,
                 time: time,
-                chat_id: props.user.admin_chat || chatId,
-                type: props.user.type
+                chat_id: user.admin_chat || chatId,
+                type: user.type
             }) 
         }
     }
@@ -377,9 +380,9 @@ const Suporte = (props) => {
     return (
         <div className={styles.suporte}>
 
-            <div className={styles.suporte_title}>
+            {/* <div className={styles.suporte_title}>
                 <span className={styles.top_title}>Suporte</span>
-            </div>
+            </div> */}
             <div className={styles.chat}>
                 <ClipLoader color={"#FF785A"} css={override} loading={loading} size={150} />
                     {

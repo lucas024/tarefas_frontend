@@ -1,7 +1,6 @@
 .blank{
     width: 100%;
     margin: 0 auto;
-    border-top: 1px solid #ccc;
 }
 .blank_flex{
     margin: auto;
@@ -12,10 +11,10 @@
 }
 .blank_text{
     align-self: center;
-    font-size: 2rem;
-    font-style: italic;
+    font-size: 1rem;
     color: #00000070;
     text-align: center;
+    font-weight: 400;
 }
 .blank_face{
     width: 100px !important;
@@ -25,8 +24,8 @@
     margin-top: 20px;
 }
 .blank_face_small{
-    width: 50px !important;
-    height: 50px !important;
+    width: 30px !important;
+    height: 30px !important;
     align-self: center;
     color: #00000070;
     margin-top: 20px;
@@ -34,19 +33,19 @@
 .button{
     margin: 20px auto;
     background-color: var(--action);
-    padding: 10px;
+    padding: 12px;
     border-radius: 5px;
     color: white;
     text-transform: uppercase;
     font-weight: 500;
     box-sizing: border-box;
-    border: 3px solid var(--action);
     cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 .button:hover{
-    background-color: white;
-    color: var(--brand);
-    transition: 200ms;
+    transform: scale(1.03);
+    transition: 50ms;
 }
 .blank_request{
     margin: 60px auto;

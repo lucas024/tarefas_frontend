@@ -3,9 +3,8 @@
 .worker{
     width: 100%;
     height: 100%;
-    border-top: 1px solid #ccc;
     overflow: hidden;
-    background-color: var(--background);
+    background-color: var(--brand);
 }
 .flex{
     display: flex;
@@ -15,12 +14,13 @@
 .left{
     width: 200px;
     min-width: 200px;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #ffffff50;
     background-color: var(--brand);
     height: 100%;
 }
 .right{
     flex-grow: 1;
+    overflow: hidden;
 }
 .worker_area{
     width: 100%;
@@ -46,9 +46,9 @@
 }
 .area{
     height: calc(100vh - 68px);
-    overflow: auto;
+    overflow: hidden;
+    position: relative;
 }
-
 @media (min-width: 1024px) {
     .left{
         min-width: 250px;

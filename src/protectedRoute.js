@@ -1,12 +1,16 @@
 import {Navigate} from 'react-router-dom'
+import NoPage from './general/noPage';
 
 
-const ProtectedRoute = ({ user, children }) => {
-    if (!user) {
-      return <Navigate to="/authentication?type=1" replace />;
-    }
-    
-    return children;
+const ProtectedRoute = ({
+  isAllowed,
+  redirectPath = '/',
+  children,
+}) => {
+  if (!isAllowed) {
+    return <Navigate to={redirectPath} replace />;
+  }
+
+  return children ? children : <NoPage />;
 };
-
 export default ProtectedRoute

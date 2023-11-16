@@ -147,8 +147,6 @@ const AdminTrabalhosPA = (props) => {
                         cancelHandler={() => setRefusePopup(false)}
                         user_id={refuseUserReservationId}
                         reservation={refuseReservation}
-                        api_url={props.api_url}
-                        user={props.user}
                         />
                     :null
             }

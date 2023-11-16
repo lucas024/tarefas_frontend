@@ -4,7 +4,7 @@ import styles from './publicar.module.css'
 import TopSelect from '../selects/selectStyling';
 import dayjs from 'dayjs';
 import validator from 'validator';
-import ReactTooltip from 'react-tooltip';
+import {Tooltip} from 'react-tooltip';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Geocode, { setLanguage } from "react-geocode";
 import {CSSTransition}  from 'react-transition-group';
@@ -21,12 +21,16 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {profissoesPngs} from '../general/util'
 import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
+import { useSelector } from 'react-redux'
 
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
 dayjs.locale('pt')
 
+
 const Publicar = (props) => {
+    const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
 
     const [selectedWorker, setSelectedWorker] = useState('eletricista')
     const [titulo, setTitulo] = useState('')
@@ -139,15 +143,15 @@ const Publicar = (props) => {
     }, [location])
 
     useEffect(() => {
-        if(props.user){
-            setNome(`${props.user.name} ${props.user.surname}`)
-            setEmail(props.user.email)
-            if(props.user.phone){
-                setPhone(props.user.phone)
-                setPhoneVisual(props.user.phone)
+        if(user){
+            setNome(`${user.name} ${user.surname}`)
+            setEmail(user.email)
+            if(user.phone){
+                setPhone(user.phone)
+                setPhoneVisual(user.phone)
             }            
         }
-    }, [props.user])
+    }, [user])
 
     useEffect(() => {
         props.loadingHandler(true)
@@ -162,7 +166,7 @@ const Publicar = (props) => {
         if(paramsAux.editar && paramsAux.res_id)
         {   
             setEdit(true)
-            axios.get(`${props.api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.res_id} }).then(res => {
+            axios.get(`${api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.res_id} }).then(res => {
                 if(res.data){
                     !editReservation&&setSelectedWorker(res.data.workerType)
                     setEditReservation(res.data)
@@ -191,6 +195,15 @@ const Publicar = (props) => {
             })
         }
         else{
+            setEdit(false)
+            setEditReservation(null)
+            setTitulo('')
+            setDescription('')
+            setEditAddress(null)
+            setPorta('')
+            setLat('')
+            setLng('')
+            setDistrict('')
             props.loadingHandler(false)
         }
     }, [searchParams])
@@ -215,7 +228,7 @@ const Publicar = (props) => {
         else{
             setPhoneWrong(false)
         }
-        if(!validator.isEmail(email) && emailFocused){
+        if(email&& !validator.isEmail(email) && emailFocused){
             if(!emailWrong) setEmailWrong(true)
         }
         else{
@@ -310,10 +323,10 @@ const Publicar = (props) => {
         let time = new Date()
         let reserva = {
             _id: postId,
-            user_id: props.user._id,
-            user_name: props.user.name,
+            user_id: user._id,
+            user_name: user.name,
             user_phone: phone,
-            user_email: props.user.email,
+            user_email: user.email,
             title: titulo,
             desc: description,
             localizacao: address || editAddress,
@@ -325,17 +338,17 @@ const Publicar = (props) => {
             photos: arr,
             lat: lat,
             lng: lng,
-            photoUrl: props.user.photoUrl,
+            photoUrl: user.photoUrl,
             timestamp: time.getTime(),
             district: district
         }
-        axios.post(`${props.api_url}/reservations/add`, reserva).then(() => {
+        axios.post(`${api_url}/reservations/add`, reserva).then(() => {
             setConfirmationPopup(false)
             setConfirmationEditPopup(false)
             props.loadingHandler(false)
-            if(props.user.phone === "" || props.user.phone !== phone){
-                axios.post(`${props.api_url}/user/update_phone`, {
-                    user_id : props.user._id,
+            if(user.phone === "" || user.phone !== phone){
+                axios.post(`${api_url}/user/update_phone`, {
+                    user_id : user._id,
                     phone: phone
                 }).then(res => {
                     console.log(res);
@@ -346,7 +359,7 @@ const Publicar = (props) => {
     }
 
     const confirmarHandler = () => {
-        if(!props.user && checkAll()){
+        if(!user && checkAll()){
             navigate('/authentication?type=0',
                 {
                     state: {
@@ -369,7 +382,7 @@ const Publicar = (props) => {
     }
 
     const checkPendingReservations = () => {
-        axios.get(`${props.api_url}/reservations/get_by_id`, { params: {user_id: props.user._id} }).then(res => {
+        axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} }).then(res => {
             if(edit)
             {
                 props.loadingHandler(false)
@@ -490,9 +503,9 @@ const Publicar = (props) => {
         <div className={styles.reservation}>
             {
                 edit?
-                <div className={styles.previous_voltar} style={{borderBottom:`5px solid ${getTypeColor(editReservation?.type)}`}} onClick={() => navigate(-1)}>
+                <div className={styles.previous_voltar} style={{borderBottom:`3px solid #FF785A`}} onClick={() => navigate(-1)}>
                     <ArrowBackIcon className={styles.previous_symbol}/>
-                    <span className={styles.previous_voltar_text}><span style={{color:getTypeColor(editReservation?.type)}}>CANCELAR </span> EDIÇÃO</span>
+                    <span className={styles.previous_voltar_text}>CANCELAR<span style={{color:'#FF785A'}}> EDIÇÃO</span></span>
                 </div>
                 :null
             }
@@ -546,11 +559,16 @@ const Publicar = (props) => {
                     </CSSTransition>
                     <div className={styles.reservar}>
                         <div className={styles.reservar_upper} style={{marginTop:edit?"100px":""}}>
-                            <p className={styles.reservar_upper_title}>PUBLICAR</p>
+                            <p className={styles.reservar_upper_title}>
+                                {edit?
+                                <div><span style={{color:'#FF785A'}}>EDITAR</span><span> TRABALHO</span></div>:
+                                'PUBLICAR TRABALHO'
+                                }
+                            </p>
                             {
                                 edit?
                                 <p className={styles.reservar_upper_desc} style={{display:"flex", justifyContent:"center", marginBottom:"10px"}}>
-                                    <span className={styles.action} style={{fontSize:"2rem"}}>EDITAR</span>
+                                    <span className={styles.action} style={{fontSize:"1rem"}}>EDITAR</span>
                                 </p>
                                 :
                                 <p className={styles.reservar_upper_desc}>
@@ -561,7 +579,9 @@ const Publicar = (props) => {
                         </div>
                         <div style={{width:"100%", display:"flex", justifyContent:"space-between", alignItems:"center"}}>
                             <div className={styles.bot_title_wrapper}>
-                                <span className={styles.bot_title_indicator}>1</span>
+                                <div className={styles.bot_title_indicator_wrapper}>
+                                    <span className={styles.bot_title_indicator}>1</span>
+                                </div>
                                 <span className={styles.bot_title}>Detalhes do Trabalho</span>
                             </div>
                             {
@@ -616,7 +636,7 @@ const Publicar = (props) => {
                                             else
                                             {
                                                 navigate({
-                                                    pathname: `/publicar`,
+                                                    pathname: `/publicar/novo`,
                                                     search: `?t=${val}`
                                                 })
                                             }}}
@@ -640,7 +660,7 @@ const Publicar = (props) => {
                                             </span>
                                         }
                                     
-                                    <input onFocus={() => {setTituloFocused(true)}} placeholder="Título da publicação..." maxLength={40} onChange={e => setTitulo(e.target.value)} value={titulo} className={styles.top_input_short} style={{borderColor:tituloWrong&&titulo.length>0?"red":!tituloWrong&&tituloFocused&&titulo.length>0?"#26B282":""}}></input>
+                                    <input onFocus={() => {setTituloFocused(true)}} placeholder="Título do trabalho..." maxLength={40} onChange={e => setTitulo(e.target.value)} value={titulo} className={styles.top_input_short} style={{borderColor:tituloWrong&&titulo.length>0?"red":!tituloWrong&&tituloFocused&&titulo.length>0?"#26B282":""}}></input>
                                 </div>
                                 <div className={styles.diff_right}>
                                         {
@@ -662,7 +682,7 @@ const Publicar = (props) => {
                                             maxRows={20}
                                             minRows={8}
                                             maxLength={400}
-                                            className={styles.top_desc_area} placeholder="Descrição do problema..." 
+                                            className={styles.top_desc_area} placeholder="Descrição do trabalho..." 
                                             value={description} onChange={e => {
                                             setTextareaHeight(e.target.value)
                                             setDescription(e.target.value)}}>
@@ -723,7 +743,9 @@ const Publicar = (props) => {
                         <div className={styles.bottom}>
                             <div className={styles.bottom_area}>
                                 <div className={styles.bot_title_wrapper}>
-                                    <span className={styles.bot_title_indicator}>2</span>
+                                    <div className={styles.bot_title_indicator_wrapper}>
+                                        <span className={styles.bot_title_indicator}>2</span>
+                                    </div>
                                     <span className={styles.bot_title}>Detalhes de contacto</span>
                                 </div>
                                 <div className={styles.contact_area} onClick={() => divRef.current.scrollIntoView({ behavior: 'smooth' })}>
@@ -734,15 +756,15 @@ const Publicar = (props) => {
                                     }
                                     <div className={styles.bot_input_div} style={{marginTop:"0"}}>
                                         <span style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"", borderRight:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":"transparent"}} className={styles.area_label_inverse}>Nome<span className={styles.asterisc}>*</span></span>
-                                        <input placeholder='Nome...' style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":""}} disabled={props.user} onFocus={() => {nameFocused()}} maxLength={36} onChange={e => setNome(e.target.value)} value={nome} className={styles.bot_input_short}></input>
+                                        <input placeholder='Nome...' style={{borderColor:nomeWrong?"red":!nomeWrong&&nomeFocused?"#26B282":!nomeWrong&&nome.length>0?"#26B282":""}} disabled={user} onFocus={() => {nameFocused()}} maxLength={36} onChange={e => setNome(e.target.value)} value={nome} className={styles.bot_input_short}></input>
                                     </div>
                                     <div className={styles.bot_input_div}>
                                         <span style={{borderColor:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"", borderRight:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":"transparent"}} className={styles.area_label_inverse}>Telefone<span className={styles.asterisc}>*</span></span>
                                         <input placeholder='91...' style={{borderColor:phoneWrong?"red":!phoneWrong&&phoneFocused?"#26B282":!phoneFocused&&phone.length===9?"#26B282":""}} onFocus={() => {setPhoneFocused(true)}} maxLength={11} onChange={e => setPhoneHandler(e.target.value)} value={phoneVisual} className={styles.bot_input_short}></input>
                                     </div>
                                     <div className={styles.bot_input_div}>
-                                        <span style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"", borderRight:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":"transparent"}} className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
-                                        <input placeholder='Email...' style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email.length>3?"#26B282":""}} disabled={props.user} onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
+                                        <span style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email?.length>3?"#26B282":"", borderRight:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email?.length>3?"#26B282":"transparent"}} className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
+                                        <input placeholder='Email...' style={{borderColor:emailWrong?"red":!emailWrong&&emailFocused?"#26B282":!emailWrong&&email?.length>3?"#26B282":""}} disabled={user} onFocus={() => {setEmailFocused(true)}} maxLength={80} onChange={e => setEmail(e.target.value)} value={email} className={styles.bot_input_long}></input>
                                     </div>
                                     
                                 </div>
@@ -750,7 +772,9 @@ const Publicar = (props) => {
                             </div>
                             <div className={styles.bottom_area_second}>
                                 <div className={styles.bot_title_wrapper} style={{alignItems:editReservation?.type===2&&getFieldWrong('location')?'flex-start':""}}>
-                                    <span className={styles.bot_title_indicator}>3</span>
+                                    <div className={styles.bot_title_indicator_wrapper}>
+                                        <span className={styles.bot_title_indicator}>3</span>
+                                    </div>
                                     {
                                         editReservation?.type===2&&getFieldWrong('location')?
                                         <div className={styles.diff_right_title_container} style={{alignItems:"flex-start"}}>
@@ -896,7 +920,7 @@ const Publicar = (props) => {
                         </div>
                         <div ref={divRef} data-tip={complete?"":"Preenche todos os campos assinalados com *"} style={{backgroundColor:edit?"#FF785A":""}} className={complete?styles.bot_button:styles.bot_button_disabled} onClick={() => {
                                     if(complete) confirmarHandler()}}>
-                            <span className={complete?styles.bot_button_text:styles.bot_button_text_disabled}>{edit?"Confirmar edição do Trabalho":props.user?"Publicar Trabalho":"Criar conta e Publicar trabalho" }</span>
+                            <span className={complete?styles.bot_button_text:styles.bot_button_text_disabled}>{edit?"Confirmar edição do Trabalho":user?"Publicar Trabalho":"Criar conta e Publicar trabalho" }</span>
                         </div>
                         {
                             edit?
@@ -910,7 +934,7 @@ const Publicar = (props) => {
                 </div>
                 <div className={styles.right}></div>
             </div>
-            <ReactTooltip effect='solid'/>
+            <Tooltip effect='solid'/>
         </div>
     )
 }

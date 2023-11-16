@@ -1,16 +1,17 @@
-import React from 'react'
+import React, {CSSProperties} from 'react'
 import ClipLoader from "react-spinners/BounceLoader";
 import { css } from "@emotion/react";
 
-const override = css`
-  display: block;
-  margin: 0 auto;
-  border-color: red;
-  position: absolute;
-  z-index: 11;
-  left: calc(50% - 75px);
-  top: calc(50% - 75px);
-`;
+
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+  position: "absolute",
+  zIndex: 11,
+  left: "calc(50% - 75px)",
+  top: "calc(50% - 75px)",
+};
 
 const small_override = css`
   display: block;
@@ -34,13 +35,14 @@ const border_override = css`
 `;
 
 
+
 const Loader = (props) => {
     return(
         <div>
-            <ClipLoader color={"#FF785A"} css={props.small?small_override:override} loading={props.loading} size={props.small?20:150} />
+            <ClipLoader color={"#FFFFFF"} cssOverride={props.small?small_override:override} loading={props.loading} size={props.small?20:150} />
                 {
                     props.loading?
-                    <div className="frontdrop" style={{borderRadius:props.radius?"10px":""}}></div>
+                    <div css={props.nofrontdrop===true?"":"frontdrop"} style={{borderRadius:props.radius?"10px":""}}></div>
                     :null
                 }
         </div>

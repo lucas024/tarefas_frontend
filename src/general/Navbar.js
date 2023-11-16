@@ -2,28 +2,59 @@ import React, { useEffect, useState } from 'react'
 import styles from './navbar.module.css'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useNavigate } from 'react-router-dom';
-import FaceIcon from '@mui/icons-material/Face';
 import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
 import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import CircleIcon from '@mui/icons-material/Circle';
-import ReactTooltip from 'react-tooltip';
+import {Tooltip} from 'react-tooltip';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import CardMembershipIcon from '@mui/icons-material/CardMembership';
+import { useSelector, useDispatch } from 'react-redux'
+import { user_reset } from '../store';
 
 const Navbar = (props) => {
+    const dispatch = useDispatch()
+
+    const user_profile_complete = useSelector(state => {return state.user_profile_complete})
+    const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
+    const user = useSelector(state => {return state.user})
+    const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
     const navigate = useNavigate()
     const [dropdown, setDropdown] = useState(false)
     const [loaded, setLoaded] = useState(false)
+    const [hasUnreadTexts, setHasUnreadTexts] = useState(false)
 
     useEffect(() => {
         setLoaded(props.userLoadAttempt)
-        console.log(props.incompleteUser);
+        console.log(user_profile_complete)
     }, [props.userLoadAttempt])
+
+    useEffect(() => {
+        if(user.chats?.length>0){
+            for(const el of user.chats){
+                //user
+                if(user.type===0&&!el.user_read){
+                    setHasUnreadTexts(true)
+                    break
+                }
+                //worker
+                else if(user.type===1&&!el.worker_read){
+                    setHasUnreadTexts(true)
+                    break
+                }
+            }
+        }
+    }, [user])
 
     const logoutHandler = () => {
         setDropdown(false)
         logout()
+        dispatch(user_reset())
         navigate('/authentication?type=1')
     }
 
@@ -37,22 +68,22 @@ const Navbar = (props) => {
                     <div className={styles.flex_end}>
                         <div className={styles.flex_right}>
                             {
-                                props.user?.admin?
+                                user?.admin?
                                 <span className={styles.user_button} onClick={() => {navigate('/admin')}}>
                                         ADMIN
                                 </span>
-                                :props.user?.type?
-                                <span className={styles.user_button} onClick={() => {navigate('/main/publications/trabalhos')}}>
+                                :user?.type?
+                                <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/main/publications/trabalhos')}}>
                                         TRABALHOS
                                 </span>
-                                :loaded&&props.user?
-                                <span className={styles.user_button} onClick={() => {navigate('/publicar')}}>
+                                :loaded&&user?
+                                <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
                                         PUBLICAR
                                 </span>
                                 :loaded?
-                                <div className={styles.user_button_disabled} data-for='navbar' data-tip="Por favor crie conta ou inicie sessão para publicar.">
+                                <div className={styles.user_button_disabled} data-tooltip-id='navbar' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
                                         <span className={styles.back_publish_div_frontdrop}></span>
-                                        <span>PUBLICAR</span>
+                                        <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
                                 </div>
 
                                 
@@ -62,10 +93,10 @@ const Navbar = (props) => {
                                 
                             }
                             {
-                                props.user?
+                                user._id?
                                 <div className={styles.chat_div} onClick={() => navigate('/user?t=messages')}>
                                     {
-                                        props.hasTexts?
+                                        hasUnreadTexts?
                                         <span className={styles.chat_notification}></span>
                                         :null
                                     }   
@@ -79,7 +110,7 @@ const Navbar = (props) => {
                             }
                             <div className={styles.flex_end}>
                                 {
-                                    props.user?
+                                    user._id?
                                     <div className={styles.user_main} 
                                             onMouseEnter={() => setDropdown(true)} 
                                             onMouseOut={() => setDropdown(false)}
@@ -88,11 +119,10 @@ const Navbar = (props) => {
  
                                         <div className={styles.user}>
                                             {
-                                                props.hasSubscription!=null &&
-                                                (props.incompleteUser&&props.user.type || !props.hasSubscription&&props.user.type)?
-                                                <span className={styles.drop_div_notification_big}/>
+                                                (!worker_is_subscribed&&user.type || !worker_profile_complete&&user.type)?
+                                                <span className={styles.drop_div_notification_text}>CONTA DESATIVADA</span>
                                                 :
-                                                props.user.phone===""?
+                                                (user_profile_complete || user.phone==="")?
                                                 <span className={styles.drop_div_notification_big}/>                                                
                                                 :null
                                             }
@@ -106,19 +136,19 @@ const Navbar = (props) => {
                                             </div>
                                             <div className={styles.user_dropdown}>   
                                             <div className={styles.drop_user}>
-                                                <FaceIcon sx={{fontSize: "30px"}} className={styles.user_icon}/>
-                                                <span className={styles.drop_user_text}>{props.user.name} {props.user.surname}</span>
+                                                <span className={styles.drop_user_text}>{user.name} {user.surname}</span>
                                             </div>
                                             {
-                                                props.user?.type===0?
+                                                user?.type===0?
                                                 <div className={styles.drop_div_main} onClick={() => {
                                                     navigate('/user?t=publications')
                                                     setDropdown(false)}
                                                     }>
                                                     <div className={styles.drop_div}>
                                                         <div className={styles.drop_div_special}>
-                                                            <div style={{display:"flex"}}>
-                                                                <span className={styles.drop_div_text}>Publicações</span>
+                                                            <div className={styles.drop_div_flex}>
+                                                                <AssignmentOutlinedIcon className={styles.drop_div_flex_icon}/>
+                                                                <span className={styles.drop_div_text}>Meus Trabalhos</span>
                                                                 {/* <span className={styles.drop_div_number}>
                                                                     <span className={styles.drop_div_number_text}>1</span>
                                                                 </span> */}
@@ -134,16 +164,15 @@ const Navbar = (props) => {
                                                 navigate('/user?t=personal')}} className={styles.drop_div_main}>
                                                 <div className={styles.drop_div}>
                                                     <div className={styles.drop_div_special}>
-                                                            <div style={{display:"flex"}}>
+                                                            <div className={styles.drop_div_flex}>
+                                                                <AccountCircleOutlinedIcon className={styles.drop_div_flex_icon}/>
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
-                                                                !props.incompleteUser&&props.user.type?
+                                                                worker_profile_complete||user_profile_complete?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                                                :props.user.phone===""?
-                                                                <CircleIcon className={styles.off_icon}/>
-                                                                :props.user.type?
-                                                                <UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                                                :!worker_profile_complete&&!user_profile_complete?
+                                                                <span className={styles.drop_div_notification}/>
                                                                 :null
                                                             }
                                                             
@@ -151,21 +180,20 @@ const Navbar = (props) => {
                                                 </div>
                                             </div>
                                             {
-                                                props.user?.type===1?
+                                                user?.type===1?
                                                 <div className={styles.drop_div_main} onClick={() => {
                                                     navigate('/user?t=subscription')
                                                     setDropdown(false)}
                                                     }>
                                                     <div className={styles.drop_div}>
                                                         <div className={styles.drop_div_special}>
-                                                            <div style={{display:"flex"}}>
+                                                            <div className={styles.drop_div_flex}>
+                                                                <CardMembershipIcon className={styles.drop_div_flex_icon}/>
                                                                 <span className={styles.drop_div_text}>Subscrição</span>
                                                             </div>
                                                             {
-                                                                props.hasSubscription?
-                                                                <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                                                :props.user.type?
-                                                                <UnpublishedOutlinedIcon className={styles.off_icon}/>
+                                                                !worker_is_subscribed?
+                                                                <span className={styles.drop_div_notification}/>
                                                                 :null
                                                             }
                                                         </div>
@@ -181,6 +209,7 @@ const Navbar = (props) => {
                                                     <div className={styles.drop_div}>
                                                         <div className={styles.drop_div_special}>
                                                             <div style={{display:"flex"}}>
+                                                                <ChatOutlinedIcon className={styles.drop_div_flex_icon}/>
                                                                 <span className={styles.drop_div_text}>Mensagens</span>
                                                             </div>
                                                             {
@@ -198,13 +227,15 @@ const Navbar = (props) => {
                                                 setDropdown(false)
                                                 navigate('/user?t=support')}} className={styles.drop_div_main} style={{borderTop:"1px solid #ccc"}}>
                                                 <div className={styles.drop_div}>
-                                                    <span className={styles.drop_div_text}>Suporte</span>
+                                                    <SupportAgentIcon className={styles.drop_div_flex_icon}/>
+                                                    <span className={styles.drop_div_text} style={{marginTop:'2px'}}>Suporte</span>
                                                 </div>
                                             </div>
                                         
                                             <div onClick={() => logoutHandler()} className={styles.drop_div_main} style={{borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
                                                 <div className={styles.drop_div}>
-                                                    <span className={styles.drop_div_text}>Logout</span>
+                                                    <LogoutIcon className={styles.drop_div_flex_icon} style={{transform:'rotate(180deg)'}}/>
+                                                    <span className={styles.drop_div_text} style={{marginTop:'1px'}}>Sair da Conta</span>
                                                 </div>
                                             </div>
                                             </div>
@@ -225,7 +256,7 @@ const Navbar = (props) => {
                     </div>
                 </div>               
             </div>
-            <ReactTooltip id={"navbar"} effect='solid' place='left'/>
+            <Tooltip id={"navbar"} effect='solid' place='left'/>
         </div>
     )
 }

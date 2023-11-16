@@ -6,16 +6,19 @@ import AdminTrabalhosPA from './adminTrabalhosPA';
 import { useSearchParams } from 'react-router-dom';
 import Loader from '../general/loader';
 import AdminTrabalhosA from './adminTrabalhosA';
+import { useSelector } from 'react-redux'
 
 const Admin = (props) => {
-
+    const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
+    
     const [searchParams] = useSearchParams()
     const [loaded, setLoaded] = useState(false)
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         //ver se e admin
-    }, [props.user])
+    }, [user])
 
     useEffect(() => {
         props.userLoadAttempt&&setLoaded(true)
@@ -24,11 +27,11 @@ const Admin = (props) => {
     const displayCurrentArea = () => {
         let val = Object.fromEntries([...searchParams]).t
         if(val === "publications_PA")
-            return <AdminTrabalhosPA api_url={props.api_url} user={props.user} loaded={loaded}/>
+            return <AdminTrabalhosPA api_url={api_url} user={user} loaded={loaded}/>
         else if(val === "publications_A")
-            return <AdminTrabalhosA api_url={props.api_url} user={props.user} loaded={loaded}/>
+            return <AdminTrabalhosA api_url={api_url} user={user} loaded={loaded}/>
         else if(val === "messages")
-            return <AdminMessages user={props.user} api_url={props.api_url}/>
+            return <AdminMessages user={user} api_url={api_url}/>
         return null
     }
 
@@ -39,7 +42,7 @@ const Admin = (props) => {
                     {
                         loaded?
                         <AdminSidebar
-                            api_url={props.api_url} 
+                            api_url={api_url} 
                             />
                         :<div className={styles.sidebar_skeleton}>
                             <Loader loading={loading}/>

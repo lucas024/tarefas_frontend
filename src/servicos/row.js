@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import styles from './row.module.css'
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -28,8 +28,15 @@ const Row = (props) => {
         return "#FFFFFF"
     }
 
+    const getMainPhoto = (photos, main_photo) => {
+        for(let el of photos)
+            if(el.id === main_photo) return el?.url
+
+        return photos[0]?.url
+    }
+
     return (
-        <div className={styles.row} style={{border:props.item.user_id===props.user?._id?`3px solid ${getTypeColor(props.item.type)}`:"none"}}>
+        <div className={styles.row} style={{border:props.item.user_id===props.user_id?`3px solid ${getTypeColor(props.item.type)}`:"none"}}>
             <div className={props.trabalhoVisto?styles.row_time_seen:styles.row_time}>
                 {
                     props.trabalhoVisto?
@@ -40,7 +47,7 @@ const Row = (props) => {
                     :null
                 }
                 {
-                    props.item.user_id===props.user?._id?
+                    props.item.user_id===props.user_id?
                     <div className={styles.item_user}>
                         <div className={styles.item_flex_indicator} style={{backgroundColor:getTypeColor(props.item.type)}}>
                             <span className={styles.item_indicator}></span>
@@ -62,7 +69,7 @@ const Row = (props) => {
                 <div className={styles.row_right_left}>
                     {
                         props.item.photos?
-                        <img className={styles.row_img} src={props.item.photos[0]}/>
+                        <img className={styles.row_img} src={getMainPhoto(props.item.photos, props.item.photo_principal)}/>
                         :
                         <NoPhotographyIcon className={styles.item_no_img}/>
                     }
@@ -78,12 +85,12 @@ const Row = (props) => {
                     }
                     <div>
                         <div className={styles.right_flex}>
-                            <BuildIcon className={styles.right_type_icon} style={{color:props.workerActive?"#FF785A":"#71848d"}}/>
-                            <span className={styles.right_type} style={{color:props.workerActive?"#FF785A":"#71848d"}}>{profissoesOptions[props.item.workerType]}</span>
+                            <BuildIcon className={styles.right_type_icon} style={{color:props.workerActive?"#0358e5":"#71848d"}}/>
+                            <span className={styles.right_type} style={{color:props.workerActive?"#0358e5":"#71848d"}}>{profissoesOptions[props.item.workerType]}</span>
                         </div>
                         <div className={styles.right_flex}>
-                            <LocationOnIcon className={styles.right_type_icon} style={{color:props.locationActive?"#FF785A":"#71848d"}}/>
-                            <span className={styles.right_type} style={{color:props.locationActive?"#FF785A":"#71848d"}}>{regioesOptions[props.item.district]}</span>
+                            <LocationOnIcon className={styles.right_type_icon} style={{color:props.locationActive?"#0358e5":"#71848d"}}/>
+                            <span className={styles.right_type} style={{color:props.locationActive?"#0358e5":"#71848d"}}>{regioesOptions[props.item.district]}</span>
                         </div>
                     </div>
                     

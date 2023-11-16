@@ -5,7 +5,7 @@
     width: 100%;
     height: 100%;
     display: flex;
-    background-color: #00000030;
+    background-color: #00000090;
     z-index: 5;
     justify-content: center;
     align-items: center;
@@ -74,7 +74,7 @@
 .confirm_button{
     margin: 20px auto 0 auto;
     width: 90%;
-    background-color: var(--brand);
+    background-color: var(--action);
     border: 2px solid transparent;
     padding: 10px 0;
     text-align: center;
@@ -85,16 +85,19 @@
     color: white;
 }
 .confirm_button:hover{
-    background-color: var(--action);
-    transition: 150ms all;
+    opacity: 0.7;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    transition: 150ms;
 }
 .cancel{
-    margin: 5px auto;
+    margin: auto;
+    margin-top: 10px;
     color: var(--grey);
     font-size: 0.9rem;
     cursor: pointer;
-    text-decoration: underline;
+    text-transform: uppercase;
 }
 .cancel:hover{
-    color: #000000;
+    opacity: 0.5;
+    transition: all 150ms;
 }

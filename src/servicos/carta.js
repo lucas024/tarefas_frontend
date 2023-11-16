@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from './carta.module.css'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import PersonIcon from '@mui/icons-material/Person';
+import BuildIcon from '@mui/icons-material/Build';
 import {regioesOptions, profissoesOptions, profissoesPngs} from '../general/util'
 
 const Carta = (props) => {
@@ -36,12 +36,6 @@ const Carta = (props) => {
             if(a > b) { return 1; }
             return 0;
         })
-        // if(props.workerActive){
-        //     if(arrTrabalhos.includes(props.workerActive)){
-        //         arrTrabalhos.splice(arrTrabalhos.indexOf(props.workerActive), 1)
-        //         arrTrabalhos = [props.workerActive, ...arrTrabalhos]
-        //     }
-        // }
         return arrTrabalhos.map((val, i) => {
             return (
                 <span key={i} className={props.workerActive===val?styles.options_selected:styles.options}> {profissoesOptions[val]}<span style={{color:"#71848d"}}>{i+1<worker.trabalhos.length?" |":null}</span></span>
@@ -58,8 +52,9 @@ const Carta = (props) => {
         })
         return arrTrabalhos.map((val, i) => {
             return (
-                <div className={props.workerActive===val?styles.top_image_div_selected:styles.top_image_div}>
-                    <img key={i} className={styles.top_image} src={profissoesPngs[val]}/>
+                <div key={i} className={props.workerActive===val?styles.top_image_div_selected:styles.top_image_div} 
+                        style={{marginLeft:i!==0?'5px':'0px'}}>
+                    <img className={styles.top_image} src={profissoesPngs[val]}/>
                 </div>
                 
             )
@@ -67,8 +62,16 @@ const Carta = (props) => {
     }
 
     return(
-        <div className={styles.box} style={{border:props.worker?._id===props.user?._id?"3px solid #FF785A":""}}>
+        <div className={styles.box} style={{backgroundColor:props.worker?._id===props.user_id?"#FF785A30":"ffffff"}}>
             <div className={styles.box_mask}>
+                {
+                    props.worker?._id===props.user_id?
+                    <div className={styles.own}>
+                        <span className={styles.own_text}>O MEU PERFIL</span>
+                    </div>
+                    :
+                    null
+                }
                 {
                 worker?
                 <div className={styles.top_flex}>
@@ -79,29 +82,35 @@ const Carta = (props) => {
                         <span className={styles.worker_info_type}>
                             {
                                 worker?.entity?
-                                <span>Empresa <span style={{textTransform:"capitalize", color:"black"}}>{worker.entity_name}</span></span>
+                                <div>
+                                    <p>Empresa</p>
+                                    <p style={{textTransform:"capitalize", color:"black"}}>{worker.entity_name}</p>
+                                </div>
+                                
                                 :
                                 'Particular'
                             }
                             
                         </span>
                     </div>
-                    <span className={styles.top_desc}>
-                        {worker?.description}
-                    </span>
+                    <div style={{marginLeft:'20px'}}>
+                        <div className={styles.middle}>
+                            <div className={styles.middle_images}>
+                                <div className={styles.middle_images_background}>
+                                    {worker&&displayTrabalhosImages()}
+                                </div>
+                            </div>
+                        </div>
+                        <span className={styles.top_desc}>
+                            {worker?.description}
+                        </span>
+                    </div>
                 </div>
                 :null
                 }
-                <div className={styles.middle}>
-                    <div className={styles.middle_images}>
-                        <div className={styles.middle_images_background}>
-                            {worker&&displayTrabalhosImages()}
-                        </div>
-                    </div>
-                </div>
                 <div className={styles.bottom}>
                     <div className={styles.bottom_div}>
-                        <PersonIcon className={styles.bottom_div_icon} style={{color:worker?.trabalhos.includes(props.workerActive)?"#FF785A":"#71848d"}}/>
+                        <BuildIcon className={styles.bottom_div_icon} style={{color:worker?.trabalhos.includes(props.workerActive)?"#FF785A":"#71848d"}}/>
                         <div className={styles.bottom_div_text}>
                             {worker&&displayTrabalhosExtense()}
                         </div>
