@@ -1,0 +1,236 @@
+import React, {useEffect, useState} from 'react'
+import styles from '../user/publicar.module.css'
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import Geocode, { setLanguage } from "react-geocode";
+import dayjs from 'dayjs';
+import { regioes } from '../general/util';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+
+Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
+Geocode.setRegion("pt");
+dayjs.locale('pt')
+
+const PublicarDetails = props => {
+
+    const [address, setAddress] = useState('')
+    
+    const nameFocused = () => {
+        if(props.nome?.length===0) props.setNomeWrong(true)
+        props.setNomeFocused(true)
+    }
+
+    const setPhoneHandler = (val) => {
+        let phone = val.replace(/\s/g, '')
+        props.setPhone(phone)
+    }
+    const setAddressHandler = (val) => {
+        Geocode.fromAddress(val.label).then(
+            (response) => {
+                let longDistrict = null
+                console.log(response.results[0].address_components);
+                for(let el of response.results[0].address_components){
+                    if(el.types.includes("administrative_area_level_1")){
+                        console.log(el.long_name);
+                        longDistrict = el.long_name
+                        break
+                    }
+                }
+                if(longDistrict){
+                    for(let obj of regioes){
+                        if(obj.label === longDistrict){
+                            props.setDistrict(obj.value)
+                        }
+                    }
+                }
+                const { lat, lng } = response.results[0].geometry.location
+                props.setLat(lat)
+                props.setLng(lng)
+                setAddress(val.label)
+                props.setBadAddress(false)
+                props.setWrongAddress(false)
+            })
+    }
+
+
+    return (
+        <div>
+            <div className={styles.top}>
+                <div className={styles.diff_right_title_container}>
+                    <span className={styles.diff_right_title}>
+                        Localização do Trabalho<span className={styles.action}>*</span>
+                    </span>
+                </div>
+                {/* <div className={styles.bot_title_wrapper} style={{alignItems:props.editReservation?.type===2&&props.getFieldWrong('location')?'flex-start':""}}>
+                    {
+                        props.editReservation?.type===2&&props.getFieldWrong('location')?
+                        <div className={styles.diff_right_title_container} style={{alignItems:"flex-start"}}>
+                            <span className={styles.bot_title} 
+                                style={{ marginBottom:0}}>Localização
+                            </span>
+                            <span className={styles.diff_right_title_wrong_div}>
+                            <span className={styles.editar_tit}>editar</span> {props.getFieldWrongText('location')}
+                            </span>
+                        </div>
+                        :
+                        <span className={styles.bot_title}>Localização
+                        </span>
+                    }
+                </div> */}
+                <div className={styles.contact_area} onClick={() => props.divRef.current.scrollIntoView({ behavior: 'smooth' })}>
+                    {
+                        props.edit?
+                        <BorderColorIcon className={styles.top_abs_edit}/>
+                        :null
+                    }
+                    {
+                        props.edit&&!props.activateEditAddress?
+                            <div>
+                                <div className={styles.edit_address_line}>
+                                    <div className={styles.bot_input_div} style={{marginTop:0}}>
+                                        <span style={{borderColor:"#26B282"}} className={styles.area_label_inverse}>Rua<span className={styles.asterisc}>*</span></span>
+                                        <input tabindex={props.selectedTab===2?'1':'-1'} disabled={true} value={props.editAddress} className={styles.bot_input_long}></input>
+                                    </div>
+                                </div>
+                                <div className={styles.address_flex}>
+                                    <div className={styles.bot_input_div}>
+                                        <span style={{borderColor:"#26B282"}} className={styles.area_label_inverse}>Porta<span className={styles.asterisc}>*</span></span>
+                                        <input tabindex={props.selectedTab===2?'1':'-1'} disabled={true} style={{width:"100px"}} maxLength={5} value={props.porta} className={styles.bot_input_short}></input>
+                                    </div>
+                                    <div className={styles.bot_input_div}>
+                                        <span style={{borderColor:"#26B282"}} className={styles.area_label_inverse}>Andar</span>
+                                        <input tabindex={props.selectedTab===2?'1':'-1'} disabled={true} style={{width:"100px", marginLeft:"10px"}} maxLength={11} onChange={e => props.setAndar(e.target.value)} value={props.andar} className={styles.bot_input_short}></input>
+                                    </div>
+                                </div>
+                                <div style={{marginTop:"10px", display:"flex"}} onClick={() => props.setActivateEditAddress(true)}>
+                                    <span className={styles.nova_morada}>Nova morada</span>
+                                </div>
+                            </div>
+                        :
+                        <div>
+                            <div className={styles.bot_address_flex}>
+                                <div className={styles.bot_input_div_search}>
+                                    <span 
+                                        style={{borderColor:props.badAddress||props.wrongAddress?"red":!props.badAddress&&!props.wrongAddress&&props.addressFocused?"#26B282":"",
+                                            borderRight:(props.badAddress||props.wrongAddress)?"red":!props.badAddress&&!props.wrongAddress&&props.addressFocused?"#26B282":""}} 
+                                        className={styles.area_label_inverse}>
+                                            Morada
+                                    <span className={styles.asterisc}>*</span></span>
+                                    <GooglePlacesAutocomplete
+                                        tabindex={props.selectedTab===2?'1':'-1'}
+                                        apiKey="AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk"
+                                        autocompletionRequest={{
+                                            // bounds: [ //BOUNDS LISBOA
+                                            // { lat: 38.74, lng: -9.27 },
+                                            // { lat: 38.83, lng: -9.17 },
+                                            // { lat: 38.79, lng: -9.09 },
+                                            // { lat: 38.69, lng: -9.21 },
+                                            // ],
+                                            componentRestrictions: {
+                                            country: ['pt'],
+                                            }
+                                        }}
+                                        selectProps={{
+                                            address,
+                                            onChange: setAddressHandler,
+                                            styles: {
+                                            input: (provided) => ({
+                                                ...provided,
+                                                color: '#ffffff',
+                                                fontWeight: 500,
+                                            }),
+                                            option: (provided) => ({
+                                                ...provided,
+                                                color: '#161F28',
+                                                fontWeight: 500
+                                            }),
+                                            singleValue: (provided) => ({
+                                                ...provided,
+                                                color: '#ffffff',
+                                                fontWeight: 500,
+                                                textAlign:'left'
+                                            }),
+                                            control: (provided, state) => ({
+                                                ...provided,
+                                                width: "100% !important",
+                                                borderRadius: "2px",
+                                                height: "40px",
+                                                fontSize:"0.9rem",
+                                                backgroundColor: "#161F28",
+                                                border:"none",
+                                                borderBottom: address!==''?'2px solid #0358e5':state.isFocused?"2px solid #ffffffaa":"2px solid #161F28",
+                                                "&:hover": {
+                                                    borderBottom: address===''?"2px solid #ffffffaa":"",
+                                                    cursor: "text",
+                                                },
+                                                boxShadow: state.isFocused?"none":"none",
+                                                zIndex: 1,
+                                            }),
+                                            container: (provided, state) => ({
+                                                ...provided,
+                                                border: state.isFocused?"none":"none",
+                                                zIndex: 1
+                                            }),
+                                            dropdownIndicator: () => ({
+                                                color:"#161F28",
+                                                zIndex: 4
+                                            }),
+                                            indicatorSeparator: () => null
+                                            },
+                                            IndicatorsContainer:()=>(<></>),
+                                            placeholder: "Pesquisar...",
+                                            noOptionsMessage: () => "Pesquisar morada",
+                                            loadingMessage: () => "A pesquisar...",
+                                        }}
+                                        />
+                                    </div>
+                                </div>
+                                <div className={styles.address_flex}>
+                                    <div className={styles.bot_input_div}>
+                                        <span 
+                                            style={{borderColor:props.porta.length>0?"#0358e5":""}} 
+                                            className={styles.area_label_inverse}>
+                                                Porta<span className={styles.asterisc}>*</span>
+                                        </span>
+                                        <input 
+                                            tabindex={props.selectedTab===2?'1':'-1'}
+                                            style={{width:"100px", borderColor:props.porta.length>0?"#0358e5":""}} 
+                                            maxLength={5} 
+                                            onChange={e => props.setPorta(e.target.value)}
+                                            value={props.porta} 
+                                            className={styles.top_input_short}/>
+                                    </div>
+                                    <div className={styles.bot_input_div}>
+                                        <span 
+                                            style={{borderColor:props.andar.length>0?"#0358e5":""}} 
+                                            className={styles.area_label_inverse}>Andar</span>
+                                        <input 
+                                            tabindex={props.selectedTab===2?'1':'-1'}
+                                            style={{width:"100px", marginLeft:"10px",
+                                            borderColor:props.andar.length>0?"#0358e5":""}} 
+                                            maxLength={11} 
+                                            onChange={e => props.setAndar(e.target.value)} 
+                                            value={props.andar} 
+                                            className={styles.top_input_short}></input>
+                                    </div>
+                                </div>
+
+                            {
+                                props.edit&&address?
+                                <div style={{display:"flex", justifyContent:"center", marginTop:"20px"}}>
+                                    <div style={{marginLeft:"10px"}} onClick={() => props.setActivateEditAddress(false)}>
+                                        <span className={styles.nova_morada_cancelar}>Cancelar</span>
+                                    </div>
+                                </div>
+
+                                :null
+                            }
+                        </div>
+                    }
+                    
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default PublicarDetails

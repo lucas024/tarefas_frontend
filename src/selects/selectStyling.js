@@ -11,18 +11,21 @@ const TopSelect = (props) => {
             borderColor: "#0358e5",
             fontSize: "0.8rem",
             textTransform: "uppercase",
-            color: "#FF785A",
+            color: "#fff",
             fontWeight: 600,
-            width:"170px",
+            width:"200px",
             transition: "0.2s all ease-in-out",
-            borderRadius: "10px",
-            borderBottomLeftRadius: state.isFocused? 0: "10px",
-            borderBottomRightRadius: state.isFocused? 0: "10px",
+            borderRadius: "5px",
+            borderBottomLeftRadius: state.isFocused? 0: "5px",
+            borderBottomRightRadius: state.isFocused? 0: "5px",
             border: state.isSelected? "1px solid white": 0,
             boxShadow: "white",
             height: "40px",
             "&:hover": {
                 cursor: "pointer",
+            },
+            "&:placeholder": {
+                color: "#ffffff"
             }
         }),
         option: (base, state) => ({
@@ -37,15 +40,15 @@ const TopSelect = (props) => {
         menu: base => ({
             ...base,
             textTransform: "uppercase",
-            width:"170px",
+            width:"200px",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
             backgroundColor: "#161F28",
             borderTop: 0,
             borderLeft: 0,
-            borderBottomLeftRadius: "10px",
-            borderBottomRightRadius: "10px",
+            borderBottomLeftRadius: "5px",
+            borderBottomRightRadius: "5px",
             padding: "0",
             zIndex: 4
         }),
@@ -87,7 +90,7 @@ const TopSelect = (props) => {
             options={profissoes}
             value={profissoes.filter(option => option.value === props.id)}
             isSearchable={false}
-            placeholder="Serviço..."
+            placeholder={<span style={{color:"#fff", fontSize:'0.8rem', marginLeft:"10px"}}>ESCOLHER SERVIÇO</span>}
             onChange={value => {
                 selectChange(value.value)
             }}
