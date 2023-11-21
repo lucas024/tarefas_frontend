@@ -5,6 +5,9 @@ import Geocode, { setLanguage } from "react-geocode";
 import dayjs from 'dayjs';
 import { regioes } from '../general/util';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DoneIcon from '@mui/icons-material/Done';
+import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
+import UnsubscribeIcon from '@mui/icons-material/Unsubscribe';
 
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
@@ -13,16 +16,7 @@ dayjs.locale('pt')
 const PublicarDetails = props => {
 
     const [address, setAddress] = useState('')
-    
-    const nameFocused = () => {
-        if(props.nome?.length===0) props.setNomeWrong(true)
-        props.setNomeFocused(true)
-    }
 
-    const setPhoneHandler = (val) => {
-        let phone = val.replace(/\s/g, '')
-        props.setPhone(phone)
-    }
     const setAddressHandler = (val) => {
         Geocode.fromAddress(val.label).then(
             (response) => {
@@ -46,8 +40,7 @@ const PublicarDetails = props => {
                 props.setLat(lat)
                 props.setLng(lng)
                 setAddress(val.label)
-                props.setBadAddress(false)
-                props.setWrongAddress(false)
+                props.setAddressParent(val.label)
             })
     }
 
@@ -59,6 +52,9 @@ const PublicarDetails = props => {
                     <span className={styles.diff_right_title}>
                         Localização do Trabalho<span className={styles.action}>*</span>
                     </span>
+                    <div className={styles.top_check} style={{backgroundColor:props.correct_location?'#0358e5':"", top:0, right:0}}>
+                        <DoneIcon className={styles.top_check_element}/>
+                    </div>
                 </div>
                 {/* <div className={styles.bot_title_wrapper} style={{alignItems:props.editReservation?.type===2&&props.getFieldWrong('location')?'flex-start':""}}>
                     {
@@ -110,8 +106,7 @@ const PublicarDetails = props => {
                             <div className={styles.bot_address_flex}>
                                 <div className={styles.bot_input_div_search}>
                                     <span 
-                                        style={{borderColor:props.badAddress||props.wrongAddress?"red":!props.badAddress&&!props.wrongAddress&&props.addressFocused?"#26B282":"",
-                                            borderRight:(props.badAddress||props.wrongAddress)?"red":!props.badAddress&&!props.wrongAddress&&props.addressFocused?"#26B282":""}} 
+                                        style={{borderColor:props.badAddress||props.wrongAddress?"red":!props.badAddress&&!props.wrongAddress&&address!==null?"#0358e5":""}}
                                         className={styles.area_label_inverse}>
                                             Morada
                                     <span className={styles.asterisc}>*</span></span>
@@ -227,6 +222,63 @@ const PublicarDetails = props => {
                         </div>
                     }
                     
+                </div>
+                <div className={styles.diff_right_title_container} style={{marginTop:'20px'}}>
+                    <span className={styles.diff_right_title}>
+                        Detalhes de Contacto<span className={styles.action}>*</span>
+                    </span>
+                    <div className={styles.top_check} style={{backgroundColor:props.phone.length!==9?"#71848d":props.correct_phone&&props.correct_email?'#0358e5':"#fdd835", top:0, right:0}}>
+                        <DoneIcon className={styles.top_check_element}/>
+                    </div>
+                </div>
+                <div className={styles.contact_area}>
+                    <div className={styles.bot_input_div_contact} style={{marginTop:'5px'}}>
+                        <span 
+                            style={{borderColor:"#0358e5"}} 
+                            className={styles.area_label_inverse}>Nome<span className={styles.asterisc}>*</span></span>
+                        <input 
+                            tabindex={props.selectedTab===2?'1':'-1'}
+                            style={{borderColor:"#0358e5", width:"100%", color:"#71848d"}}
+                            maxLength={11}
+                            disabled={true}
+                            value={props.nome} 
+                            className={styles.top_input_short}></input>
+                    </div>
+                    <div className={styles.bot_input_div_contact} style={{marginTop:"5px"}}>
+                        <div style={{position:'relative', width:"100%"}}>
+                            <span 
+                                style={{borderColor:props.correct_phone?"#0358e5":props.phone.length===9?"#fdd835":""}} 
+                                className={styles.area_label_inverse}>Telemóvel<span className={styles.asterisc}>*</span></span>
+                            <input 
+                                tabindex={props.selectedTab===2?'1':'-1'}
+                                style={{borderColor:props.correct_phone?"#0358e5":props.phone.length===9?"#fdd835":"", width:"100%"}}
+                                maxLength={11} 
+                                onChange={e => props.setPhone(e.target.value)} 
+                                value={props.phoneVisual} 
+                                className={styles.top_input_short}/>
+                        </div>
+                        
+                        <div className={props.phone.length!==9?styles.verify_box_incomplete:props.correct_phone?styles.verify_box:styles.verify_box_no}>
+                            <PhonelinkEraseIcon className={styles.verify_box_icon}/>
+                        </div>
+                    </div>
+                    <div className={styles.bot_input_div_contact} style={{marginTop:"5px"}}>
+                        <div style={{position:'relative', width:"100%"}}>
+                            <span 
+                                style={{borderColor:props.correct_email?"#0358e5":"#fdd835"}} 
+                                className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
+                            <input 
+                                tabindex={props.selectedTab===2?'1':'-1'}
+                                style={{borderColor:props.correct_email?"#0358e5":"#fdd835", width:"100%", color:"#71848d"}} 
+                                maxLength={11}
+                                disabled={true}
+                                value={props.email} 
+                                className={styles.top_input_short}></input>
+                        </div>
+                        <div className={props.correct_email?styles.verify_box:styles.verify_box_no}>
+                            <UnsubscribeIcon className={styles.verify_box_icon}/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

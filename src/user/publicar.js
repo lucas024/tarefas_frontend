@@ -30,21 +30,14 @@ const Publicar = (props) => {
     const [tituloWrong, setTituloWrong] = useState(false)
     const [description, setDescription] = useState('')
     const [nome, setNome] = useState('')
-    const [nomeWrong, setNomeWrong] = useState(false)
-    const [nomeFocused, setNomeFocused] = useState(false)
     const [phone, setPhone] = useState('')
     const [phoneVisual, setPhoneVisual] = useState('')
     const [phoneWrong, setPhoneWrong] = useState(false)
-    const [phoneFocused, setPhoneFocused] = useState(false)
     const [email, setEmail] = useState('')
-    const [emailWrong, setEmailWrong] = useState(false)
-    const [emailFocused, setEmailFocused] = useState(false)
     const [address, setAddress] = useState('')
     const [badAddress, setBadAddress] = useState(false)
     const [wrongAddress, setWrongAddress] = useState(false)
-    const [addressFocused, setAddressFocused] = useState(false)
     const [porta, setPorta] = useState('')
-    const [portaFocused, setPortaFocused] = useState(false)
     const [portaWrong, setPortaWrong] = useState(false)
     const [andar, setAndar] = useState('')
     const [complete, setComplete] = useState(false)
@@ -183,6 +176,13 @@ const Publicar = (props) => {
         }
     }, [phone])
 
+    const setPhoneHandler = (val) => {
+        setPhoneWrong(false)
+        let phone = val.replace(/\D/g, "")
+        phone.replace(/\s/g, '')
+        setPhone(phone)
+    }
+    
     const checkAll = () => {
         return nome.length>0 && 
         validator.isMobilePhone(phone, "pt-PT") && 
@@ -604,26 +604,19 @@ const Publicar = (props) => {
                                     edit={edit}
                                     editReservation={editReservation}
                                     nome={nome}
-                                    setNomeWrong={setNomeWrong}
-                                    setNomeFocused={setNomeFocused}
-                                    setPhone={setPhone}
-                                    phoneFocused={phoneFocused}
+                                    phone={phone}
+                                    phoneVisual={phoneVisual}
+                                    setPhone={setPhoneHandler}
                                     phoneWrong={phoneWrong}
                                     email={email}
-                                    emailFocused={emailFocused}
-                                    emailWrong={emailWrong}
                                     setDistrict={setDistrict}
                                     setLat={setLat}
                                     setLng={setLng}
-                                    setAddress={setAddress}
-                                    setBadAddress={setBadAddress}
-                                    setWrongAddress={setWrongAddress}
+                                    setAddressParent={setAddress}
                                     divRef={divRef}
                                     user={user}
                                     porta={porta}
-                                    portaFocused={portaFocused}
                                     setPorta={setPorta}
-                                    setPortaFocused={setPortaFocused}
                                     portaWrong={portaWrong}
                                     setPortaWrong={setPortaWrong}
                                     setAndar={setAndar}
@@ -633,6 +626,9 @@ const Publicar = (props) => {
                                     getFieldWrong={getFieldWrong}
                                     getFieldWrongText={getFieldWrongText}
                                     selectedTab={selectedTab}
+                                    correct_location={address!==null&&porta.length>0}
+                                    correct_phone={user.phone===phone&&user.phone_verified}
+                                    correct_email={user.email_verified}
                                     />
                             </div>
 
@@ -667,7 +663,7 @@ const Publicar = (props) => {
                                         onClick={() => {setSelectedTab(selectedTab-1)}}>
                                     <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                     </div>
-                                    <div className={!tituloWrong?styles.login_button:styles.login_button_disabled}
+                                    <div className={((user.phone===phone&&user.phone_verified)&&user.email_verified)?styles.login_button:styles.login_button_disabled}
                                         style={{marginLeft:'10px', marginTop:0}}
                                         onClick={() => {setSelectedTab(selectedTab+1)}}>
                                         <p className={styles.login_text}>Continuar</p>
@@ -683,7 +679,6 @@ const Publicar = (props) => {
                                 
                             }  
                         </div>
-                        
                         {
                             edit?
                             <div style={{display:"flex", marginTop:"-50px", marginBottom:"20px"}} onClick={() => navigate(-1)}>
