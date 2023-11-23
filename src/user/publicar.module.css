@@ -5,6 +5,14 @@
     border-top: 1px solid var(--brand);
     overflow: hidden;
 }
+.backdrop{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #000000aa;
+    z-index: 1;
+    transition: all 500ms ease-in-out;
+}
 .reservation::placeholder{
     font-style: italic;
 }
@@ -685,7 +693,11 @@ input::placeholder{
     height: 22px !important;
     color: var(--brand);
 }
-
+.verify_box_seconds{
+    font-family: 'Roboto Mono', monospace;
+    color: var(--brand);
+    font-size: 0.9rem;
+}
 .bot_address_flex{
     position: relative;
     display: flex;

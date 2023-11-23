@@ -122,22 +122,23 @@ const VerificationBannerPhone = (props) => {
                             expired&&setNewCodeSent(true)
                             expired&&handleSendCode()
                         }}>
-                            <div className={styles.resend_text}>
-                                {
-                                    !expired?
+                            {
+                                !expired?
+                                <div className={styles.resend_text}>
                                     <span className={styles.resend_seconds}>{seconds}s</span>
-                                    :null
-                                }
-                                {
-                                    !expired?
-                                    <span className={styles.resend_seconds}> | </span>
-                                    :null
-                                }
-                                <span className={styles.resend_text_value}>Re-enviar código</span>
-                            </div>
+                                    <div className={styles.resend_seconds_separator}></div>
+                                    <span className={styles.resend_text_value}>Re-enviar código</span>
+                                </div>
+                                :
+                                <div className={styles.resend_text}>
+                                    <span className={styles.resend_text_value}>Re-enviar código</span>
+                                </div>
+                            }
+                            
                         </div>
                     </div>
                     :
+                    props.next===3?
                     <div className={styles.main_inner}>
                         <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>Código verificado com sucesso</p>
                         <Lottie options={{
@@ -161,6 +162,7 @@ const VerificationBannerPhone = (props) => {
                             <span className={styles.button_text}>FECHAR</span>
                         </div>
                     </div>
+                    :null
                 }
                 
                 <p className={styles.cancel} onClick={() => props.cancel()}>cancelar</p>

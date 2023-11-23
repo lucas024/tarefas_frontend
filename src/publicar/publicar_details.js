@@ -234,7 +234,7 @@ const PublicarDetails = props => {
                 <div className={styles.contact_area}>
                     <div className={styles.bot_input_div_contact} style={{marginTop:'5px'}}>
                         <span 
-                            style={{borderColor:"#0358e5"}} 
+                            style={{borderColor:"#0358e5", color:"#71848d"}} 
                             className={styles.area_label_inverse}>Nome<span className={styles.asterisc}>*</span></span>
                         <input 
                             tabindex={props.selectedTab===2?'1':'-1'}
@@ -258,14 +258,23 @@ const PublicarDetails = props => {
                                 className={styles.top_input_short}/>
                         </div>
                         
-                        <div className={props.phone.length!==9?styles.verify_box_incomplete:props.correct_phone?styles.verify_box:styles.verify_box_no}>
-                            <PhonelinkEraseIcon className={styles.verify_box_icon}/>
-                        </div>
+                        {
+                            props.expired?
+                            <div className={props.phone.length!==9?styles.verify_box_incomplete:props.correct_phone?styles.verify_box:styles.verify_box_no}
+                                onClick={() => !props.correct_phone&&props.phone.length===9&&props.setVerifyPhone(1)}>
+                                <PhonelinkEraseIcon className={styles.verify_box_icon}/>
+                            </div>
+                            :
+                            <div className={styles.verify_box_no}>
+                                <span className={styles.verify_box_seconds}>{props.seconds}s</span>
+                            </div>
+                        }
+                        
                     </div>
                     <div className={styles.bot_input_div_contact} style={{marginTop:"5px"}}>
                         <div style={{position:'relative', width:"100%"}}>
                             <span 
-                                style={{borderColor:props.correct_email?"#0358e5":"#fdd835"}} 
+                                style={{borderColor:props.correct_email?"#0358e5":"#fdd835", color:"#71848d"}} 
                                 className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
                             <input 
                                 tabindex={props.selectedTab===2?'1':'-1'}

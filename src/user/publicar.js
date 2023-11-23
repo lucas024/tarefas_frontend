@@ -16,7 +16,8 @@ import { useSelector } from 'react-redux'
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; //
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-
+import VerificationBannerPhone from '../general/verificationBannerPhone';
+import { useTimer } from 'react-timer-hook';
 import PublicarService from '../publicar/publicar_service';
 import PublicarPhoto from '../publicar/publicar_photo';
 import PublicarDetails from '../publicar/publicar_details';
@@ -35,8 +36,6 @@ const Publicar = (props) => {
     const [phoneWrong, setPhoneWrong] = useState(false)
     const [email, setEmail] = useState('')
     const [address, setAddress] = useState('')
-    const [badAddress, setBadAddress] = useState(false)
-    const [wrongAddress, setWrongAddress] = useState(false)
     const [porta, setPorta] = useState('')
     const [portaWrong, setPortaWrong] = useState(false)
     const [andar, setAndar] = useState('')
@@ -56,8 +55,10 @@ const Publicar = (props) => {
     const [activateEditAddress, setActivateEditAddress] = useState(false)
     const [confirmationEditPopup, setConfirmationEditPopup] = useState(false)
     const [selectedTab, setSelectedTab] = useState(0)
+    const [verifyPhone, setVerifyPhone] = useState(null)
 
     const [photoPrincipal, setPhotoPrincipal] = useState(null)
+    const [expired, setExpired] = useState(true)
 
 
 
@@ -175,12 +176,25 @@ const Publicar = (props) => {
             setPhoneVisual(`${phone.slice(0,3)}`)
         }
     }, [phone])
+    
 
     const setPhoneHandler = (val) => {
         setPhoneWrong(false)
         let phone = val.replace(/\D/g, "")
         phone.replace(/\s/g, '')
         setPhone(phone)
+    }
+
+    const {
+        seconds,
+        restart,
+    } = useTimer({ onExpire: () => setExpired(true) })
+
+    const handlerVerifyPressed = () => {
+        setExpired(false)
+        const time = new Date()
+        time.setSeconds(time.getSeconds() + 59)
+        restart(time)
     }
     
     const checkAll = () => {
@@ -467,6 +481,26 @@ const Publicar = (props) => {
                     >
                     <Sessao text={"Excedeste o limite de fotografias (max. 6)"}/>
                     </CSSTransition>
+                    <div className={verifyPhone?styles.backdrop:null} onClick={() => setVerifyPhone(false)}/>
+                    <CSSTransition
+                        in={verifyPhone}
+                        timeout={1000}
+                        classNames="transition"
+                        unmountOnExit
+                        >
+                        <VerificationBannerPhone 
+                            cancel={() => setVerifyPhone(0)}
+                            setNext={val => {
+                                if(val===2)
+                                {
+                                    setVerifyPhone(2)
+                                    handlerVerifyPressed()
+                                }
+                            }}
+                            next={verifyPhone} 
+                            phone={phone}
+                            />
+                    </CSSTransition>
                     <div className={styles.reservar}>
                         <div className={styles.reservar_upper} style={{marginTop:edit?"100px":""}}>
                             <p className={styles.reservar_upper_title}>
@@ -629,6 +663,9 @@ const Publicar = (props) => {
                                     correct_location={address!==null&&porta.length>0}
                                     correct_phone={user.phone===phone&&user.phone_verified}
                                     correct_email={user.email_verified}
+                                    setVerifyPhone={val => setVerifyPhone(val)}
+                                    expired={expired}
+                                    seconds={seconds}
                                     />
                             </div>
 
