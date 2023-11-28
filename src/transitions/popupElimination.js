@@ -25,7 +25,7 @@ const PopupElimination = (props) => {
                 unmountOnExit
                 >
                     <div className={styles.popup}>
-                        <span className={styles.value}>Eliminar Publicação</span>
+                        <span className={styles.value} style={{color:"#FF785A"}}>Remover Publicação</span>
                         <div className={styles.divider}></div>
                         {/* <div className={styles.list_item}>
                             <div className={styles.list_item_left}>
@@ -47,12 +47,12 @@ const PopupElimination = (props) => {
                         </div> */}
                         <div className={styles.center_text_div}>
                             <span className={styles.center_text}>
-                                Tem a certeza de que quer <span className={styles.center_text_special}>eliminar</span> a publicação?
+                                Tem a certeza de que quer <span className={styles.center_text_special} style={{fontWeight:600}}>remover</span> a publicação?
                             </span>
                         </div>
                     
                         <span className={styles.button_eliminate} onClick={() => props.confirmDeleteHandler()}>
-                            Eliminar
+                            remover
                         </span>
                         <span className={styles.button_cancel} onClick={() => props.cancelHandler()}>
                             Cancelar

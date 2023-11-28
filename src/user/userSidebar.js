@@ -90,9 +90,9 @@ const UserSidebar = (props) => {
                                 :null
                             }
                             <ListItemIcon>
-                                <AssignmentdIcon sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
+                                <AssignmentdIcon sx={{color:"#ffffff", zIndex:1}}/>
                             </ListItemIcon>
-                            <ListItemText primary={<span className={styles.prox}>Meus Trabalhos</span>} sx={{color:selectedSidebar==="publications"?"#FF785A":"#fff"}}/>
+                            <ListItemText primary={<span className={styles.prox}>Meus Trabalhos</span>} sx={{color:"#ffffff", zIndex:1}}/>
                         </ListItemButton >
                     }
                     

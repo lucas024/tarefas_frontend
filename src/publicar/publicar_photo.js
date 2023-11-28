@@ -19,7 +19,7 @@ const PublicarPhoto = props => {
                 return (
                     <div key={i} className={styles.helper_img_div}>
                         <div className={styles.foto_img_wrapper} 
-                            style={{border:props.photoPrincipal===img_obj.id?"2px solid #FF785A":""}}
+                            style={{border:props.photoPrincipal===img_obj.id?"2px solid #0358e5":""}}
                             onClick={() => setSelectedImage(img_obj.id)}>
                             <span className={styles.frontdrop_helper}></span>
                             <MoreVertIcon className={styles.foto_img_delete}/>
@@ -55,14 +55,6 @@ const PublicarPhoto = props => {
         <div>
             <div className={styles.top}>
                 {
-                    props.edit?
-                    <BorderColorIcon className={styles.top_abs_edit}/>
-                    :null
-                }
-                {/* <div className={styles.top_check} style={{backgroundColor:'#0358e5'}}>
-                    <DoneIcon className={styles.top_check_element}/>
-                </div> */}
-                {
                     props.editReservation?.type===2&&props.getFieldWrong('photos')?
                     <div className={styles.diff_right_title_container}>
                         <span className={styles.diff_right_title} 
@@ -89,7 +81,7 @@ const PublicarPhoto = props => {
                         selectedImage!==null?
                         <div className={styles.options} onClick={() => setSelectedImage(null)}>
                             <div className={styles.options_title}>
-                                <p className={styles.options_title_text}>Fotografia {selectedImage+1}</p>
+                                <p className={styles.options_title_text}>Fotografia</p>
                             </div>
                             <div className={styles.options_main}>
                                 <div className={styles.options_side} onClick={() => {

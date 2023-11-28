@@ -21,6 +21,9 @@ import { useTimer } from 'react-timer-hook';
 import PublicarService from '../publicar/publicar_service';
 import PublicarPhoto from '../publicar/publicar_photo';
 import PublicarDetails from '../publicar/publicar_details';
+import {profissoesPngs, profissoesOptions} from '../general/util'
+import Loader2 from '../general/loader';
+import VerificationBannerConfirm from '../general/verificationBannerConfirm';
 
 const Publicar = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -56,11 +59,13 @@ const Publicar = (props) => {
     const [confirmationEditPopup, setConfirmationEditPopup] = useState(false)
     const [selectedTab, setSelectedTab] = useState(0)
     const [verifyPhone, setVerifyPhone] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [loadingConfirm, setLoadingConfirm] = useState(false)
 
     const [photoPrincipal, setPhotoPrincipal] = useState(null)
     const [expired, setExpired] = useState(true)
 
-
+    const allFieldsCorrect = (user.phone===phone&&!user.phone_verified)&&!user.email_verified&&titulo.length>5&&selectedWorker!=null&&address!=null&&porta.length>0&&!loadingConfirm
 
     const maxFiles = 6
     const inputRef = useRef(null);
@@ -96,16 +101,16 @@ const Publicar = (props) => {
         } 
     }, [])
 
-    useEffect(() => {
-        if(location.state && location.state.carry){
-            setDescription(location.state.desc)
-            setImages(location.state.images)
-            setImageFiles(location.state.imageFiles)
-            setTitulo(location.state.title)
-            setInProp(true)
-            setTimeout(() => setInProp(false), 4000)
-        }
-    }, [location])
+    // useEffect(() => {
+    //     if(location.state && location.state.carry){
+    //         setDescription(location.state.desc)
+    //         setImages(location.state.images)
+    //         setImageFiles(location.state.imageFiles)
+    //         setTitulo(location.state.title)
+    //         setInProp(true)
+    //         setTimeout(() => setInProp(false), 4000)
+    //     }
+    // }, [location])
 
     useEffect(() => {
         if(user){
@@ -119,11 +124,11 @@ const Publicar = (props) => {
     }, [user])
 
     useEffect(() => {
-        props.loadingHandler(true)
+        setLoading(true)
         const paramsAux = Object.fromEntries([...searchParams])
-        if(paramsAux && !paramsAux.editar){
-            setSelectedWorker(paramsAux.t)
-        }
+        // if(paramsAux && !paramsAux.editar){
+        //     setSelectedWorker(paramsAux.t)
+        // }
         if(paramsAux.editar && paramsAux.res_id)
         {   
             setEdit(true)
@@ -138,34 +143,36 @@ const Publicar = (props) => {
                     setLat(res.data.lat)
                     setLng(res.data.lng)
                     setDistrict(res.data.district)
+                    setPhotoPrincipal(res.data.photo_principal)
                     let arr = []
-                    for(let img_url of res.data.photos){
+                    for(let img of res.data.photos){
                         arr.push({
                             from_edit:true,
-                            url:img_url
+                            url:img.url,
+                            id:img.id
                         })
                     }
                     setImages(arr)
-                    props.loadingHandler(false)
+                    setLoading(false)
                     console.log(res.data);
                 }
                 else{
                     setEditReservation(null)
-                    props.loadingHandler(false)
+                    setLoading(false)
                 }
             })
         }
         else{
-            setEdit(false)
-            setEditReservation(null)
-            setTitulo('')
-            setDescription('')
-            setEditAddress(null)
-            setPorta('')
-            setLat('')
-            setLng('')
-            setDistrict('')
-            props.loadingHandler(false)
+            // setEdit(false)
+            // setEditReservation(null)
+            // setTitulo('')
+            // setDescription('')
+            // setEditAddress(null)
+            // setPorta('')
+            // setLat('')
+            // setLng('')
+            // setDistrict('')
+            setLoading(false)
         }
     }, [searchParams])
 
@@ -209,9 +216,12 @@ const Publicar = (props) => {
 
     const uploadImageFileHandler = async (file, postId, it, arr) => {
         const storageRef = ref(storage, `posts/${postId}/${it}`);
-        return uploadBytes(storageRef, file).then(() => {
+        return uploadBytes(storageRef, file.img).then(() => {
             return getDownloadURL(storageRef).then(url => {
-                arr.push(url)
+                arr.push({
+                    url: url,
+                    id: file.id
+                })
             })
         })
     }
@@ -225,32 +235,22 @@ const Publicar = (props) => {
     }
 
     const confirmarPopupHandler = async () => {
-        props.loadingHandler(true)
+        setLoadingConfirm(true)
         let arr = []
         let postId = ObjectID()
         if(edit){
             for(let img_obj of images)
             {
                 if(img_obj.from_edit)
-                    arr.push(img_obj.url)
+                    arr.push({
+                        url: img_obj.url,
+                        id: img_obj.id
+                    })
             }
             postId = editReservation._id
         }
         await Promise.all(imageFiles.map((file, i) => uploadImageFileHandler(file, postId, i, arr)))
         let time = new Date()
-
-        let final_images = []
-        let i=0
-        for(let url of arr)
-        {
-            final_images.push(
-                {
-                    url: url,
-                    id: i
-                }
-            )
-            i++
-        }
         
         let reserva = {
             _id: postId,
@@ -266,7 +266,7 @@ const Publicar = (props) => {
             type: 0,
             workerType: selectedWorker,
             clicks: 0,
-            photos: final_images,
+            photos: arr,
             photo_principal: photoPrincipal,
             lat: lat,
             lng: lng,
@@ -275,9 +275,7 @@ const Publicar = (props) => {
             district: district
         }
         axios.post(`${api_url}/reservations/add`, reserva).then(() => {
-            setConfirmationPopup(false)
-            setConfirmationEditPopup(false)
-            props.loadingHandler(false)
+            setLoadingConfirm(false)
             if(user.phone === "" || user.phone !== phone){
                 axios.post(`${api_url}/user/update_phone`, {
                     user_id : user._id,
@@ -286,46 +284,23 @@ const Publicar = (props) => {
                     console.log(res);
                 })
             }
-            navigate('/user?t=publications')
         })
     }
 
     const confirmarHandler = () => {
-        if(!user && checkAll()){
-            navigate('/authentication?type=0',
-                {
-                    state: {
-                        carry: true,
-                        desc: description,
-                        nameCarry: nome,
-                        phoneCarry: phone,
-                        emailCarry: email,
-                        worker: selectedWorker,
-                        title: titulo,
-                        images: images,
-                        imageFiles: imageFiles
-                    }
-                })
-        }
-        else if(checkAll()){
-            props.loadingHandler(true)
-            checkPendingReservations()
-        }
+        checkPendingReservations()
     }
 
     const checkPendingReservations = () => {
         axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} }).then(res => {
             if(edit)
             {
-                props.loadingHandler(false)
                 setConfirmationEditPopup(true)
             }
             else if(res.data?.length<3){
-                props.loadingHandler(false)
                 setConfirmationPopup(true)
             }
             else{
-                props.loadingHandler(false)
                 setTooManyReservations(true)
             }
         })
@@ -347,13 +322,17 @@ const Publicar = (props) => {
         let images_aux = [...images]
         let files_aux = [...imageFiles]
         for(let img of event.target.files){
+            let time = new Date().getTime()
             const objectUrl = URL.createObjectURL(img)
             console.log(objectUrl, img);
-            files_aux.push(img)
+            files_aux.push({
+                img: img,
+                id:`${img.name}_${time}`
+            })
             images_aux.push({
                 from_edit:false,
                 url:objectUrl,
-                id:`${img.name}_${new Date().getTime()}`
+                id:`${img.name}_${time}`
             })
         }
         if(photoPrincipal===null && images_aux.length>0)
@@ -429,7 +408,7 @@ const Publicar = (props) => {
                 edit?
                 <div className={styles.previous_voltar} style={{borderBottom:`3px solid #FF785A`}} onClick={() => navigate(-1)}>
                     <ArrowBackIcon className={styles.previous_symbol}/>
-                    <span className={styles.previous_voltar_text}>CANCELAR<span style={{color:'#FF785A'}}> EDIÇÃO</span></span>
+                    <span className={styles.previous_voltar_text} style={{marginLeft:'10px'}}>CANCELAR</span>
                 </div>
                 :null
             }
@@ -452,19 +431,14 @@ const Publicar = (props) => {
                     />
                 :null
             }
-            {
-                confirmationPopup?
-                    <Popup
-                        type = 'confirm'
-                        confirmRes = {true}
-                        worker={selectedWorker}
-                        confirmHandler={() => confirmarPopupHandler()}
-                        cancelHandler={() => setConfirmationPopup(false)}
-                        />
-                    :null
-            }
             <div className={styles.flex}>
                 <div className={styles.main}>
+                    {
+                        loading?
+                        <div className={styles.frontdrop_helper} style={{backgroundColor:"#00000080"}}/>
+                        :null
+                    }
+                    <Loader2 loading={loading}/>
                     <CSSTransition 
                     in={inProp}
                     timeout={1000}
@@ -481,7 +455,7 @@ const Publicar = (props) => {
                     >
                     <Sessao text={"Excedeste o limite de fotografias (max. 6)"}/>
                     </CSSTransition>
-                    <div className={verifyPhone?styles.backdrop:null} onClick={() => setVerifyPhone(false)}/>
+                    <div className={verifyPhone||confirmationPopup?styles.backdrop:null} onClick={() => setVerifyPhone(false)||setConfirmationPopup(false)}/>
                     <CSSTransition
                         in={verifyPhone}
                         timeout={1000}
@@ -501,6 +475,19 @@ const Publicar = (props) => {
                             phone={phone}
                             />
                     </CSSTransition>
+                    <CSSTransition
+                        in={confirmationPopup}
+                        timeout={1000}
+                        classNames="transition"
+                        unmountOnExit
+                        >
+                        <VerificationBannerConfirm
+                            confirm={() => confirmarPopupHandler()}
+                            cancel={() => setConfirmationPopup(false)}
+                            loadingConfirm={loadingConfirm}
+                            />
+                    </CSSTransition>
+
                     <div className={styles.reservar}>
                         <div className={styles.reservar_upper} style={{marginTop:edit?"100px":""}}>
                             <p className={styles.reservar_upper_title}>
@@ -511,9 +498,7 @@ const Publicar = (props) => {
                             </p>
                             {
                                 edit?
-                                <p className={styles.reservar_upper_desc} style={{display:"flex", justifyContent:"center", marginBottom:"10px"}}>
-                                    <span className={styles.action} style={{fontSize:"1rem"}}>EDITAR</span>
-                                </p>
+                                null
                                 :
                                 <p className={styles.reservar_upper_desc}>
                                     Criar e publicar o seu <span className={styles.action}>trabalho</span>.<br/>
@@ -523,19 +508,13 @@ const Publicar = (props) => {
                         </div>
                         {
                             edit?
-                            <span className={styles.button_type} style={{backgroundColor:getTypeColor(editReservation?.type)}}>
-                                {
-                                    editReservation?
-                                        editReservation.type===0?
-                                        "PROCESSAR"
-                                        :editReservation.type===1?
-                                        "ACTIVO"
-                                        :editReservation.type===2?
-                                        "RECUSADO"
-                                        :"COMPLETO"
-                                    :null
-                                }
+                            <div className={styles.button_type_wrapper} onClick={() => navigate(-1)}>
+                                <span className={styles.button_type} style={{backgroundColor:'#FF785A'}}>
+                                CANCELAR
                             </span>
+
+                            </div>
+                            
                         :null
                         }
                         <div className={styles.display}>
@@ -575,7 +554,7 @@ const Publicar = (props) => {
                                     :
                                     <span className={styles.display_element_underline} style={{backgroundColor:"transparent"}}/>
                                 }
-                                <p className={styles.display_element_text}>Localização</p>
+                                <p className={styles.display_element_text}>Detalhes</p>
                             </div>
                             <span className={selectedTab===2?styles.display_element_bar_selected:selectedTab>2?styles.display_element_bar:styles.display_element_empty}/>
                             <div className={styles.display_element}>
@@ -601,7 +580,6 @@ const Publicar = (props) => {
                             selectedItem={selectedTab}>
                             <div className={styles.carousel_div}>
                                 <PublicarService 
-                                    edit={edit}
                                     selectedWorker={selectedWorker}
                                     setSelectedWorker={setSelectedWorker}
                                     editReservation={editReservation}
@@ -668,6 +646,69 @@ const Publicar = (props) => {
                                     seconds={seconds}
                                     />
                             </div>
+                            <div className={styles.carousel_div}>
+                                {
+                                    loadingConfirm?
+                                    <div className={styles.frontdrop_helper} style={{backgroundColor:"#00000080"}}/>
+                                    :null
+                                }
+                                <Loader2 loading={loadingConfirm}/>
+                                <div className={styles.top} style={{overflowY:'auto'}}>
+                                    <div className={styles.zone} onClick={() => !loadingConfirm&&setSelectedTab(0)}>
+                                        <div className={styles.zone_number_div}>
+                                            <span className={styles.zone_number}>1</span>
+                                        </div>
+                                        <p className={styles.zone_title}>Serviço</p>
+                                        <div className={styles.zone_flex}>
+                                            <div className={styles.zone_flex_area}>
+                                                <div className={styles.zone_service_icon_wrapper}>
+                                                    <img className={styles.zone_service_icon} src={profissoesPngs[selectedWorker]}/>
+                                                </div>
+                                                <span className={styles.zone_service_text}>{profissoesOptions[selectedWorker]}</span>
+                                            </div>
+                                            <div className={styles.zone_label_div}>
+                                                <p className={styles.zone_label}>Título</p>
+                                                <p className={styles.zone_label_value}>{titulo}</p>
+                                            </div>
+                                            <div className={styles.zone_label_div}>
+                                                <p className={styles.zone_label}>Descrição</p>
+                                                <p className={styles.zone_label_value}>{description}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className={styles.zone} style={{marginTop:'5px'}} onClick={() => !loadingConfirm&&setSelectedTab(1)}>
+                                        <div className={styles.zone_number_div}>
+                                            <span className={styles.zone_number}>2</span>
+                                        </div>
+                                        <p className={styles.zone_title}>Fotografias</p>
+                                        <p className={styles.zone_label_value} style={{textAlign:"center", margin:"10px 0"}}>{images.length} de 6 Fotografias</p>
+                                    </div>
+                                    <div className={styles.zone} style={{marginTop:'5px'}} onClick={() => !loadingConfirm&&setSelectedTab(2)}>
+                                        <div className={styles.zone_number_div}>
+                                            <span className={styles.zone_number}>3</span>
+                                        </div>
+                                        <p className={styles.zone_title}>Detalhes</p>
+                                        <div className={styles.zone_flex}>
+                                            <div className={styles.zone_label_div}>
+                                                <p className={styles.zone_label}>Localização</p>
+                                                <span className={styles.zone_label_value}>{address}, {porta}{andar?`, ${andar}`:null}</span>
+                                            </div>
+                                            <div className={styles.zone_label_div}>
+                                                <p className={styles.zone_label}>Nome</p>
+                                                <p className={styles.zone_label_value}>{nome}</p>
+                                            </div>
+                                            <div className={styles.zone_label_div}>
+                                                <p className={styles.zone_label}>Telemóvel</p>
+                                                <p className={styles.zone_label_value}>{phoneVisual}</p>
+                                            </div>
+                                            <div className={styles.zone_label_div}>
+                                                <p className={styles.zone_label}>E-mail</p>
+                                                <p className={styles.zone_label_value}>{email}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
 
                         </Carousel>
@@ -700,29 +741,30 @@ const Publicar = (props) => {
                                         onClick={() => {setSelectedTab(selectedTab-1)}}>
                                     <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                     </div>
-                                    <div className={((user.phone===phone&&user.phone_verified)&&user.email_verified)?styles.login_button:styles.login_button_disabled}
+                                    <div className={((user.phone===phone&&user.phone_verified)&&user.email_verified)&&address!=null&&porta!=null?styles.login_button:styles.login_button_disabled}
                                         style={{marginLeft:'10px', marginTop:0}}
                                         onClick={() => {setSelectedTab(selectedTab+1)}}>
                                         <p className={styles.login_text}>Continuar</p>
                                     </div>
                                 </div>
                                 :
-                                selectedTab===5?
-                                <div ref={divRef} data-tip={complete?"":"Preenche todos os campos assinalados com *"} style={{backgroundColor:edit?"#FF785A":""}} className={complete?styles.bot_button:styles.bot_button_disabled} onClick={() => {
-                                            if(complete) confirmarHandler()}}>
-                                    <span className={complete?styles.bot_button_text:styles.bot_button_text_disabled}>{edit?"Confirmar edição do Trabalho":user?"Publicar Trabalho":"Criar conta e Publicar trabalho" }</span>
+                                selectedTab===3?
+                                <div>
+                                    <div className={styles.login_button}
+                                        style={{marginTop:0, backgroundColor:"#ffffff", color:"#161F28"}}
+                                        onClick={() => {!loadingConfirm&&setSelectedTab(selectedTab-1)}}>
+                                        <p className={styles.login_text}>EDITAR</p>
+                                    </div>
+                                    <div className={allFieldsCorrect?styles.login_button:styles.login_button_disabled}
+                                        style={{marginTop:'5px'}}
+                                        onClick={() => allFieldsCorrect&&confirmarHandler()}>
+                                        <p className={styles.login_text}>PUBLICAR</p>
+                                    </div>
                                 </div>
                                 :null
                                 
                             }  
                         </div>
-                        {
-                            edit?
-                            <div style={{display:"flex", marginTop:"-50px", marginBottom:"20px"}} onClick={() => navigate(-1)}>
-                                <span className={styles.cancelar_editar} >CANCELAR EDITAR</span>
-                            </div>
-                            :null
-                        }
                     </div>
                     
                 </div>

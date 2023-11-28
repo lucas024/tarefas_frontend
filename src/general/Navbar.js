@@ -122,8 +122,8 @@ const Navbar = (props) => {
                                                 (!worker_is_subscribed&&user.type || !worker_profile_complete&&user.type)?
                                                 <span className={styles.drop_div_notification_text}>CONTA DESATIVADA</span>
                                                 :
-                                                (user_profile_complete || user.phone==="")?
-                                                <span className={styles.drop_div_notification_big}/>                                                
+                                                (!user_profile_complete || user.phone==="")?
+                                                <span className={styles.drop_div_notification_text} style={{marginRight:'10px'}}>VERIFICAR PERFIL</span>                                              
                                                 :null
                                             }
                                             

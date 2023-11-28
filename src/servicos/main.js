@@ -305,7 +305,7 @@ const Main = (props) => {
             return(
                 <div key={i} className={styles.row}>
                     {
-                        i>0&&getDiffDate(items[i-1].timestamp, item.timestamp)?
+                        i>0&&getDiffDate(items[i-1]?.timestamp, item?.timestamp)?
                         <div className={styles.day_splitter}>
                             <span className={styles.day_value}>{extenseDate(item.timestamp)}</span>
                         </div>

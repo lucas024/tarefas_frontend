@@ -47,8 +47,8 @@ const Home = (props) => {
 
     useEffect(() => {
         if(loaded){
-            setMensagemPopup(true)
-            setTimeout(() => setMensagemPopup(false), 4000)
+            // setMensagemPopup(true)
+            // setTimeout(() => setMensagemPopup(false), 4000)
         }
         else if(location.state?.carry==="login"){
             props.refreshUser()
@@ -174,16 +174,16 @@ const Home = (props) => {
                         loaded?
                         <div className={styles.main_wrapper}>
                             <div className={styles.main}>
-                                <div className={styles.search_clear_wrapper} style={{backgroundColor:second||third?'#161F28':"#71848d"}} onClick={() => clearTopSearch()}>
+                                <div className={styles.search_clear_wrapper} style={{backgroundColor:second||third?'#161F28':"#00000030"}} onClick={() => clearTopSearch()}>
                                     <SearchOffIcon className={styles.search_clear_icon}/>
                                 </div>
                                 <div className={styles.zone}>
                                     <div className={styles.zone_img} style={{backgroundColor:first==="trabalhadores"?"#FF785A":"#0358e5", borderColor:first==="trabalhadores"?"#FF785A":"#0358e5"}}>
                                         {
                                             first==="trabalhadores"?
-                                            <BackHandIcon className={styles.zone_person_icon} style={{transform: 'scaleX(-1)'}}/>
+                                            <BackHandIcon className={styles.zone_person_icon} style={{transform: 'scaleX(-1)', color:"#ffffff"}}/>
                                             :
-                                            <AssignmentIcon className={styles.zone_build_icon}/>
+                                            <AssignmentIcon className={styles.zone_build_icon} style={{color:"#ffffff"}}/>
                                         }
                                     </div>
                                     <div className={styles.zone_select}>
@@ -202,8 +202,8 @@ const Home = (props) => {
                                     </span>
                                 </div>
                                 <div className={styles.zone}>
-                                    <div className={styles.zone_img} style={{borderColor:second?first==="trabalhadores"?"#FF785A":"#0358e5":"#71848d",
-                                                backgroundColor:second?'#161F28':'#71848d'}}>
+                                    <div className={styles.zone_img} style={{borderColor:second?first==="trabalhadores"?"#FF785A":"#0358e5":"#252d36",
+                                                backgroundColor:second?'#161F28':'#252d36'}}>
                                         {
                                             second? 
                                             <img src={profissoesPngs[second]} className={styles.zone_image_prof}/>
@@ -229,8 +229,8 @@ const Home = (props) => {
                                     </span>
                                 </div>
                                 <div className={styles.zone}>
-                                    <div className={styles.zone_img} style={{borderColor:third?first==="trabalhadores"?"#FF785A":"#0358e5":"#71848d",
-                                                backgroundColor:third?'#161F28':'#71848d'}}>
+                                    <div className={styles.zone_img} style={{borderColor:third?first==="trabalhadores"?"#FF785A":"#0358e5":"#252d36",
+                                                backgroundColor:third?'#161F28':'#252d36'}}>
                                         {
                                             third? 
                                             <span className={styles.zone_image_region}>{regioesOptions[third]}</span>
@@ -249,9 +249,9 @@ const Home = (props) => {
                                 </div>
                             </div>
                             <div onClick={() => second&&third&&searchHandler()} className={second&&third?styles.search_wrapper:styles.search_wrapper_disabled} 
-                                            style={{backgroundColor:second&&third?first==="trabalhadores"?"#FF785A":"#0358e5":"#71848daa"}}>
-                                <SearchIcon className={styles.zone_search_icon} style={{color:second&&third?"white":"#ffffff"}}/>
-                                <span className={styles.zone_search_button} style={{color:second&&third?"white":"#ffffff"}}>PROCURAR</span>
+                                            style={{backgroundColor:second&&third?first==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff10"}}>
+                                <SearchIcon className={styles.zone_search_icon} style={{color:second&&third?"#ffffff":"#ffffff90"}}/>
+                                <span className={styles.zone_search_button} style={{color:second&&third?"#ffffff":"#ffffff90"}}>PROCURAR</span>
                             </div>
                         </div>
                         
@@ -265,12 +265,9 @@ const Home = (props) => {
                 <div className={styles.home_divider} style={{backgroundColor:first==="trabalhadores"?"#FF785A":"#0358e5"}}>_</div>
                 <span className={styles.home_explorar}>EXPLORAR</span>
                 {
-                    user.type===0?
+                    user.type===0&&loaded?
                     <div className={styles.home_back_publish}>
                         <p className={styles.back_publish_title}>PUBLICAR</p>
-
-                        {
-                            loaded?
                             <div className={styles.back_publish_div}>
                                 {/* {
                                     user?.type===1?
@@ -292,24 +289,27 @@ const Home = (props) => {
                                     </div>
                                 }
                             </div>
-                            :
-                            <div className={styles.section_content}>
-                                <p className={styles.skeleton_content_in}></p>
-                                <p className={styles.skeleton_content_in}></p>
-                            </div>    
-                        }
-                        
+                    </div>
+                    :!loaded?
+                    <div className={styles.section_content}>
+                        <p className={styles.skeleton_content_in}></p>
+                        <p className={styles.skeleton_content_in}></p>
                     </div>
                     :null
                 }
 
                 
                 <div className={styles.home_geral}>
-                    <p className={styles.back_publish_title}>VER</p>
+                    {
+                        loaded?
+                        <p className={styles.back_publish_title}>VER</p>
+                        :null
+                    }
+                    
                     <div className={styles.home_back_bottom}>
                         <div className={styles.section_one}>
                             {
-                                user || loaded?
+                                user&&loaded?
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
                                         <AssignmentIcon className={styles.section_img}/>
@@ -330,13 +330,12 @@ const Home = (props) => {
                                 <div className={styles.section_content}>
                                     <span className={styles.skeleton_content_in_img}></span>
                                     <p className={styles.skeleton_content_in}></p>
-                                    <p className={styles.skeleton_content_in}></p>
                                 </div>        
                             }
                         </div>
                         <span className={styles.section_spacer}></span>
                         {
-                            user?.type===1?
+                            user?.type===1&&loaded?
                             <div className={styles.section_two}>
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
@@ -356,7 +355,7 @@ const Home = (props) => {
                                 </div>
                             </div>
                             :
-                            user?.type===0 || loaded?
+                            user?.type===0&&loaded?
                             <div className={styles.section_two}>
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
@@ -379,7 +378,6 @@ const Home = (props) => {
                             <div className={styles.section_two}>
                                 <div className={styles.section_content}>
                                     <span className={styles.skeleton_content_in_img}></span>
-                                    <p className={styles.skeleton_content_in}></p>
                                     <p className={styles.skeleton_content_in}></p>
                                 </div>
                             </div>

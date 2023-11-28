@@ -7,8 +7,10 @@ import { ref, deleteObject } from "firebase/storage";
 import axios from 'axios';
 import Loader from '../general/loader';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
+import { useSelector } from 'react-redux'
 
 const Publications = (props) => {
+    const api_url = useSelector(state => {return state.api_url})
 
     const navigate = useNavigate()
     const [removeArray, setRemoveArray] = useState([])
@@ -60,9 +62,10 @@ const Publications = (props) => {
         console.log(obj);
         await Promise.all(reservation.photos.map((photo, key) => {
             const deleteRef = ref(storage, `/posts/${reservation._id}/${key}`)
+            console.log(deleteRef)
             return deleteObject(deleteRef)
         }))
-        axios.post(`${props.api_url}/reservations/remove`, obj)
+        axios.post(`${api_url}/reservations/remove`, obj)
             .then(() => {
                 setLoading(false)
                 props.refreshPublications()
@@ -80,7 +83,9 @@ const Publications = (props) => {
         return props.reservations.map((res, i) => {
             if(res.type===num1 || res.type===num2 || res.type===num3){
                 return (
-                    <div key={i} className={styles.item_wrapper} onClick={() => navigatePubHandler(res._id)}>
+                    <div key={i} className={styles.item_wrapper} 
+                            onClick={() => navigatePubHandler(res._id)}
+                            style={{borderBottom:removeArray.includes(res._id)?'none':""}}>
                         {
                             removeArray.includes(res._id)?
                                 <div className={styles.remove_div}>
@@ -98,7 +103,7 @@ const Publications = (props) => {
                                 </div>
                             :null
                         }
-                        <div className={styles.item} style={{borderColor:getTypeColor(res.type), backgroundColor:`${getTypeColor(res.type)}30`}}>
+                        <div className={styles.item} style={{borderColor:getTypeColor(res.type)}}>
                             <div className={styles.item_left}>
                                 {
                                     res?.photos[0]?
@@ -130,11 +135,14 @@ const Publications = (props) => {
                                             }
                                         </span>
                                     </div>
-                                    <DeleteOutlineIcon className={styles.more} onClick={e => {
-                                        e.stopPropagation()
-                                        let val = [...removeArray]
-                                        val.push(res._id)
-                                        setRemoveArray(val)}}/>
+                                    <div className={styles.more_wrapper} onClick={e => {
+                                            e.stopPropagation()
+                                            let val = [...removeArray]
+                                            val.push(res._id)
+                                            setRemoveArray(val)}}>
+                                        <DeleteOutlineIcon className={styles.more} />
+                                    </div>
+                                    
                                 </div>
                                 <div className={styles.item_flex}>
                                     <div className={styles.item_time}>{getTime(res.timestamp)}</div>
@@ -189,7 +197,7 @@ const Publications = (props) => {
                         :<div style={{height:"120px", width:"100%", backgroundColor:"white"}} />
                     }
                     </div>
-                    <div className={styles.list_prox} style={{marginTop:0}}>
+                    <div className={styles.list_prox} style={{marginTop:0, backgroundColor:"#0358e530"}}>
                         <span className={styles.list_prox_text}>Trabalhos Concluídos</span>
                     </div>
                     {

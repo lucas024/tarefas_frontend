@@ -6,7 +6,7 @@ const SelectHome = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: props.option==='trabalhos'?"#0358e5":props.option==='trabalhadores'?"#FF785A":props.option?"#161F28":"#71848d",
+            backgroundColor: props.option==='trabalhos'?"#0358e5":props.option==='trabalhadores'?"#FF785A":props.option?"#161F28":"#252d36",
             borderColor: "#ffffff",
             fontSize: "0.7rem",
             textTransform: "uppercase",
@@ -85,7 +85,7 @@ const SelectHome = (props) => {
     
     return(
         <Select
-            placeholder={<span style={{marginLeft:'5px', color:'#ffffff'}}>{props.placeholder}</span>}
+            placeholder={<span style={{marginLeft:'5px', color:'#ffffff80'}}>{props.placeholder}</span>}
             styles={stylesSelect}
             options={props.options}
             value={props.options?.filter(option => option.value === props.option)}

@@ -16,7 +16,7 @@
     position: absolute;
     background-color: var(--brand);
     transition: all 0.5s;
-    border-bottom-left-radius: 20px;
+    border-bottom-left-radius: 5px;
     padding: 5px 0 5px 5px;
     border-top: 1px solid white;
     border-right: 1px solid white;
@@ -89,7 +89,7 @@
     margin: auto;
     display: flex;
     justify-content: center;
-    background-color: var(--neutral);
+    background-color: #ffffff;
     border-radius: 10px;
     padding: 20px 0;
     max-width: 1200px;
@@ -117,7 +117,7 @@
     border: 2px solid #989898;
 }
 .zone_build_icon{
-    color: var(--neutral);
+    color: #ffffff80;
     width: 60px !important;
     height: 60px !important;
 }
@@ -150,7 +150,7 @@
 }
 .zone_arrow_none{
     height: 5px;
-    background-color: #161F2850;
+    background-color: #252d36;
     width: 100%;
     transition: all 0.5s;
 }
@@ -158,14 +158,14 @@
     height: 5px;
     background-color: var(--job);
     width: 100%;
-    background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(152,152,152,1) 73%, rgba(152,152,152,1) 100%);
+    background: linear-gradient(90deg, rgba(3,88,229,1) 0%, #252d36 73%, #252d36 100%);
     transition: all 0.5s;
 }
 .zone_arrow_trabalhos_half_reverse{
     height: 5px;
     background-color: var(--job);
     width: 100%;
-    background: linear-gradient(270deg, rgba(3,88,229,1) 0%, rgba(152,152,152,1) 73%, rgba(152,152,152,1) 100%);
+    background: linear-gradient(270deg, rgba(3,88,229,1) 0%, #252d36 73%, #252d36 100%);
     transition: all 0.5s;
 }
 .zone_arrow_trabalhos{
@@ -178,14 +178,14 @@
     height: 5px;
     background-color: var(--action);
     width: 100%;
-    background: linear-gradient(90deg, rgba(255,120,90,1) 0%, rgba(152,152,152,1) 73%, rgba(152,152,152,1) 100%);
+    background: linear-gradient(90deg, rgba(255,120,90,1) 0%, #252d36 73%, #252d36 100%);
     transition: all 0.5s;
 }
 .zone_arrow_trabalhadores_half_reverse{
     height: 5px;
     background-color: var(--action);
     width: 100%;
-    background: linear-gradient(270deg, rgba(255,120,90,1) 0%, rgba(152,152,152,1) 73%, rgba(152,152,152,1) 100%);
+    background: linear-gradient(270deg, rgba(255,120,90,1) 0%, #252d36 73%, #252d36 100%);
     transition: all 0.5s;
 }
 .zone_arrow_trabalhadores{
@@ -208,7 +208,7 @@
     border-bottom-left-radius: 30px;
     cursor: default;
     transition: all 0.5s;
-    border: 4px solid white;
+    border: 3px solid white;
     border-top: none;
     display: flex;
     flex-direction: column;
@@ -225,7 +225,7 @@
     border-bottom-left-radius: 10px;
     cursor: pointer;
     transition: all 0.5s;
-    border: 4px solid white;
+    border: 3px solid white;
     border-top: none;
     display: flex;
     flex-direction: column;
@@ -566,7 +566,7 @@
 .skeleton_content_in_img{
     width: 50%;
     margin: auto;
-    height: 200px;
+    height: 150px;
     border-radius: 5px;
     display: block;
     background-color: var(--skeleton);

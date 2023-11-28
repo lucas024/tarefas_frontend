@@ -184,8 +184,8 @@
     height: 25px;
     align-self: center;
     align-items: center;
-    border-radius: 5px;
-    padding: 0 5px;
+    border-radius: 3px;
+    padding: 0 10px;
     box-sizing: border-box;
 }
 .more{
@@ -214,14 +214,21 @@
     width: 100%;
     padding: 5px 2px;
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
 }
 .dropdown_top_text{
     color: #ccc;
-    font-style: italic;
     padding: 5px;
+    text-align: center;
+}
+.drop_div_text{
+    text-transform: uppercase;
+    font-weight: 500;
 }
 .drop_div_symbol{
-    font-size: 1rem;
+    width: 20px !important;
+    height: 20px !important;
 }
 .drop_div_main{
     width: 100%;
@@ -237,8 +244,7 @@
 }
 .drop_div{
     display: flex;
-    justify-content: flex-start;
-    width: 155px;
+    justify-content: center;
     margin: auto;
     padding: 5px;
     align-items: center;
@@ -394,7 +400,7 @@
 }
 .user_info_number_symbol{
     font-size: 1rem !important;
-    background-color: var(--action);
+    background-color: var(--job);
     padding: 5px;
     border-radius: 5px;
     align-self: center;
@@ -425,6 +431,7 @@
     border-radius: 50%;
     margin-right: 10px;
     object-fit: cover;
+    color: var(--job);
 }
 
 .text_name_tbd{
@@ -444,7 +451,7 @@
     color: var(--neutral);
     font-size: 1rem !important;
     justify-self: flex-start;
-    background-color: var(--action);
+    background-color: var(--job);
     padding: 5px;
     border-radius: 5px;
 }

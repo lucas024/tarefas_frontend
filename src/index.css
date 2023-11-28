@@ -61,7 +61,7 @@ input[type=number] {
 
 .image-gallery-thumbnail.active, .image-gallery-thumbnail:focus {
   outline: none;
-  border: 4px solid var(--action);
+  border: 4px solid var(--job);
 }
 
 .image-gallery-thumbnail .image-gallery-thumbnail-image {
@@ -74,10 +74,10 @@ input[type=number] {
   right: 30px;
 }
 .image-gallery-icon:focus{
-  outline: 2px solid var(--action);
+  outline: 2px solid var(--job);
 }
 .image-gallery-icon:hover {
-  color: var(--action);
+  color: var(--job);
 }
 .image-gallery-fullscreen-button{
   right: 50px;
@@ -216,6 +216,26 @@ p{
   background-color: #65b5f633 !important;
 }
 
+.publicar-enter{
+  opacity: 0;
+}
+.publicar-enter-active {
+  opacity: 1;
+  transform: translateY(30%);
+  transition: 600ms;
+}
+.publicar-enter-done{
+  transform: translateY(30%);
+}
+.publicar-exit {
+  opacity: 1;
+  transform: translateY(30%);
+}
+.publicar-exit-active {
+  opacity: 0;
+  transform: translateY(-30%);
+  transition: 200ms;
+}
 
 .transition-enter{
   opacity: 0;

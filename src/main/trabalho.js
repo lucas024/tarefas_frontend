@@ -429,9 +429,9 @@ const Trabalho = (props) => {
                     }
                     {
                         location.state&&location.state.fromUserPage&&userView?
-                        <div className={styles.previous_voltar} style={{borderBottom:`3px solid #FF785A`}} onClick={() => backHandler()}>
+                        <div className={styles.previous_voltar} style={{borderBottom:`3px solid #0358e5`}} onClick={() => backHandler()}>
                             <ArrowBackIcon className={styles.previous_symbol}/>
-                            <span className={styles.previous_voltar_text}>VOLTAR AOS <span className={styles.action}>MEUS TRABALHOS</span></span>
+                            <span className={styles.previous_voltar_text}>VOLTAR AOS <span style={{color:"#0358e5"}}>MEUS TRABALHOS</span></span>
                         </div>
                         :
                         <div>
@@ -511,16 +511,16 @@ const Trabalho = (props) => {
                                             <div className={styles.dropdown_top}>
                                                 <span className={styles.dropdown_top_text}>Publicação</span>
                                             </div>
-                                            <div onClick={() => {}} className={styles.drop_div_main} style={{borderTop:"1px solid #ccc", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
+                                            <div onClick={() => {}} className={styles.drop_div_main} style={{borderTop:"1px solid #ccc"}}>
                                                 <div className={styles.drop_div} onClick={() => editPublicationHandler()}>
-                                                    <EditIcon className={styles.drop_div_symbol}/>
+                                                    {/* <EditIcon className={styles.drop_div_symbol}/> */}
                                                     <span className={styles.drop_div_text} >Editar</span>
                                                 </div>
                                             </div>
                                             <div onClick={() => {}} className={styles.drop_div_main} style={{borderTop:"1px solid #ccc", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
                                                 <div className={styles.drop_div} onClick={() => setEliminationPopup(true)}>
-                                                    <DeleteOutlineIcon className={styles.drop_div_symbol}/>
-                                                    <span className={styles.drop_div_text} >Eliminar</span>
+                                                    {/* <DeleteOutlineIcon className={styles.drop_div_symbol}/> */}
+                                                    <span className={styles.drop_div_text} >REMOVER</span>
                                                 </div>
                                             </div>
                                         </div>

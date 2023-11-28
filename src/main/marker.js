@@ -8,8 +8,8 @@ const Marker = (props) => {
         marginLeft: "-40px",
         marginTop: "-40px",
         borderRadius: "50%",
-        border: "4px solid var(--action)",
-        backgroundColor: "#FF785A50"
+        border: "4px solid var(--job)",
+        backgroundColor: "#0358e550"
         
     }
     return (

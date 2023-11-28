@@ -74,11 +74,6 @@ const PublicarDetails = props => {
                 </div> */}
                 <div className={styles.contact_area} onClick={() => props.divRef.current.scrollIntoView({ behavior: 'smooth' })}>
                     {
-                        props.edit?
-                        <BorderColorIcon className={styles.top_abs_edit}/>
-                        :null
-                    }
-                    {
                         props.edit&&!props.activateEditAddress?
                             <div>
                                 <div className={styles.edit_address_line}>

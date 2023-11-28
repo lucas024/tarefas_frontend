@@ -4,6 +4,7 @@
     width: 100%;
     border-top: 1px solid var(--brand);
     overflow: hidden;
+    position: relative;
 }
 .backdrop{
     position: absolute;
@@ -66,7 +67,7 @@
 .top{
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: var(--neutral);
     padding: 20px;
     border-radius: 5px;
     position: relative;
@@ -437,7 +438,7 @@ input::placeholder{
     width: 40px;
     height: 40px;
     align-self: center;
-    color: var(--action);
+    color: var(--job);
 }
 .foto_symbol_small:hover{
     opacity: 0.5;
@@ -453,7 +454,7 @@ input::placeholder{
     width: 25px !important;
     height: 25px !important;
     align-self: center;
-    color: var(--action);
+    color: var(--job);
 }
 .foto_text{
     color: var(--action);
@@ -489,17 +490,17 @@ input::placeholder{
     position: absolute;
     top: 0px;
     right: 5px;
-    color: var(--action);
+    color: var(--job);
     font-weight: 700;
     font-size: 1.2rem;
 }
 .foto_symbol_add{
-    color: var(--action);
+    color: var(--job);
     width: 30px !important;
     height: 30px !important;
 }
 .foto_symbol_indicator{
-    color: var(--action);
+    color: var(--job);
     text-transform: uppercase;
     font-weight: 500;
 }
@@ -537,6 +538,7 @@ input::placeholder{
     width: 100%;
     height: 100%;
     background-color: transparent;
+    z-index: 2;
 }
 .foto_img_delete{
     position: absolute;
@@ -545,7 +547,7 @@ input::placeholder{
     margin: auto;
     left: calc(50% - 25px);
     opacity: 0;
-    color: var(--action);
+    color: var(--job);
 }
 .foto_img{
     width: 100%;
@@ -614,11 +616,36 @@ input::placeholder{
     align-items: center;
     align-self: flex-end;
 }
+.button_type_wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 200px;
+    margin: 0 auto;
+}
 .button_type{
     padding: 15px 30px;
     font-size: 1rem;
     border-radius: 5px;
     font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    box-sizing: border-box;
+    color: var(--brand);
+    cursor: pointer;
+    margin-top: 20px;
+}
+.button_type:hover{
+    opacity: 0.7;
+    transition: all 150ms ease-in-out;
+}
+.button_type_state{
+    font-size: 0.8rem;
+    color: var(--neutral);
+    width: 100%;
+    text-align: center;
 }
 .bot_title_indicator_wrapper{
     border: 2px solid var(--job);
@@ -996,6 +1023,7 @@ input::placeholder{
     max-width: 1000px;
     margin: 0 auto;
     margin-top: 10px;
+    position: relative;
 }
 .display_divider{
     width: 100%;
@@ -1169,14 +1197,14 @@ input::placeholder{
     padding: 2px 0;
 }
 .options_title_text{
-    color: var(--action);
+    color: var(--job);
     font-weight: 600;
     text-transform: uppercase;
 }
 .options_main{
     display: flex;
     flex-direction: row;
-    background-color: var(--action);
+    background-color: var(--job);
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     width: 220px;
@@ -1211,6 +1239,87 @@ input::placeholder{
     font-size: 0.9rem;
     font-weight: 500;
 }
+.zone{
+    background-color: #0358e5dd;
+    border: 2px solid var(--job);
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+}
+.zone:hover{
+    background-color: var(--job);
+    transition: 150ms;
+}
+.zone_number_div{
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    background-color: var(--brand);
+    padding: 2px 8px;
+    border-radius: 50%;
+}
+.zone_number{
+    font-weight: 600;
+    color: var(--neutral);
+}
+.zone_title{
+    color: var(--brand);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.zone_flex{
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+.zone_flex_area{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.zone_service_icon_wrapper{
+    background-color: var(--neutral);
+    padding: 5px;
+    border-radius: 5px;
+}
+.zone_service_icon{
+    width: 25px !important;
+    height: 25px !important;
+}
+.zone_service_text{
+    font-size: 1rem;
+    color: var(--neutral);
+    font-weight: 500;
+    margin-left: 5px;
+    text-transform: uppercase;
+}
+.zone_label_div{
+    align-self: flex-start;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+.zone_label{
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--brand);
+    min-width: 120px;
+    text-align: left;
+}
+.zone_label_value{
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--neutral);
+    text-align: left;
+    align-self: flex-start !important;
+    white-space: pre-line;
+}
+
+
 @media (max-width: 1200px){
     .foto_img_wrapper{
         width: 240px !important;

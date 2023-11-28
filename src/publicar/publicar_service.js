@@ -13,11 +13,6 @@ const PublicarService = props => {
 
     return (
         <div className={styles.top}>
-        {
-            props.edit?
-            <BorderColorIcon className={styles.top_abs_edit}/>
-            :null
-        }
         <div className={styles.top_check} style={{backgroundColor:props.correct?'#0358e5':""}}>
             <DoneIcon className={styles.top_check_element}/>
         </div>

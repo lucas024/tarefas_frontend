@@ -48,7 +48,7 @@
 .phone_description{
     color: var(--neutral);
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     margin-top: 15px;
 }
 .phone_wrapper{

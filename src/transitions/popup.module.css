@@ -27,14 +27,14 @@
 .popup_confirm{
     position: absolute;
     width: 550px;
-    padding-bottom: 15px;
     left: calc(50% - 275px);
     top: 100px;
-    background-color: white;
+    background-color: var(--brand);
     border-radius: 2px;
     display: flex;
     flex-direction: column;
     z-index: 6;
+    padding: 25px;
 }
 .popup_admin_refuse{
     position: absolute;
@@ -55,10 +55,12 @@
     padding: 2px;
     width: 90%;
     align-self: center;
+    text-align: center;
     margin-top: 10px;
-    font-size: 1.5rem;
-    color: var(--action);
-    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: var(--job);
+    font-weight: 700;
 }
 .divider{
     width: 90%;
@@ -97,30 +99,44 @@
 .center_text{
 }
 .button_eliminate{
-    width: 90%;
-    margin: auto;
-    border-radius: 5px;
+    width: 50%;
+    max-width: 400px;
+    margin: 0 auto;
+    border-radius: 3px;
     border: 1px solid var(--action);
     text-align: center;
     padding: 5px 0;
     cursor: pointer;
+    color: white;
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: var(--brand);
+    font-weight: 600;
 }
 .button_cancel{
-    width: 90%;
+    width: 50%;
+    max-width: 400px;
     margin: 5px auto;
-    border-radius: 5px;
+    border-radius: 3px;
     background-color: var(--brand);
-    color: white;
+    color: var(--brand);
     text-align: center;
     padding: 10px 0;
     cursor: pointer;
+    box-sizing: border-box;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--neutral);
 }
 .button_cancel:hover{
-    background-color: #010304;
+    opacity: 0.7;
+    transition: 150ms all ease-in-out;
 }
 .button_eliminate:hover{
     color: white;
     background-color: var(--action);
+    transition: 150ms all ease-in-out;
 }
 .center_text_special{
     color: var(--action);

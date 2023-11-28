@@ -65,7 +65,7 @@ const VerificationBannerPhone = (props) => {
                 {
                     props.next===1?
                     <div className={styles.main_inner}>
-                        <p className={styles.phone_description}>Ao verificares o telemóvel terás acesso a todas as functionalidades da Serviços.</p>
+                        <p className={styles.phone_description}>O telemóvel verificado permite o acesso a todas as funcionalidades da Serviços.</p>
                         <div className={styles.phone_wrapper}>
                             <span className={styles.phone_prefix}>+351</span>
                             <span className={styles.phone_value}> {props.phone.slice(0, 3)} {props.phone.slice(3,6)} {props.phone.slice(6)}</span>

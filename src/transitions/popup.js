@@ -125,7 +125,7 @@ Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
                 <CSSTransition 
                     in={transition}
                     timeout={1200}
-                    classNames="transition"
+                    classNames="publicar"
                     unmountOnExit
                     >
                 <div className={props.type==='confirm'?styles.popup_confirm:styles.popup}>
@@ -159,7 +159,7 @@ Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
             <CSSTransition 
                 in={transition}
                 timeout={1200}
-                classNames="transition"
+                classNames="publicar"
                 unmountOnExit
                 >
             <div className={props.type==='confirm_edit'?styles.popup_confirm:styles.popup}>
@@ -191,7 +191,7 @@ Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
                 <CSSTransition 
                 in={transition}
                 timeout={1200}
-                classNames="transition"
+                classNames="publicar"
                 unmountOnExit
                 >
                 <div className={styles.popup}>
@@ -216,7 +216,7 @@ Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
                 <CSSTransition 
                     in={transition}
                     timeout={1200}
-                    classNames="transition"
+                    classNames="publicar"
                     unmountOnExit
                     >
                     <div className={styles.popup}>
@@ -236,7 +236,7 @@ Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
                 <CSSTransition 
                     in={transition}
                     timeout={1200}
-                    classNames="transition"
+                    classNames="publicar"
                     unmountOnExit
                     >
                     <div className={styles.popup_admin_refuse}>
