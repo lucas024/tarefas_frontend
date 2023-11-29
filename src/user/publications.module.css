@@ -302,21 +302,19 @@
     align-items: center;
 }
 .publicar{
-    background-color: var(--brand);
-    padding: 7px;
+    background-color: var(--job);
+    padding: 10px;
     box-sizing: border-box;
     color: white;
-    border-radius: 5px;
+    border-radius: 3px;
     font-weight: 600;
     cursor: pointer;
-    border: 3px solid var(--brand);
     text-align: center;
     margin-top: 10px;
 }
 .publicar:hover{
-    background-color: white;
+    opacity: 0.7;
     transition: 150ms;
-    color: var(--brand);
 }
 
 @media (max-width: 1024px){

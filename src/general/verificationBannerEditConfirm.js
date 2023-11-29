@@ -5,24 +5,25 @@ import * as postLoad from '../assets/lotties/post-load.json'
 import * as success from '../assets/lotties/success-blue.json'
 import { useNavigate } from 'react-router-dom';
 
-const VerificationBannerConfirm = (props) => {
+const VerificationBannerEditConfirm = (props) => {
 
     const [next, setNext] = useState(0)
     const navigate = useNavigate()
 
     return (
         <div className={styles.verification}>
-            <div className={styles.main} style={{borderColor:"#0358e5"}} onClick={e => e.stopPropagation()}>
-                <p className={styles.title}>PUBLICAR</p>
+            <div className={styles.main} style={{borderColor:"#FF785A"}} onClick={e => e.stopPropagation()}>
+                <p className={styles.title}>EDITAR PUBLICAÇÃO</p>
                 <span className={styles.title_separator}/>
                 {
                     next===0?
                     <div className={styles.main_inner}>
-                        <p className={styles.phone_description}>Ao confirmar a sua publicação de trabalho será analisada, 
-                        podendo seguir o processo da publicação na sua àrea pessoal.</p>
+                        <p className={styles.phone_description} style={{textAlign:"center"}}>
+                            Ao confirmar a edição, esta publicação de trabalho será novamente analisada.
+                            <br/>Pode seguir o processo da publicação na sua àrea pessoal.</p>
                         
-                        <div className={styles.button} style={{backgroundColor:"#0358e5"}} onClick={() => {props.confirm()&&setNext(1)}}>
-                            <span className={styles.button_text}>CONFIRMAR</span>
+                        <div className={styles.button} style={{backgroundColor:"#FF785A"}} onClick={() => {props.confirm()&&setNext(1)}}>
+                            <span className={styles.button_text}>CONFIRMAR EDIÇÃO</span>
                         </div>
                         <p className={styles.cancel} onClick={() => props.cancel()}>cancelar</p>
                     </div>
@@ -32,7 +33,7 @@ const VerificationBannerConfirm = (props) => {
                         {
                             props.loadingConfirm?
                             <div style={{marginTop:"0px"}}>
-                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A publicar o seu trabalho</p>
+                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A editar o seu trabalho</p>
                                 <Lottie options={{
                                     loop:true,
                                     autoplay:true,
@@ -62,11 +63,11 @@ const VerificationBannerConfirm = (props) => {
                                     // isStopped={this.state.isStopped}
                                     // isPaused={this.state.isPaused}
                                 />
-                                <p className={styles.phone_description}>Trabalho publicado com sucesso. Será rápidamente analisado pela equipa da Serviços.</p>
+                                <p className={styles.phone_description}>Trabalho editado com sucesso. Será rápidamente analisado pela equipa da Serviços.</p>
                                 <div style={{display:'flex', justifyContent:'center'}}>
                                     <div 
                                         className={styles.button}
-                                        style={{backgroundColor:"#0358e5"}}
+                                        style={{backgroundColor:"#FF785A"}}
                                         onClick={() => navigate('/user?t=publications', {replace:true})}>
                                         <span className={styles.button_text}>VER AS MINHAS PUBLICAÇÕES</span>
                                     </div>
@@ -86,4 +87,4 @@ const VerificationBannerConfirm = (props) => {
     )
 }
 
-export default VerificationBannerConfirm
+export default VerificationBannerEditConfirm

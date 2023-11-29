@@ -24,6 +24,8 @@ import PublicarDetails from '../publicar/publicar_details';
 import {profissoesPngs, profissoesOptions} from '../general/util'
 import Loader2 from '../general/loader';
 import VerificationBannerConfirm from '../general/verificationBannerConfirm';
+import VerificationBannerEditConfirm from '../general/verificationBannerEditConfirm';
+import VerificationBannerTooMany from '../general/verificationBannerTooMany';
 
 const Publicar = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -42,8 +44,6 @@ const Publicar = (props) => {
     const [porta, setPorta] = useState('')
     const [portaWrong, setPortaWrong] = useState(false)
     const [andar, setAndar] = useState('')
-    const [complete, setComplete] = useState(false)
-    const [inProp, setInProp] = useState(false)
     const [confirmationPopup, setConfirmationPopup] = useState(false)
     const [tooManyReservations, setTooManyReservations] = useState(false)
     const [images, setImages] = useState([])
@@ -64,6 +64,8 @@ const Publicar = (props) => {
 
     const [photoPrincipal, setPhotoPrincipal] = useState(null)
     const [expired, setExpired] = useState(true)
+
+    const [publicationSent, setPublicationSent] = useState(false)
 
     const allFieldsCorrect = (user.phone===phone&&!user.phone_verified)&&!user.email_verified&&titulo.length>5&&selectedWorker!=null&&address!=null&&porta.length>0&&!loadingConfirm
 
@@ -226,16 +228,9 @@ const Publicar = (props) => {
         })
     }
 
-    const getTypeColor = type => {
-        if(type===0) return "#FDD835"
-        if(type===1) return "#30A883"
-        if(type===2) return "#ff3b30"
-        if(type===3) return "#1EACAA"
-        return "#FFFFFF"
-    }
-
     const confirmarPopupHandler = async () => {
         setLoadingConfirm(true)
+        setPublicationSent(true)
         let arr = []
         let postId = ObjectID()
         if(edit){
@@ -402,6 +397,13 @@ const Publicar = (props) => {
         if(titulo.length>5) setTituloWrong(false)
     }
 
+    const setActivateEditAddressHandler = () => {
+        setActivateEditAddress(true)
+        setPorta('')
+        setAndar('')
+        setAddress('')
+    }
+
     return (
         <div className={styles.reservation}>
             {
@@ -410,25 +412,6 @@ const Publicar = (props) => {
                     <ArrowBackIcon className={styles.previous_symbol}/>
                     <span className={styles.previous_voltar_text} style={{marginLeft:'10px'}}>CANCELAR</span>
                 </div>
-                :null
-            }
-            {
-                confirmationEditPopup?
-                <Popup
-                        type = 'confirm_edit'
-                        confirmRes = {true}
-                        worker={selectedWorker}
-                        confirmHandler={() => confirmarPopupHandler()}
-                        cancelHandler={() => setConfirmationEditPopup(false)}
-                        />
-                    :null
-            }
-            {
-                tooManyReservations?
-                <Popup
-                    type = 'error_to_many'
-                    cancelHandler={() => setTooManyReservations(false)}
-                    />
                 :null
             }
             <div className={styles.flex}>
@@ -440,14 +423,6 @@ const Publicar = (props) => {
                     }
                     <Loader2 loading={loading}/>
                     <CSSTransition 
-                    in={inProp}
-                    timeout={1000}
-                    classNames="transition"
-                    unmountOnExit
-                    >
-                        <Sessao text={"Sessão iniciada com Sucesso!"}/>
-                    </CSSTransition>
-                    <CSSTransition 
                     in={inPropFoto}
                     timeout={1000}
                     classNames="transition"
@@ -455,7 +430,7 @@ const Publicar = (props) => {
                     >
                     <Sessao text={"Excedeste o limite de fotografias (max. 6)"}/>
                     </CSSTransition>
-                    <div className={verifyPhone||confirmationPopup?styles.backdrop:null} onClick={() => setVerifyPhone(false)||setConfirmationPopup(false)}/>
+                    <div className={verifyPhone||confirmationPopup||confirmationEditPopup||tooManyReservations?styles.backdrop:null} onClick={() => !publicationSent&&(setVerifyPhone(false)||setConfirmationPopup(false)||setConfirmationEditPopup(false)||setTooManyReservations(false))}/>
                     <CSSTransition
                         in={verifyPhone}
                         timeout={1000}
@@ -487,6 +462,28 @@ const Publicar = (props) => {
                             loadingConfirm={loadingConfirm}
                             />
                     </CSSTransition>
+                    <CSSTransition
+                        in={confirmationEditPopup}
+                        timeout={1000}
+                        classNames="transition"
+                        unmountOnExit
+                        >
+                        <VerificationBannerEditConfirm
+                            confirm={() => confirmarPopupHandler()}
+                            cancel={() => setConfirmationEditPopup(false)}
+                            loadingConfirm={loadingConfirm}
+                            />
+                    </CSSTransition>
+                    <CSSTransition
+                        in={tooManyReservations}
+                        timeout={1000}
+                        classNames="transition"
+                        unmountOnExit
+                        >
+                        <VerificationBannerTooMany
+                            loadingConfirm={loadingConfirm}
+                            />
+                    </CSSTransition>
 
                     <div className={styles.reservar}>
                         <div className={styles.reservar_upper} style={{marginTop:edit?"100px":""}}>
@@ -506,7 +503,7 @@ const Publicar = (props) => {
                                 </p>
                             }
                         </div>
-                        {
+                        {/* {
                             edit?
                             <div className={styles.button_type_wrapper} onClick={() => navigate(-1)}>
                                 <span className={styles.button_type} style={{backgroundColor:'#FF785A'}}>
@@ -516,7 +513,7 @@ const Publicar = (props) => {
                             </div>
                             
                         :null
-                        }
+                        } */}
                         <div className={styles.display}>
                             <div className={styles.display_element}>
                                 <p className={selectedTab===0?styles.display_element_number_selected
@@ -633,8 +630,9 @@ const Publicar = (props) => {
                                     setPortaWrong={setPortaWrong}
                                     setAndar={setAndar}
                                     andar={andar}
-                                    setActivateEditAddress={setActivateEditAddress}
+                                    setActivateEditAddress={setActivateEditAddressHandler}
                                     activateEditAddress={activateEditAddress}
+                                    editAddress={editAddress}
                                     getFieldWrong={getFieldWrong}
                                     getFieldWrongText={getFieldWrongText}
                                     selectedTab={selectedTab}
@@ -654,7 +652,7 @@ const Publicar = (props) => {
                                 }
                                 <Loader2 loading={loadingConfirm}/>
                                 <div className={styles.top} style={{overflowY:'auto'}}>
-                                    <div className={styles.zone} onClick={() => !loadingConfirm&&setSelectedTab(0)}>
+                                    <div className={styles.zone} onClick={() => !loadingConfirm&&!publicationSent&&setSelectedTab(0)}>
                                         <div className={styles.zone_number_div}>
                                             <span className={styles.zone_number}>1</span>
                                         </div>
@@ -676,14 +674,14 @@ const Publicar = (props) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className={styles.zone} style={{marginTop:'5px'}} onClick={() => !loadingConfirm&&setSelectedTab(1)}>
+                                    <div className={styles.zone} style={{marginTop:'5px'}} onClick={() => !loadingConfirm&&!publicationSent&&setSelectedTab(1)}>
                                         <div className={styles.zone_number_div}>
                                             <span className={styles.zone_number}>2</span>
                                         </div>
                                         <p className={styles.zone_title}>Fotografias</p>
                                         <p className={styles.zone_label_value} style={{textAlign:"center", margin:"10px 0"}}>{images.length} de 6 Fotografias</p>
                                     </div>
-                                    <div className={styles.zone} style={{marginTop:'5px'}} onClick={() => !loadingConfirm&&setSelectedTab(2)}>
+                                    <div className={styles.zone} style={{marginTop:'5px'}} onClick={() => !loadingConfirm&&!publicationSent&&setSelectedTab(2)}>
                                         <div className={styles.zone_number_div}>
                                             <span className={styles.zone_number}>3</span>
                                         </div>
@@ -691,7 +689,7 @@ const Publicar = (props) => {
                                         <div className={styles.zone_flex}>
                                             <div className={styles.zone_label_div}>
                                                 <p className={styles.zone_label}>Localização</p>
-                                                <span className={styles.zone_label_value}>{address}, {porta}{andar?`, ${andar}`:null}</span>
+                                                <span className={styles.zone_label_value}>{address||editAddress}, {porta}{andar?`, ${andar}`:null}</span>
                                             </div>
                                             <div className={styles.zone_label_div}>
                                                 <p className={styles.zone_label}>Nome</p>
@@ -749,16 +747,21 @@ const Publicar = (props) => {
                                 </div>
                                 :
                                 selectedTab===3?
-                                <div>
+                                <div style={{paddingBottom:"20px"}}>
                                     <div className={styles.login_button}
                                         style={{marginTop:0, backgroundColor:"#ffffff", color:"#161F28"}}
-                                        onClick={() => {!loadingConfirm&&setSelectedTab(selectedTab-1)}}>
+                                        onClick={() => {!loadingConfirm&&!publicationSent&&setSelectedTab(selectedTab-1)}}>
                                         <p className={styles.login_text}>EDITAR</p>
                                     </div>
                                     <div className={allFieldsCorrect?styles.login_button:styles.login_button_disabled}
-                                        style={{marginTop:'5px'}}
-                                        onClick={() => allFieldsCorrect&&confirmarHandler()}>
-                                        <p className={styles.login_text}>PUBLICAR</p>
+                                        style={{marginTop:'5px', backgroundColor:edit?"#FF785A":""}}
+                                        onClick={() => !loadingConfirm&&!publicationSent&&allFieldsCorrect&&confirmarHandler()}>
+                                        {
+                                            edit?
+                                            <p className={styles.login_text}>CONFIRMAR EDIÇÃO</p>
+                                            :
+                                            <p className={styles.login_text}>PUBLICAR</p>
+                                        }
                                     </div>
                                 </div>
                                 :null

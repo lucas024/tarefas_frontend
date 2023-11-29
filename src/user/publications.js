@@ -59,17 +59,17 @@ const Publications = (props) => {
         const obj = {
             _id:reservation._id
         }
-        console.log(obj);
+        axios.post(`${api_url}/reservations/remove`, obj)
+        .then(() => {
+            setLoading(false)
+            props.refreshPublications()
+        })
         await Promise.all(reservation.photos.map((photo, key) => {
             const deleteRef = ref(storage, `/posts/${reservation._id}/${key}`)
             console.log(deleteRef)
             return deleteObject(deleteRef)
         }))
-        axios.post(`${api_url}/reservations/remove`, obj)
-            .then(() => {
-                setLoading(false)
-                props.refreshPublications()
-            })
+
     }
 
     const cancelHandler = (e, reservationID) => {
@@ -77,6 +77,15 @@ const Publications = (props) => {
         let val = [...removeArray]
         val.splice(val.indexOf(reservationID), 1)
         setRemoveArray(val)
+    }
+
+    const getPhotoPrincipal = (array_photos, photo_principal) => {
+        for(let el of array_photos){
+            if(el.id === photo_principal){
+                return el.url
+            }
+        }
+        return array_photos[0].url
     }
 
     const displayReservations = (num1, num2, num3) => {
@@ -107,7 +116,7 @@ const Publications = (props) => {
                             <div className={styles.item_left}>
                                 {
                                     res?.photos[0]?
-                                    <img src={res?.photos[0].url} className={styles.item_img}></img>
+                                    <img src={getPhotoPrincipal(res?.photos, res.photo_principal)} className={styles.item_img}></img>
                                     :<NoPhotographyIcon className={styles.item_no_img}/>
                                 }
                                 <div className={styles.item_title_div}>

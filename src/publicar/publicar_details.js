@@ -77,23 +77,34 @@ const PublicarDetails = props => {
                         props.edit&&!props.activateEditAddress?
                             <div>
                                 <div className={styles.edit_address_line}>
-                                    <div className={styles.bot_input_div} style={{marginTop:0}}>
-                                        <span style={{borderColor:"#26B282"}} className={styles.area_label_inverse}>Rua<span className={styles.asterisc}>*</span></span>
-                                        <input tabindex={props.selectedTab===2?'1':'-1'} disabled={true} value={props.editAddress} className={styles.bot_input_long}></input>
+                                    <div className={styles.bot_input_div} style={{marginTop:'5px', width:'100%'}}>
+                                        <span 
+                                            style={{borderColor:props.editAddress?.length>0?"#0358e5":"", opacity:0.6, borderTopLeftRadius:'5px', color:"#ccc"}} 
+                                            className={styles.area_label_inverse}>Rua<span className={styles.asterisc}>*</span></span>
+                                        <input 
+                                            tabindex={props.selectedTab===2?'1':'-1'} 
+                                            disabled={true} 
+                                            value={props.editAddress}
+                                            className={styles.top_input_short_no_hover}
+                                            style={{borderColor:props.editAddress?.length>0?"#0358e5":"", width:'100%', color:"#ccc"}}/>
                                     </div>
                                 </div>
                                 <div className={styles.address_flex}>
                                     <div className={styles.bot_input_div}>
-                                        <span style={{borderColor:"#26B282"}} className={styles.area_label_inverse}>Porta<span className={styles.asterisc}>*</span></span>
-                                        <input tabindex={props.selectedTab===2?'1':'-1'} disabled={true} style={{width:"100px"}} maxLength={5} value={props.porta} className={styles.bot_input_short}></input>
+                                        <span 
+                                            style={{borderColor:props.porta.length>0?"#0358e5":"", opacity:0.6, borderTopLeftRadius:'5px', color:"#ccc"}} 
+                                            className={styles.area_label_inverse}>Porta<span className={styles.asterisc}>*</span></span>
+                                        <input tabindex={props.selectedTab===2?'1':'-1'} disabled={true} style={{width:"100px", borderColor:props.porta.length>0?"#0358e5":"", color:"#ccc"}} maxLength={5} value={props.porta} className={styles.top_input_short_no_hover}></input>
                                     </div>
                                     <div className={styles.bot_input_div}>
-                                        <span style={{borderColor:"#26B282"}} className={styles.area_label_inverse}>Andar</span>
-                                        <input tabindex={props.selectedTab===2?'1':'-1'} disabled={true} style={{width:"100px", marginLeft:"10px"}} maxLength={11} onChange={e => props.setAndar(e.target.value)} value={props.andar} className={styles.bot_input_short}></input>
+                                        <span 
+                                            style={{borderColor:props.andar.length>0?"#0358e5":"", opacity:0.6, borderTopLeftRadius:'5px', color:"#ccc"}}
+                                            className={styles.area_label_inverse}>Andar</span>
+                                        <input tabindex={props.selectedTab===2?'1':'-1'} disabled={true} style={{width:"100px", marginLeft:"10px", borderColor:props.andar.length>0?"#0358e5":"", color:"#ccc"}} maxLength={11} onChange={e => props.setAndar(e.target.value)} value={props.andar} className={styles.top_input_short_no_hover}></input>
                                     </div>
                                 </div>
-                                <div style={{marginTop:"10px", display:"flex"}} onClick={() => props.setActivateEditAddress(true)}>
-                                    <span className={styles.nova_morada}>Nova morada</span>
+                                <div className={styles.nova_morada_div} onClick={() => props.setActivateEditAddress(true)}>
+                                    <span className={styles.nova_morada}>Nova localização</span>
                                 </div>
                             </div>
                         :
@@ -203,17 +214,6 @@ const PublicarDetails = props => {
                                             className={styles.top_input_short}></input>
                                     </div>
                                 </div>
-
-                            {
-                                props.edit&&address?
-                                <div style={{display:"flex", justifyContent:"center", marginTop:"20px"}}>
-                                    <div style={{marginLeft:"10px"}} onClick={() => props.setActivateEditAddress(false)}>
-                                        <span className={styles.nova_morada_cancelar}>Cancelar</span>
-                                    </div>
-                                </div>
-
-                                :null
-                            }
                         </div>
                     }
                     
