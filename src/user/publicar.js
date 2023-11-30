@@ -9,7 +9,7 @@ import Sessao from '../transitions/sessao';
 import Popup from '../transitions/popup';
 import axios from 'axios'
 import { storage } from '../firebase/firebase'
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes, deleteObject} from "firebase/storage";
 import { Loader } from '@googlemaps/js-api-loader'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useSelector } from 'react-redux'
@@ -146,15 +146,7 @@ const Publicar = (props) => {
                     setLng(res.data.lng)
                     setDistrict(res.data.district)
                     setPhotoPrincipal(res.data.photo_principal)
-                    let arr = []
-                    for(let img of res.data.photos){
-                        arr.push({
-                            from_edit:true,
-                            url:img.url,
-                            id:img.id
-                        })
-                    }
-                    setImages(arr)
+                    setImages(res.data.photos)
                     setLoading(false)
                     console.log(res.data);
                 }
@@ -216,8 +208,8 @@ const Publicar = (props) => {
         selectedWorker != null
     }
 
-    const uploadImageFileHandler = async (file, postId, it, arr) => {
-        const storageRef = ref(storage, `posts/${postId}/${it}`);
+    const uploadImageFileHandler = async (file, postId, arr) => {
+        const storageRef = ref(storage, `posts/${postId}/${file.id}`);
         return uploadBytes(storageRef, file.img).then(() => {
             return getDownloadURL(storageRef).then(url => {
                 arr.push({
@@ -229,22 +221,38 @@ const Publicar = (props) => {
     }
 
     const confirmarPopupHandler = async () => {
-        setLoadingConfirm(true)
-        setPublicationSent(true)
+        // setLoadingConfirm(true)
+        // setPublicationSent(true)
         let arr = []
-        let postId = ObjectID()
+        let postId = edit?editReservation._id:ObjectID()
         if(edit){
             for(let img_obj of images)
             {
-                if(img_obj.from_edit)
+                if(img_obj.from_edit!==false)
                     arr.push({
                         url: img_obj.url,
                         id: img_obj.id
                     })
             }
-            postId = editReservation._id
+            for(let photo_original of editReservation.photos)
+            {
+                let original_still_exists_in_current = false
+                for(let photo_current of arr)
+                {
+                    if(photo_current.id === photo_original.id)
+                    {
+                        original_still_exists_in_current = true
+                    }
+                }
+                if(original_still_exists_in_current===false){
+                    console.log('teste')
+                    const deleteRef = ref(storage, `/posts/${postId}/${photo_original.id}`)
+                    await deleteObject(deleteRef)
+                }
+            }
         }
-        await Promise.all(imageFiles.map((file, i) => uploadImageFileHandler(file, postId, i, arr)))
+        await Promise.all(imageFiles.map((file, i) => uploadImageFileHandler(file, postId, arr)))
+
         let time = new Date()
         
         let reserva = {
@@ -338,21 +346,22 @@ const Publicar = (props) => {
     }
 
     const setPhotoPrincipalHandler = img_id => {
+        console.log(img_id)
         let auximages = [...images]
-        let auximagefiles = [...imageFiles]
+
         let i = 0
         for(let el of auximages)
         {
             if(el.id === img_id)
             {
                 auximages.unshift(auximages.splice(i, 1)[0])
-                auximagefiles.unshift(auximagefiles.splice(i, 1)[0])
                 setImages(auximages)
-                setImageFiles(auximagefiles)
                 break
             }
             i++
         }
+
+
         setPhotoPrincipal(img_id)
     }
 
@@ -503,17 +512,6 @@ const Publicar = (props) => {
                                 </p>
                             }
                         </div>
-                        {/* {
-                            edit?
-                            <div className={styles.button_type_wrapper} onClick={() => navigate(-1)}>
-                                <span className={styles.button_type} style={{backgroundColor:'#FF785A'}}>
-                                CANCELAR
-                            </span>
-
-                            </div>
-                            
-                        :null
-                        } */}
                         <div className={styles.display}>
                             <div className={styles.display_element}>
                                 <p className={selectedTab===0?styles.display_element_number_selected

@@ -7,7 +7,7 @@ const TopSelect = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: "#0358e5",
+            backgroundColor: props.id==null? "#161F28":"#0358e5",
             borderColor: "#0358e5",
             fontSize: "0.8rem",
             textTransform: "uppercase",
@@ -18,7 +18,7 @@ const TopSelect = (props) => {
             borderRadius: "5px",
             borderBottomLeftRadius: state.isFocused? 0: "5px",
             borderBottomRightRadius: state.isFocused? 0: "5px",
-            border: state.isSelected? "1px solid white": 0,
+            border: 0,
             boxShadow: "white",
             height: "40px",
             "&:hover": {

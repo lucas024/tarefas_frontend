@@ -64,9 +64,8 @@ const Publications = (props) => {
             setLoading(false)
             props.refreshPublications()
         })
-        await Promise.all(reservation.photos.map((photo, key) => {
-            const deleteRef = ref(storage, `/posts/${reservation._id}/${key}`)
-            console.log(deleteRef)
+        await Promise.all(reservation.photos.map((photo) => {
+            const deleteRef = ref(storage, `/posts/${reservation._id}/${photo.id}`)
             return deleteObject(deleteRef)
         }))
 

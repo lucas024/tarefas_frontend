@@ -32,8 +32,6 @@ const PublicarPhoto = props => {
                             }
                         </div>
                     </div>
-                    
-                    
                 )
             }
             else {

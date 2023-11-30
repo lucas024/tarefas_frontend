@@ -72,18 +72,18 @@ const Navbar = (props) => {
                                 <span className={styles.user_button} onClick={() => {navigate('/admin')}}>
                                         ADMIN
                                 </span>
-                                :user?.type?
+                                :user?.type===1?
                                 <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/main/publications/trabalhos')}}>
                                         TRABALHOS
                                 </span>
-                                :loaded&&user?
+                                :loaded&&user.type===0?
                                 <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
                                         PUBLICAR
                                 </span>
                                 :loaded?
                                 <div className={styles.user_button_disabled} data-tooltip-id='navbar' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
                                         <span className={styles.back_publish_div_frontdrop}></span>
-                                        <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
+                                        <span>PUBLICAR</span>
                                 </div>
 
                                 

@@ -119,9 +119,7 @@ const Trabalho = (props) => {
                 let listaTrabalhosVistos = JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))
                 if(listaTrabalhosVistos?.length>0 && !listaTrabalhosVistos.includes(res.data._id))
                 {
-                    console.log(listaTrabalhosVistos)
                     listaTrabalhosVistos.push(res.data._id)
-                    console.log(listaTrabalhosVistos)
                     window.localStorage.setItem('listaTrabalhosVistos', JSON.stringify(listaTrabalhosVistos))
                 }
                 else if(listaTrabalhosVistos?.length===0 || !listaTrabalhosVistos)
@@ -217,7 +215,6 @@ const Trabalho = (props) => {
     }, [eliminationPopup])
 
     const setViewTo = (view) => {
-        console.log(view);
         if(view !== "none")
         {
             setNoneView(false)
@@ -294,8 +291,8 @@ const Trabalho = (props) => {
         const obj = {
             _id:reservation._id
         }
-        await Promise.all(reservation.photos.map((photo, key) => {
-            const deleteRef = ref(storage, `/posts/${reservation._id}/${key}`)
+        await Promise.all(reservation.photos.map((photo) => {
+            const deleteRef = ref(storage, `/posts/${reservation._id}/${photo.id}`)
             return deleteObject(deleteRef)
         }))
         axios.post(`${api_url}/reservations/remove`, obj)

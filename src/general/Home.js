@@ -265,7 +265,7 @@ const Home = (props) => {
                 <div className={styles.home_divider} style={{backgroundColor:first==="trabalhadores"?"#FF785A":"#0358e5"}}>_</div>
                 <span className={styles.home_explorar}>EXPLORAR</span>
                 {
-                    user.type===0&&loaded?
+                    user.type!==1&&loaded?
                     <div className={styles.home_back_publish}>
                         <p className={styles.back_publish_title}>PUBLICAR</p>
                             <div className={styles.back_publish_div}>
@@ -277,13 +277,13 @@ const Home = (props) => {
                                 <PostAddIcon className={styles.section_img_mini}/>
                                 <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
                                 {
-                                    user?
+                                    user._id!=null?
                                     <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar/novo')}>PUBLICAR</span>
                                     :
                                     <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                         <div className={styles.back_publish_button_disabled} data-tooltip-id='home' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
                                             <span className={styles.back_publish_div_frontdrop}></span>
-                                            <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
+                                            <span style={{fontSize:'1rem'}}>PUBLICAR</span>
                                         </div>
                                         <span className={styles.auth}><span onClick={() => handleMoveAuth(1)} className={styles.auth_specific}>Iniciar Sessão</span> | <span onClick={() => handleMoveAuth(0)} className={styles.auth_specific}>Criar Conta</span></span>
                                     </div>
@@ -355,7 +355,7 @@ const Home = (props) => {
                                 </div>
                             </div>
                             :
-                            user?.type===0&&loaded?
+                            loaded?
                             <div className={styles.section_two}>
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
