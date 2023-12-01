@@ -1,4 +1,6 @@
 import { initializeApp } from "firebase/app"
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 import {
   GoogleAuthProvider,
   FacebookAuthProvider,
@@ -77,12 +79,17 @@ const fetchSignInMethodsForEmailHandler = async (email) => {
   return await fetchSignInMethodsForEmail(auth, email)
 }
 
+const firebaseApp = firebase.initializeApp(firebaseConfigMain)
+firebaseApp.auth()
+const RecaptchaVerifier = firebase.auth.RecaptchaVerifier
 
 export {
+  app,
   auth,
   provider,
   providerFacebook,
   storage,
+  RecaptchaVerifier,
   fetchSignInMethodsForEmailHandler,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,

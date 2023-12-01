@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import styles from './personal.module.css'
 import FaceIcon from '@mui/icons-material/Face';
 import EditIcon from '@mui/icons-material/Edit';
 import validator from 'validator'
 import CheckIcon from '@mui/icons-material/Check';
-import { storage } from '../firebase/firebase'
+import { storage, auth } from '../firebase/firebase'
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import axios from 'axios';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -27,9 +27,55 @@ import SelectWorker from '../selects/selectWorker';
 import { useTimer } from 'react-timer-hook';
 import { useSelector, useDispatch } from 'react-redux'
 import { user_update_field, worker_update_profile_complete } from '../store';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 
-
+    
 const Personal = (props) => {
+    // 'recaptcha-container' is the ID of an element in the DOM.
+    // var applicationVerifier = new auth.RecaptchaVerifier(
+    //     'recaptcha-container');
+    // var provider = new auth.PhoneAuthProvider();
+
+    const recaptchaRef = useRef('teste')
+
+    
+    
+    const verify = () => {
+
+        var recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container');
+        
+        // provider.verifyPhoneNumber('+351915072070', applicationVerifier)
+        // .then(function(verificationId) {
+        // var verificationCode = window.prompt('Please enter the verification ' +
+        //     'code that was sent to your mobile device.');
+        // return auth.PhoneAuthProvider.credential(verificationId,
+        //     verificationCode);
+        // })
+        // .then(function(phoneCredential) {
+        // return auth().signInWithCredential(phoneCredential);
+        // });
+        signInWithPhoneNumber(auth, '+351915072070', recaptcha).then(function (e) {
+            var code = prompt("enter the code sent to your mobile number");
+    
+            if (code === null) return;
+    
+            e.confirm(code).then(function (result) {
+    
+                alert(result.user + ' verified ')
+    
+            }).catch(function (error) {
+                alert('Could not verify,Please try again');
+            });
+    
+        }).catch(function (error) {
+            alert('Please try again.We were unable to reach your phone.Select the           correct code and the phone number');
+        });
+    
+    }
+
+
+
+
     const api_url = useSelector(state => {return state.api_url})
     const user_profile_complete = useSelector(state => {return state.user_profile_complete})
     const user = useSelector(state => {return state.user})
@@ -342,7 +388,8 @@ const Personal = (props) => {
     }
 
     return (
-        <div className={styles.personal}>
+        <div className={styles.personal} ref={() => recaptchaRef}>
+            <div id='recaptcha-container'></div>
             <Loader loading={false}/>
             {/* !props.loaded em vez de false */}
             {
@@ -613,7 +660,7 @@ const Personal = (props) => {
                                             </div>
                                         </div>
                                         {/* novo phone input */}
-                                        <div className={styles.input_div} style={{marginTop:'10px'}}>
+                                        <div className={styles.input_div} style={{marginTop:'10px'}} onClick={() => verify()}> 
                                             {
                                                 !user?.phone_verified?
                                                 <div className={styles.input_div_button} onClick={() => !edit&&expired&&setVerifyPhone(1)}>
