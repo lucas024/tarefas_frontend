@@ -12,14 +12,16 @@ const VerificationBannerPhone = (props) => {
     const [code, setCode] = useState('')
     const [expired, setExpired] = useState(true)
     const [newCodeSent, setNewCodeSent] = useState(false)
-    const [wrongCodeInserted, setWrongCodeInserted] = useState(false)
+    const [codeStatus, setCodeStatus] = useState(false)
 
     const [deadline, setDeadline] = useState(null)
 
-    
-
-
     const codePlaceholder = [0,0,0,0,0,0]
+
+    useEffect(() => {
+        if(props.codeStatus===false) setCode('')
+        setCodeStatus(props.codeStatus)
+    }, [props.codeStatus])
 
     const mapPlaceholder = () => {
         return codePlaceholder.map((val, i) => {
@@ -32,7 +34,8 @@ const VerificationBannerPhone = (props) => {
     const setCodeHandler = value => {
         if(value.length<7)
         {
-            setWrongCodeInserted(false)
+            props.clearCodeStatus()
+            setCodeStatus(null)
             setCode(value)
         }
     }
@@ -44,19 +47,17 @@ const VerificationBannerPhone = (props) => {
             time.setSeconds(time.getSeconds() + 9)
             setDeadline(time)
             setExpired(false)
-            setWrongCodeInserted(false)
             setCode('')
         }
     }
 
     const cancelHandler = () => {
-        props.cancel()
+        setCodeStatus(false)
+        
     }
 
-
-
     return (
-        <div className={styles.verification} onClick={() => cancelHandler()}>
+        <div className={styles.verification} onClick={() => props.cancel()}>
             <div className={styles.main} onClick={e => e.stopPropagation()}>
                 <p className={styles.title}>Verificar Telemóvel</p>
                 <span className={styles.title_separator}/>
@@ -69,7 +70,10 @@ const VerificationBannerPhone = (props) => {
                             <span className={styles.phone_value}> {props.phone.slice(0, 3)} {props.phone.slice(3,6)} {props.phone.slice(6)}</span>
                         </div>
                         
-                        <div className={expired?styles.button:styles.button_disabled} onClick={() => {handleSendCode()&&props.setNext(2)}}>
+                        <div className={expired?styles.button:styles.button_disabled} onClick={() => {
+                                props.setNext(2)
+                                handleSendCode()
+                            }}>
                             <span className={styles.button_text}>{expired?'Enviar código de verificação':<Timer deadline={deadline} setExp={() => setExpired(true)}/>}</span>
                         </div>
                     </div>
@@ -82,9 +86,9 @@ const VerificationBannerPhone = (props) => {
                         
                         {
                             newCodeSent?
-                            <p className={styles.phone_input_title}>Novo código enviado</p>
+                            <p className={styles.phone_input_title}>Novo código</p>
                             :
-                            <p className={styles.phone_input_title}>Código enviado</p>
+                            <p className={styles.phone_input_title}>Código</p>
                         }
                         
                         <div className={styles.phone_input_wrapper}>
@@ -96,7 +100,7 @@ const VerificationBannerPhone = (props) => {
                         <Lottie
                             loop={true}
                             autoplay={true}
-                            animationData={wrongCodeInserted?wrongCode:sendPhone}
+                            animationData={codeStatus===false?wrongCode:sendPhone}
                             rendererSettings= {
                                 {preserveAspectRatio: 'xMidYMid slice'}
                             }
@@ -108,7 +112,7 @@ const VerificationBannerPhone = (props) => {
                             }}
                         />
                         {
-                            wrongCodeInserted?
+                            codeStatus===false?
                             <div className={styles.wrong_code_div}>
                                 <span className={styles.wrong_code_text}>Código errado! Tente de Novo</span>
                             </div>
@@ -127,6 +131,7 @@ const VerificationBannerPhone = (props) => {
                                 setNewCodeSent(true)
                                 props.clearCaptcha()
                                 props.initiatePhoneVerification()
+                                props.clearCodeStatus(null)
                                 handleSendCode()
                             }
                         }}>
@@ -156,21 +161,25 @@ const VerificationBannerPhone = (props) => {
                             rendererSettings= {
                                 {preserveAspectRatio: 'xMidYMid slice'}
                             }
-                            height={80}
-                            width={80}
+                            style={{
+                                width:'150px',
+                                height:'150px',
+                                justifySelf:'center',
+                                alignSelf:'center'
+                            }}
                         />
                         <p className={styles.phone_description}>O teu telemóvel está agora verificado.</p>
                         <div 
                             className={styles.button}
                             style={{backgroundColor:"#0358e5"}}
                             onClick={() => props.cancel()}>
-                            <span className={styles.button_text}>FECHAR</span>
+                            <span className={styles.button_text} style={{color:"white"}}>FECHAR</span>
                         </div>
                     </div>
                     :null
                 }
                 
-                <p className={styles.cancel} onClick={() => cancelHandler()}>cancelar</p>
+                <p className={styles.cancel} onClick={() => props.cancel()}>cancelar</p>
             </div>
 
         </div>

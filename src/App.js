@@ -28,6 +28,7 @@ import {
         worker_update_is_subscribed,
         user_load,
         user_reset,
+        user_update_phone_verified
       } from './store';
 import ProtectedRoute from './protectedRoute';
 
@@ -63,7 +64,9 @@ const checkWorkerComplete = (worker) => {
     dispatch(worker_update_profile_complete(true))
 }
 
-const checkUserComplete = (user) => {
+const checkUserComplete = (user_google, user) => {
+  console.log(user_google)
+  if(user_google.phoneNumber != null) dispatch(user_update_phone_verified(true))
   if(!user.phone_verified||!user.email_verified)
     dispatch(user_update_profile_complete(false))
   else
@@ -77,7 +80,7 @@ useEffect(() => {
       if(res.data != null){
         dispatch(user_load(res.data))
         setIsAdmin(res.data.admin)
-        checkUserComplete(res.data)
+        checkUserComplete(userGoogle, res.data)
         setUserLoadAttempt(true)
         setLoading(false)
       }

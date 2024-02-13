@@ -25,8 +25,8 @@ import PhoneUnverified from '@mui/icons-material/PhonelinkErase';
 import VerificationBannerPhone from '../general/verificationBannerPhone';
 import SelectWorker from '../selects/selectWorker';
 import { useSelector, useDispatch } from 'react-redux'
-import { user_update_field, worker_update_profile_complete } from '../store';
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { user_update_field, worker_update_profile_complete, user_update_phone_verified } from '../store';
+import { RecaptchaVerifier, signInWithPhoneNumber, PhoneAuthProvider, linkWithCredential } from 'firebase/auth';
 import { auth } from '../firebase/firebase'
     
 const Personal = (props) => {
@@ -68,6 +68,8 @@ const Personal = (props) => {
     const recaptchaWrapperRef = useRef(null)
     const [signInObject, setSignInObject] = useState(null)
     const recaptchaObject = useRef(null)
+
+    const [codeStatus, setCodeStatus] = useState(null)
     
     
     useEffect(() => {
@@ -333,6 +335,8 @@ const Personal = (props) => {
         return Math.ceil((val/5)*100)
     }
 
+    // const [provider, setProvider] = useState(null)
+
     const initiatePhoneVerification = () => {
         var recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {'size': 'invisible'});
 
@@ -340,14 +344,26 @@ const Personal = (props) => {
         recaptchaObject.current = recaptcha
 
         recaptcha.verify().then(() => {
-            signInWithPhoneNumber(auth, '+351915072070', recaptcha).then(e => {
-                setSignInObject(e)
-                setVerifyPhone(2)
-            }).catch(function (error) {
-                alert('Please try again.We were unable to reach your phone.Select the correct code and the phone number');
-                recaptcha.clear()
-                setSignInObject(null)
-            })
+            // signInWithPhoneNumber(auth, '+351915072070', recaptcha).then(e => {
+            //     setSignInObject(e)
+            //     setVerifyPhone(2)
+            // }).catch(function (error) {
+            //     alert('Please try again.We were unable to reach your phone.Select the correct code and the phone number');
+            //     recaptcha.clear()
+            //     setSignInObject(null)
+            // })
+        
+            var provider = new PhoneAuthProvider(auth)
+            // setProvider(provider)
+            provider.verifyPhoneNumber('+351915072070', recaptcha).then(verificationId => {
+                    console.log(verificationId)
+                    setSignInObject(verificationId)
+                    setVerifyPhone(2)
+                }).catch(function (error) {
+                    alert(error)
+                    recaptcha.clear()
+                    setSignInObject(null)
+                })
         })
         .catch(e => {
             console.log(e)
@@ -355,12 +371,32 @@ const Personal = (props) => {
     }
 
     const completePhoneVerification = (code) => {
-        signInObject.confirm(code).then(function (result) {
-            alert(result.user + ' verified ')
+        console.log(code)
+        var phoneCredential = PhoneAuthProvider.credential(signInObject, code)
+        console.log(phoneCredential)
+        try {
+            linkWithCredential(auth.currentUser, phoneCredential)
+            
+            dispatch(user_update_phone_verified(true))
+            axios.post(`${api_url}/user/phone_verification_status`, {
+                user_id : user._id,
+                value: true
 
-        }).catch(function (error) {
-            alert(error)
-        })
+            }).then(() => {
+                setCodeStatus(true)
+                setVerifyPhone(3)
+            })
+        }
+        catch (error){
+            console.log(error)
+            setCodeStatus(false)
+        }
+        // signInObject.confirm(code).then(function (result) {
+        //     setCodeStatus(true)
+        //     setVerifyPhone(3)
+        // }).catch(function (error) {
+        //     setCodeStatus(false)
+        // })
     }
 
     const clearCaptcha = () => {
@@ -444,7 +480,10 @@ const Personal = (props) => {
                     unmountOnExit
                     >
                     <VerificationBannerPhone 
-                        cancel={() => setVerifyPhone(0)}
+                        cancel={() => {
+                            setVerifyPhone(0)
+                            setCodeStatus(null)
+                        }}
                         setNext={val => {
                             if(val===2)
                                 initiatePhoneVerification()
@@ -455,6 +494,8 @@ const Personal = (props) => {
                         next={verifyPhone} 
                         phone={phone}
                         signInObject={signInObject}
+                        codeStatus={codeStatus}
+                        clearCodeStatus={() => setCodeStatus(null)}
                         />
                 </CSSTransition>
                 <div className={styles.mid}>
