@@ -1,27 +1,23 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import styles from './banner.module.css'
-import Lottie from 'react-lottie';
+import Lottie from 'lottie-react';
 import * as sendPhone from '../assets/lotties/send-phone.json'
 import * as wrongCode from '../assets/lotties/error-email.json'
 import * as success from '../assets/lotties/success-blue.json'
-import { useTimer } from 'react-timer-hook';
+import Timer from './timer'
+
 
 const VerificationBannerPhone = (props) => {
 
     const [code, setCode] = useState('')
-    const [expiryTimestamp, setExpiryTimestamp] = useState(null)
-    const [expired, setExpired] = useState(false)
+    const [expired, setExpired] = useState(true)
     const [newCodeSent, setNewCodeSent] = useState(false)
     const [wrongCodeInserted, setWrongCodeInserted] = useState(false)
-    // const [success, setSuccess] = useState(false)
 
-    const {
-        seconds,
-        restart,
-    } = useTimer({ expiryTimestamp, onExpire: () => setExpired(true) })
+    const [deadline, setDeadline] = useState(null)
 
-    useEffect(() => {
-    }, [code])
+    
+
 
     const codePlaceholder = [0,0,0,0,0,0]
 
@@ -42,23 +38,25 @@ const VerificationBannerPhone = (props) => {
     }
 
     const handleSendCode = () => {
-        const time = new Date()
-        time.setSeconds(time.getSeconds() + 59)
-        restart(time)
-        setExpired(false)
-        setWrongCodeInserted(false)
-        setCode('')
-        props.setNext(2)
+        if(expired)
+        {
+            const time = new Date()
+            time.setSeconds(time.getSeconds() + 9)
+            setDeadline(time)
+            setExpired(false)
+            setWrongCodeInserted(false)
+            setCode('')
+        }
     }
 
-    const verifyCodeHandler = () => {
-        // setWrongCodeInserted(true)
-        props.setNext(3)
+    const cancelHandler = () => {
+        props.cancel()
     }
+
 
 
     return (
-        <div className={styles.verification} onClick={() => props.cancel()}>
+        <div className={styles.verification} onClick={() => cancelHandler()}>
             <div className={styles.main} onClick={e => e.stopPropagation()}>
                 <p className={styles.title}>Verificar Telemóvel</p>
                 <span className={styles.title_separator}/>
@@ -71,13 +69,17 @@ const VerificationBannerPhone = (props) => {
                             <span className={styles.phone_value}> {props.phone.slice(0, 3)} {props.phone.slice(3,6)} {props.phone.slice(6)}</span>
                         </div>
                         
-                        <div className={styles.button} onClick={() => {handleSendCode()}}>
-                            <span className={styles.button_text}>Enviar código de verificação</span>
+                        <div className={expired?styles.button:styles.button_disabled} onClick={() => {handleSendCode()&&props.setNext(2)}}>
+                            <span className={styles.button_text}>{expired?'Enviar código de verificação':<Timer deadline={deadline} setExp={() => setExpired(true)}/>}</span>
                         </div>
                     </div>
                     :
                     props.next===2?
+                    !props.signInObject?
+                    null
+                    :
                     <div className={styles.main_inner}>
+                        
                         {
                             newCodeSent?
                             <p className={styles.phone_input_title}>Novo código enviado</p>
@@ -91,18 +93,19 @@ const VerificationBannerPhone = (props) => {
                             </div>
                             <input className={styles.phone_input} value={code} type="number" onChange={e => setCodeHandler(e.target.value)} maxLength={6}/>
                         </div>
-                        <Lottie options={{
-                            loop:true,
-                            autoplay:true,
-                            animationData:wrongCodeInserted?wrongCode:sendPhone,
-                            rendererSettings: {
-                                preserveAspectRatio: 'xMidYMid slice'
+                        <Lottie
+                            loop={true}
+                            autoplay={true}
+                            animationData={wrongCodeInserted?wrongCode:sendPhone}
+                            rendererSettings= {
+                                {preserveAspectRatio: 'xMidYMid slice'}
                             }
+                            style={{
+                                width:'150px',
+                                height:'150px',
+                                justifySelf:'center',
+                                alignSelf:'center'
                             }}
-                            height={80}
-                            width={80}
-                            // isStopped={this.state.isStopped}
-                            // isPaused={this.state.isPaused}
                         />
                         {
                             wrongCodeInserted?
@@ -112,20 +115,25 @@ const VerificationBannerPhone = (props) => {
                             :null
                         }
                         <div 
-                            className={code.length===6?styles.button:styles.button_disabled} 
+                            className={code.length===6?styles.button:styles.button_disabled}
                             style={{backgroundColor:code.length===6?'#0358e5':'#71848d'}}
-                            onClick={() => code.length===6&&verifyCodeHandler()}>
-                            <span className={styles.button_text}>VERIFICAR código</span>
+                            onClick={() => code.length===6&&props.completePhoneVerification(code)}>
+                            <span className={styles.button_text} style={{color:'white'}}>VERIFICAR código</span>
                         </div>
                         <div className={expired?styles.resend:styles.resend_disabled} 
                         onClick={() => {
-                            expired&&setNewCodeSent(true)
-                            expired&&handleSendCode()
+                            if(expired)
+                            {
+                                setNewCodeSent(true)
+                                props.clearCaptcha()
+                                props.initiatePhoneVerification()
+                                handleSendCode()
+                            }
                         }}>
                             {
                                 !expired?
                                 <div className={styles.resend_text}>
-                                    <span className={styles.resend_seconds}>{seconds}s</span>
+                                    <span className={styles.resend_seconds}><Timer deadline={deadline} setExp={() => setExpired(true)}/></span>
                                     <div className={styles.resend_seconds_separator}></div>
                                     <span className={styles.resend_text_value}>Re-enviar código</span>
                                 </div>
@@ -141,18 +149,15 @@ const VerificationBannerPhone = (props) => {
                     props.next===3?
                     <div className={styles.main_inner}>
                         <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>Código verificado com sucesso</p>
-                        <Lottie options={{
-                            loop:false,
-                            autoplay:true,
-                            animationData:success,
-                            rendererSettings: {
-                                preserveAspectRatio: 'xMidYMid slice'
+                        <Lottie
+                            loop={false}
+                            autoplay={true}
+                            animationData={success}
+                            rendererSettings= {
+                                {preserveAspectRatio: 'xMidYMid slice'}
                             }
-                            }}
                             height={80}
                             width={80}
-                            // isStopped={this.state.isStopped}
-                            // isPaused={this.state.isPaused}
                         />
                         <p className={styles.phone_description}>O teu telemóvel está agora verificado.</p>
                         <div 
@@ -165,7 +170,7 @@ const VerificationBannerPhone = (props) => {
                     :null
                 }
                 
-                <p className={styles.cancel} onClick={() => props.cancel()}>cancelar</p>
+                <p className={styles.cancel} onClick={() => cancelHandler()}>cancelar</p>
             </div>
 
         </div>

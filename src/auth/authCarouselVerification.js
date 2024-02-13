@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './auth.module.css'
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import Lottie from 'react-lottie';
+import Lottie from "lottie-react";
 import * as sendEmail from '../assets/lotties/plane-email.json'
 import * as sendPhone from '../assets/lotties/send-phone.json'
 import * as wrongCode from '../assets/lotties/error-email.json'
@@ -29,18 +29,13 @@ const AuthCarouselVerification = props => {
                         <p className={styles.verification_title_helper}>Conta registada com sucesso.</p>
                     }
                     <p className={styles.verification_title} style={{marginBottom:'20px'}}>Verifique o seu e-mail</p>
-                    <Lottie options={{
-                        loop:false,
-                        autoplay:true,
-                        animationData:JSON.parse(JSON.stringify(sendEmail)),
-                        rendererSettings: {
-                            preserveAspectRatio: 'xMidYMid slice'
-                        }
-                        }}
+                    <Lottie 
+                        animationData={JSON.parse(JSON.stringify(sendEmail))}
                         height={120}
                         width={120}
-                        // isStopped={this.state.isStopped}
-                        // isPaused={this.state.isPaused}
+                        loop={false}
+                        autoplay={true}
+                        rendererSettings={{preserveAspectRatio: 'xMidYMid slice'}}
                     />
                     <p className={styles.verification_desc}>
                         Envíamos um e-mail de verificação para o <span className={styles.verification_desc_strong}>{props.email}</span>, por-favor açeda ao seu e-mail e proceda com a verificação.

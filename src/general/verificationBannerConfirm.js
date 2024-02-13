@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import styles from './banner.module.css'
-import Lottie from 'react-lottie';
+import Lottie from 'lottie-react';
 import * as postLoad from '../assets/lotties/post-load.json'
 import * as success from '../assets/lotties/success-blue.json'
 import { useNavigate } from 'react-router-dom';
@@ -33,14 +33,13 @@ const VerificationBannerConfirm = (props) => {
                             props.loadingConfirm?
                             <div style={{marginTop:"0px"}}>
                                 <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A publicar o seu trabalho</p>
-                                <Lottie options={{
-                                    loop:true,
-                                    autoplay:true,
-                                    animationData:postLoad,
-                                    rendererSettings: {
-                                        preserveAspectRatio: 'xMidYMid slice'
+                                <Lottie
+                                    loop={true}
+                                    autoplay={true}
+                                    animationData={postLoad}
+                                    rendererSettings= {
+                                        {preserveAspectRatio: 'xMidYMid slice'}
                                     }
-                                    }}
                                     height={80}
                                     width={80}
                                     // isStopped={this.state.isStopped}
@@ -49,18 +48,15 @@ const VerificationBannerConfirm = (props) => {
                             </div>
                             :
                             <div style={{marginTop:"20px"}}>
-                                <Lottie options={{
-                                    loop:false,
-                                    autoplay:true,
-                                    animationData:success,
-                                    rendererSettings: {
-                                        preserveAspectRatio: 'xMidYMid slice'
+                                <Lottie
+                                    loop={false}
+                                    autoplay={true}
+                                    animationData={success}
+                                    rendererSettings= {
+                                        {preserveAspectRatio: 'xMidYMid slice'}
                                     }
-                                    }}
                                     height={80}
                                     width={80}
-                                    // isStopped={this.state.isStopped}
-                                    // isPaused={this.state.isPaused}
                                 />
                                 <p className={styles.phone_description}>Trabalho publicado com sucesso. Será rápidamente analisado pela equipa da Serviços.</p>
                                 <div style={{display:'flex', justifyContent:'center'}}>

@@ -490,7 +490,6 @@ input[type=file]{
     padding: 10px 20px;
     border-radius: 5px;
     box-sizing: border-box;
-    border: 3px solid var(--action);
     background-color: white;
     color: var(--action);
     font-weight: 600;
@@ -853,6 +852,11 @@ transform: rotate(45deg);
     animation: rotation 2s infinite linear;
 }
 
+.recaptcha_container{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 @keyframes rotation {
     from {
       transform: rotate(0deg);
@@ -892,6 +896,7 @@ transform: rotate(45deg);
         left: 10px;
         right: 10px;
         text-align: center;
+        width: 98%;
     }
     .input_input{
         width: 150px;

@@ -46,6 +46,7 @@ const Home = (props) => {
     const navigate = useNavigate()
 
     useEffect(() => {
+        console.log(user)
         if(loaded){
             // setMensagemPopup(true)
             // setTimeout(() => setMensagemPopup(false), 4000)
@@ -72,6 +73,7 @@ const Home = (props) => {
     }, [location, user, loaded])
 
     useEffect(() => {
+        console.log(props.userLoadAttempt)
         props.userLoadAttempt&&setLoaded(true)
     }, [props.userLoadAttempt])
 

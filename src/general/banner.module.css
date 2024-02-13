@@ -26,6 +26,7 @@
     border: 3px solid var(--yellow);
     width: 450px;
     height: max-content;
+    min-height: 180px;
 }
 .main_inner{
     display: flex;
@@ -94,6 +95,7 @@
 .button_text{
     font-weight: 600;
     text-transform: uppercase;
+    color: var(--brand);
 }
 .resend{
     background-color: var(--yellow);
@@ -218,4 +220,9 @@
 .wrong_code_text{
     font-weight: 600;
     color: var(--yellow);
+}
+
+.recaptcha_container{
+    position: absolute;
+    margin-top: 110px;
 }

@@ -46,6 +46,7 @@ function App() {
 onAuthStateChanged(auth, (user_google) => {
     if (user_google) {
       setUserGoogle(user_google)
+      setUserLoadAttempt(true)
       window.localStorage.setItem('loggedIn', true)
     } else {
       window.localStorage.setItem('loggedIn', false)

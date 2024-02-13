@@ -4,7 +4,7 @@ import FaceIcon from '@mui/icons-material/Face';
 import EditIcon from '@mui/icons-material/Edit';
 import validator from 'validator'
 import CheckIcon from '@mui/icons-material/Check';
-import { storage, auth } from '../firebase/firebase'
+import { storage } from '../firebase/firebase'
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import axios from 'axios';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -24,57 +24,12 @@ import PhoneVerified from '@mui/icons-material/MobileFriendly';
 import PhoneUnverified from '@mui/icons-material/PhonelinkErase';
 import VerificationBannerPhone from '../general/verificationBannerPhone';
 import SelectWorker from '../selects/selectWorker';
-import { useTimer } from 'react-timer-hook';
 import { useSelector, useDispatch } from 'react-redux'
 import { user_update_field, worker_update_profile_complete } from '../store';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-
+import { auth } from '../firebase/firebase'
     
 const Personal = (props) => {
-    // 'recaptcha-container' is the ID of an element in the DOM.
-    // var applicationVerifier = new auth.RecaptchaVerifier(
-    //     'recaptcha-container');
-    // var provider = new auth.PhoneAuthProvider();
-
-    const recaptchaRef = useRef('teste')
-
-    
-    
-    const verify = () => {
-
-        var recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container');
-        
-        // provider.verifyPhoneNumber('+351915072070', applicationVerifier)
-        // .then(function(verificationId) {
-        // var verificationCode = window.prompt('Please enter the verification ' +
-        //     'code that was sent to your mobile device.');
-        // return auth.PhoneAuthProvider.credential(verificationId,
-        //     verificationCode);
-        // })
-        // .then(function(phoneCredential) {
-        // return auth().signInWithCredential(phoneCredential);
-        // });
-        signInWithPhoneNumber(auth, '+351915072070', recaptcha).then(function (e) {
-            var code = prompt("enter the code sent to your mobile number");
-    
-            if (code === null) return;
-    
-            e.confirm(code).then(function (result) {
-    
-                alert(result.user + ' verified ')
-    
-            }).catch(function (error) {
-                alert('Could not verify,Please try again');
-            });
-    
-        }).catch(function (error) {
-            alert('Please try again.We were unable to reach your phone.Select the           correct code and the phone number');
-        });
-    
-    }
-
-
-
 
     const api_url = useSelector(state => {return state.api_url})
     const user_profile_complete = useSelector(state => {return state.user_profile_complete})
@@ -109,7 +64,10 @@ const Personal = (props) => {
     const [entityWrong, setEntityWrong] = useState(false)
 
     const [verifyPhone, setVerifyPhone] = useState(0)
-    const [expired, setExpired] = useState(true)
+
+    const recaptchaWrapperRef = useRef(null)
+    const [signInObject, setSignInObject] = useState(null)
+    const recaptchaObject = useRef(null)
     
     
     useEffect(() => {
@@ -165,17 +123,6 @@ const Personal = (props) => {
 
     }, [phone])
 
-    const {
-        seconds,
-        restart,
-    } = useTimer({ onExpire: () => setExpired(true) })
-
-    const handlerVerifyPressed = () => {
-        setExpired(false)
-        const time = new Date()
-        time.setSeconds(time.getSeconds() + 59)
-        restart(time)
-    }
 
     const getCheckedProf = trab => {
         if(selectedProf?.includes(trab)) return true
@@ -380,16 +327,56 @@ const Personal = (props) => {
         let val = 0
         if(user?.phone_verified&&!edit) val += 1
         if(user?.email_verified&&!editBottom) val += 1
-        // if(photo!=="") val += 1
         if(selectedProf?.length>0&&!editBottom) val += 1
         if(selectedReg?.length>0&&!editBottom) val += 1
         if(radioSelected!==null&&!editBottom) val += 1
         return Math.ceil((val/5)*100)
     }
 
+    const initiatePhoneVerification = () => {
+        var recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {'size': 'invisible'});
+
+        recaptcha.render()
+        recaptchaObject.current = recaptcha
+
+        recaptcha.verify().then(() => {
+            signInWithPhoneNumber(auth, '+351915072070', recaptcha).then(e => {
+                setSignInObject(e)
+                setVerifyPhone(2)
+            }).catch(function (error) {
+                alert('Please try again.We were unable to reach your phone.Select the correct code and the phone number');
+                recaptcha.clear()
+                setSignInObject(null)
+            })
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+
+    const completePhoneVerification = (code) => {
+        signInObject.confirm(code).then(function (result) {
+            alert(result.user + ' verified ')
+
+        }).catch(function (error) {
+            alert(error)
+        })
+    }
+
+    const clearCaptcha = () => {
+        if(recaptchaObject.current?.destroyed===false && recaptchaWrapperRef.current!==null)
+        {
+            recaptchaObject.current.clear()
+            recaptchaWrapperRef.current.innerHTML = `<div id="recaptcha-container"></div>`
+        }
+    }
+
+    useEffect(() => {
+        verifyPhone===1&&clearCaptcha()
+    }, [verifyPhone])
+
     return (
-        <div className={styles.personal} ref={() => recaptchaRef}>
-            <div id='recaptcha-container'></div>
+        <div className={styles.personal}>
             <Loader loading={false}/>
             {/* !props.loaded em vez de false */}
             {
@@ -449,9 +436,9 @@ const Personal = (props) => {
                     </div>
                     :null
                 }
-                <div className={verifyPhone?styles.backdrop:null} onClick={() => setVerifyPhone(false)}/>
+                <div className={verifyPhone?styles.backdrop:null}/>
                 <CSSTransition
-                    in={verifyPhone}
+                    in={verifyPhone?true:false}
                     timeout={1000}
                     classNames="transition"
                     unmountOnExit
@@ -460,16 +447,20 @@ const Personal = (props) => {
                         cancel={() => setVerifyPhone(0)}
                         setNext={val => {
                             if(val===2)
-                            {
-                                setVerifyPhone(2)
-                                handlerVerifyPressed()
-                            }
+                                initiatePhoneVerification()
                         }}
+                        initiatePhoneVerification={initiatePhoneVerification}
+                        completePhoneVerification={completePhoneVerification}
+                        clearCaptcha={clearCaptcha}
                         next={verifyPhone} 
                         phone={phone}
+                        signInObject={signInObject}
                         />
                 </CSSTransition>
                 <div className={styles.mid}>
+                    <div ref={recaptchaWrapperRef}>
+                        <div id='recaptcha-container' className={styles.recaptcha_container}></div>
+                    </div>
                     {
                         user?.type===1?
                         <div className={styles.top}>
@@ -642,7 +633,7 @@ const Personal = (props) => {
                                             {
                                                 !user?.email_verified?
                                                 <div className={styles.input_div_button} onClick={() => !edit&&setVerifyPhone(1)}>
-                                                    <span className={styles.input_div_button_text} style={{textTransform:expired&&'uppercase'||'none', backgroundColor:edit?"#71848d":""}}>{expired&&"Verificar"||`${seconds}s`}</span>
+                                                    <span className={styles.input_div_button_text} style={{textTransform:'uppercase', backgroundColor:edit?"#71848d":""}}>Verificar</span>
                                                 </div>
                                                 :null
                                             }
@@ -660,11 +651,11 @@ const Personal = (props) => {
                                             </div>
                                         </div>
                                         {/* novo phone input */}
-                                        <div className={styles.input_div} style={{marginTop:'10px'}} onClick={() => verify()}> 
+                                        <div className={styles.input_div} style={{marginTop:'10px'}} onClick={() => !edit&&setVerifyPhone(1)}> 
                                             {
                                                 !user?.phone_verified?
-                                                <div className={styles.input_div_button} onClick={() => !edit&&expired&&setVerifyPhone(1)}>
-                                                    <span className={styles.input_div_button_text} style={{textTransform:expired&&'uppercase'||'none', backgroundColor:edit?"#71848d":""}}>{expired&&"Verificar"||`${seconds}s`}</span>
+                                                <div className={styles.input_div_button} onClick={() => !edit&&setVerifyPhone(1)}>
+                                                    <span className={styles.input_div_button_text} style={{textTransform:'uppercase', backgroundColor:edit?"#71848d":""}}>Verificar</span>
                                                 </div>
                                                 :null
                                             }
