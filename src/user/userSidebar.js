@@ -109,7 +109,10 @@ const UserSidebar = (props) => {
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
                                 <span className={styles.prox}>Perfil</span>
                                 {
-                                    !user_profile_complete&&!worker_profile_complete?
+                                    user.type===0&&!user_profile_complete?
+                                    <span className={styles.drop_div_notification}/>
+                                    :
+                                    user.type===1&&!worker_profile_complete?
                                     <span className={styles.drop_div_notification}/>
                                     :null
                                 }

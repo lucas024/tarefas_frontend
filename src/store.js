@@ -7,8 +7,8 @@ const slice = createSlice({
     user_google: {},
     search_context: null,
     search_scroll: 0,
-    user_phone_verified: false,
     user_email_verified: false,
+    user_phone_verified: false,
     user_profile_complete: false,
     worker_profile_complete: false,
     worker_is_subscribed: false,
@@ -35,7 +35,7 @@ const slice = createSlice({
         "photoUrl": "",
         "type": null,
         "email_verified": false,
-        "phone_verified": true,
+        "phone_verified": false,
         "admin": false,
         "chats": [],
         "trial": {}
@@ -56,6 +56,7 @@ const slice = createSlice({
       state.user.chats = action.payload
     },
     user_update_field: (state, action) => {
+      console.log(action.p)
       for(let el of action.payload)
       {
         state.user[el.field] = el.value
@@ -73,13 +74,15 @@ const slice = createSlice({
     user_update_admin_verified: (state, action) => {
       state.user_admin_verified = action.payload
     },
+    user_update_email_verified: (state, action) => {
+      state.user_email_verified = action.payload
+    },
+    user_update_phone_verified: (state, action) => {
+      state.user_phone_verified = action.payload
+    },
     user_update_profile_complete: (state, action) => {
       state.user_profile_complete = action.payload
     },
-    user_update_phone_verified: (state, action) => {
-      state.user.phone_verified = action.payload
-    },
-
 
     ///////////////////////// worker
     worker_update_profile_complete: (state, action) => {
@@ -106,8 +109,9 @@ export const {
     search_scroll_save,
     user_update_subscription_active,
     user_update_admin_verified,
-    user_update_profile_complete,
+    user_update_email_verified,
     user_update_phone_verified,
+    user_update_profile_complete,
 
     ////////////////////// worker
     worker_update_profile_complete,

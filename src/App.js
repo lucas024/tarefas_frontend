@@ -67,7 +67,7 @@ const checkWorkerComplete = (worker) => {
 const checkUserComplete = (user_google, user) => {
   console.log(user_google)
   if(user_google.phoneNumber != null) dispatch(user_update_phone_verified(true))
-  if(!user.phone_verified||!user.email_verified)
+  if(!user?.phone_verified||!user?.email_verified)
     dispatch(user_update_profile_complete(false))
   else
     dispatch(user_update_profile_complete(true))

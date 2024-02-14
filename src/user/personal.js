@@ -25,14 +25,17 @@ import PhoneUnverified from '@mui/icons-material/PhonelinkErase';
 import VerificationBannerPhone from '../general/verificationBannerPhone';
 import SelectWorker from '../selects/selectWorker';
 import { useSelector, useDispatch } from 'react-redux'
-import { user_update_field, worker_update_profile_complete, user_update_phone_verified } from '../store';
-import { RecaptchaVerifier, signInWithPhoneNumber, PhoneAuthProvider, linkWithCredential } from 'firebase/auth';
+import { user_update_field, user_update_phone_verified, user_update_email_verified, worker_update_profile_complete } from '../store';
+import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
 import { auth } from '../firebase/firebase'
+import VerificationBannerEmail from '../general/verificationBannerEmail';
     
 const Personal = (props) => {
 
     const api_url = useSelector(state => {return state.api_url})
     const user_profile_complete = useSelector(state => {return state.user_profile_complete})
+    const user_email_verified = useSelector(state => {return state.user_email_verified})
+    const user_phone_verified = useSelector(state => {return state.user_phone_verified})
     const user = useSelector(state => {return state.user})
 
     const dispatch = useDispatch()
@@ -64,16 +67,21 @@ const Personal = (props) => {
     const [entityWrong, setEntityWrong] = useState(false)
 
     const [verifyPhone, setVerifyPhone] = useState(0)
+    const [verifyEmail, setVerifyEmail] = useState(0)
 
     const recaptchaWrapperRef = useRef(null)
-    const [signInObject, setSignInObject] = useState(null)
+    const [verificationId, setVerificationId] = useState(null)
     const recaptchaObject = useRef(null)
 
     const [codeStatus, setCodeStatus] = useState(null)
+    const [emailCodeStatus, setEmailCodeStatus] = useState(null)
+
+    const [sendingError, setSendingError] = useState(null)
     
     
     useEffect(() => {
         if(user){
+            if(auth?.currentUser?.emailVerified) dispatch(user_update_email_verified(true))
             if(user.photoUrl===""||user.phone===""||user.trabalhos?.length===0||user.trabalhos?.length===0){
                 setDisplayTop(true)
             }
@@ -214,6 +222,9 @@ const Personal = (props) => {
                                 [{field: 'phone', value: phone}]
                             )
                         )
+                        dispatch(user_update_phone_verified(false))
+                        if(auth.currentUser.phoneNumber!=null)
+                            unlink(auth.currentUser, "phone")
                         setLoadingRight(false)
                         setRightPop(true)
                         setTimeout(() => setRightPop(false), 4000)
@@ -238,7 +249,6 @@ const Personal = (props) => {
                         setTimeout(() => setRightPop(false), 4000)
                     })
                 }
-                
             }
         }
     }
@@ -271,7 +281,7 @@ const Personal = (props) => {
                     setLoadingBottom(false)
                     setBottomPop(true)
                     setTimeout(() => setBottomPop(false), 4000)
-                    if(user.phone_verified&&user.email_verified)
+                    if(user_phone_verified&&user_email_verified)
                         dispatch(worker_update_profile_complete(true))
                 })
             }
@@ -327,42 +337,55 @@ const Personal = (props) => {
 
     const getPercentagem = () => {
         let val = 0
-        if(user?.phone_verified&&!edit) val += 1
-        if(user?.email_verified&&!editBottom) val += 1
+        if(user_phone_verified&&!edit) val += 1
+        if(user_email_verified&&!editBottom) val += 1
         if(selectedProf?.length>0&&!editBottom) val += 1
         if(selectedReg?.length>0&&!editBottom) val += 1
         if(radioSelected!==null&&!editBottom) val += 1
         return Math.ceil((val/5)*100)
     }
 
-    // const [provider, setProvider] = useState(null)
+    const initiateEmailVerification = () => {
+        setSendingError(null)
+        var actionCodeSettings = {
+            url: 'http://localhost:3000/user?t=personal',
+            handleCodeInApp: false
+        }
+
+        sendEmailVerification(auth.currentUser, actionCodeSettings)
+            .then(() => {
+                setVerifyEmail(2)
+                console.log('sent')
+            })
+            .catch(e => {
+                console.log(e)
+                setSendingError('Erro a enviar o e-mail de verificação, por-favor tente mais tarde.')
+            })
+
+        
+    }
+
+    const completeEmailVerification = () => {
+        
+    }
 
     const initiatePhoneVerification = () => {
+        setSendingError(null)
         var recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {'size': 'invisible'});
 
         recaptcha.render()
         recaptchaObject.current = recaptcha
 
         recaptcha.verify().then(() => {
-            // signInWithPhoneNumber(auth, '+351915072070', recaptcha).then(e => {
-            //     setSignInObject(e)
-            //     setVerifyPhone(2)
-            // }).catch(function (error) {
-            //     alert('Please try again.We were unable to reach your phone.Select the correct code and the phone number');
-            //     recaptcha.clear()
-            //     setSignInObject(null)
-            // })
-        
             var provider = new PhoneAuthProvider(auth)
-            // setProvider(provider)
-            provider.verifyPhoneNumber('+351915072070', recaptcha).then(verificationId => {
+            provider.verifyPhoneNumber(`+351${user.phone}`, recaptcha).then(verificationId => {
                     console.log(verificationId)
-                    setSignInObject(verificationId)
+                    setVerificationId(verificationId)
                     setVerifyPhone(2)
                 }).catch(function (error) {
                     alert(error)
                     recaptcha.clear()
-                    setSignInObject(null)
+                    setVerificationId(null)
                 })
         })
         .catch(e => {
@@ -371,32 +394,33 @@ const Personal = (props) => {
     }
 
     const completePhoneVerification = (code) => {
-        console.log(code)
-        var phoneCredential = PhoneAuthProvider.credential(signInObject, code)
-        console.log(phoneCredential)
+        setSendingError(null)
+        var phoneCredential = PhoneAuthProvider.credential(verificationId, code)
         try {
             linkWithCredential(auth.currentUser, phoneCredential)
+                .then(() => {
+                    dispatch(user_update_phone_verified(true))
             
-            dispatch(user_update_phone_verified(true))
-            axios.post(`${api_url}/user/phone_verification_status`, {
-                user_id : user._id,
-                value: true
-
-            }).then(() => {
-                setCodeStatus(true)
-                setVerifyPhone(3)
-            })
+                    axios.post(`${api_url}/user/phone_verification_status`, {
+                        user_id : user._id,
+                        value: true
+                    }).then(() => {
+                        setCodeStatus(true)
+                        setVerifyPhone(3)
+                    })
+                })
+                .catch(e => {
+                    if(e.code === 'auth/account-exists-with-different-credential')
+                        setSendingError('Este número de telemóvel já se encontra associado a outra conta.')
+                    else
+                        setCodeStatus(false)
+                    
+                })
+            
         }
         catch (error){
-            console.log(error)
             setCodeStatus(false)
         }
-        // signInObject.confirm(code).then(function (result) {
-        //     setCodeStatus(true)
-        //     setVerifyPhone(3)
-        // }).catch(function (error) {
-        //     setCodeStatus(false)
-        // })
     }
 
     const clearCaptcha = () => {
@@ -445,7 +469,7 @@ const Personal = (props) => {
                         user?.type===1?
                         <Sessao text={"Número de telefone e descrição atualizados com sucesso!"}/>
                         :
-                        <Sessao text={"Número de telefone atualizado com sucesso!"}/>
+                        <Sessao text={"Número de telefone atualizado com sucesso! Por-favor, volta a verificar."}/>
                     }
                 </CSSTransition>
                 <CSSTransition 
@@ -472,7 +496,29 @@ const Personal = (props) => {
                     </div>
                     :null
                 }
-                <div className={verifyPhone?styles.backdrop:null}/>
+                <div className={verifyPhone||verifyEmail?styles.backdrop:null}/>
+                <CSSTransition
+                    in={verifyEmail?true:false}
+                    timeout={1000}
+                    classNames="transition"
+                    unmountOnExit
+                    >
+                    <VerificationBannerEmail
+                        cancel={() => {
+                            setVerifyEmail(0)
+                            setEmailCodeStatus(null)
+                            setSendingError(null)
+                        }}
+                        setNext={val => setVerifyEmail(val)}
+                        initiateEmailVerification={initiateEmailVerification}
+                        completeEmailVerification={completeEmailVerification}
+                        next={verifyEmail} 
+                        codeStatus={emailCodeStatus}
+                        email={user.email}
+                        clearCodeStatus={() => setEmailCodeStatus(null)}
+                        sendingError={sendingError}
+                        />
+                </CSSTransition>
                 <CSSTransition
                     in={verifyPhone?true:false}
                     timeout={1000}
@@ -483,6 +529,7 @@ const Personal = (props) => {
                         cancel={() => {
                             setVerifyPhone(0)
                             setCodeStatus(null)
+                            setSendingError(null)
                         }}
                         setNext={val => {
                             if(val===2)
@@ -493,9 +540,10 @@ const Personal = (props) => {
                         clearCaptcha={clearCaptcha}
                         next={verifyPhone} 
                         phone={phone}
-                        signInObject={signInObject}
+                        verificationId={verificationId}
                         codeStatus={codeStatus}
                         clearCodeStatus={() => setCodeStatus(null)}
+                        sendingError={sendingError}
                         />
                 </CSSTransition>
                 <div className={styles.mid}>
@@ -518,27 +566,10 @@ const Personal = (props) => {
                                 {
                                     displayTop?
                                     <div className={getPercentagem()<100?styles.top_wrap_incomplete:styles.top_wrap_complete}>
-                                        {/* <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                            <FaceIcon className={photo!==""?styles.line_icon:styles.line_icon_complete}/>
-                                            {
-                                                photo!==""?
-                                                <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text_complete}>Fotografia</span>
-                                                    <CheckIcon className={styles.line_val_complete}></CheckIcon>
-                                                </div>
-                                                
-                                                :
-                                                <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text}>Fotografia</span>
-                                                    <ClearIcon className={styles.line_val}></ClearIcon>
-                                                </div>
-
-                                            }
-                                        </div> */}
                                         <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                            <EmailVerified className={user?.email_verified?styles.line_icon:styles.line_icon_complete}/>
+                                            <EmailVerified className={user_email_verified?styles.line_icon:styles.line_icon_complete}/>
                                             {
-                                                user?.email_verified?
+                                                user_email_verified?
                                                 <div style={{display:"flex", alignItems:"center"}}>
                                                     <span className={styles.line_text_complete}>E-mail Verificado</span>
                                                     <CheckIcon className={styles.line_val_complete}></CheckIcon>
@@ -553,9 +584,9 @@ const Personal = (props) => {
                                             }
                                         </div>
                                         <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
-                                            <PhoneVerified className={user?.phone_verified?styles.line_icon:styles.line_icon_complete}/>
+                                            <PhoneVerified className={user_phone_verified?styles.line_icon:styles.line_icon_complete}/>
                                             {
-                                                user?.phone_verified?
+                                                user_phone_verified?
                                                 <div style={{display:"flex", alignItems:"center"}}>
                                                     <span className={styles.line_text_complete}>Telemóvel Verificado</span>
                                                     <CheckIcon className={styles.line_val_complete}></CheckIcon>
@@ -672,45 +703,45 @@ const Personal = (props) => {
                                     <div className={styles.top_edit_area}>
                                         <div className={styles.input_div}>
                                             {
-                                                !user?.email_verified?
-                                                <div className={styles.input_div_button} onClick={() => !edit&&setVerifyPhone(1)}>
+                                                !user_email_verified?
+                                                <div className={styles.input_div_button} onClick={() => !edit&&setVerifyEmail(1)}>
                                                     <span className={styles.input_div_button_text} style={{textTransform:'uppercase', backgroundColor:edit?"#71848d":""}}>Verificar</span>
                                                 </div>
                                                 :null
                                             }
-                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#71848d':!user?.email_verified?'#fdd835':'#ffffff',}}>
+                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#71848d':!user_email_verified?'#fdd835':'#0358e5',}}>
                                                 <div className={styles.input_icon_div}>
                                                     {
-                                                        user?.email_verified?
+                                                        user_email_verified?
                                                         <EmailVerified className={styles.input_icon} style={{color:edit?'#71848d':'#0358e5'}}/>
                                                         :
                                                         <EmailUnverified className={styles.input_icon} style={{color:edit?'#71848d':'#fdd835'}}/>
                                                     }
                                                 </div>
-                                                <span className={styles.input_icon_seperator} style={{backgroundColor:edit?'#71848d':!user?.email_verified?'#fdd835':'#0358e5'}}>.</span>
+                                                <span className={styles.input_icon_seperator} style={{backgroundColor:edit?'#71848d':!user_email_verified?'#fdd835':'#0358e5'}}>.</span>
                                                 <span className={styles.input_email}>{email}</span>
                                             </div>
                                         </div>
                                         {/* novo phone input */}
                                         <div className={styles.input_div} style={{marginTop:'10px'}} onClick={() => !edit&&setVerifyPhone(1)}> 
                                             {
-                                                !user?.phone_verified?
+                                                !user_phone_verified?
                                                 <div className={styles.input_div_button} onClick={() => !edit&&setVerifyPhone(1)}>
                                                     <span className={styles.input_div_button_text} style={{textTransform:'uppercase', backgroundColor:edit?"#71848d":""}}>Verificar</span>
                                                 </div>
                                                 :null
                                             }
                                             
-                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#FF785A':!user?.phone_verified?'#fdd835':'#ffffff', borderTopRightRadius:!user?.phone_verified?'0px':'3px'}}>
+                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#FF785A':!user_phone_verified?'#fdd835':'#0358e5', borderTopRightRadius:!user_phone_verified?'0px':'3px'}}>
                                                 <div className={styles.input_icon_div}>
                                                     {
-                                                        user?.phone_verified?
+                                                        user_phone_verified?
                                                         <PhoneVerified className={styles.input_icon} style={{color:edit?'#FF785A':'#0358e5'}}/>
                                                         :
                                                         <PhoneUnverified className={styles.input_icon} style={{color:edit?'#FF785A':'#fdd835'}}/>
                                                     }
                                                 </div>
-                                                <span className={styles.input_icon_seperator} style={{backgroundColor:edit?'#FF785A':!user?.phone_verified?'#fdd835':'#0358e5'}}>.</span>
+                                                <span className={styles.input_icon_seperator} style={{backgroundColor:edit?'#FF785A':!user_phone_verified?'#fdd835':'#0358e5'}}>.</span>
                                                 <input className={styles.input_input}
                                                         style={{color:edit?"#ffffff":"#71848d"}}
                                                         value={phoneVisual}

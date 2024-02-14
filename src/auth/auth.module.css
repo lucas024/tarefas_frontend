@@ -1,5 +1,11 @@
 @import '../index.css';
 
+.recaptcha_container{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 .auth{
     width: 100%;
     position: relative;
@@ -608,7 +614,7 @@
     display: flex;
     align-items: center;
     width: max-content;
-    background-color: var(--job);
+    background-color: var(--yellow);
     height: 20px;
     padding: 0 15px;
     color: white;
@@ -929,4 +935,25 @@ transform: rotate(45deg);
     border-radius: 5px;
     padding: 20px 0;
     z-index: 2;
+}
+.resend_seconds{
+    width: 25px;
+    display: block;
+    font-family: 'Roboto Mono', monospace;
+}
+.resend_seconds_separator{
+    height: 80%;
+    width: 2px;
+    background-color: var(--neutral);
+    margin: 0 15px;
+}
+.wrong_code_div{
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+.wrong_code_text{
+    font-weight: 600;
+    color: var(--yellow);
+    text-align: center;
 }

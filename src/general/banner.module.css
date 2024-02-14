@@ -52,6 +52,12 @@
     font-size: 0.9rem;
     margin-top: 15px;
 }
+.error_description{
+    color: var(--red);
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
 .phone_wrapper{
     margin: auto;
     margin-top: 15px;
@@ -220,6 +226,7 @@
 .wrong_code_text{
     font-weight: 600;
     color: var(--yellow);
+    text-align: center;
 }
 
 .recaptcha_container{

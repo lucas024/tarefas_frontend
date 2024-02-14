@@ -79,7 +79,7 @@ const VerificationBannerPhone = (props) => {
                     </div>
                     :
                     props.next===2?
-                    !props.signInObject?
+                    !props.verificationId?
                     null
                     :
                     <div className={styles.main_inner}>
@@ -108,9 +108,17 @@ const VerificationBannerPhone = (props) => {
                                 width:'150px',
                                 height:'150px',
                                 justifySelf:'center',
-                                alignSelf:'center'
+                                alignSelf:'center',
+                                marginTop:'30px'
                             }}
                         />
+                        {
+                            props.sendingError!==null?
+                            <div className={styles.wrong_code_div}>
+                                <span className={styles.wrong_code_text}>{props.sendingError}</span>
+                            </div>
+                            :null
+                        }
                         {
                             codeStatus===false?
                             <div className={styles.wrong_code_div}>
@@ -125,16 +133,16 @@ const VerificationBannerPhone = (props) => {
                             <span className={styles.button_text} style={{color:'white'}}>VERIFICAR código</span>
                         </div>
                         <div className={expired?styles.resend:styles.resend_disabled} 
-                        onClick={() => {
-                            if(expired)
-                            {
-                                setNewCodeSent(true)
-                                props.clearCaptcha()
-                                props.initiatePhoneVerification()
-                                props.clearCodeStatus(null)
-                                handleSendCode()
-                            }
-                        }}>
+                            onClick={() => {
+                                if(expired)
+                                {
+                                    setNewCodeSent(true)
+                                    props.clearCaptcha()
+                                    props.initiatePhoneVerification()
+                                    props.clearCodeStatus(null)
+                                    handleSendCode()
+                                }
+                            }}>
                             {
                                 !expired?
                                 <div className={styles.resend_text}>

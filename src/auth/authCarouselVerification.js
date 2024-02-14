@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './auth.module.css'
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 const AuthCarouselVerification = props => {
 
     const navigate = useNavigate()
+
+    const [newCodeSent, setNewCodeSent] = useState(true)
 
     return (
         <Carousel 
@@ -31,22 +33,32 @@ const AuthCarouselVerification = props => {
                     <p className={styles.verification_title} style={{marginBottom:'20px'}}>Verifique o seu e-mail</p>
                     <Lottie 
                         animationData={JSON.parse(JSON.stringify(sendEmail))}
-                        height={120}
-                        width={120}
-                        loop={false}
+                        loop={true}
                         autoplay={true}
                         rendererSettings={{preserveAspectRatio: 'xMidYMid slice'}}
+                        style={{
+                            width:'150px',
+                            height:'150px',
+                            margin:'auto',
+                            marginTop:'30px'
+                        }}
                     />
                     <p className={styles.verification_desc}>
                         Envíamos um e-mail de verificação para o <span className={styles.verification_desc_strong}>{props.email}</span>, por-favor açeda ao seu e-mail e proceda com a verificação.
                     </p>
-                    <p className={styles.verification_button} onClick={() => props.handleNext(false)}>
+                    <p className={styles.verification_button} onClick={() => {
+                            props.initiatePhoneVerification()
+                            props.handleNext(false)
+                        }}>
                         Já verifiquei o meu e-mail
                     </p>
                     <p className={styles.verification_button_helper_or}>
                         OU
                     </p>
-                    <p className={styles.verification_button_helper} onClick={() => props.handleNext(true)}>
+                    <p className={styles.verification_button_helper} onClick={() => {
+                            props.initiatePhoneVerification()
+                            props.handleNext(false)
+                        }}>
                         Verificar depois
                     </p>
                 </div>
@@ -55,18 +67,24 @@ const AuthCarouselVerification = props => {
                 <div className={styles.verification_zone_wrapper}>
                     <p className={styles.verification_title_helper}>Conta registada com sucesso.</p>
                     <p className={styles.verification_title} style={{marginBottom:'20px'}}>Verifique o seu telemóvel</p>
-                    <Lottie options={{
-                        loop:false,
-                        autoplay:props.verificationTab===1,
-                        animationData:props.wrongCodeInserted?JSON.parse(JSON.stringify(wrongCode)):props.success?successLottie:sendPhone,
-                        rendererSettings: {
-                            preserveAspectRatio: 'xMidYMid slice'
+                    {
+                        newCodeSent?
+                        <p className={styles.verification_desc}>Novo código enviado!</p>
+                        :null
+                    }
+                    <Lottie
+                        loop={true}
+                        autoplay={props.verificationTab===1}
+                        animationData={props.success===false?JSON.parse(JSON.stringify(wrongCode)):props.success===true?successLottie:sendPhone}
+                        rendererSettings= {
+                            {preserveAspectRatio: 'xMidYMid slice'}
                         }
+                        style={{
+                            width:'150px',
+                            height:'150px',
+                            margin:'auto',
+                            marginTop:'30px'
                         }}
-                        height={120}
-                        width={120}
-                        // isStopped={this.state.isStopped}
-                        // isPaused={this.state.isPaused}
                     />
                     {
                         props.success?
@@ -76,7 +94,7 @@ const AuthCarouselVerification = props => {
                         :
                         <div>
                             <p className={styles.verification_desc}>
-                                Envíamos uma mensagem com o código de verificação para o <span className={styles.verification_desc_strong}>{props.phone}</span>, por-favor insira o código enviádo a baixo.
+                                Envíamos uma mensagem com o código de verificação para o <span className={styles.verification_desc_strong}>{props.phone}</span>, por-favor insira o código enviado a baixo.
                             </p>
                             <div className={styles.phone_input_wrapper} style={{borderColor:props.wrongCodeInserted?"#fdd835":"#0358e5"}}>
                                 <div className={styles.main_code_placeholder}>
@@ -90,12 +108,18 @@ const AuthCarouselVerification = props => {
                     
                     
                     {
-                        props.wrongCodeInserted?
-                        <p className={styles.main_code_error}>
-                            O código inserido está inválido.
-                        </p>
-                        :
-                        null
+                        props.sendingError!==null?
+                        <div className={styles.wrong_code_div}>
+                            <span className={styles.wrong_code_text}>{props.sendingError}</span>
+                        </div>
+                        :null
+                    }
+                    {
+                        props.codeStatus===false?
+                        <div className={styles.wrong_code_div}>
+                            <span className={styles.wrong_code_text}>Código errado! Tente de Novo</span>
+                        </div>
+                        :null
                     }
 
                     {
@@ -110,23 +134,26 @@ const AuthCarouselVerification = props => {
                         </p>
                         :
                         <div>
-                            <p className={props.code.length===6&&!props.wrongCodeInserted?styles.verification_button:styles.verification_button_disabled} onClick={() => props.code.length===6&&props.verifyCodeHandler()} style={{marginTop:'40px'}}>
+                            <p className={props.code.length===6&&(props.success===null||props.success===true)?styles.verification_button:styles.verification_button_disabled} onClick={() => props.code.length===6&&props.completePhoneVerification(props.code)} style={{marginTop:'40px'}}>
                                 Validar código
                             </p>
                             <div className={props.expired?styles.resend_button:styles.resend_button_disabled} 
                             onClick={() => {
-                                props.expired&&props.setNewCodeSent(true)
-                                props.expired&&props.handleSendCode()
+                                if(props.expired)
+                                {
+                                    setNewCodeSent(true)
+                                    props.initiatePhoneVerification()
+                                }
                             }}>
                                 <div className={styles.resend_text}>
                                     {
                                         !props.expired?
-                                        <span className={styles.resend_seconds}>{props.seconds}s</span>
+                                        <span className={styles.resend_seconds}>{props.seconds}</span>
                                         :null
                                     }
                                     {
                                         !props.expired?
-                                        <span className={styles.resend_seconds}> | </span>
+                                        <span className={styles.resend_seconds_separator}> | </span>
                                         :null
                                     }
                                     <span className={styles.resend_text_value}>Re-enviar código</span>
@@ -137,6 +164,7 @@ const AuthCarouselVerification = props => {
                             </p>
                             <p className={styles.verification_button_helper} onClick={() => {
                                 props.clearEmailAndPhone()
+                                setNewCodeSent(false)
                                 navigate('/', {
                                     state: {
                                         carry: 'register',

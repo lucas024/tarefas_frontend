@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styles from './auth.module.css'
 import facebook from '../assets/facebook.png'
 import google from '../assets/google.png'
@@ -26,15 +26,18 @@ import { useTimer } from 'react-timer-hook';
 import { useDispatch } from 'react-redux'
 import { 
     user_load,
+    user_update_phone_verified,
   } from '../store';
 import AuthCarousel from './authCarousel'
 import AuthCarouselVerification from './authCarouselVerification'
 import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao'
-
+import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
 
 const Auth = (props) => {
     const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => {return state.user})
+
     const dispatch = useDispatch()
 
     const [selectedAuth, setSelectedAuth] = useState(0)
@@ -77,14 +80,22 @@ const Auth = (props) => {
     const [code, setCode] = useState('')
     const [expiryTimestamp, setExpiryTimestamp] = useState(null)
     const [expired, setExpired] = useState(false)
-    const [newCodeSent, setNewCodeSent] = useState(false)
-    const [wrongCodeInserted, setWrongCodeInserted] = useState(false)
-    const [success, setSuccess] = useState(false)
+    const [success, setSuccess] = useState(null)
+    const [emailSuccess, setEmailSuccess] = useState(null)
     const [skippedVerification, setSkippedVerification] = useState(false)
 
     const [verificationTab, setVerificationTab] = useState(0)
 
     const [registerPopup, setRegisterPopup] = useState(false)
+
+    const recaptchaWrapperRef = useRef(null)
+    const [verificationId, setVerificationId] = useState(null)
+    const recaptchaObject = useRef(null)
+
+    const [codeStatus, setCodeStatus] = useState(null)
+    const [emailCodeStatus, setEmailCodeStatus] = useState(null)
+
+    const [sendingError, setSendingError] = useState(null)
 
     useEffect(() => {
         if(location.state && location.state.nameCarry){
@@ -466,7 +477,7 @@ const Auth = (props) => {
     }
 
     const setCodeHandler = value => {
-        setWrongCodeInserted(false)
+        setCodeStatus(null)
         if(value.length<7)
         {
             setCode(value)
@@ -478,25 +489,84 @@ const Auth = (props) => {
         time.setSeconds(time.getSeconds() + 59)
         restart(time)
         setExpired(false)
-        setWrongCodeInserted(false)
-        setSuccess(false)
+        setCodeStatus(null)
+        setSuccess(null)
         setCode('')
     }
 
     const handleNext = (skipped) => {
         if(skipped) setSkippedVerification(true)
         setVerificationTab(1)
+        restartTimer()
+    }
+
+    const restartTimer = () => {
         const time = new Date()
         time.setSeconds(time.getSeconds() + 59)
         restart(time)
         setExpired(false)
-        setWrongCodeInserted(false)
+        setCodeStatus(null)
         setCode('')
     }
 
-    const verifyCodeHandler = () => {
-        // setWrongCodeInserted(true)
-        setSuccess(true)
+    const initiatePhoneVerification = () => {
+        restartTimer()
+        if(recaptchaObject.current?.destroyed===false && recaptchaWrapperRef.current!==null)
+        {
+            recaptchaObject.current.clear()
+            recaptchaWrapperRef.current.innerHTML = `<div id="recaptcha-container"></div>`
+        }
+        setSendingError(null)
+
+
+        var recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {'size': 'invisible'});
+
+        recaptcha.render()
+        recaptchaObject.current = recaptcha
+
+        recaptcha.verify().then(() => {
+            var provider = new PhoneAuthProvider(auth)
+            provider.verifyPhoneNumber(`+351${phone}`, recaptcha).then(verificationId => {
+                    setVerificationId(verificationId)
+                }).catch(function (error) {
+                    alert(error)
+                    recaptcha.clear()
+                    setVerificationId(null)
+                    setSuccess(false)
+                })
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+
+    const completePhoneVerification = (code) => {
+        setSendingError(null)
+        var phoneCredential = PhoneAuthProvider.credential(verificationId, code)
+        try {
+            linkWithCredential(auth.currentUser, phoneCredential)
+                .then(() => {
+                    dispatch(user_update_phone_verified(true))
+                    setSuccess(true)
+                    axios.post(`${api_url}/user/phone_verification_status`, {
+                        user_id : user._id,
+                        value: true
+                    }).then(() => {
+                        setCodeStatus(true)
+                    })
+                })
+                .catch(e => {
+                    if(e.code === 'auth/account-exists-with-different-credential')
+                        setSendingError('Este número de telemóvel já se encontra associado a outra conta.')
+                    else
+                        setCodeStatus(false)
+                    
+                })
+            
+        }
+        catch (error){
+            setCodeStatus(false)
+        }
     }
 
     return (
@@ -510,6 +580,9 @@ const Auth = (props) => {
                 <Sessao text={"Conta criada com sucesso!"}/>
             </CSSTransition>
             <div className={styles.auth_main}>
+                <div ref={recaptchaWrapperRef}>
+                    <div id='recaptcha-container' className={styles.recaptcha_container}></div>
+                </div>
                 <div className={styles.area} style={{backgroundColor:selectedAuth===2?'#161F28':'#fff'}}>
                     {
                         selectedAuth!==2?
@@ -686,9 +759,9 @@ const Auth = (props) => {
                             email={email}
                             name={name}
                             phone={phoneVisual}
-                            handleNext={val => handleNext(val)}
-                            wrongCodeInserted={wrongCodeInserted}
+                            handleNext={skipped => handleNext(skipped)}
                             success={success}
+                            emailSuccess={emailSuccess}
                             mapPlaceholder={() => mapPlaceholder()}
                             code={code}
                             skippedVerification={skippedVerification}
@@ -697,6 +770,10 @@ const Auth = (props) => {
                             handleSendCode={() => handleSendCode()}
                             setCodeHandler={val => setCodeHandler(val)}
                             clearEmailAndPhone={() => clearFields()}
+                            initiatePhoneVerification={initiatePhoneVerification}
+                            completePhoneVerification={completePhoneVerification}
+                            codeStatus={codeStatus}
+                            sendingError={sendingError}
                         />
                     :
                     <div className={styles.button_area}>
