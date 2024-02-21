@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './navbar.module.css'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
 import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -19,7 +19,11 @@ import { user_reset } from '../store';
 const Navbar = (props) => {
     const dispatch = useDispatch()
 
-    const user_profile_complete = useSelector(state => {return state.user_profile_complete})
+    const location = useLocation()
+    const arr_pathname = location?.pathname?.split('/')
+
+    const user_phone_verified = useSelector(state => {return state.user_phone_verified})
+    const user_email_verified = useSelector(state => {return state.user_email_verified})
     const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
     const user = useSelector(state => {return state.user})
     const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
@@ -29,25 +33,32 @@ const Navbar = (props) => {
     const [loaded, setLoaded] = useState(false)
     const [hasUnreadTexts, setHasUnreadTexts] = useState(false)
 
+    const [display, setDisplay] = useState(true)
+
     useEffect(() => {
         setLoaded(props.userLoadAttempt)
-        console.log(user_profile_complete)
+        if(arr_pathname[1]==='confirm-email') setDisplay(false)
+        else if(display!==true) setDisplay(true)
     }, [props.userLoadAttempt])
 
     useEffect(() => {
         if(user.chats?.length>0){
+            let clear = true
             for(const el of user.chats){
                 //user
                 if(user.type===0&&!el.user_read){
                     setHasUnreadTexts(true)
+                    clear = false
                     break
                 }
                 //worker
                 else if(user.type===1&&!el.worker_read){
                     setHasUnreadTexts(true)
+                    clear = false
                     break
                 }
             }
+            if(clear) setHasUnreadTexts(false)
         }
     }, [user])
 
@@ -59,6 +70,7 @@ const Navbar = (props) => {
     }
 
     return (
+        display?
         <div className={styles.navbar}>
             <div className={styles.flex}>
                 <div className={styles.flex_end}>
@@ -119,10 +131,10 @@ const Navbar = (props) => {
  
                                         <div className={styles.user}>
                                             {
-                                                (!worker_is_subscribed&&user.type || !worker_profile_complete&&user.type)?
+                                                (user.type&&!worker_is_subscribed || user.type&&!(user_email_verified&&user_phone_verified&&user.regioes?.length>0&&user.trabalhos?.length>0))?
                                                 <span className={styles.drop_div_notification_text}>CONTA DESATIVADA</span>
                                                 :
-                                                (!user_profile_complete || user.phone==="")?
+                                                (user.type===0&&!(user_phone_verified&&user_email_verified))?
                                                 <span className={styles.drop_div_notification_text} style={{marginRight:'10px'}}>VERIFICAR PERFIL</span>                                              
                                                 :null
                                             }
@@ -169,9 +181,9 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
-                                                                worker_profile_complete||user_profile_complete?
+                                                                worker_profile_complete||(user_phone_verified&&user_email_verified)?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                                                :!worker_profile_complete&&!user_profile_complete?
+                                                                :!worker_profile_complete&&!(user_phone_verified&&user_email_verified)?
                                                                 <span className={styles.drop_div_notification}/>
                                                                 :null
                                                             }
@@ -258,6 +270,7 @@ const Navbar = (props) => {
             </div>
             <Tooltip id={"navbar"} effect='solid' place='left'/>
         </div>
+        :null
     )
 }
 

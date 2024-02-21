@@ -56,7 +56,7 @@ const AuthCarousel = props => {
                     className={styles.login_input} 
                     placeholder="Nome e Apelido"
                     value={props.name}
-                    style={{borderBottomColor:props.nameWrong?"red":props.name.split(' ')[0]?.length>1&&props.name.split(' ')[1]?.length>0?props.type==='worker'?"#FF785A":"#0358e5":""}}></input>
+                    style={{borderBottomColor:props.nameWrong?"red":props.name?.split(' ')[0]?.length>1&&props.name?.split(' ')[1]?.length>0?props.type==='worker'?"#FF785A":"#0358e5":""}}></input>
                 {
                     props.nameWrong?
                     <span className={styles.field_error}>Por favor, escreva o seu nome e apelido.</span>

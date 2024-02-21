@@ -2,7 +2,6 @@ import React, {useEffect, useState, useRef} from 'react'
 import styles from './banner.module.css'
 import Lottie from 'lottie-react';
 import * as planeEmail from '../assets/lotties/plane-email.json'
-import * as wrongCode from '../assets/lotties/error-email.json'
 import * as success from '../assets/lotties/success-blue.json'
 import Timer from './timer'
 
@@ -11,14 +10,8 @@ const VerificationBannerEmail = (props) => {
 
     const [expired, setExpired] = useState(true)
     const [newCodeSent, setNewCodeSent] = useState(false)
-    const [codeStatus, setCodeStatus] = useState(false)
-
     const [deadline, setDeadline] = useState(null)
 
-
-    useEffect(() => {
-        setCodeStatus(props.codeStatus)
-    }, [props.codeStatus])
 
 
     const handleSendEmail = () => {
@@ -30,7 +23,6 @@ const VerificationBannerEmail = (props) => {
             time.setSeconds(time.getSeconds() + 9)
             setDeadline(time)
             setExpired(false)
-            setCodeStatus(null)
         }
     }
 
@@ -69,9 +61,9 @@ const VerificationBannerEmail = (props) => {
                         }
                         <p className={styles.phone_description}>Verifica a tua caixa de correio associada ao e-mail <strong>{props.email}</strong></p>
                         <Lottie
-                            loop={true}
+                            loop={props.emailCodeStatus!==true?true:false}
                             autoplay={true}
-                            animationData={JSON.parse(JSON.stringify(planeEmail))}
+                            animationData={props.emailCodeStatus===true?success:JSON.parse(JSON.stringify(planeEmail))}
                             rendererSettings= {
                                 {preserveAspectRatio: 'xMidYMid slice'}
                             }
@@ -83,36 +75,69 @@ const VerificationBannerEmail = (props) => {
                                 marginTop:'30px'
                             }}
                         />
-                        <div className={styles.button}
-                            style={{backgroundColor:'#0358e5'}}
-                            onClick={() => props.completeEmailVerification()}>
+                        {
+                            props.emailCodeStatus===true?
+                            <p className={styles.wrong_code_text} style={{marginTop:'30px', marginBottom:'-10px', color:"#0358e5"}}>
+                                E-mail verificado com sucesso.
+                            </p>
+                            :null
+                        }
+                        {
+                            props.emailCodeStatus===false?
+                            <p className={styles.wrong_code_text} style={{marginTop:'30px', marginBottom:'-10px'}}>
+                                O e-mail ainda não se encontra verificado.
+                            </p>
+                            :null
+                        }
+                        {
+                            props.emailCodeStatus!==true?
+                            <div className={styles.button}
+                                style={{backgroundColor:'#0358e5'}}
+                                onClick={() => props.completeEmailVerification()}>
+                                <span className={styles.button_text} style={{color:'white'}}>Já verifiquei</span>
 
-                            <span className={styles.button_text} style={{color:'white'}}>Já verifiquei</span>
+                            </div>
+                            :
+                            <div className={styles.button}
+                                style={{backgroundColor:'#0358e5'}}
+                                onClick={() => props.cancel()}>
+                                <span className={styles.button_text} style={{color:'white'}}>Fechar</span>
 
-                        </div>
-                        <div className={expired?styles.resend:styles.resend_disabled} 
-                            onClick={() => {
-                                setNewCodeSent(true)
-                                handleSendEmail()
-                            }}>
-                            {
-                                !expired?
-                                <div className={styles.resend_text}>
-                                    <span className={styles.resend_seconds}><Timer deadline={deadline} setExp={() => setExpired(true)}/></span>
-                                    <div className={styles.resend_seconds_separator}></div>
-                                    <span className={styles.resend_text_value}>Re-enviar e-mail</span>
-                                </div>
-                                :
-                                <div className={styles.resend_text}>
-                                    <span className={styles.resend_text_value}>Re-enviar e-mail</span>
-                                </div>
-                            }
-                        </div>
+                            </div>
+                        }
+                        {
+                            props.emailCodeStatus!==true?
+                            <div className={expired?styles.resend:styles.resend_disabled} 
+                                onClick={() => {
+                                    setNewCodeSent(true)
+                                    handleSendEmail()
+                                }}>
+                                {
+                                    !expired?
+                                    <div className={styles.resend_text}>
+                                        <span className={styles.resend_seconds}><Timer deadline={deadline} setExp={() => setExpired(true)}/></span>
+                                        <div className={styles.resend_seconds_separator}></div>
+                                        <span className={styles.resend_text_value}>Re-enviar e-mail</span>
+                                    </div>
+                                    :
+                                    <div className={styles.resend_text}>
+                                        <span className={styles.resend_text_value}>Re-enviar e-mail</span>
+                                    </div>
+                                }
+                            </div>
+                            :null
+                        }
                     </div>
                     :
                     null
                 }
-                <p className={styles.cancel} onClick={() => props.cancel()}>cancelar</p>
+                {
+                    props.emailCodeStatus===true?
+                    null
+                    :
+                    <p className={styles.cancel} onClick={() => props.cancel()}>cancelar</p>
+                }
+                
             </div>
 
         </div>

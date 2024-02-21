@@ -32,6 +32,7 @@ const Trabalhador = props => {
     const [workerActive, setWorkerActive] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const [loadingChat, setLoadingChat] = useState(false)
+    const [localChatSent, setLocalChatSent] = useState(false)
     const [successPopin, setSuccessPopin] = useState(false)
 
     const [noRepeatedChats, setNoRepeatedChats] = useState(false)
@@ -80,6 +81,7 @@ const Trabalhador = props => {
                             text: text_object,
                             updated: time
                         })
+                        setLocalChatSent(chat.chat_id)
                     }
                 }
             }
@@ -104,6 +106,7 @@ const Trabalhador = props => {
                     updated: time,
                     chat_id: chatId
                 })
+                setLocalChatSent(chatId)
             }
             
 
@@ -311,6 +314,20 @@ const Trabalhador = props => {
                                 </div>
                             </div>
                             :
+                            localChatSent?
+                            <div className={styles.textarea_wrapper}>
+                                <textarea   
+                                        disabled={!user}
+                                        ref={messageAreaRef}
+                                        className={styles.message_textarea_disabled}
+                                        placeholder="Escrever mensagem..."
+                                        />
+                                <div className={styles.frontdrop}>
+                                    <span className={styles.frontdrop_text}>Mensagem enviada!</span>
+                                    <span className={styles.frontdrop_text_action} onClick={() => navigate(`/user?t=messages&id=${localChatSent}`)}>Ver conversa</span>
+                                </div>
+                            </div>
+                            :
                             <div style={{position:"relative"}}>
                                 <Loader loading={loadingChat}/>
                                 <textarea 
@@ -323,8 +340,8 @@ const Trabalhador = props => {
                         }
                         <div>
                             
-                            <div className={styles.message_enviar_div} ref={messageRef} onClick={() => sendMessageHandler()}>
-                                <span className={text!==""?styles.message_enviar:styles.message_enviar_disabled}>
+                            <div className={styles.message_enviar_div} ref={messageRef} onClick={() => !localChatSent&&sendMessageHandler()}>
+                                <span className={(text!==""&&!localChatSent)?styles.message_enviar:styles.message_enviar_disabled}>
                                     Enviar
                                 </span>
                             </div>

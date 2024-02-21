@@ -44,6 +44,8 @@ import {
 const Subscription = props => {
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
+    const user_phone_verified = useSelector(state => {return state.user_phone_verified})
+    const user_email_verified = useSelector(state => {return state.user_email_verified})
 
     const dispatch = useDispatch()
 
@@ -226,6 +228,11 @@ const Subscription = props => {
                 setLoading(false)
                 setDisplay(0)
                 setSuccessPopin(true)
+                dispatch(worker_update_is_subscribed(true))
+                if(user_phone_verified&&user_email_verified&&user.regioes.length>0&&user.trabalhos.length>0)
+                {
+                    axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: user._id})
+                }
                 setIsCanceled(false)
                 setTimeout(() => setSuccessPopin(false), 4000)
                 break;

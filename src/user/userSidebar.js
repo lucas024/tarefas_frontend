@@ -24,8 +24,8 @@ import { useSelector } from 'react-redux'
 
 
 const UserSidebar = (props) => {
-    const user_profile_complete = useSelector(state => {return state.user_profile_complete})
-    const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
+    const user_phone_verified = useSelector(state => {return state.user_phone_verified})
+    const user_email_verified = useSelector(state => {return state.user_email_verified})
     const user = useSelector(state => {return state.user})
     const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
@@ -109,10 +109,10 @@ const UserSidebar = (props) => {
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
                                 <span className={styles.prox}>Perfil</span>
                                 {
-                                    user.type===0&&!user_profile_complete?
+                                    user.type===0&&!(user_phone_verified&&user_email_verified)?
                                     <span className={styles.drop_div_notification}/>
                                     :
-                                    user.type===1&&!worker_profile_complete?
+                                    user.type===1&&!(user.regioes?.length>0&&user.trabalhos?.length>0&&user_phone_verified||user_email_verified)?
                                     <span className={styles.drop_div_notification}/>
                                     :null
                                 }
@@ -162,23 +162,23 @@ const UserSidebar = (props) => {
                 </List>
                 {
                     user?.type?
-                    <div className={styles.status} style={{borderColor:user_profile_complete&&user?.state===1&&worker_is_subscribed?"#0358e5":"#fdd835"}}>
+                    <div className={styles.status} style={{borderColor:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
                         <Loader loading={loadingSub}/>
                         <div className={styles.status_top}>
-                            <span className={styles.status_top_val} style={{color:user_profile_complete&&user?.state===1&&worker_is_subscribed?"#0358e5":"#fdd835"}}>
+                            <span className={styles.status_top_val} style={{color:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
                                 {
-                                    user_profile_complete&&user?.state===1&&worker_is_subscribed?
+                                    user.state!==2&&user_phone_verified&&user_email_verified&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?
                                     "CONTA ATIVADA"
                                     :"CONTA DESATIVADA"
                                 }
                             </span>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:user_profile_complete?"#0358e540":"#fdd83540"}}>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?"#0358e540":"#fdd83540"}}>
                             <AccountCircleIcon sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>
                             <div className={styles.status_div_flex}>
-                                <span className={styles.status_div_val} style={{color:user_profile_complete?"#0358e5":"#fdd835"}}>
+                                <span className={styles.status_div_val} style={{color:(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?"#0358e5":"#fdd835"}}>
                                 {
-                                    user_profile_complete?
+                                    (user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?
                                     "PERFIL COMPLETO"
                                     :"PERFIL INCOMPLETO"
                                 }
@@ -201,12 +201,17 @@ const UserSidebar = (props) => {
                     :null
                 }
                 {
-                    user?.type?
+                    user?.type && !worker_is_subscribed && ((user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0)?
                     <div className={styles.worker_text_div}>
                         Ative a sua conta tendo o seu
                         <span className={styles.worker_text_text}> perfil completo </span>
                         e a sua
                         <span className={styles.worker_text_text}> subcrição ativada</span>.
+                    </div>
+                    :
+                    user?.state===2?
+                    <div className={styles.worker_text_div} style={{color:"#fdd835"}}>
+                        A sua conta foi desativada pela equipa da Serviços.
                     </div>
                     :null
                 }

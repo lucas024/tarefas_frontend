@@ -115,7 +115,7 @@
     margin-top: 50px;
     /* border: 1px solid #fff; */
     border-radius: 5px;
-    width: 700px;
+    width: 800px;
     padding: 30px 0;
     background-color: #ffffff10;
 }
@@ -1279,6 +1279,33 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     justify-content: space-between;
     align-items: center;
     margin-top: 5px;
+}
+
+@media (min-width: 1440px){
+    .sub_info_title{
+        font-size: 1.6rem;
+    }
+    .line_left{
+        padding: 10px 5px;
+    }
+    .helper_text{
+        font-size: 1rem;
+    }
+    .line_text{
+        font-size: 0.9rem;
+    }
+    .info_bottom_text{
+        font-size: 1.1rem;
+    }
+    .trial_button_text{
+        font-size: 1.1rem;
+    }
+    .trial_button_banner{
+        font-size: 0.9rem;
+    }
+    .sub_info_bottom{
+        width: 900px;
+    }
 }
 
 @media (max-width: 1024px){

@@ -20,7 +20,8 @@ import BackHandIcon from '@mui/icons-material/BackHand';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { search_scroll_save } from '../store';
 
 const firstOptions = [
     { value: 'trabalhadores', label: 'Trabalhadores' },
@@ -29,6 +30,7 @@ const firstOptions = [
 
 
 const Home = (props) => {
+    const dispatch = useDispatch()
     const user = useSelector(state => {return state.user})
 
     const [workerBanner, setWorkerBanner] = useState(false)
@@ -46,20 +48,17 @@ const Home = (props) => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        console.log(user)
+        if(user.type===1) setFirst('trabalhos')
         if(loaded){
             // setMensagemPopup(true)
             // setTimeout(() => setMensagemPopup(false), 4000)
         }
         else if(location.state?.carry==="login"){
-            props.refreshUser()
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
             navigate(location.pathname, {}); 
         }
         else if(location.state?.carry==="register"){
-            props.refreshUser()
-            console.log(location.state)
             setRegisterPopup(location.state?.skippedVerification?"skippedVerification":"didVerification")
             setTimeout(() => setRegisterPopup(false), 4000)
             navigate(location.pathname, {}); 
@@ -69,11 +68,11 @@ const Home = (props) => {
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
         }
+        dispatch(search_scroll_save(null))
         // Tooltip.rebuild()
     }, [location, user, loaded])
 
     useEffect(() => {
-        console.log(props.userLoadAttempt)
         props.userLoadAttempt&&setLoaded(true)
     }, [props.userLoadAttempt])
 
@@ -81,7 +80,6 @@ const Home = (props) => {
     useEffect(() => {
         // Confirm the link is a sign-in with email link.
         if (isSignInWithEmailLink(auth, location.pathname)) {
-            console.log("yes");
             let email = localStorage.getItem('emailForSignIn');
             if (!email) {
                 // User opened the link on a different device. To prevent session fixation
@@ -92,7 +90,6 @@ const Home = (props) => {
             signInWithEmailLink(auth, email, window.location.href)
             .then((result) => {
                 localStorage.removeItem('emailForSignIn');
-                console.log(result.user)
                 // You can access the new user via result.user
                 // Additional user info profile not available via:
                 // result.additionalUserInfo.profile == null
@@ -176,9 +173,6 @@ const Home = (props) => {
                         loaded?
                         <div className={styles.main_wrapper}>
                             <div className={styles.main}>
-                                <div className={styles.search_clear_wrapper} style={{backgroundColor:second||third?'#161F28':"#00000030"}} onClick={() => clearTopSearch()}>
-                                    <SearchOffIcon className={styles.search_clear_icon}/>
-                                </div>
                                 <div className={styles.zone}>
                                     <div className={styles.zone_img} style={{backgroundColor:first==="trabalhadores"?"#FF785A":"#0358e5", borderColor:first==="trabalhadores"?"#FF785A":"#0358e5"}}>
                                         {
@@ -251,9 +245,14 @@ const Home = (props) => {
                                 </div>
                             </div>
                             <div onClick={() => second&&third&&searchHandler()} className={second&&third?styles.search_wrapper:styles.search_wrapper_disabled} 
-                                            style={{backgroundColor:second&&third?first==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff10"}}>
+                                            style={{backgroundColor:second&&third?first==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff10",
+                                                    borderColor:(!second||!third)?first==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff10"}}>
                                 <SearchIcon className={styles.zone_search_icon} style={{color:second&&third?"#ffffff":"#ffffff90"}}/>
                                 <span className={styles.zone_search_button} style={{color:second&&third?"#ffffff":"#ffffff90"}}>PROCURAR</span>
+                            </div>
+                            <div onClick={() => (second||third)&&clearTopSearch()} className={second||third?styles.search_clear_wrapper:styles.search_clear_wrapper_disabled} style={{borderColor:second||third?'#ffffff':"#ffffff80"}}>
+                                {/* <SearchOffIcon className={styles.zone_search_icon} style={{color:second&&third?"#ffffff":"#ffffff90"}}/> */}
+                                <span className={styles.zone_search_button} style={{color:second||third?'#ffffff':"#ffffff80"}}>LIMPAR</span>
                             </div>
                         </div>
                         
@@ -280,12 +279,12 @@ const Home = (props) => {
                                 <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
                                 {
                                     user._id!=null?
-                                    <span className={styles.back_publish_button} style={{fontSize:'1rem'}} onClick={() => navigate('/publicar/novo')}>PUBLICAR</span>
+                                    <span className={styles.back_publish_button} style={{fontSize:'0.9rem'}} onClick={() => navigate('/publicar/novo')}>PUBLICAR</span>
                                     :
-                                    <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                    <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'20px'}}>
                                         <div className={styles.back_publish_button_disabled} data-tooltip-id='home' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
                                             <span className={styles.back_publish_div_frontdrop}></span>
-                                            <span style={{fontSize:'1rem'}}>PUBLICAR</span>
+                                            <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
                                         </div>
                                         <span className={styles.auth}><span onClick={() => handleMoveAuth(1)} className={styles.auth_specific}>Iniciar Sessão</span> | <span onClick={() => handleMoveAuth(0)} className={styles.auth_specific}>Criar Conta</span></span>
                                     </div>
@@ -314,9 +313,9 @@ const Home = (props) => {
                                 user&&loaded?
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
-                                        <AssignmentIcon className={styles.section_img}/>
+                                        <AssignmentIcon className={styles.section_img} style={{color:"white"}}/>
                                     </div>
-                                    <span className={styles.section_image_text_title}>
+                                    <span className={styles.section_image_text_title} style={{color:"#0358e5"}}>
                                         TRABALHOS
                                     </span>
                                     <span className={styles.section_image_text}>
@@ -341,16 +340,16 @@ const Home = (props) => {
                             <div className={styles.section_two}>
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
-                                        <AccessibilityIcon className={styles.section_img} style={{color:"#FF785A"}}/>
+                                        <AccessibilityIcon className={styles.section_img} style={{color:"#ffffff"}}/>
                                     </div>
-                                    <span className={styles.section_image_text_title}>
+                                    <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
                                         PERFIL
                                     </span>
                                     <span className={styles.section_image_text}>
                                         Ver ou editar perfil
                                     </span>
-                                    <div className={styles.section_button} onClick={() => navigate('/user?t=personal')}>
-                                        <p className={styles.section_title} style={{fontSize: '0.9rem'}}>
+                                    <div className={styles.section_button_right} onClick={() => navigate('/user?t=personal')}>
+                                        <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
                                             VER PERFIL
                                         </p>
                                     </div>
@@ -361,9 +360,9 @@ const Home = (props) => {
                             <div className={styles.section_two}>
                                 <div className={styles.section_content}>
                                     <div className={styles.section_image_wrapper}>
-                                        <BackHandIcon className={styles.section_img} style={{color:"#FF785A", transform: 'scaleX(-1)'}}/>
+                                        <BackHandIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
                                     </div>
-                                    <span className={styles.section_image_text_title}>
+                                    <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
                                         TRABALHADORES
                                     </span>
                                     <span className={styles.section_image_text}>

@@ -92,7 +92,10 @@ const Auth = (props) => {
     const [verificationId, setVerificationId] = useState(null)
     const recaptchaObject = useRef(null)
 
+    const [codeSent, setCodeSent] = useState(null)
     const [codeStatus, setCodeStatus] = useState(null)
+
+    const [emailSent, setEmailSent] = useState(null)
     const [emailCodeStatus, setEmailCodeStatus] = useState(null)
 
     const [sendingError, setSendingError] = useState(null)
@@ -117,10 +120,10 @@ const Auth = (props) => {
     
 
     useEffect(() => {
-        if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
-        else if(phone.length>=4) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3)}`)
+        if(phone?.length>=7) setPhoneVisual(`${phone?.slice(0,3)} ${phone?.slice(3,6)} ${phone?.slice(6)}`)
+        else if(phone?.length>=4) setPhoneVisual(`${phone?.slice(0,3)} ${phone?.slice(3)}`)
         else{
-            setPhoneVisual(`${phone.slice(0,3)}`)
+            setPhoneVisual(`${phone?.slice(0,3)}`)
         }
         if(validator.isMobilePhone(phone, "pt-PT")){
             setPhoneWrong(false)
@@ -495,9 +498,9 @@ const Auth = (props) => {
     }
 
     const handleNext = (skipped) => {
+        setSendingError(null)
         if(skipped) setSkippedVerification(true)
         setVerificationTab(1)
-        restartTimer()
     }
 
     const restartTimer = () => {
@@ -509,8 +512,41 @@ const Auth = (props) => {
         setCode('')
     }
 
+    const initiateEmailVerification = () => {
+        setSendingError(null)
+        setEmailSent(null)
+        var actionCodeSettings = {
+            url: 'https://localhost:3000/user',
+            handleCodeInApp: false
+        }
+        console.log(auth.currentUser)
+        sendEmailVerification(auth.currentUser, actionCodeSettings)
+            .then(() => {
+                setEmailSent(true)
+                console.log('sent')
+            })
+            .catch(e => {
+                console.log(e)
+                setEmailSent(false)
+                setSendingError('Erro a enviar o e-mail de verificação, por-favor tente mais tarde.')
+            })
+    }
+
+    const completeEmailVerification = () => {
+        setEmailCodeStatus(null)
+        if(auth.currentUser.emailVerified === true)
+        {
+            setEmailCodeStatus(true)
+        }
+        else
+        {
+            setEmailCodeStatus(false)
+        }
+    }
+
     const initiatePhoneVerification = () => {
         restartTimer()
+        setCodeSent(null)
         if(recaptchaObject.current?.destroyed===false && recaptchaWrapperRef.current!==null)
         {
             recaptchaObject.current.clear()
@@ -528,20 +564,24 @@ const Auth = (props) => {
             var provider = new PhoneAuthProvider(auth)
             provider.verifyPhoneNumber(`+351${phone}`, recaptcha).then(verificationId => {
                     setVerificationId(verificationId)
+                    setCodeSent(true)
                 }).catch(function (error) {
-                    alert(error)
                     recaptcha.clear()
                     setVerificationId(null)
                     setSuccess(false)
+                    setSendingError('Erro a enviar o código de verificação. Por-favor, tente mais tarde.')
+                    setCodeSent(false)
                 })
         })
         .catch(e => {
-            console.log(e)
+            setSuccess(false)
+            setCodeSent(false)
         })
     }
 
     const completePhoneVerification = (code) => {
         setSendingError(null)
+        setSuccess(null)
         var phoneCredential = PhoneAuthProvider.credential(verificationId, code)
         try {
             linkWithCredential(auth.currentUser, phoneCredential)
@@ -710,7 +750,7 @@ const Auth = (props) => {
                                     registarTab===0?
                                     <div className={!emailWrong?styles.login_button:styles.login_button_disabled}
                                         style={{marginTop:0}}
-                                        onClick={() => {validateEmailHandler()&&checkEmail()}}>
+                                        onClick={() => {!emailWrong&&validateEmailHandler()&&checkEmail()}}>
                                         <p className={styles.login_text}>Continuar</p>
                                     </div>
                                     :
@@ -772,8 +812,13 @@ const Auth = (props) => {
                             clearEmailAndPhone={() => clearFields()}
                             initiatePhoneVerification={initiatePhoneVerification}
                             completePhoneVerification={completePhoneVerification}
+                            initiateEmailVerification={initiateEmailVerification}
+                            completeEmailVerification={completeEmailVerification}
                             codeStatus={codeStatus}
+                            codeSent={codeSent}
                             sendingError={sendingError}
+                            emailCodeStatus={emailCodeStatus}
+                            emailSent={emailSent}
                         />
                     :
                     <div className={styles.button_area}>

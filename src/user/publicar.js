@@ -12,7 +12,7 @@ import { storage } from '../firebase/firebase'
 import { getDownloadURL, ref, uploadBytes, deleteObject} from "firebase/storage";
 import { Loader } from '@googlemaps/js-api-loader'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; //
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -26,10 +26,18 @@ import Loader2 from '../general/loader';
 import VerificationBannerConfirm from '../general/verificationBannerConfirm';
 import VerificationBannerEditConfirm from '../general/verificationBannerEditConfirm';
 import VerificationBannerTooMany from '../general/verificationBannerTooMany';
+import { auth } from '../firebase/firebase'
+import { user_update_field, user_update_phone_verified, user_update_email_verified } from '../store';
+import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
+import VerificationBannerEmail from '../general/verificationBannerEmail';
 
 const Publicar = (props) => {
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
+    const user_email_verified = useSelector(state => {return state.user_email_verified})
+    const user_phone_verified = useSelector(state => {return state.user_phone_verified})
+
+    const dispatch = useDispatch()
 
     const [selectedWorker, setSelectedWorker] = useState(null)
     const [titulo, setTitulo] = useState('')
@@ -58,7 +66,8 @@ const Publicar = (props) => {
     const [activateEditAddress, setActivateEditAddress] = useState(false)
     const [confirmationEditPopup, setConfirmationEditPopup] = useState(false)
     const [selectedTab, setSelectedTab] = useState(0)
-    const [verifyPhone, setVerifyPhone] = useState(null)
+    const [verifyPhone, setVerifyPhone] = useState(0)
+    const [verifyEmail, setVerifyEmail] = useState(0)
     const [loading, setLoading] = useState(false)
     const [loadingConfirm, setLoadingConfirm] = useState(false)
 
@@ -67,7 +76,16 @@ const Publicar = (props) => {
 
     const [publicationSent, setPublicationSent] = useState(false)
 
-    const allFieldsCorrect = (user.phone===phone&&!user.phone_verified)&&!user.email_verified&&titulo.length>5&&selectedWorker!=null&&address!=null&&porta.length>0&&!loadingConfirm
+    const recaptchaWrapperRef = useRef(null)
+    const [verificationId, setVerificationId] = useState(null)
+    const recaptchaObject = useRef(null)
+
+    const [codeStatus, setCodeStatus] = useState(null)
+    const [emailCodeStatus, setEmailCodeStatus] = useState(null)
+
+    const [sendingError, setSendingError] = useState(null)
+
+    const allFieldsCorrect = (user.phone===phone&&user_phone_verified)&&user_email_verified&&titulo.length>5&&selectedWorker!=null&&address!=null&&porta.length>0&&!loadingConfirm
 
     const maxFiles = 6
     const inputRef = useRef(null);
@@ -413,6 +431,101 @@ const Publicar = (props) => {
         setAddress('')
     }
 
+    const initiateEmailVerification = () => {
+        setSendingError(null)
+        var actionCodeSettings = {
+            url: 'https://google.com',
+            handleCodeInApp: false
+        }
+
+        sendEmailVerification(auth.currentUser, actionCodeSettings)
+            .then(() => {
+                setVerifyEmail(2)
+                console.log('sent')
+            })
+            .catch(e => {
+                console.log(e)
+                if(e.code === "auth/too-many-requests")
+                    setSendingError('Demasiadas tentativas, por-favor tente mais tarde.')
+                else
+                    setSendingError('Erro a enviar o e-mail de verificação, por-favor tente mais tarde.')
+            })
+    }
+
+    const completeEmailVerification = async () => {
+        setEmailCodeStatus(null)
+        await auth.currentUser.reload()
+        if(auth?.currentUser?.emailVerified === true)
+        {
+            setEmailCodeStatus(true)
+            dispatch(user_update_email_verified(true))
+        }
+        else
+        {
+            setEmailCodeStatus(false)
+        }
+    }
+
+    const initiatePhoneVerification = () => {
+        if(recaptchaObject.current?.destroyed===false && recaptchaWrapperRef.current!==null)
+        {
+            recaptchaObject.current.clear()
+            recaptchaWrapperRef.current.innerHTML = `<div id="recaptcha-container"></div>`
+        }
+
+        setSendingError(null)
+        var recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {'size': 'invisible'});
+
+        recaptcha.render()
+        recaptchaObject.current = recaptcha
+
+        recaptcha.verify().then(() => {
+            var provider = new PhoneAuthProvider(auth)
+            provider.verifyPhoneNumber(`+351${user.phone}`, recaptcha).then(verificationId => {
+                    console.log(verificationId)
+                    setVerificationId(verificationId)
+                    setVerifyPhone(2)
+                }).catch(function (error) {
+                    alert(error)
+                    recaptcha.clear()
+                    setVerificationId(null)
+                })
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+
+    const completePhoneVerification = (code) => {
+        setSendingError(null)
+        var phoneCredential = PhoneAuthProvider.credential(verificationId, code)
+        try {
+            linkWithCredential(auth.currentUser, phoneCredential)
+                .then(() => {
+                    dispatch(user_update_phone_verified(true))
+            
+                    axios.post(`${api_url}/user/phone_verification_status`, {
+                        user_id : user._id,
+                        value: true
+                    }).then(() => {
+                        setCodeStatus(true)
+                        setVerifyPhone(3)
+                    })
+                })
+                .catch(e => {
+                    if(e.code === 'auth/account-exists-with-different-credential')
+                        setSendingError('Este número de telemóvel já se encontra associado a outra conta.')
+                    else
+                        setCodeStatus(false)
+                    
+                })
+            
+        }
+        catch (error){
+            setCodeStatus(false)
+        }
+    }
+
     return (
         <div className={styles.reservation}>
             {
@@ -425,6 +538,9 @@ const Publicar = (props) => {
             }
             <div className={styles.flex}>
                 <div className={styles.main}>
+                    <div ref={recaptchaWrapperRef}>
+                        <div id='recaptcha-container' className={styles.recaptcha_container}></div>
+                    </div>
                     {
                         loading?
                         <div className={styles.frontdrop_helper} style={{backgroundColor:"#00000080"}}/>
@@ -446,17 +562,48 @@ const Publicar = (props) => {
                         classNames="transition"
                         unmountOnExit
                         >
-                        <VerificationBannerPhone 
-                            cancel={() => setVerifyPhone(0)}
+                        <VerificationBannerPhone
+                            cancel={() => {
+                                setVerifyPhone(0)
+                                setCodeStatus(null)
+                                setSendingError(null)
+                            }}
                             setNext={val => {
                                 if(val===2)
-                                {
-                                    setVerifyPhone(2)
-                                    handlerVerifyPressed()
-                                }
+                                    initiatePhoneVerification()
                             }}
-                            next={verifyPhone} 
+                            initiatePhoneVerification={initiatePhoneVerification}
+                            completePhoneVerification={completePhoneVerification}
+                            next={verifyPhone}
                             phone={phone}
+                            verificationId={verificationId}
+                            codeStatus={codeStatus}
+                            clearCodeStatus={() => setCodeStatus(null)}
+                            sendingError={sendingError}
+                            />
+                    </CSSTransition>
+                    <CSSTransition
+                        in={verifyEmail}
+                        timeout={1000}
+                        classNames="transition"
+                        unmountOnExit
+                        >
+                        <VerificationBannerEmail
+                            cancel={() => {
+                                setVerifyEmail(0)
+                                setEmailCodeStatus(null)
+                                setSendingError(null)
+                            }}
+                            setNext={val => setVerifyEmail(val)}
+                            initiateEmailVerification={initiateEmailVerification}
+                            completeEmailVerification={completeEmailVerification}
+                            next={verifyEmail} 
+                            codeStatus={emailCodeStatus}
+                            email={user.email}
+                            emailCodeStatus={emailCodeStatus}
+                            clearCodeStatus={() => setEmailCodeStatus(null)}
+                            sendingError={sendingError}
+                            user_email_verified={user_email_verified}
                             />
                     </CSSTransition>
                     <CSSTransition
@@ -635,9 +782,10 @@ const Publicar = (props) => {
                                     getFieldWrongText={getFieldWrongText}
                                     selectedTab={selectedTab}
                                     correct_location={address!==null&&porta.length>0}
-                                    correct_phone={user.phone===phone&&user.phone_verified}
-                                    correct_email={user.email_verified}
+                                    correct_phone={user.phone===phone&&user_phone_verified}
+                                    correct_email={user_email_verified}
                                     setVerifyPhone={val => setVerifyPhone(val)}
+                                    setVerifyEmail={val => setVerifyEmail(val)}
                                     expired={expired}
                                     seconds={seconds}
                                     />
@@ -737,7 +885,7 @@ const Publicar = (props) => {
                                         onClick={() => {setSelectedTab(selectedTab-1)}}>
                                     <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                     </div>
-                                    <div className={((user.phone===phone&&user.phone_verified)&&user.email_verified)&&address!=null&&porta!=null?styles.login_button:styles.login_button_disabled}
+                                    <div className={((user.phone===phone&&user_phone_verified)&&user_email_verified)&&address!=null&&porta!=null?styles.login_button:styles.login_button_disabled}
                                         style={{marginLeft:'10px', marginTop:0}}
                                         onClick={() => {setSelectedTab(selectedTab+1)}}>
                                         <p className={styles.login_text}>Continuar</p>

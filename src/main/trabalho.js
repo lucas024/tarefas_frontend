@@ -137,82 +137,90 @@ const Trabalho = (props) => {
     }, [searchParams])
 
     useEffect(() => {
-        user!=null&&reservation&&axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: reservation.user_id} })
-            .then(res => {
-                setPublicationUser(res.data)
-                if(user?._id === reservation.user_id){
-                    setViewTo('user')
-                    setLoading(false)
-                }
-            })
-        
-        if(user?.chats)
+        if(props.userLoadAttempt)
         {
-            for(let chat of user.chats)
+            if(user?._id!=null&&reservation)
             {
-                if(chat.reservation_id === reservation._id)
-                {
-                    setNoRepeatedChats(true)
-                    setChatId(chat.chat_id)
-                    break
-                }
-            }
-        }
-    }, [reservation, user])
-
-    useEffect(() => {
-        if(loaded)
-        {
-            if(user?.admin)
-            {
-                setViewTo("showFull")
-                setLoading(false)
-            }
-            else if(!user._id||user.type===0){
-                setViewTo('noAccount')
-                setLoading(false)
-            }
-            else if((!worker_profile_complete&&!worker_is_subscribed)){
-                setViewTo('none')
-                setLoading(false)                
-            }
-            else if(worker_is_subscribed&&worker_profile_complete){
-                setViewTo("showFull")
-                setLoading(false)
-            }
-            else if(worker_profile_complete){
-                setViewTo('noSub')
-                setLoading(false)
-            }
-            else if(!worker_profile_complete){
-                setViewTo('noProfile')
-                setLoading(false)
+                axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: reservation.user_id} })
+                    .then(res => {
+                        setPublicationUser(res.data)
+                        if(user?._id === reservation.user_id){
+                            setViewTo('user')
+                            setLoading(false)
+                            setLoaded(true)
+                        }
+                        else{
+                            viewToAux()
+                        }
+                    })
             }
             else
             {
-                setViewTo('noAccount')
-                setLoading(false)
+                viewToAux()
+            }
+
+            if(user?.chats)
+            {
+                for(let chat of user.chats)
+                {
+                    if(chat.reservation_id === reservation._id)
+                    {
+                        setNoRepeatedChats(true)
+                        setChatId(chat.chat_id)
+                        break
+                    }
+                }
             }
         }
-    }, [user, props.incompleteUser, loaded])
-
-    useEffect(() => {
-        props.userLoadAttempt&&setLoaded(true)
 
         return () => setLoaded(false)
-    }, [props.userLoadAttempt])
+    }, [props.userLoadAttempt, reservation, user])
 
-    const isActiveSub = date => {
-        if(new Date().getTime() < new Date(date*1000)){
-            return true
-        }
-    }
+    // const isActiveSub = date => {
+    //     if(new Date().getTime() < new Date(date*1000)){
+    //         return true
+    //     }
+    // }
 
     useEffect(() => {
         if(eliminationPopup){
             scrollRef.current.scrollIntoView()  
         } 
     }, [eliminationPopup])
+
+    const viewToAux = () => {
+        if(user?.admin)
+        {
+            setViewTo("showFull")
+            setLoading(false)
+        }
+        else if(!user._id||user.type===0){
+            setViewTo('noAccount')
+            setLoading(false)
+        }
+        else if((!worker_profile_complete&&!worker_is_subscribed)){
+            setViewTo('none')
+            setLoading(false)                
+        }
+        else if(worker_is_subscribed&&worker_profile_complete){
+            setViewTo("showFull")
+            setLoading(false)
+        }
+        else if(worker_profile_complete){
+            setViewTo('noSub')
+            setLoading(false)
+        }
+        else if(!worker_profile_complete){
+            setViewTo('noProfile')
+            setLoading(false)
+        }
+        else
+        {
+            setViewTo('noAccount')
+            setLoading(false)
+        }
+        setLoaded(true)
+    }
 
     const setViewTo = (view) => {
         if(view !== "none")

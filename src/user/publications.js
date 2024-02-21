@@ -197,7 +197,7 @@ const Publications = (props) => {
                         <div className={styles.item_none} style={{padding:"30px 0"}}>
                             <div className={styles.item_flex}>
                                 <span className={styles.item_type_tbd}>Sem trabalhos activos</span>
-                                <span className={styles.publicar} onClick={() => {navigate('/publicar')}}>
+                                <span className={styles.publicar} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
                                     PUBLICAR
                                 </span>
                             </div>

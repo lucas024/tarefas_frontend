@@ -224,7 +224,7 @@
     margin-top: 2px;
 }
 .wrong_code_text{
-    font-weight: 600;
+    font-weight: 400;
     color: var(--yellow);
     text-align: center;
 }

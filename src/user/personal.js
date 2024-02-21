@@ -33,7 +33,6 @@ import VerificationBannerEmail from '../general/verificationBannerEmail';
 const Personal = (props) => {
 
     const api_url = useSelector(state => {return state.api_url})
-    const user_profile_complete = useSelector(state => {return state.user_profile_complete})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
     const user_phone_verified = useSelector(state => {return state.user_phone_verified})
     const user = useSelector(state => {return state.user})
@@ -41,7 +40,6 @@ const Personal = (props) => {
     const dispatch = useDispatch()
     
     const [name, setName] = useState("")
-    const [surname, setSurname] = useState("")
     const [phone, setPhone] = useState("")
     const [description, setDescription] = useState("")
     const [descriptionWrong, setDescriptionWrong] = useState(false)
@@ -81,16 +79,13 @@ const Personal = (props) => {
     
     useEffect(() => {
         if(user){
-            if(auth?.currentUser?.emailVerified) dispatch(user_update_email_verified(true))
-            if(user.photoUrl===""||user.phone===""||user.trabalhos?.length===0||user.trabalhos?.length===0){
+            if(!user_email_verified||!user_phone_verified||user.regioes?.length===0||user.trabalhos?.length===0)
                 setDisplayTop(true)
-            }
             setPhoto(user.photoUrl)
             setName(user.name)
             setPhone(user.phone)
             setEmail(user.email)
             setDescription(user.description)
-            setSurname(user.surname)
             setSelectedProf(user.trabalhos)
             setSelectedReg(user.regioes)
             if(user.entity!==undefined) {
@@ -281,7 +276,7 @@ const Personal = (props) => {
                     setLoadingBottom(false)
                     setBottomPop(true)
                     setTimeout(() => setBottomPop(false), 4000)
-                    if(user_phone_verified&&user_email_verified)
+                    if(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)
                         dispatch(worker_update_profile_complete(true))
                 })
             }
@@ -348,7 +343,7 @@ const Personal = (props) => {
     const initiateEmailVerification = () => {
         setSendingError(null)
         var actionCodeSettings = {
-            url: 'http://localhost:3000/user?t=personal',
+            url: 'https://localhost:3000/user',
             handleCodeInApp: false
         }
 
@@ -361,15 +356,31 @@ const Personal = (props) => {
                 console.log(e)
                 setSendingError('Erro a enviar o e-mail de verificação, por-favor tente mais tarde.')
             })
-
-        
     }
 
-    const completeEmailVerification = () => {
+    const completeEmailVerification = async () => {
+        setEmailCodeStatus(null)
         
+        await auth.currentUser.reload()
+        console.log(auth.currentUser)
+        if(auth?.currentUser?.emailVerified === true)
+        {
+            setEmailCodeStatus(true)
+            dispatch(user_update_email_verified(true))
+        }
+        else
+        {
+            setEmailCodeStatus(false)
+        }
     }
 
     const initiatePhoneVerification = () => {
+        if(recaptchaObject.current?.destroyed===false && recaptchaWrapperRef.current!==null)
+        {
+            recaptchaObject.current.clear()
+            recaptchaWrapperRef.current.innerHTML = `<div id="recaptcha-container"></div>`
+        }
+
         setSendingError(null)
         var recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {'size': 'invisible'});
 
@@ -423,18 +434,6 @@ const Personal = (props) => {
         }
     }
 
-    const clearCaptcha = () => {
-        if(recaptchaObject.current?.destroyed===false && recaptchaWrapperRef.current!==null)
-        {
-            recaptchaObject.current.clear()
-            recaptchaWrapperRef.current.innerHTML = `<div id="recaptcha-container"></div>`
-        }
-    }
-
-    useEffect(() => {
-        verifyPhone===1&&clearCaptcha()
-    }, [verifyPhone])
-
     return (
         <div className={styles.personal}>
             <Loader loading={false}/>
@@ -485,9 +484,9 @@ const Personal = (props) => {
                     <div className={styles.status_div}>
                         <span className={styles.status_div_title}>Estado do Perfil</span>
                         <div className={styles.status_div_flex}>
-                            <span className={styles.status_div_flex_title} style={{color:user_profile_complete?"#0358e5":"#fdd835"}}>
+                            <span className={styles.status_div_flex_title} style={{color:(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?"#0358e5":"#fdd835"}}>
                                 {
-                                    user_profile_complete?
+                                    (user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?
                                     "COMPLETO"
                                     :"INCOMPLETO"
                                 }
@@ -513,7 +512,7 @@ const Personal = (props) => {
                         initiateEmailVerification={initiateEmailVerification}
                         completeEmailVerification={completeEmailVerification}
                         next={verifyEmail} 
-                        codeStatus={emailCodeStatus}
+                        emailCodeStatus={emailCodeStatus}
                         email={user.email}
                         clearCodeStatus={() => setEmailCodeStatus(null)}
                         sendingError={sendingError}
@@ -537,7 +536,6 @@ const Personal = (props) => {
                         }}
                         initiatePhoneVerification={initiatePhoneVerification}
                         completePhoneVerification={completePhoneVerification}
-                        clearCaptcha={clearCaptcha}
                         next={verifyPhone} 
                         phone={phone}
                         verificationId={verificationId}
@@ -696,7 +694,7 @@ const Personal = (props) => {
                                             <span className={styles.input_title}>Nome</span>
                                             <div className={styles.input_div_wrapper}>
                                                 {/* <FaceIcon className={styles.input_icon}/> */}
-                                                <span className={styles.input_email}>{name} {surname}</span>
+                                                <span className={styles.input_email}>{name}</span>
                                             </div>
                                         </div>
                                     </div>

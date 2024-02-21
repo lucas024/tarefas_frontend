@@ -13,17 +13,17 @@ const NoPage = (props) => {
             {
                 props.object==="mensagens"?
                 <div className={styles.blank_flex}>
-                    <span className={styles.blank_text}>Ainda não tens mensagens</span>
-                    <ChatIcon className={styles.blank_face}/>
-                    <span className={styles.blank_request}>
+                    <span className={styles.blank_text} style={{color:"white"}}>Ainda não tens mensagens</span>
+                    <ChatIcon className={styles.blank_face} style={{color:"white"}}/>
+                    <span className={styles.blank_request} style={{color:"white"}}>
                         Procurar <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/trabalhos')}>trabalhos</span>
                     </span>
                 </div>
                 :props.object==="mensagens_user"?
                 <div className={styles.blank_flex}>
-                    <span className={styles.blank_text}>Ainda não tens mensagens</span>
-                    <ChatIcon className={styles.blank_face}/>
-                    <span className={styles.blank_request}>
+                    <span className={styles.blank_text} style={{color:"white"}}>Ainda não tens mensagens</span>
+                    <ChatIcon className={styles.blank_face} style={{color:"white"}}/>
+                    <span className={styles.blank_request} style={{color:"white"}}>
                         Procurar <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/trabalhadores')}>trabalhadores</span>
                     </span>
                 </div>

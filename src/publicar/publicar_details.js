@@ -8,6 +8,8 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DoneIcon from '@mui/icons-material/Done';
 import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
 import UnsubscribeIcon from '@mui/icons-material/Unsubscribe';
+import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
@@ -72,7 +74,7 @@ const PublicarDetails = props => {
                         </span>
                     }
                 </div> */}
-                <div className={styles.contact_area} onClick={() => props.divRef.current.scrollIntoView({ behavior: 'smooth' })}>
+                <div className={styles.contact_area} onClick={() => props.divRef?.current?.scrollIntoView({ behavior: 'smooth' })}>
                     {
                         props.edit&&!props.activateEditAddress?
                             <div>
@@ -254,9 +256,14 @@ const PublicarDetails = props => {
                         </div>
                         
                         {
+                            props.correct_phone?
+                            <div className={styles.verify_box}>
+                                <MobileFriendlyIcon className={styles.verify_box_icon} style={{color:"white"}}/>
+                            </div>
+                            :
                             props.expired?
-                            <div className={props.phone.length!==9?styles.verify_box_incomplete:props.correct_phone?styles.verify_box:styles.verify_box_no}
-                                onClick={() => !props.correct_phone&&props.phone.length===9&&props.setVerifyPhone(1)}>
+                            <div className={props.phone.length!==9?styles.verify_box_incomplete:styles.verify_box_no}
+                                onClick={() => props.phone.length===9&&props.setVerifyPhone(1)}>
                                 <PhonelinkEraseIcon className={styles.verify_box_icon}/>
                             </div>
                             :
@@ -279,9 +286,19 @@ const PublicarDetails = props => {
                                 value={props.email} 
                                 className={styles.top_input_short}></input>
                         </div>
-                        <div className={props.correct_email?styles.verify_box:styles.verify_box_no}>
-                            <UnsubscribeIcon className={styles.verify_box_icon}/>
-                        </div>
+                        {
+                            
+                        }
+                        {
+                            props.correct_email?
+                            <div className={styles.verify_box}>
+                                <MarkEmailReadIcon className={styles.verify_box_icon} style={{color:"white"}}/>
+                            </div>
+                            :
+                            <div className={styles.verify_box_no} onClick={() => props.setVerifyEmail(1)}>
+                                <UnsubscribeIcon className={styles.verify_box_icon}/>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

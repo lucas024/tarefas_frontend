@@ -137,7 +137,6 @@ const VerificationBannerPhone = (props) => {
                                 if(expired)
                                 {
                                     setNewCodeSent(true)
-                                    props.clearCaptcha()
                                     props.initiatePhoneVerification()
                                     props.clearCodeStatus(null)
                                     handleSendCode()
@@ -186,8 +185,12 @@ const VerificationBannerPhone = (props) => {
                     </div>
                     :null
                 }
-                
-                <p className={styles.cancel} onClick={() => props.cancel()}>cancelar</p>
+                {
+                    props.next===3?
+                    null
+                    :
+                    <p className={styles.cancel} onClick={() => props.cancel()}>cancelar</p>
+                }
             </div>
 
         </div>

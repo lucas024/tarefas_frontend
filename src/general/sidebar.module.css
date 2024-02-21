@@ -151,13 +151,13 @@
     text-decoration: underline;
 }
 .status{
-    width: 100%;
-    width: 100%;
+    width: 90%;
+    margin-left: 5%;
     position: relative;
     margin-bottom: 10px;
     border: 2px solid var(--yellow);
     box-sizing: border-box;
-    margin-top: 10px;
+    margin-top: 20px;
     border-radius: 3px;
 }
 .status_top{
@@ -241,6 +241,7 @@
     font-size: 0.9rem;
     width: 90%;
     margin-left: 5%;
+    text-align: center;
 }
 .worker_text_text{
     font-weight: 600;

@@ -74,13 +74,17 @@ const AdminMessages = (props) => {
             setSelectedChatId(paramsAux.id)
             triggerChatLoad()
         }
-        for(let el of chats)
+        if(chats?.length>0)
         {
-            if(el.chat_id === paramsAux.id)
+            for(let el of chats)
             {
-                setChatDisplayInformation(el)
+                if(el.chat_id === paramsAux.id)
+                {
+                    setChatDisplayInformation(el)
+                }
             }
         }
+        
     }, [searchParams, chats])
 
     const sortByTimestamp = (a, b) => {
@@ -107,7 +111,7 @@ const AdminMessages = (props) => {
                 axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
                 .then(res => {
                     if(res.data!==''){
-                        setChats(res.data.chats?.sort(sortByTimestamp))
+                        setChats(res.data?.chats?.sort(sortByTimestamp))
                         setIsLoaded(true)
                         setLoadingChats(false)
                         setLoading(false)
@@ -145,13 +149,13 @@ const AdminMessages = (props) => {
             timestamp : sent_timestamp,
             text: new_text
         }
-        // await axios.post(`${api_url}/chats/update_common_chat`, {
-        //     worker_read: user.type===1?true:false,
-        //     user_read: user.type===0?true:false,
-        //     chat_id: selectedChatId,
-        //     text: text,
-        //     updated: sent_timestamp
-        // })
+        await axios.post(`${api_url}/chats/update_common_chat`, {
+            worker_read: user.type===1?true:false,
+            user_read: user.type===0?true:false,
+            chat_id: selectedChatId,
+            text: text,
+            updated: sent_timestamp
+        })
 
         s.emit("send-message", {
             recipient: getOtherUserId(),
@@ -511,18 +515,19 @@ const AdminMessages = (props) => {
         }
         let sorted = arrChats.sort(sortByTimestamp)
         setChats(sorted)
-        let arr = user.chats
-        for(let el of arr){
-            if(el.chat_id === chat_id){
-                if(user?.type===1)
-                    el.worker_read = true
-                else
-                    el.user_read = true
 
-                break
-            }
-        }
-        dispatch(user_update_chats(arr))
+        // var arr = [...user?.chats]
+        // let user_type = user?.type
+        // for(let i = 0; i < arr.length; i++){
+        //     if(arr[i].chat_id === chat_id){
+        //         if(user_type===1)
+        //             arr[i].worker_read = true
+        //         else
+        //             arr[i].user_read = true
+        //         break
+        //     }
+        // }
+        dispatch(user_update_chats(sorted))
     }
 
     const setChatDisplayInformation = (chat, type) => {
@@ -663,7 +668,6 @@ const AdminMessages = (props) => {
             axios.get(`${api_url}/chats/get_chat`, { params: {chat_id: paramsAux.id, skip: selectedChatTexts.length===0?0:skip*limit, limit: limit} })
             .then(res => {
                 if(res.data!==''){
-                    console.log(res.data)
                     setSelectedChat(res.data)
                     if(skip === 1)
                     {
@@ -710,7 +714,7 @@ const AdminMessages = (props) => {
         useEffect(() => {
             if(sticky)
             {
-                !allLoaded&&selectedChatId&&triggerChatLoad()
+                selectedChatTexts.length>10&&!allLoaded&&selectedChatId&&triggerChatLoad()
             }
         }, [sticky])
     

@@ -1,0 +1,36 @@
+.email{
+    display: flex;
+    justify-content: center;
+}
+.main{
+    margin-top: 50px;
+}
+.title{
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+}
+.title_separator{}
+.main_inner{
+    display: flex;
+    justify-content: center;
+}
+.button{
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: var(--neutral);
+    font-weight: 600;
+    color: var(--brand);
+    cursor: pointer;
+    transition: 150ms all;
+}
+.button:hover{
+    background-color: var(--job);
+    color: var(--neutral);
+}
+.button_text{
+    font-weight: 600;
+    color: var(--job);
+    text-align: center;
+    font-size: 1.1rem;
+}

@@ -712,6 +712,17 @@ input::placeholder{
     display: flex;
     flex-direction: row;
 }
+.verify_box{
+    width: 60px;
+    height: 100%;
+    margin-left: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    background-color: var(--job);
+    border: 2px solid var(--job);
+}
 .verify_box_no{
     width: 60px;
     height: 100%;

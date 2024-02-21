@@ -22,7 +22,7 @@ const VerificationBannerConfirm = (props) => {
                         podendo seguir o processo da publicação na sua àrea pessoal.</p>
                         
                         <div className={styles.button} style={{backgroundColor:"#0358e5"}} onClick={() => {props.confirm()&&setNext(1)}}>
-                            <span className={styles.button_text}>CONFIRMAR</span>
+                            <span className={styles.button_text} style={{color:"white"}}>CONFIRMAR</span>
                         </div>
                         <p className={styles.cancel} onClick={() => props.cancel()}>cancelar</p>
                     </div>
@@ -55,6 +55,13 @@ const VerificationBannerConfirm = (props) => {
                                     rendererSettings= {
                                         {preserveAspectRatio: 'xMidYMid slice'}
                                     }
+                                    style={{
+                                        width:'80px',
+                                        height:'80px',
+                                        justifySelf:'center',
+                                        alignSelf:'center',
+                                        margin: 'auto'
+                                    }}
                                     height={80}
                                     width={80}
                                 />
@@ -64,7 +71,7 @@ const VerificationBannerConfirm = (props) => {
                                         className={styles.button}
                                         style={{backgroundColor:"#0358e5"}}
                                         onClick={() => navigate('/user?t=publications', {replace:true})}>
-                                        <span className={styles.button_text}>VER AS MINHAS PUBLICAÇÕES</span>
+                                        <span className={styles.button_text} style={{color:"white"}}>VER AS MINHAS PUBLICAÇÕES</span>
                                     </div>
                                 </div>
                                

@@ -244,19 +244,19 @@ p{
 }
 .transition-enter-active {
   opacity: 1;
-  transform: translateY(70%);
+  transform: translateY(40%);
   transition: 600ms;
 }
 .transition-enter-done{
-  transform: translateY(70%);
+  transform: translateY(40%);
 }
 .transition-exit {
   opacity: 1;
-  transform: translateY(70%);
+  transform: translateY(40%);
 }
 .transition-exit-active {
   opacity: 0;
-  transform: translateY(-70%);
+  transform: translateY(-40%);
   transition: 200ms;
 }
 

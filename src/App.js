@@ -23,18 +23,20 @@ import Admin from './admin/admin';
 
 import { useDispatch, useSelector } from 'react-redux'
 import { 
-        user_update_profile_complete,
         worker_update_profile_complete,
         worker_update_is_subscribed,
         user_load,
         user_reset,
-        user_update_phone_verified
+        user_update_phone_verified,
+        user_update_email_verified
       } from './store';
 import ProtectedRoute from './protectedRoute';
+import ConfirmEmail from './general/confirmEmail';
 
 
 function App() {
   const api_url = useSelector(state => {return state.api_url})
+  const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
   const dispatch = useDispatch()
   
@@ -48,46 +50,55 @@ onAuthStateChanged(auth, (user_google) => {
     if (user_google) {
       setUserGoogle(user_google)
       setUserLoadAttempt(true)
-      window.localStorage.setItem('loggedIn', true)
+      window.localStorage.setItem('loggedIn', 1)
     } else {
-      window.localStorage.setItem('loggedIn', false)
+      window.localStorage.setItem('loggedIn', 0)
       setUserGoogle(null)
       dispatch(user_reset())
       setUserLoadAttempt(true)
     }
 })
 
-const checkWorkerComplete = (worker) => {
-  if(worker.regioes?.length===0||worker.trabalhos?.length===0||worker.phone===""||worker.photoUrl===""||!worker.phone_verified||!worker.email_verified)
+const checkWorkerComplete = (worker, userGoogle) => {
+  if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.phoneNumber === null||userGoogle?.emailVerified === false)
+  {
     dispatch(worker_update_profile_complete(false))
+    if(worker.state!==0)
+        axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: worker._id})
+  }
   else
+  {
     dispatch(worker_update_profile_complete(true))
+    if(worker.state!==1 && worker_is_subscribed)
+        axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: worker._id})
+  }
 }
 
-const checkUserComplete = (user_google, user) => {
-  console.log(user_google)
-  if(user_google.phoneNumber != null) dispatch(user_update_phone_verified(true))
-  if(!user?.phone_verified||!user?.email_verified)
-    dispatch(user_update_profile_complete(false))
-  else
-    dispatch(user_update_profile_complete(true))
+const checkUserComplete = (user_google) => {
+  //phone
+  if(user_google?.phoneNumber != null) dispatch(user_update_phone_verified(true))
+  else dispatch(user_update_phone_verified(false))
+  //email
+  if(user_google?.emailVerified === true) dispatch(user_update_email_verified(true))
+  else dispatch(user_update_email_verified(false))
 }
 
 useEffect(() => {
   setLoading(true)
   if(userGoogle){
-    axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} }).then(res => {
+    axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle?.uid} }).then(res => {
       if(res.data != null){
         dispatch(user_load(res.data))
         setIsAdmin(res.data.admin)
-        checkUserComplete(userGoogle, res.data)
+        checkUserComplete(userGoogle)
         setUserLoadAttempt(true)
         setLoading(false)
       }
       else{
-        axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
+        axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle?.uid} }).then(res => {
           if(res.data !== null){
             dispatch(user_load(res.data))
+            checkUserComplete(userGoogle)
             if(res.data.subscription){
               setLoading(true)
               axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
@@ -99,6 +110,11 @@ useEffect(() => {
                       if(new Date().getTime() < new Date(res2.data.schedule.current_phase?.end_date*1000)){
                         dispatch(worker_update_is_subscribed(true))
                       }
+                      else{
+                        dispatch(worker_update_is_subscribed(false))
+                        if(res.data.state!==0)
+                          axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
+                      }
                   }
               })
             }
@@ -106,11 +122,18 @@ useEffect(() => {
             {
               dispatch(worker_update_is_subscribed(true))
             }
+            else
+            {
+              dispatch(worker_update_is_subscribed(false))
+              if(res.data.state!==0)
+                axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
+            }
             checkWorkerComplete(res.data)
             setUserLoadAttempt(true)
             setLoading(false)
           }
           else{
+            dispatch(worker_update_is_subscribed(true))
             setLoading(false)
           }
         })
@@ -124,18 +147,17 @@ useEffect(() => {
   }
 }, [userGoogle])
 
-const refreshUser = async () => {
-  window.history.replaceState({}, document.title)
-  let res = await axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle.uid} })
-  if(res.data !== null){
-    dispatch(user_load(res.data))
-    checkUserComplete(res.data)
-  }
-}
+// const refreshUser = async () => {
+//   window.history.replaceState({}, document.title)
+//   let res = await axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle?.uid} })
+//   if(res.data !== null){
+//     dispatch(user_load(res.data))
+//   }
+// }
 
 const refreshWorker = () => {
   window.history.replaceState({}, document.title)
-  axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle.uid} }).then(res => {
+  axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle?.uid} }).then(res => {
     if(res.data !== null){
       dispatch(user_load(res.data))
       if(res.data.subscription){
@@ -178,6 +200,9 @@ const refreshWorker = () => {
           <Navbar 
             userLoadAttempt={userLoadAttempt}/>
           <Routes>
+              <Route exact path="/confirm-email" 
+                element={<ConfirmEmail/>}
+              />
               <Route exact path="/main/publications/publication" 
                 element={<Trabalho
                   refreshWorker={() => refreshWorker()}
@@ -232,7 +257,6 @@ const refreshWorker = () => {
                       window.localStorage.getItem('loggedIn')
                     }>
                     <User
-                      refreshUser={() => refreshUser()}
                       refreshWorker={() => refreshWorker()}
                       userLoadAttempt={userLoadAttempt}
                       loadingHandler={bool => setLoading(bool)}
@@ -248,7 +272,6 @@ const refreshWorker = () => {
               />
               <Route path="/authentication/*" 
                 element={<Auth
-                  refreshUser={() => refreshUser()}
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}/>}
               />
@@ -265,7 +288,6 @@ const refreshWorker = () => {
                 } />
               <Route path="/" 
                 element={<Home
-                  refreshUser={() => refreshUser()}
                   refreshWorker={() => refreshWorker()}
                   notifications={notifications}
                   userLoadAttempt={userLoadAttempt}/>} />

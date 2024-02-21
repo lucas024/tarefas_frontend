@@ -10,7 +10,6 @@ import SelectPublications from '../selects/selectPublications';
 import Row from './row';
 import Loader from '../general/loader';
 import NoPage from '../general/noPage';
-import clearIcon from '../assets/search_clear.png'
 import {regioesOptions, profissoesOptions} from '../general/util'
 import SelectPosts from '../selects/selectPosts';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -35,7 +34,7 @@ const Main = (props) => {
     const {id} = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
     const [params, setParams] = useState({work: false, region: false})
-    const [currPage, setCurrPage] = useState(0)
+    const [currPage, setCurrPage] = useState(1)
     const [currDisplay, setCurrDisplay] = useState("solo")
     const [items, setItems] = useState(null)
     const navigate = useNavigate()
@@ -59,6 +58,8 @@ const Main = (props) => {
     const monthNames = ["", "Janeiro", "Fevereiro", "Março", "Abril", "Maio",
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
+    const limit = 10
+
     useEffect(() => {
         let arr_pathname = location.pathname.split('/')
         const paramsAux = Object.fromEntries([...searchParams])
@@ -66,29 +67,28 @@ const Main = (props) => {
             setParams({work: false, region: false})
         else
             setParams(paramsAux)
-
-        setCurrPage(paramsAux.page?paramsAux.page:1)
         setSelectedType(arr_pathname[3])
 
         if(search_context?.list == null 
             || ((search_context?.work !== paramsAux.work) && paramsAux.work != undefined)
-            || ((search_context?.region !== paramsAux.region) && paramsAux.region != undefined)
-            || search_context?.type !== arr_pathname[3])
+            || ((search_context?.region !== paramsAux.region) && paramsAux.region != undefined
+            || search_context?.type !== arr_pathname[3]
+            || (paramsAux.region == null && paramsAux.work == null)))
         {
-            console.log('ayo')
+            dispatch(search_scroll_save(null))
             if(paramsAux.region||paramsAux.work){
                 if(arr_pathname[3]==="trabalhos")
-                    fetchJobsByFilter()
+                    fetchJobsByFilter(paramsAux)
                 else
                     fetchWorkersByFilter(paramsAux)
             }
             else{
                 if(arr_pathname[3]==="trabalhos")
                 {
-                    fetchJobs()
+                    fetchJobs(paramsAux)
                 }
                 else{
-                    fetchWorkers()
+                    fetchWorkers(paramsAux)
                 }
             }
             if(arr_pathname[3]==="trabalhos")
@@ -107,7 +107,6 @@ const Main = (props) => {
         }
         else
         {
-            console.log('aya')
             setItems(search_context.list)
             setAllItemsLength(search_context.list.data.length)            
         }
@@ -126,63 +125,57 @@ const Main = (props) => {
         }
     }, [items])
 
-    const setItemsAux = all_items => {
-        if(all_items!==null){
-            let items = null
-            if(all_items.data?.length >= currPage*24 && currPage>1){
-                if(all_items.data?.length > (currPage*24 + 24)) items = {data: all_items.data.slice((currPage-1)*24,(currPage-1)*24+24), type:all_items.type}
-                else items = {data: all_items.data.slice((currPage-1)*24, (currPage)*24 + 24 - (currPage-1)*24 + 24 - all_items.data.length), type:all_items.type}
+    const setItemsAux = (items, size, currPage) => {
+        console.log(currPage)
+        if(items!==null){
+            let items_aux = {data: items.data, type: items.type}
+
+            if(size >= currPage*limit && currPage>1){
                 setCurrDisplay("middle")
             }
-            else if(all_items.data?.length < currPage*24 && currPage>1){
-                items = {data: all_items.data.slice((currPage-1)*24), type:all_items.type}
+            else if(size < currPage*limit && currPage>1){
                 setCurrDisplay("last")
             }
             else{
-                setCurrPage(1)
-                if(all_items.data?.length > 24){
-                    items = {data: all_items.data.slice(0,24), type:all_items.type}
+                if(size > limit){
                     setCurrDisplay("init")
                 }
                 else{
-                    items = {data: all_items.data, type:all_items.type}
                     setCurrDisplay("solo")
                 }
             }
-            setItems(items)
+            setItems(items_aux)
             let arr_pathname = location.pathname.split('/')
             let paramsAux = Object.fromEntries([...searchParams])
-            if(search_scroll!=0)
-            {
-                search_scroll_save(0)
-            }
+            setCurrPage(currPage)
             dispatch(search_save({
                 list: items,
                 work: paramsAux.work,
                 region: paramsAux.region,
                 type: arr_pathname[3],
-                all_items_length: allItemsLength
+                items_length: allItemsLength
             }))
         }
     }
 
-    const fetchJobs = () => {
+    const fetchJobs = (params_aux) => {
+        //passing params.p for page cause setting state takes too long
         setLoading(true)
         axios.get(`${api_url}/reservations`).then(res => {
             if(res.data!==null){
-                setListAnim(true)
                 let all_items = {data: res.data.data, type: 'trabalhos'}
-                setAllItemsLength(all_items.data.length)
-                setItemsAux(all_items)
+                setListAnim(true)
+                setAllItemsLength(res.data.size)
+                setItemsAux(all_items, res.data.size, params_aux?.p?parseInt(params_aux?.p):1)
             }
             setLoading(false)
         })
     }
 
 
-    const fetchJobsByFilter = () => {
+    const fetchJobsByFilter = (params_aux) => {
         setLoading(true)
-        if(searchVal===""&&!params.work&&!params.region)
+        if(searchVal===""&&!params_aux.work&&!params_aux.region)
         {
             fetchJobs()
         }
@@ -197,16 +190,16 @@ const Main = (props) => {
                 }
             }
             axios.post(`${api_url}/reservations/get_reservations_by_filter`, {
-                region: ((params.region==null) || (params.region===undefined))?false:params.region!=='none'?params.region:false,
-                trabalho: ((params.work==null) || (params.work===undefined))?false:params.work!=='none'?params.work:false,
+                region: ((params_aux.region==null) || (params_aux.region===undefined))?false:params_aux.region!=='none'?params_aux.region:false,
+                trabalho: ((params_aux.work==null) || (params_aux.work===undefined))?false:params_aux.work!=='none'?params_aux.work:false,
                 search: searchValFinal
             }).then(res => {
                 if(res.data!=='non_existing'){
                     let arr = res.data.data
+                    let all_items = {data: res.data.data, type: 'trabalhos'}
                     setListAnim(true)
-                    let all_items = {data: arr, type: 'trabalhos'}
-                    setAllItemsLength(all_items.data.length)
-                    setItemsAux(all_items)
+                    setAllItemsLength(res.data.size)
+                    setItemsAux(all_items, res.data.size, params_aux?.p?parseInt(params_aux?.p):1)
                 }
                 setLoading(false)
             }).catch(err => console.log(err))
@@ -226,29 +219,31 @@ const Main = (props) => {
         axios.post(`${api_url}/worker/get_workers_by_filter`, {
             region: ((params_aux.region==null) || (params_aux.region===undefined))?false:params_aux.region!=='none'?params_aux.region:false,
             trabalho: ((params_aux.work==null) || (params_aux.work===undefined))?false:params_aux.work!=='none'?params_aux.work:false,
-            search: searchValFinal
+            search: searchValFinal,
+            limit: limit,
+            skip: (currPage-1)*limit 
         }).then(res => {
             if(res.data!=='non_existing'){
-                let arr = res.data.data
-                arr = fisher_yates_shuffle(arr)
-                let all_items = {data: arr, type: 'trabalhadores'}
-                setAllItemsLength(all_items.data.length)
-                setItemsAux(all_items)
+                // let arr = res.data.data
+                // arr = fisher_yates_shuffle(arr)
+                let all_items = {data: res.data.data, type: 'trabalhadores'}
+                setAllItemsLength(res.data.size)
+                setItemsAux(all_items, res.data.size, params_aux?.p?parseInt(params_aux?.p):1)
             }
             setLoading(false)
         }).catch(err => console.log(err))
 
     }
 
-    const fetchWorkers = () => {
+    const fetchWorkers = (params_aux) => {
         setLoading(true)
-        axios.get(`${api_url}/workers`).then(res => {
+        axios.get(`${api_url}/workers`, { params: {limit: limit, skip: (parseInt(params_aux?.p)-1)*limit } }).then(res => {
             if(res.data!==null){
-                let arr = res.data.data
-                arr = fisher_yates_shuffle(arr)
-                let all_items = {data: arr, type: 'trabalhadores'}
-                setAllItemsLength(all_items.data.length)
-                setItemsAux(all_items)
+                // let arr = res.data.data
+                // arr = fisher_yates_shuffle(arr)
+                let all_items = {data: res.data.data, type: 'trabalhadores'}
+                setAllItemsLength(res.data.size)
+                setItemsAux(all_items, res.data.size, params_aux?.p?parseInt(params_aux?.p):1)
             }
             setLoading(false)
         })
@@ -390,6 +385,7 @@ const Main = (props) => {
         setSearchParams(searchParams)
         setClear(!clear)
         setSearchVal("")
+        dispatch(search_scroll_save(null))
         if(selectedType==="trabalhos")
             fetchJobs()
         else
