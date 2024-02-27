@@ -106,14 +106,24 @@ const Trabalho = (props) => {
                 setReservation(res.data)
                 let arr = []
                 for(let img of res.data.photos){
-                    arr.push({
-                        original: img.url,
-                        thumbnail: img.url,
-                        originalHeight: "300px",
-                        originalWidth: "700px",
-                        thumbnailHeight: "50px",
-                        thumbnailWidth: "100px",
-                    })
+                    if(img.id === res.data.photo_principal)
+                        arr.unshift({
+                            original: img.url,
+                            thumbnail: img.url,
+                            originalHeight: "300px",
+                            originalWidth: "700px",
+                            thumbnailHeight: "50px",
+                            thumbnailWidth: "100px",
+                        })
+                    else
+                        arr.push({
+                            original: img.url,
+                            thumbnail: img.url,
+                            originalHeight: "300px",
+                            originalWidth: "700px",
+                            thumbnailHeight: "50px",
+                            thumbnailWidth: "100px",
+                        })
                 }
                 setImages(arr)
                 let listaTrabalhosVistos = JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))
@@ -659,8 +669,10 @@ const Trabalho = (props) => {
                                     <div className={styles.map_div}>
                                         <GoogleMapReact 
                                             bootstrapURLKeys={{ key:"AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk", libraries: ["places"]}}
-                                            defaultZoom={14}
-                                            center={{ lat: reservation.lat, lng: reservation.lng}}   
+                                            defaultZoom={13}
+                                            center={{ lat: reservation.lat, lng: reservation.lng}}
+                                            options={{gestureHandling:"none"}}
+                                            
                                             >
                                             <Marker lat={reservation.lat} lng={reservation.lng}/>
                                         </GoogleMapReact>

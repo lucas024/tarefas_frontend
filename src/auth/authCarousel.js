@@ -51,7 +51,7 @@ const AuthCarousel = props => {
                 <input
                     tabindex={props.registarTab===1?'1':'-1'}
                     autoComplete="new-password"
-                    maxLength={12}
+                    maxLength={30}
                     onChange={e => props.setNameHandler(e.target.value)} 
                     className={styles.login_input} 
                     placeholder="Nome e Apelido"

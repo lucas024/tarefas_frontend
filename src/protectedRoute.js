@@ -7,7 +7,7 @@ const ProtectedRoute = ({
   redirectPath = '/',
   children,
 }) => {
-  if (!parseInt(isAllowed)) {
+  if (!isAllowed) {
     return <Navigate to={redirectPath} replace />;
   }
 

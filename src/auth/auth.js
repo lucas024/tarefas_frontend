@@ -125,7 +125,7 @@ const Auth = (props) => {
         else{
             setPhoneVisual(`${phone?.slice(0,3)}`)
         }
-        if(validator.isMobilePhone(phone, "pt-PT")){
+        if(phone&&validator.isMobilePhone(phone, "pt-PT")){
             setPhoneWrong(false)
         }
     }, [phone])

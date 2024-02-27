@@ -47,25 +47,28 @@ const Messages = (props) => {
     "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
 
-    useEffect(async () => {
+    useEffect(() => {
         setLoadingChatBox(true)
         const paramsAux = Object.fromEntries([...searchParams])
-        var chat = await axios.get(`${props.api_url}/admin_chats/get_chat`, { params: {chat_id: paramsAux.id} })
-        if(chat.data!==''){
-            setSelectedChat(chat.data)
-            setSelectedChatTexts(chat.data.texts)
-            scrollToBottom()
-        }
-        setLoadingChatBox(false)
-        setSelectedChatId(paramsAux.id)
-
+        axios.get(`${props.api_url}/admin_chats/get_chat`, { params: {chat_id: paramsAux.id} })
+            .then(chat => {
+                if(chat.data!==''){
+                    setSelectedChat(chat.data)
+                    setSelectedChatTexts(chat.data.texts)
+                    scrollToBottom()
+                }
+                setLoadingChatBox(false)
+                setSelectedChatId(paramsAux.id)
+            })
     }, [searchParams])
 
-    useEffect(async () => {
-        var chats = await axios.get(`${props.api_url}/admin_chats/chats`)
-        console.log(chats);
-        setChats(chats.data)
-        setIsLoaded(true)
+    useEffect(() => {
+        axios.get(`${props.api_url}/admin_chats/chats`)
+            .then(chats => {
+                console.log(chats);
+                setChats(chats.data)
+                setIsLoaded(true)
+            })
     }, [])
 
     const sortByTimestamp = (a, b) => {
@@ -105,6 +108,7 @@ const Messages = (props) => {
         }
 
         var userWithAdminChat = await axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: selectedChat.user_id} })
+        var workerWithAdminChat = await axios.get(`${props.api_url}/worker/get_worker_by_mongo_id`, { params: {_id: selectedChat.user_id} })
 
         let chatId = ObjectID()
         await axios.post(`${props.api_url}/admin_chats/create_or_update_chat`, {
@@ -115,7 +119,7 @@ const Messages = (props) => {
             user_name: selectedChat.user_name,
             text: text_object,
             updated: time,
-            chat_id: userWithAdminChat?.data?.admin_chat || chatId
+            chat_id: userWithAdminChat?.data?.admin_chat || workerWithAdminChat?.data?.admin_chat || chatId
             })
 
         console.log(selectedChat);
@@ -458,25 +462,10 @@ const Messages = (props) => {
                                                     <span className={styles.type_indicator}>TRABALHADOR</span>
                                                 </div>
                                                 
-                                            }
-                                            {/* {
-                                                user?.type===1?
-                                                <span className={styles.type_indicator}>CLIENTE</span>
-                                                :
-                                                <span className={styles.type_indicator}>TRABALHADOR</span>
-                                            } */}                                            
+                                            }                                     
                                         </div>
-                                        {
-                                            selectedChat.reservation_title?
-
-                                            <div className={styles.post} onClick={() => navigate(`/main/publications/publication?id=${selectedChat.reservation_id}`)}>
-                                                <span className={styles.post_title}>{selectedChat.reservation_title}</span>
-                                                <span className={styles.post_link} >ver trabalho</span>
-                                            </div>
-                                            :null
-                                            
-                                        }
                                     </div>
+                                    <div className={styles.top_separator_worker_reservation}/>
                                     <ScrollToBottom className={styles.chat_area}>
                                         <Loader loading={loadingChatBox}/>
                                         {
@@ -484,7 +473,7 @@ const Messages = (props) => {
                                         }
                                         <div ref={chatareaRef}></div>
                                     </ScrollToBottom>
-                                    <div className={styles.bot}>
+                                    <div className={styles.bot} style={{marginBottom:"80px"}}>
                                         <div className={styles.bot_flex}>
                                             <TextareaAutosize 
                                                 className={styles.bot_input}
@@ -494,16 +483,12 @@ const Messages = (props) => {
                                                 onChange={e => setCurrentText(e.target.value)} 
                                                 />
                                             <div className={styles.bot_right_flex}>
-                                                <SendOutlinedIcon className={styles.send_icon} onClick={() => messageHandler()}/>
+                                                <SendOutlinedIcon className={styles.send_icon_worker} onClick={() => messageHandler()}/>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            :(!chats||chats?.length===0)&&user?.type===1?
-                            <NoPage object={"mensagens"}/>
-                            :(!chats||chats?.length===0)&&user?.type===0?
-                            <NoPage object={"mensagens_user"}/>
                             :null
                         }
                         

@@ -195,7 +195,6 @@ const refreshWorker = () => {
 
   return (
     <div className="App">
-      
         <BrowserRouter>
           <Navbar 
             userLoadAttempt={userLoadAttempt}/>
@@ -225,7 +224,7 @@ const refreshWorker = () => {
                   <ProtectedRoute
                     redirectPath='/'
                     isAllowed={
-                      window.localStorage.getItem('loggedIn')
+                      parseInt(window.localStorage.getItem('loggedIn'))
                     }>
                     <Publicar
                       loading={loading}
@@ -240,7 +239,7 @@ const refreshWorker = () => {
                   <ProtectedRoute
                     redirectPath='/'
                     isAllowed={
-                      window.localStorage.getItem('loggedIn')
+                      parseInt(window.localStorage.getItem('loggedIn'))
                     }>
                     <Publicar
                       loading={loading}
@@ -254,7 +253,7 @@ const refreshWorker = () => {
                   <ProtectedRoute
                     redirectPath='/'
                     isAllowed={
-                      window.localStorage.getItem('loggedIn')
+                      parseInt(window.localStorage.getItem('loggedIn'))
                     }>
                     <User
                       refreshWorker={() => refreshWorker()}
@@ -280,7 +279,7 @@ const refreshWorker = () => {
                   <ProtectedRoute
                     redirectPath='/'
                     isAllowed={
-                      window.localStorage.getItem('loggedIn')&&isAdmin
+                      parseInt(window.localStorage.getItem('loggedIn'))&&isAdmin
                     }>
                     <Admin 
                         userLoadAttempt={userLoadAttempt}/>

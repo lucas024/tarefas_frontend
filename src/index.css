@@ -325,3 +325,23 @@ p{
   transition: 200ms;
 }
 
+
+
+
+.fade{
+  z-index: 10;
+}
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: 500ms;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: 200ms;
+}

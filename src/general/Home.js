@@ -22,6 +22,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
 import { useDispatch, useSelector } from 'react-redux';
 import { search_scroll_save } from '../store';
+import Welcome from './welcome'
 
 const firstOptions = [
     { value: 'trabalhadores', label: 'Trabalhadores' },
@@ -44,15 +45,15 @@ const Home = (props) => {
     const [second, setSecond] = useState(null)
     const [third, setThird] = useState(null)
 
+    const [showWelcomeTrigger, setShowWelcomeTrigger] = useState(false)
+
     const location = useLocation()
     const navigate = useNavigate()
 
     useEffect(() => {
+        if(!parseInt(localStorage.getItem('firstAccessMade')))
+            setShowWelcomeTrigger(true)
         if(user.type===1) setFirst('trabalhos')
-        if(loaded){
-            // setMensagemPopup(true)
-            // setTimeout(() => setMensagemPopup(false), 4000)
-        }
         else if(location.state?.carry==="login"){
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
@@ -127,9 +128,25 @@ const Home = (props) => {
         setSecond(null)
         setThird(null)
     }
+
+    
+  const showWelcomeHandler = () => {
+    localStorage.setItem('firstAccessMade', 1)
+    setShowWelcomeTrigger(false)
+  }
     
     return(
         <div className={styles.home}>
+            <CSSTransition 
+                in={showWelcomeTrigger}
+                timeout={1000}
+                classNames="fade"
+                unmountOnExit
+                >
+                <Welcome closeWelcome={() => showWelcomeHandler()}/>
+            </CSSTransition>
+
+
             <CSSTransition 
                 in={loginPopup}
                 timeout={1000}
@@ -165,6 +182,7 @@ const Home = (props) => {
                     cancel={() => setWorkerBanner(false)}/>
                 :null
             }
+            
             <div className={styles.home_back}>
                 <div className={styles.home_back_top}>
                     <span className={styles.text_brand}>Serviços</span>
@@ -276,7 +294,7 @@ const Home = (props) => {
                                     :null
                                 } */}
                                 <PostAddIcon className={styles.section_img_mini}/>
-                                <span className={styles.back_publish_text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut.</span>
+                                <span className={styles.back_publish_text}>Publicar um trabalho</span>
                                 {
                                     user._id!=null?
                                     <span className={styles.back_publish_button} style={{fontSize:'0.9rem'}} onClick={() => navigate('/publicar/novo')}>PUBLICAR</span>

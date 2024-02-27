@@ -44,8 +44,6 @@ const AdminMessages = (props) => {
     const [loadingNew, setLoadingNew] = useState(false)
     const [displayLoadingNew, setDisplayLoadingNew] = useState(false)
     const [allLoaded, setAllLoaded] = useState(false)
-    const [loadedInitial, setLoadedInitial] = useState(false)
-    const [atBottom, setAtBottom] = useState(false)
 
 
     const [isLoaded, setIsLoaded] = useState(false)
@@ -562,7 +560,7 @@ const AdminMessages = (props) => {
                         <div className={styles.row_icon_wrapper}>
                             <AssignmentIcon className={styles.row_icon}/>
                         </div>
-                        :item.worker_photoUrl!==""?
+                        :item.user_photoUrl!==""?
                         <img className={styles.row_img} src={item.user_photoUrl}/>
                         :
                         <FaceIcon className={styles.chatbox_user_img}/>
@@ -660,7 +658,6 @@ const AdminMessages = (props) => {
 
         const paramsAux = Object.fromEntries([...searchParams])
         let local_all_loaded = false
-        setAtBottom(false)
         if(!loadingNew)
         {
             setLoadingNew(true)
@@ -819,6 +816,7 @@ const AdminMessages = (props) => {
                                     <div className={styles.bot}>
                                         <div className={styles.bot_flex}>
                                             <TextareaAutosize 
+                                                maxLength={300}
                                                 className={styles.bot_input}
                                                 placeholder="Escreva a sua mensagem..."
                                                 onKeyDown={handleKeyDown}

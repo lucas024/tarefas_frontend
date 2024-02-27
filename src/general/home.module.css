@@ -3,16 +3,23 @@
     border-top: 1px solid #ddd;
     -webkit-box-shadow: inset 0px 6px 10px -4px rgba(0,0,0,0.59); 
     box-shadow: inset 0px 6px 10px -4px rgba(0,0,0,0.59);
-    position: relative;
-    height: 100%;
+    height: calc(100vh - 68px);
 }
-
+.welcome_2{
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: var(--brand);
+    z-index: 3;
+}
 .home_back{
     display: flex;
     flex-direction: column;
     background-color: var(--brand);
     width: 100%;
-    height: calc(100vh - 68px);
+    height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -304,7 +311,7 @@
 }
 .back_publish_text{
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: var(--neutral);
 }
 

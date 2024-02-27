@@ -11,7 +11,6 @@ const AdminTrabalhosPA = (props) => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [notActiveReservations, setNotActiveReservations] = useState(false)
-    const [loaded, setLoaded] = useState(false)
     const [reservations, setReservations] = useState([])
     const [refusePopup, setRefusePopup] = useState(false)
     const [refuseUserReservationId, setRefuseUserReservationId] = useState(null)
@@ -21,17 +20,17 @@ const AdminTrabalhosPA = (props) => {
         getPAReservations()
     }, [props.api_url])
 
-    useEffect(() => {
-        props.loaded&&setLoaded(true)
-    }, [props.loaded])
-
     const getPAReservations = async () => {
-        var reservations_local = await axios.post(`${props.api_url}/reservations/get_by_type`, {type: 0} )
-        setReservations(reservations_local.data)
-        if(reservations_local.data.length>0)
-        {
-            setNotActiveReservations(true)
-        }
+        setLoading(true)
+        axios.post(`${props.api_url}/reservations/get_by_type`, {type: 0})
+            .then(r => {
+                setReservations(r.data)
+                if(r.data.length>0)
+                {
+                    setNotActiveReservations(true)
+                }
+                setLoading(false)
+            })
     }
 
     const getTime = (val) => {
@@ -68,6 +67,13 @@ const AdminTrabalhosPA = (props) => {
         setRefuseReservation(reservation)
     }
 
+    const getMainPhoto = (photos, main_photo) => {
+        for(let el of photos)
+            if(el.id === main_photo) return el?.url
+
+        return photos[0]?.url
+    }
+
     const displayReservations = () => {
         return reservations.map((res, i) => {
             return (
@@ -75,8 +81,8 @@ const AdminTrabalhosPA = (props) => {
                     <div className={styles.item} style={{borderColor:getTypeColor(res.type)}}>
                         <div className={styles.item_left}>
                             {
-                                res?.photos[0]?
-                                <img src={res?.photos[0]} className={styles.item_img}></img>
+                                res?.photos?.length>0?
+                                <img className={styles.item_img} src={getMainPhoto(res.photos, res.photo_principal)}/>
                                 :<NoPhotographyIcon className={styles.item_no_img}/>
                             }
                             <div className={styles.item_title_div}>

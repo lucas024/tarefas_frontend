@@ -204,8 +204,10 @@
     border-radius: 10px;
     border-bottom-right-radius: 0;
     width: fit-content;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
-
 .chatbox_text_receive{
     margin: 2px 10px;
     background-color: white;
@@ -213,6 +215,9 @@
     padding: 10px 10px;
     border-radius: 10px;
     border-bottom-left-radius: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .chatbox_text_value{
     max-width: 200px;

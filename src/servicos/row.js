@@ -68,7 +68,7 @@ const Row = (props) => {
             <div className={styles.row_right}>
                 <div className={styles.row_right_left}>
                     {
-                        props.item.photos?
+                        props.item.photos?.length>0?
                         <img className={styles.row_img} src={getMainPhoto(props.item.photos, props.item.photo_principal)}/>
                         :
                         <NoPhotographyIcon className={styles.item_no_img}/>

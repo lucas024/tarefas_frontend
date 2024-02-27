@@ -10,21 +10,20 @@ const AdminTrabalhosA = (props) => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [activeReservations, setActiveReservations] = useState(false)
-    const [loaded, setLoaded] = useState(false)
     const [reservations, setReservations] = useState([])
 
-    useEffect(async () => {
-        var reservations_local = await axios.post(`${props.api_url}/reservations/get_by_type`, {type: 1} )
-        setReservations(reservations_local.data)
-        if(reservations_local.data.length>0)
-        {
-            setActiveReservations(true)
-        }
-    }, [props.api_url])
-
     useEffect(() => {
-        props.loaded&&setLoaded(true)
-    }, [props.loaded])
+        setLoading(true)
+        axios.post(`${props.api_url}/reservations/get_by_type`, {type: 1})
+            .then(r => {
+                setReservations(r.data)
+                if(r.data.length>0)
+                {
+                    setActiveReservations(true)
+                }
+                setLoading(false)
+            })
+    }, [props.api_url])
 
     const getTime = (val) => {
         let time = new Date(val)
@@ -53,6 +52,14 @@ const AdminTrabalhosA = (props) => {
         setReservations(reservationsAux)
     }
 
+    const getMainPhoto = (photos, main_photo) => {
+        for(let el of photos)
+            if(el.id === main_photo) return el?.url
+
+        return photos[0]?.url
+    }
+
+
     const displayReservations = () => {
         return reservations.map((res, i) => {
             return (
@@ -60,8 +67,8 @@ const AdminTrabalhosA = (props) => {
                     <div className={styles.item} style={{borderColor:getTypeColor(res.type)}}>
                         <div className={styles.item_left}>
                             {
-                                res?.photos[0]?
-                                <img src={res?.photos[0]} className={styles.item_img}></img>
+                                res?.photos?.length>0?
+                                <img className={styles.item_img} src={getMainPhoto(res.photos, res.photo_principal)}/>
                                 :<NoPhotographyIcon className={styles.item_no_img}/>
                             }
                             <div className={styles.item_title_div}>
@@ -119,7 +126,7 @@ const AdminTrabalhosA = (props) => {
 
             <div className={styles.list}>
                 <div className={styles.list_prox}>
-                    <span className={styles.list_prox_text}>Trabalhos Aceites</span>
+                    <span className={styles.list_prox_text} style={{color:"white", fontStyle:"normal"}}>Trabalhos Aceites</span>
                 </div>
                     <div>
                     {
@@ -128,7 +135,7 @@ const AdminTrabalhosA = (props) => {
                         :
                         <div className={styles.item_none}>
                             <div className={styles.item_flex}>
-                                <span className={styles.item_type_tbd}>Sem Trabalhos Por Activar</span>
+                                <span className={styles.item_type_tbd} style={{color:"white"}}>Sem Trabalhos Por Activar</span>
                             </div>
                         </div>
                     }

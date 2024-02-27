@@ -14,12 +14,13 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useSelector } from 'react-redux'
+import { TextareaAutosize } from '@mui/material';
 
 const Suporte = (props) => {
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
 
-    const [messages, setMessages] = useState()
+    const [messages, setMessages] = useState([])
     const [currentText, setCurrentText] = useState("")
     const [loading, setLoading] = useState(true)
     const [chat, setChat] = useState(null)
@@ -53,20 +54,25 @@ const Suporte = (props) => {
     useEffect(() => {      
         setLoading(true)
         if(user && user.admin_chat){
-            let chat = axios.get(`${api_url}/admin_chats/get_chat`, { params: {chat_id: user.admin_chat} })
-            if(chat.data != null){
-                setChat(chat.data)
-                setMessages(chat.data.texts)
-                checkForRefusalsNoRepetitive(chat.data.texts)
-                scrollToBottom()
-            }
-            let reservs = axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} })
-            if(reservs)
-            {
-                setReservations(reservs.data)
-            }
-                        
-            setLoading(false)
+            console.log("yes")
+            axios.get(`${api_url}/admin_chats/get_chat`, { params: {chat_id: user.admin_chat} })
+                .then(chat => {
+                    if(chat.data != null){
+                        console.log('sim')
+                        setChat(chat.data)
+                        setMessages(chat.data.texts)
+                        checkForRefusalsNoRepetitive(chat.data.texts)
+                        scrollToBottom()
+                    }
+                    let reservs = axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} })
+                    if(reservs)
+                    {
+                        setReservations(reservs.data)
+                    }
+                                
+                    setLoading(false)
+                })
+
         }
         else{
             setLoading(false)
@@ -92,12 +98,6 @@ const Suporte = (props) => {
 
         return () => s.off('receive-message')
     }, [s])
-
-    useEffect(() => {
-        textareaRef.current.style.height = "0px";
-        const scrollHeight = textareaRef.current.scrollHeight;
-        textareaRef.current.style.height = scrollHeight + "px";
-    }, [currentText])
 
     const checkForRefusalsNoRepetitive = messages_aux => {
         const alreadyChecked = []
@@ -137,12 +137,16 @@ const Suporte = (props) => {
         console.log(messages);
         setMessages(prevMessages => [...prevMessages, text_object])
 
-        var chat_aux = chat
-        chat_aux.last_text = text_object
-        chat_aux.admin_read = true
-        chat_aux.user_read = false
+        if(chat)
+        {
+            var chat_aux = chat
+            chat_aux.last_text = text_object
+            chat_aux.admin_read = true
+            chat_aux.user_read = false
+    
+            setChat(chat_aux)
+        }
 
-        setChat(chat_aux)
 
         scrollToBottom()
     }
@@ -163,8 +167,18 @@ const Suporte = (props) => {
                 timestamp : time,
                 text: currentText
             }
-
-            setMessages([...messages, text_object])
+            if(messages?.length>0)
+            {
+                let val = [...messages]
+                val.push(text_object)
+                setMessages(val)
+            }
+            else
+            {
+                setMessages([text_object])
+            }
+            
+            
 
             setCurrentText("")
 
@@ -353,7 +367,8 @@ const Suporte = (props) => {
                                     <p onClick={() => editPublicationHandler(msg.reservation_id)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Carregue aqui para editar publicação.</p>
                                 </div>
                                 :
-                                <div className={msg.origin_type===0?styles.chatbox_text_send:styles.chatbox_text_receive}>
+                                <div className={msg.origin_type!==4?styles.chatbox_text_send:styles.chatbox_text_receive}
+                                    style={{backgroundColor:msg.origin_type===1?"#FF785A":msg.origin_type===0?"#0358e5":"#fdd835"}}>
                                     <p className={styles.chatbox_text_value}>{msg.text}</p>
                                 </div>
                             }
@@ -395,11 +410,12 @@ const Suporte = (props) => {
                         <div className={styles.top_left_flex}>
                             {/* <span className={styles.top_left_indicator} style={{backgroundColor:adminOn?"#6EB241":"#F40009"}}></span> */}
                             <SupportAgentIcon className={styles.top_left_name}/>
-                            <span className={styles.top_left_name} style={{margin:"0px 5px 0 10px"}}>Cristina</span>
-                            <span className={styles.top_left_name_indicator}>(Suporte)</span>
+                            <span className={styles.top_left_name} style={{margin:"0px 5px 0 10px", color:"#fdd835"}}>Cristina</span>
+                            <span className={styles.top_left_name_indicator} style={{color:"#ffffff"}}>(Suporte)</span>
 
                         </div>
                     </div>
+                    <div className={styles.top_separator_worker_reservation}/>
                     <ScrollToBottom className={styles.chat_area}>
                         {
                             messageDisplay()
@@ -408,16 +424,16 @@ const Suporte = (props) => {
                     </ScrollToBottom>
                     <div className={styles.bot}>
                         <div className={styles.bot_flex}>
-                            <textarea 
+                            <TextareaAutosize 
+                                maxLength={300}
+                                className={styles.bot_input}
+                                placeholder="Escreva a sua mensagem..."
                                 onKeyDown={handleKeyDown}
-                                ref={textareaRef}
-                                style={{}} 
                                 value={currentText} 
                                 onChange={e => setCurrentText(e.target.value)} 
-                                className={styles.bot_input} 
-                                placeholder="Escreva a sua mensagem..."></textarea>
+                                />
                             <div className={styles.bot_right_flex}>
-                                <SendOutlinedIcon className={styles.send_icon} onClick={() => messageHandler()}/>
+                                <SendOutlinedIcon className={user?.type===1?styles.send_icon_worker:styles.send_icon_user} onClick={() => messageHandler()}/>
                             </div>
                         </div>
                     </div>
