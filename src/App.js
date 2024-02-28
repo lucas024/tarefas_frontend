@@ -5,9 +5,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Home from './general/home'
+import Home from './general/home.js'
 import Navbar from './general/navbar'
-import './app.css'
 import Publicar from './user/publicar'
 import Auth from './auth/auth';
 import { onAuthStateChanged } from 'firebase/auth';

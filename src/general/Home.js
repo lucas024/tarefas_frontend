@@ -236,7 +236,7 @@ const Home = (props) => {
                                             optionFirst={first} 
                                             option={second} 
                                             changeOption={val => setSecond(val)}
-                                            placeholder={'Serviço...'}/>
+                                            placeholder={'Tarefa...'}/>
                                     </div>
                                 </div>
                                 <div className={styles.zone_arrow_div}>
