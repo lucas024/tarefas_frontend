@@ -29,7 +29,7 @@ import logo_text_worker from '../assets/logo_text_worker.png'
 
 const firstOptions = [
     { value: 'trabalhadores', label: 'Trabalhadores' },
-    { value: 'trabalhos', label: 'Trabalhos' },
+    { value: 'trabalhos', label: 'Tarefas' },
 ]
 
 
@@ -236,7 +236,7 @@ const Home = (props) => {
                                             optionFirst={first} 
                                             option={second} 
                                             changeOption={val => setSecond(val)}
-                                            placeholder={'Serviço...'}/>
+                                            placeholder={'Tarefa...'}/>
                                     </div>
                                 </div>
                                 <div className={styles.zone_arrow_div}>
@@ -299,7 +299,7 @@ const Home = (props) => {
                                     :null
                                 } */}
                                 <PostAddIcon className={styles.section_img_mini}/>
-                                <span className={styles.back_publish_text}>Publicar um trabalho</span>
+                                <span className={styles.back_publish_text}>Publicar uma tarefa</span>
                                 {
                                     user._id!=null?
                                     <span className={styles.back_publish_button} style={{fontSize:'0.9rem'}} onClick={() => navigate('/publicar/novo')}>PUBLICAR</span>
@@ -339,14 +339,14 @@ const Home = (props) => {
                                         <AssignmentIcon className={styles.section_img} style={{color:"white"}}/>
                                     </div>
                                     <span className={styles.section_image_text_title} style={{color:"#0358e5"}}>
-                                        TRABALHOS
+                                        TAREFAS
                                     </span>
                                     <span className={styles.section_image_text}>
-                                        Ver todos os trabalhos disponíveis
+                                        Ver todos os tarefas disponíveis
                                     </span>
                                     <div className={styles.section_button} onClick={() => navigate('/main/publications/trabalhos')}>
                                         <p className={styles.section_title} style={{fontSize: '0.9rem'}}>
-                                            VER TRABALHOS
+                                            VER TAREFAS
                                         </p>
                                     </div>
                                 </div> 
@@ -413,7 +413,7 @@ const Home = (props) => {
                 <div className={styles.footer}>
                     <div className={styles.footer_div}>
                         <div className={styles.footer_div_column}>
-                            <p className={styles.footer_div_text}>APP Serviços</p>
+                            <p className={styles.footer_div_text}>APP Tarefas</p>
                             <p className={styles.footer_div_text}>Ajuda e contactos</p>
                             <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me trabalhador</p>
                         </div>
