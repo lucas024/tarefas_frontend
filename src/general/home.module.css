@@ -22,6 +22,7 @@
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    position: relative;
 }
 .home_back_top{
     height: 100%;
@@ -44,13 +45,24 @@
     background-color: var(--job);
     display: inline-block;
     transition: all 0.5s;
-    margin-top: 40px;
+    margin-top: 60px;
 }
-.text_brand{
+/* .text_brand{
     position: absolute;
     left: 20px;
-    top: 20px;
-    color: var(--background);
+    top: 0;
+    width: 128px;
+    height: 72px;
+    z-index: 5;
+} */
+.text_brand{
+    position: absolute;
+    top: 0px;
+    margin: 0px auto;
+    margin-top: 0px;
+    width: 192px;
+    z-index: 5;
+    transition: all 500ms;
 }
 .text_title{
     position: absolute;
@@ -67,7 +79,7 @@
     justify-content: center;
     align-items: 'center';
     width: '100%';
-    margin-top: 80px;
+    margin-top: 100px;
     width: 100%;
 }
 .main{
@@ -92,8 +104,8 @@
 .zone_img{
     background-color: var(--brand);
     border-radius: 50%;
-    height: 100px !important;
-    width: 100px !important;
+    height: 90px !important;
+    width: 90px !important;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -366,7 +378,6 @@
     font-weight: 600;
     position: relative;
     margin: auto;
-    margin-top: 10px;
 }
 .back_publish_button:hover{
     cursor: pointer;
@@ -698,7 +709,9 @@
     .section_content{
         max-height: 450px;
     }
-
+    .text_brand{
+        margin-top: 0;
+    }
     .zone_arrow{
         width: 130px;
         margin: 0 10px;
@@ -708,8 +721,8 @@
         width: 80px;
     }
     .zone_img{
-        height: 90px !important;
-        width: 90px !important;
+        height: 100px !important;
+        width: 100px !important;
     }
     .zone_image_region{
         font-size: 1rem;
@@ -767,6 +780,9 @@
     }
     .text_title{
         top: 50px;
+    }
+    .text_brand{
+        margin-top: 10px;
     }
 }
 
@@ -857,7 +873,7 @@
         max-height: 450px;
     }
     .home_divider{
-        margin-top: 70px;
+        margin-top: 90px;
     }
     /* .search_clear_wrapper{
         top: auto;

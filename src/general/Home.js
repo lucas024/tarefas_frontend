@@ -24,6 +24,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { search_scroll_save } from '../store';
 import Welcome from './welcome'
 
+import logo_text from '../assets/logo_text.png'
+import logo_text_worker from '../assets/logo_text_worker.png'
+
 const firstOptions = [
     { value: 'trabalhadores', label: 'Trabalhadores' },
     { value: 'trabalhos', label: 'Trabalhos' },
@@ -182,11 +185,13 @@ const Home = (props) => {
                     cancel={() => setWorkerBanner(false)}/>
                 :null
             }
-            
             <div className={styles.home_back}>
+            {/* <img className={styles.text_brand} src={logo_text}/> */}
                 <div className={styles.home_back_top}>
-                    <span className={styles.text_brand}>Serviços</span>
-                    <span className={styles.text_title}>O que procura hoje no Serviços?</span>
+                    <img className={styles.text_brand} src={logo_text} style={{opacity:first==='trabalhos'?1:0}}/>
+                    <img className={styles.text_brand} src={logo_text_worker} style={{opacity:first==='trabalhadores'?1:0}}/>
+                    
+                    {/* <span className={styles.text_title}>O que procura hoje?</span> */}
                     {
                         loaded?
                         <div className={styles.main_wrapper}>

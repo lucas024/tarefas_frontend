@@ -4,6 +4,7 @@
 .navbar{
     background-color: white;
     flex: 0 1 auto;
+    height: 67px;
 }
 .flex{
     display: flex;
@@ -13,11 +14,14 @@
     width: 98%;
 }
 
-.title{
-    font-size: 3rem;
-    font-weight: 700;
-    font-family: 'Dancing Script', cursive;
-    margin-top: 10px;
+.logo{
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+.logo:hover{
+    transform: scale(1.05);
+    transition: all 150ms;
 }
 .flex_end{
     display: flex;

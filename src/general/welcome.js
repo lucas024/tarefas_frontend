@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './welcome.module.css'
+import logo_text from '../assets/logo_text.png'
 
 const Welcome = (props) => {
 
@@ -8,10 +9,10 @@ const Welcome = (props) => {
 
             <div className={styles.welcome}>
                 <div className={styles.main}>
-                    <p className={styles.title}>Bem vindo à plataforma Serviços!</p>
+                    <img className={styles.text_brand} src={logo_text}/>
                     {/* <span className={styles.sub_title_title}>No Serviços poderás:</span> */}
                     <div className={styles.sub_main}>
-                    <span className={styles.sub_title_separator} style={{marginTop:'5px'}}>O lugar ideal para</span>
+                    <span className={styles.sub_title_separator}>O lugar ideal para</span>
                         <div className={styles.sub_sub_main}>
                             <span className={styles.sub_title}>
                                 <span className={styles.sub_title_special} style={{color:"#FF785A"}}> encontrar profissionais </span> 

@@ -15,6 +15,7 @@ import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import { useSelector, useDispatch } from 'react-redux'
 import { user_reset } from '../store';
+import logo from '../assets/logo.png'
 
 const Navbar = (props) => {
     const dispatch = useDispatch()
@@ -74,8 +75,8 @@ const Navbar = (props) => {
         <div className={styles.navbar}>
             <div className={styles.flex}>
                 <div className={styles.flex_end}>
-                    <p className={styles.title} 
-                        onClick={() => navigate('/')}>Logo</p>
+                    <img className={styles.logo} src={logo}
+                        onClick={() => navigate('/')}/>
                 </div>
                     <div className={styles.flex_end}>
                         <div className={styles.flex_right}>
