@@ -5,19 +5,19 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Home from 'general/home.js'
-import Navbar from 'general/navbar'
-import Publicar from 'user/publicar'
-import Auth from 'auth/auth';
+import Home from './general/home.js'
+import Navbar from './general/navbar'
+import Publicar from './user/publicar'
+import Auth from './auth/auth';
 import { onAuthStateChanged } from 'firebase/auth';
-import {auth} from 'firebase/firebase'
+import {auth} from './firebase/firebase'
 import axios from 'axios'
-import User from 'user/user';
-import Main from 'servicos/main';
-import Trabalho from 'main/trabalho';
-import AuthWorker from 'auth/authWorker';
-import Trabalhador from 'main/trabalhador';
-import Admin from 'admin/admin';
+import User from './user/user';
+import Main from './servicos/main';
+import Trabalho from './main/trabalho';
+import AuthWorker from './auth/authWorker';
+import Trabalhador from './main/trabalhador';
+import Admin from './admin/admin';
 
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -28,9 +28,9 @@ import {
         user_reset,
         user_update_phone_verified,
         user_update_email_verified
-      } from 'store';
-import ProtectedRoute from 'protectedRoute';
-import ConfirmEmail from 'general/confirmEmail';
+      } from './store';
+import ProtectedRoute from './protectedRoute';
+import ConfirmEmail from './general/confirmEmail';
 
 
 function App() {
