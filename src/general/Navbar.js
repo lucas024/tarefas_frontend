@@ -87,7 +87,7 @@ const Navbar = (props) => {
                                 </span>
                                 :user?.type===1?
                                 <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/main/publications/trabalhos')}}>
-                                        TRABALHOS
+                                        TAREFAS
                                 </span>
                                 :loaded&&user.type===0?
                                 <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
@@ -161,7 +161,7 @@ const Navbar = (props) => {
                                                         <div className={styles.drop_div_special}>
                                                             <div className={styles.drop_div_flex}>
                                                                 <AssignmentOutlinedIcon className={styles.drop_div_flex_icon}/>
-                                                                <span className={styles.drop_div_text}>Meus Trabalhos</span>
+                                                                <span className={styles.drop_div_text}>Minhas Tarefas</span>
                                                                 {/* <span className={styles.drop_div_number}>
                                                                     <span className={styles.drop_div_number_text}>1</span>
                                                                 </span> */}

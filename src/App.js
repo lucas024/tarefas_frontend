@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 import Home from './general/home'
 import Navbar from './general/navbar'
-import './app.css'
 import Publicar from './user/publicar'
 import Auth from './auth/auth';
 import { onAuthStateChanged } from 'firebase/auth';
