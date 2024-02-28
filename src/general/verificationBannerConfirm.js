@@ -18,7 +18,7 @@ const VerificationBannerConfirm = (props) => {
                 {
                     next===0?
                     <div className={styles.main_inner}>
-                        <p className={styles.phone_description}>Ao confirmar a sua publicação de trabalho será analisada, 
+                        <p className={styles.phone_description}>Ao confirmar a sua publicação de tarefa será analisada, 
                         podendo seguir o processo da publicação na sua àrea pessoal.</p>
                         
                         <div className={styles.button} style={{backgroundColor:"#0358e5"}} onClick={() => {props.confirm()&&setNext(1)}}>
@@ -32,7 +32,7 @@ const VerificationBannerConfirm = (props) => {
                         {
                             props.loadingConfirm?
                             <div style={{marginTop:"0px"}}>
-                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A publicar o seu trabalho</p>
+                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A publicar a sua tarefa</p>
                                 <Lottie
                                     loop={true}
                                     autoplay={true}
@@ -65,13 +65,13 @@ const VerificationBannerConfirm = (props) => {
                                     height={80}
                                     width={80}
                                 />
-                                <p className={styles.phone_description}>Trabalho publicado com sucesso. Será rápidamente analisado pela equipa da Serviços.</p>
+                                <p className={styles.phone_description}>Tarefa publicada com sucesso. Será rápidamente analisado pela equipa da Tarefas.</p>
                                 <div style={{display:'flex', justifyContent:'center'}}>
                                     <div 
                                         className={styles.button}
                                         style={{backgroundColor:"#0358e5"}}
                                         onClick={() => navigate('/user?t=publications', {replace:true})}>
-                                        <span className={styles.button_text} style={{color:"white"}}>VER AS MINHAS PUBLICAÇÕES</span>
+                                        <span className={styles.button_text} style={{color:"white"}}>VER AS MINHAS TAREFAS</span>
                                     </div>
                                 </div>
                                

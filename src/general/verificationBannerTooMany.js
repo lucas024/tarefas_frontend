@@ -13,7 +13,7 @@ const VerificationBannerTooMany = (props) => {
                 <span className={styles.title_separator}/>
                 <div className={styles.main_inner}>
                     <p className={styles.phone_description} style={{textAlign:"center"}}>
-                    Já tem 5 publicações activas/pendentes. Conclua ou remova uma ou mais publicações anteriores para publicar um novo trabalho.
+                    Já tem 5 publicações activas/pendentes. Conclua ou remova uma ou mais publicações anteriores para publicar uma nova tarefa.
                     </p>
                     
                     <div className={styles.button} style={{backgroundColor:"#0358e5"}} onClick={() => navigate('/user?t=publications', {replace:true})}>

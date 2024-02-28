@@ -128,7 +128,7 @@ const SelectPublications = (props) => {
                 :props.trabalho?
                 <span className={styles.placeholder}>
                     <BuildOutlinedIcon className={styles.placeholder_icon}/>
-                    Serviço
+                    Tarefa
                 </span>
                 :
                 <span className={styles.placeholder}>

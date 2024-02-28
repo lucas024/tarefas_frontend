@@ -10,20 +10,19 @@ const Welcome = (props) => {
             <div className={styles.welcome}>
                 <div className={styles.main}>
                     <img className={styles.text_brand} src={logo_text}/>
-                    {/* <span className={styles.sub_title_title}>No Serviços poderás:</span> */}
                     <div className={styles.sub_main}>
                     <span className={styles.sub_title_separator}>O lugar ideal para</span>
                         <div className={styles.sub_sub_main}>
                             <span className={styles.sub_title}>
                                 <span className={styles.sub_title_special} style={{color:"#FF785A"}}> encontrar profissionais </span> 
-                                para realizar o teu trabalho.
+                                para realizar a tua tarefa.
                             </span>
                         </div>
                         <span className={styles.sub_title_separator}>OU</span>
                         <div className={styles.sub_sub_main}>
                             <span className={styles.sub_title}>
                                 <span className={styles.sub_title_special} style={{color:"#0358e5"}}> publicar </span>
-                                o teu trabalho e receber contacto dos profissionais.
+                                a tua tarefa e receber contacto dos profissionais.
                             </span>
                         </div>
                     </div>

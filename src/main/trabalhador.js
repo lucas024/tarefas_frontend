@@ -270,14 +270,14 @@ const Trabalhador = props => {
                     </div>
                     <div className={styles.bottom_right}>
                         <div className={styles.bottom_right_wrapper}>
-                            <span className={styles.bottom_right_title}>Trabalhos</span>
+                            <span className={styles.bottom_right_title}>Tarefas</span>
                             <div className={styles.list}>
                                 {mapTrabalhosList()}
                             </div>
                         </div>
                         <span className={styles.bottom_right_divider}></span>
                         <div className={styles.bottom_right_wrapper}>
-                            <span className={styles.bottom_right_title}>Regiões</span>
+                            <span className={styles.bottom_right_title}>Distritos</span>
                             <div className={styles.list}>
                                 {mapRegioesList()}
                             </div>

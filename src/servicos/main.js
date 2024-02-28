@@ -49,6 +49,8 @@ const Main = (props) => {
     const [trabalhosVistos, setTrabalhosVistos] = useState([])
 
     const [selectedType, setSelectedType] = useState(null)
+    const [visualSelected, setVisualSelected] = useState(null)
+
 
     const myRef = useRef(null)
     const postRef = useRef(null)
@@ -68,6 +70,9 @@ const Main = (props) => {
         else
             setParams(paramsAux)
         setSelectedType(arr_pathname[3])
+
+        if(arr_pathname[3]==="trabalhos") setVisualSelected("tarefas")
+        else setVisualSelected("trabalhadores")
 
         if(search_context?.list == null 
             || ((search_context?.work !== paramsAux.work) && paramsAux.work != undefined)
@@ -394,7 +399,7 @@ const Main = (props) => {
 
     const options = [
         { value: 'trabalhadores', label: 'trabalhadores' },
-        { value: 'trabalhos', label: 'trabalhos' },
+        { value: 'trabalhos', label: 'tarefas' },
     ]
 
     return (        
@@ -462,8 +467,8 @@ const Main = (props) => {
                         
                         {
                             allItemsLength===1?
-                            <span className={styles.top_info_numbers}>1 {selectedType.slice(0, selectedType==="trabalhos"?-1:-2)}</span>
-                            :<span className={styles.top_info_numbers}>{allItemsLength} {selectedType}</span>
+                            <span className={styles.top_info_numbers}>1 {visualSelected.slice(0, selectedType==="trabalhos"?-1:-2)}</span>
+                            :<span className={styles.top_info_numbers}>{allItemsLength} {visualSelected}</span>
                         }
                         <div className={styles.top_info_filter}>
                             <div className={styles.top_info_filter_flex}>

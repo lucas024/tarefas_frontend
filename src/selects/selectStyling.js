@@ -90,7 +90,7 @@ const TopSelect = (props) => {
             options={profissoes}
             value={profissoes.filter(option => option.value === props.id)}
             isSearchable={false}
-            placeholder={<span style={{color:"#fff", fontSize:'0.8rem', marginLeft:"10px"}}>ESCOLHER SERVIÇO</span>}
+            placeholder={<span style={{color:"#fff", fontSize:'0.8rem', marginLeft:"10px"}}>ESCOLHER TAREFA</span>}
             onChange={value => {
                 selectChange(value.value)
             }}

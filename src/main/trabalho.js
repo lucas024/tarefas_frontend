@@ -446,11 +446,11 @@ const Trabalho = (props) => {
                         location.state&&location.state.fromUserPage&&userView?
                         <div className={styles.previous_voltar} style={{borderBottom:`3px solid #0358e5`}} onClick={() => backHandler()}>
                             <ArrowBackIcon className={styles.previous_symbol}/>
-                            <span className={styles.previous_voltar_text}>VOLTAR AOS <span style={{color:"#0358e5"}}>MEUS TRABALHOS</span></span>
+                            <span className={styles.previous_voltar_text}>VOLTAR AOS <span style={{color:"#0358e5"}}>MINHAS TAREFAS</span></span>
                         </div>
                         :
                         <div>
-                            <p className={styles.reservar_upper_title}>TRABALHO</p>
+                            <p className={styles.reservar_upper_title}>TAREFA</p>
                             <div className={styles.normal_back}>
                                 <Link className={styles.normal_back_left} 
                                     to={-1}
@@ -462,7 +462,7 @@ const Trabalho = (props) => {
                                     <span className={styles.normal_back_right_dir} onClick={() => navigate({
                                     pathname: '/main/publications/trabalhos',
                                     state: {from_page: true}
-                                    })}>Trabalhos</span>
+                                    })}>Tarefas</span>
                                     <div className={styles.normal_back_right_sep_wrapper}>
                                         <div className={styles.normal_back_right_sep}>|</div>
                                     </div>

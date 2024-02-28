@@ -52,7 +52,7 @@ const PublicarDetails = props => {
             <div className={styles.top}>
                 <div className={styles.diff_right_title_container}>
                     <span className={styles.diff_right_title}>
-                        Localização do Trabalho<span className={styles.action}>*</span>
+                        Localização da Tarefa<span className={styles.action}>*</span>
                     </span>
                     <div className={styles.top_check} style={{backgroundColor:props.correct_location?'#0358e5':"", top:0, right:0}}>
                         <DoneIcon className={styles.top_check_element}/>
