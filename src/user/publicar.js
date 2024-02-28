@@ -645,8 +645,8 @@ const Publicar = (props) => {
                         <div className={styles.reservar_upper} style={{marginTop:edit?"100px":""}}>
                             <p className={styles.reservar_upper_title}>
                                 {edit?
-                                <div><span style={{color:'#FF785A'}}>EDITAR</span><span> TRABALHO</span></div>:
-                                'PUBLICAR TRABALHO'
+                                <div><span style={{color:'#FF785A'}}>EDITAR</span><span> TAREFA</span></div>:
+                                'PUBLICAR TAREFA'
                                 }
                             </p>
                             {
@@ -654,7 +654,7 @@ const Publicar = (props) => {
                                 null
                                 :
                                 <p className={styles.reservar_upper_desc}>
-                                    Criar e publicar o seu <span className={styles.action}>trabalho</span>.<br/>
+                                    Criar e publicar a tua <span className={styles.action}>tarefa</span>.<br/>
                                     <br></br>
                                 </p>
                             }
@@ -670,7 +670,7 @@ const Publicar = (props) => {
                                     :
                                     <span className={styles.display_element_underline} style={{backgroundColor:"transparent"}}/>
                                 }
-                                <p className={styles.display_element_text}>Serviço</p>
+                                <p className={styles.display_element_text}>Tarefa</p>
                             </div>
                             <span className={selectedTab===0?styles.display_element_bar_selected:selectedTab>0?styles.display_element_bar:styles.display_element_empty}/>
                             <div className={styles.display_element}>
@@ -802,7 +802,7 @@ const Publicar = (props) => {
                                         <div className={styles.zone_number_div}>
                                             <span className={styles.zone_number}>1</span>
                                         </div>
-                                        <p className={styles.zone_title}>Serviço</p>
+                                        <p className={styles.zone_title}>Tarefa</p>
                                         <div className={styles.zone_flex}>
                                             <div className={styles.zone_flex_area}>
                                                 <div className={styles.zone_service_icon_wrapper}>

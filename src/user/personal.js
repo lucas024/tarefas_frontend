@@ -620,13 +620,13 @@ const Personal = (props) => {
                                             {
                                                 selectedProf?.length>0&&!editBottom?
                                                 <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text_complete}>Trabalhos que exerço</span>
+                                                    <span className={styles.line_text_complete}>Tarefas que exerço</span>
                                                     <CheckIcon className={styles.line_val_complete}></CheckIcon>
                                                 </div>
                                                 
                                                 :
                                                 <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text}>Trabalhos que exerço</span>
+                                                    <span className={styles.line_text}>Tarefas que exerço</span>
                                                     <ClearIcon className={styles.line_val}></ClearIcon>
                                                 </div>
 
@@ -637,13 +637,13 @@ const Personal = (props) => {
                                             {
                                                 selectedReg?.length>0&&!editBottom?
                                                 <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text_complete}>Regiões onde trabalho</span>
+                                                    <span className={styles.line_text_complete}>Distritos onde trabalho</span>
                                                     <CheckIcon className={styles.line_val_complete}></CheckIcon>
                                                 </div>
                                                 
                                                 :
                                                 <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text}>Regiões onde trabalho</span>
+                                                    <span className={styles.line_text}>Distritos onde trabalho</span>
                                                     <ClearIcon className={styles.line_val}></ClearIcon>
                                                 </div>
 
@@ -857,11 +857,11 @@ const Personal = (props) => {
                             <Loader loading={loadingBottom}/>                            
                             <div className={styles.flex_bottom}>
                                 <div className={styles.flex_left}>
-                                    <span className={styles.flex_title}>Serviços que exerço</span>
+                                    <span className={styles.flex_title}>Tarefas que exerço</span>
                                     <span className={editBottom?styles.divider_active:styles.divider}></span>
                                     {
                                         editBottom&&selectedProf.length===0?
-                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um serviço!</span>
+                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um tipo de tarefa!</span>
                                         :null
                                     }
                                     <div className={styles.flex_select_div}>

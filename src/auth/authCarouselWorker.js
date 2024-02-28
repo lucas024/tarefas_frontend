@@ -166,7 +166,7 @@ const AuthCarouselWorker = props => {
             </div>
 
             <div className={styles.login}>
-                <p className={styles.register_title}>Os serviços que excerce</p>
+                <p className={styles.register_title}>As tarefas que excerce</p>
                 <span className={styles.selected_number}>({props.selectedProf.length}/9)</span>
                 <div className={styles.map_div}>
                     {mapTrabalhos()}
@@ -195,14 +195,14 @@ const AuthCarouselWorker = props => {
 
                 <div className={styles.bottom}>
                     <div className={styles.bottom_wrapper}>
-                        <span className={styles.bottom_title}>Trabalhos</span>
+                        <span className={styles.bottom_title}>Tarefas</span>
                         <div className={styles.list}>
                             {mapTrabalhosList()}
                         </div>
                     </div>
                     <span className={styles.bottom_divider}></span>
                     <div className={styles.bottom_wrapper}>
-                        <span className={styles.bottom_title}>Regiões</span>
+                        <span className={styles.bottom_title}>Distritos</span>
                         <div className={styles.list}>
                             {mapRegioesList()}
                         </div>

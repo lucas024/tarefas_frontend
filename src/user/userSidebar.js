@@ -92,7 +92,7 @@ const UserSidebar = (props) => {
                             <ListItemIcon>
                                 <AssignmentdIcon sx={{color:"#ffffff", zIndex:1}}/>
                             </ListItemIcon>
-                            <ListItemText primary={<span className={styles.prox}>Meus Trabalhos</span>} sx={{color:"#ffffff", zIndex:1}}/>
+                            <ListItemText primary={<span className={styles.prox}>Minhas Tarefas</span>} sx={{color:"#ffffff", zIndex:1}}/>
                         </ListItemButton >
                     }
                     
@@ -211,7 +211,7 @@ const UserSidebar = (props) => {
                     :
                     user?.state===2?
                     <div className={styles.worker_text_div} style={{color:"#fdd835"}}>
-                        A sua conta foi desativada pela equipa da Serviços.
+                        A sua conta foi desativada pela equipa da TAREFAS.
                     </div>
                     :null
                 }

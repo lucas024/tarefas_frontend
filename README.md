@@ -1,4 +1,4 @@
-Serviços is a soon-to-be deployed web + mobile APP that will allow users to find for and book professionals that offer services related to house building, paiting, plumming and more!
+Tarefas is a soon-to-be deployed web + mobile APP that will allow users to find for and book professionals that offer services related to house building, paiting, plumming and more!
 
 Functionalities offered to users:
 

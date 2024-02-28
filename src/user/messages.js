@@ -312,7 +312,7 @@ const AdminMessages = (props) => {
                                 msg.starter?
                                 <div className={styles.chatbox_text_starter} style={{borderBottomRightRadius:0}}>
                                     <span className={styles.chatbox_starter}>
-                                        <span className={styles.chatbot_template}>Interesse no trabalho!</span>
+                                        <span className={styles.chatbot_template}>Interesse na tarefa!</span>
                                         <div className={styles.chatbox_template_title_wrapper}>
                                             <p className={styles.chatbox_template_title} onClick={() => navigate(`/main/publications/publication?id=${chatInformation.reservation_id}`)}>{chatInformation.reservation_title}</p>
                                         </div>
@@ -405,7 +405,7 @@ const AdminMessages = (props) => {
                                 msg.starter?
                                 <div className={styles.chatbox_text_starter} style={{borderBottomLeftRadius:0}}>
                                     <span className={styles.chatbox_starter}>
-                                        <span className={styles.chatbot_template}>Interesse no trabalho!</span>
+                                        <span className={styles.chatbot_template}>Interesse na tarefa!</span>
                                         <div className={styles.chatbox_template_title_wrapper}>
                                             <p className={styles.chatbox_template_title} onClick={() => navigate(`/main/publications/publication?id=${chatInformation.reservation_id}`)}>{chatInformation.reservation_title}</p>
                                         </div>
@@ -801,7 +801,7 @@ const AdminMessages = (props) => {
 
                                             <div className={styles.post} onClick={() => navigate(`/main/publications/publication?id=${chatInformation.reservation_id}`)}>
                                                 <span className={styles.post_title}>{chatInformation.reservation_title}</span>
-                                                <span className={styles.post_link} >ver trabalho</span>
+                                                <span className={styles.post_link} >ver tarefa</span>
                                             </div>
                                             :null
                                             

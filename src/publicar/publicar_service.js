@@ -19,7 +19,7 @@ const PublicarService = props => {
         <div>
             <div className={styles.diff_right_title_container}>
                 <span className={styles.diff_right_title}>
-                    Serviço<span className={styles.action}>*</span>
+                    Tarefa<span className={styles.action}>*</span>
                 </span>
             </div>
             <div className={styles.top_left}>
@@ -58,7 +58,7 @@ const PublicarService = props => {
                         </span>
                     }
                 
-                <input placeholder="Título do trabalho..." 
+                <input placeholder="Título da tarefa..." 
                     tabindex={props.selectedTab===0?'1':'-1'}
                     maxLength={40} 
                     onChange={e => props.setTitulo(e.target.value)} 
@@ -91,7 +91,7 @@ const PublicarService = props => {
                         minRows={8}
                         maxLength={400}
                         className={styles.top_desc_area} 
-                        placeholder="Descrição do trabalho..."
+                        placeholder="Descrição da tarefa..."
                         value={props.description} onChange={e => {
                         props.setDescription(e.target.value)}}>
                     

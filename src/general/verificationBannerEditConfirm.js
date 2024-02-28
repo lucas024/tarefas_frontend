@@ -19,7 +19,7 @@ const VerificationBannerEditConfirm = (props) => {
                     next===0?
                     <div className={styles.main_inner}>
                         <p className={styles.phone_description} style={{textAlign:"center"}}>
-                            Ao confirmar a edição, esta publicação de trabalho será novamente analisada.
+                            Ao confirmar a edição, esta publicação de tarefa será novamente analisada.
                             <br/>Pode seguir o processo da publicação na sua àrea pessoal.</p>
                         
                         <div className={styles.button} style={{backgroundColor:"#FF785A"}} onClick={() => {props.confirm()&&setNext(1)}}>
@@ -33,7 +33,7 @@ const VerificationBannerEditConfirm = (props) => {
                         {
                             props.loadingConfirm?
                             <div style={{marginTop:"0px"}}>
-                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A editar o seu trabalho</p>
+                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A editar a seu tarefa</p>
                                 <Lottie
                                     loop={true}
                                     autoplay={true}
@@ -59,7 +59,7 @@ const VerificationBannerEditConfirm = (props) => {
                                     height={80}
                                     width={80}
                                 />
-                                <p className={styles.phone_description}>Trabalho editado com sucesso. Será rápidamente analisado pela equipa da Serviços.</p>
+                                <p className={styles.phone_description}>Tarefa editada com sucesso. Será rápidamente analisado pela equipa da Tarefas.</p>
                                 <div style={{display:'flex', justifyContent:'center'}}>
                                     <div 
                                         className={styles.button}

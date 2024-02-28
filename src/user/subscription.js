@@ -584,7 +584,7 @@ const Subscription = props => {
                             <div className={styles.sub_info_main}>
                                 <div className={styles.sub_info_wrap}>
                                     <div className={styles.sub_info}>
-                                        <span className={styles.sub_info_title}>Trabalhador na SERVIÇOS</span>
+                                        <span className={styles.sub_info_title}>Trabalhador na TAREFAS</span>
                                         {display===1 && applyDiscount?
                                             <p className={styles.sub_info_title_discount}>SUBSCRIÇÃO EXCLUSICA FUNDADOR</p>
                                             :null
@@ -595,10 +595,10 @@ const Subscription = props => {
                                                 <div className={styles.line}>
                                                     <div className={styles.line_left}>
                                                         <BuildIcon className={styles.line_circle}/>
-                                                        <span className={styles.helper_text}>Trabalhos</span>
+                                                        <span className={styles.helper_text}>Tarefas</span>
                                                     </div>
                                                     <span className={styles.connector}/>
-                                                    <span className={styles.line_text}>Acesso desbloqueado aos detalhes de <strong>contacto</strong> e <strong>localização</strong> de todos os trabalhos publicados.</span>
+                                                    <span className={styles.line_text}>Acesso desbloqueado aos detalhes de <strong>contacto</strong> e <strong>localização</strong> de todas as tarefas publicadas.</span>
                                                 </div>
                                                 <div className={styles.line} style={{margin:'10px 0'}}>
                                                     <div className={styles.line_left}>
@@ -614,7 +614,7 @@ const Subscription = props => {
                                                         <span className={styles.helper_text}>Perfil</span>
                                                     </div>
                                                     <span className={styles.connector}/>
-                                                    <span className={styles.line_text}>Criação do seu <strong>perfil de trabalhador</strong>, que será acessível a todos utilizadores do SERVIÇOS. Maior exposição ao seu negócio!</span>
+                                                    <span className={styles.line_text}>Criação do seu <strong>perfil de trabalhador</strong>, que será acessível a todos utilizadores do TAREFAS. Maior exposição ao seu negócio!</span>
                                                 </div>
                                             </div>
                                             :null
@@ -661,7 +661,7 @@ const Subscription = props => {
                                                     <div className={styles.info_bottom_text_wrapper}>
                                                         <div className={styles.info_bottom_text}>
                                                             <p>Ative a sua conta</p>
-                                                            <p style={{fontWeight:300}}>Tenha acesso a todos os benefícios de ser um trabalhador da Serviços.</p>
+                                                            <p style={{fontWeight:300}}>Tenha acesso a todos os benefícios de ser um trabalhador da TAREFAS.</p>
                                                         </div>
                                                     </div>
                                                     <div className={styles.trial_button}
