@@ -292,10 +292,10 @@ const Schedule = (props) => {
   const updateWeekendsHandler = bool => {
     if(bool !== workerWeekends){
       if(bool){
-        setNotification("Ao colocar SIM, está a tornar o seu horário aberto aos fins-de-semana, podendo receber pedidos de clientes para esta altura")
+        setNotification("Ao colocar SIM, está a tornar o teu horário aberto aos fins-de-semana, podendo receber pedidos de clientes para esta altura")
       }
       else{
-        setNotification("Ao colocar NÃO, está a tornar o seu horário fechado aos fins-de-semana, não recebendo pedidos de clientes para esta altura")
+        setNotification("Ao colocar NÃO, está a tornar o teu horário fechado aos fins-de-semana, não recebendo pedidos de clientes para esta altura")
       }
       updateWorkerWeekends(bool)
     }

@@ -59,7 +59,7 @@ const AuthCarousel = props => {
                     style={{borderBottomColor:props.nameWrong?"red":props.name?.split(' ')[0]?.length>1&&props.name?.split(' ')[1]?.length>0?props.type==='worker'?"#FF785A":"#0358e5":""}}></input>
                 {
                     props.nameWrong?
-                    <span className={styles.field_error}>Por favor, escreva o seu nome e apelido.</span>
+                    <span className={styles.field_error}>Por favor, escreve o teu nome e apelido.</span>
                     :null
                 }
 
@@ -123,7 +123,7 @@ const AuthCarousel = props => {
                 </div>
                     {
                         props.passwordWrong?
-                        <span className={styles.field_error}>Por favor, escreva pelo menos 8 caracteres.</span>
+                        <span className={styles.field_error}>Por favor, escreve pelo menos 8 caracteres.</span>
                         :null
                     }
                 <input 

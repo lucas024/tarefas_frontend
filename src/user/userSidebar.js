@@ -203,15 +203,15 @@ const UserSidebar = (props) => {
                 {
                     user?.type && !worker_is_subscribed && ((user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0)?
                     <div className={styles.worker_text_div}>
-                        Ative a sua conta tendo o seu
+                        Ativa a tua conta tendo o teu
                         <span className={styles.worker_text_text}> perfil completo </span>
-                        e a sua
+                        e a tua
                         <span className={styles.worker_text_text}> subcrição ativada</span>.
                     </div>
                     :
                     user?.state===2?
                     <div className={styles.worker_text_div} style={{color:"#fdd835"}}>
-                        A sua conta foi desativada pela equipa da TAREFAS.
+                        A tua conta foi desativada pela equipa da TAREFAS.
                     </div>
                     :null
                 }

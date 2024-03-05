@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux'
 const stripePromise = loadStripe('pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd');
 
 const User = (props) => {
+    const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
 
     const [searchParams] = useSearchParams()
@@ -38,7 +39,7 @@ const User = (props) => {
         setLoading(true)
         if(user?.type===0)
         {
-            axios.get(`http://localhost:5200/reservations/get_by_id`, { params: {user_id: user._id} }).then(res => {
+            axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} }).then(res => {
                 for(let el of res.data){
                     if(el.type<2){
                         setNextReservation(el)

@@ -18,8 +18,8 @@ const VerificationBannerConfirm = (props) => {
                 {
                     next===0?
                     <div className={styles.main_inner}>
-                        <p className={styles.phone_description}>Ao confirmar a sua publicação de tarefa será analisada, 
-                        podendo seguir o processo da publicação na sua àrea pessoal.</p>
+                        <p className={styles.phone_description}>Ao confirmar, a tua publicação de tarefa será analisada, 
+                        podendo seguir o processo da publicação na tua àrea pessoal.</p>
                         
                         <div className={styles.button} style={{backgroundColor:"#0358e5"}} onClick={() => {props.confirm()&&setNext(1)}}>
                             <span className={styles.button_text} style={{color:"white"}}>CONFIRMAR</span>
@@ -32,7 +32,7 @@ const VerificationBannerConfirm = (props) => {
                         {
                             props.loadingConfirm?
                             <div style={{marginTop:"0px"}}>
-                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A publicar a sua tarefa</p>
+                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A publicar a tua tarefa</p>
                                 <Lottie
                                     loop={true}
                                     autoplay={true}

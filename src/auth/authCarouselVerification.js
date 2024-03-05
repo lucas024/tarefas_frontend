@@ -47,7 +47,7 @@ const AuthCarouselVerification = props => {
                     }
                     <Lottie
                         loop={true}
-                        autoplay={props.codeSent===true}
+                        autoplay={true}
                         animationData={props.success===false?JSON.parse(JSON.stringify(wrongCode)):props.success===true?successLottie:sendPhone}
                         rendererSettings= {
                             {preserveAspectRatio: 'xMidYMid slice'}
@@ -200,7 +200,7 @@ const AuthCarouselVerification = props => {
                     
                     <Lottie 
                         animationData={props.emailCodeStatus===true?successLottie:JSON.parse(JSON.stringify(sendEmail))}
-                        loop={props.emailCodeStatus===true?false:true}
+                        loop={false}
                         autoplay={props.emailSent===true}
                         rendererSettings={{preserveAspectRatio: 'xMidYMid slice'}}
                         style={{

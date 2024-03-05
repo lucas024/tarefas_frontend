@@ -13,10 +13,7 @@ const Marker = (props) => {
         
     }
     return (
-        <div
-            lat={props.lat}
-            lng={props.lng}
-            style={mystyle}>
+        <div style={mystyle}>
         </div>
     )
 }

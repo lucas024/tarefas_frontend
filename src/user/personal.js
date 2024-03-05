@@ -558,7 +558,7 @@ const Personal = (props) => {
                                     :null
                                 } */}
                                 <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-                                    <span className={styles.top_complete}>O seu perfil está <span style={{color:getPercentagem()<100?"#fdd835":"#0358e5", fontWeight:"600"}}>{getPercentagem()}%</span> completo:</span>
+                                    <span className={styles.top_complete}>O teu perfil está <span style={{color:getPercentagem()<100?"#fdd835":"#0358e5", fontWeight:"600"}}>{getPercentagem()}%</span> completo:</span>
                                     <ArrowForwardIosIcon className={!displayTop?styles.top_complete_arrow:styles.top_complete_arrow_show}/>
                                 </div>
                                 {
@@ -770,7 +770,7 @@ const Personal = (props) => {
                                                     rows={5}
                                                     onChange={e => setDescription(e.target.value)}
                                                     disabled={!edit}
-                                                    placeholder="Uma breve descrição sobre si/a sua empresa...">
+                                                    placeholder="Uma breve descrição sobre ti/a tua empresa...">
                                                 </textarea>
                                                 :null
                                             }
@@ -780,7 +780,7 @@ const Personal = (props) => {
                                     <div className={styles.input_div}>
                                         {
                                             edit&&phone?.length!==9?
-                                                <span className={styles.helper}>Introduza o seu número de contacto.</span>
+                                                <span className={styles.helper}>Introduz o teu número de contacto.</span>
                                             :
                                             edit&&!validator.isMobilePhone(phone, "pt-PT")?
                                                 <span className={styles.helper}>Número de contacto inválido.</span>
@@ -837,9 +837,9 @@ const Personal = (props) => {
                                     </div>
                                     {
                                         radioSelected===1&&entityWrong&&entityName.length<=1?
-                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escreva pelo menos 2 caracteres.</span>
+                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escreve pelo menos 2 caracteres.</span>
                                         :radioSelected===1&&entityWrong?
-                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor defina a sua situação de trabalho.</span>
+                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor define a tua situação de trabalho.</span>
                                         :null
                                     }
                                 </div>

@@ -818,7 +818,7 @@ const AdminMessages = (props) => {
                                             <TextareaAutosize 
                                                 maxLength={300}
                                                 className={styles.bot_input}
-                                                placeholder="Escreva a sua mensagem..."
+                                                placeholder="Escreve a tua mensagem..."
                                                 onKeyDown={handleKeyDown}
                                                 value={currentText} 
                                                 onChange={e => setCurrentText(e.target.value)} 

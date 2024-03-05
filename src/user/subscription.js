@@ -614,7 +614,7 @@ const Subscription = props => {
                                                         <span className={styles.helper_text}>Perfil</span>
                                                     </div>
                                                     <span className={styles.connector}/>
-                                                    <span className={styles.line_text}>Criação do seu <strong>perfil de trabalhador</strong>, que será acessível a todos utilizadores do TAREFAS. Maior exposição ao seu negócio!</span>
+                                                    <span className={styles.line_text}>Criação do teu <strong>perfil de trabalhador</strong>, que será acessível a todos utilizadores do TAREFAS. Maior exposição ao teu negócio!</span>
                                                 </div>
                                             </div>
                                             :null
@@ -631,8 +631,8 @@ const Subscription = props => {
                                                 <div>
                                                     <div className={styles.info_bottom_text_wrapper}>
                                                         <div className={styles.info_bottom_text}>
-                                                            <p>Ative a sua conta durante <strong>100 dias de forma gratuita</strong>.</p>
-                                                            <p style={{fontWeight:300}}>Depois continue a usar a sua conta com um plano regular.</p>
+                                                            <p>Ativa a tua conta durante <strong>100 dias de forma gratuita</strong>.</p>
+                                                            <p style={{fontWeight:300}}>Depois continua a usar a tua conta com um plano regular.</p>
                                                         </div>
                                                     </div>
                                                     <div className={styles.trial_button} onClick={() => setConfirmFreeBanner(true)}>
@@ -642,8 +642,8 @@ const Subscription = props => {
                                                     <p className={styles.info_bottom_or}>OU</p>
                                                     <div className={styles.info_bottom_text_wrapper}>
                                                         <div className={styles.info_bottom_text}>
-                                                            <p>Ative a sua conta com um <strong>desconto de 50% </strong> sobre qualquer plano, para sempre.</p>
-                                                            <p style={{fontWeight:300}}>Aproveite o desconto vitalício e exclusivo de
+                                                            <p>Ativa a tua conta com um <strong>desconto de 50% </strong> sobre qualquer plano, para sempre.</p>
+                                                            <p style={{fontWeight:300}}>Aproveita o desconto vitalício e exclusivo de
                                                             primeira ativação de conta.</p>
                                                         </div>
                                                     </div>
@@ -660,8 +660,8 @@ const Subscription = props => {
                                                 <div>
                                                     <div className={styles.info_bottom_text_wrapper}>
                                                         <div className={styles.info_bottom_text}>
-                                                            <p>Ative a sua conta</p>
-                                                            <p style={{fontWeight:300}}>Tenha acesso a todos os benefícios de ser um trabalhador da TAREFAS.</p>
+                                                            <p>Ativa a tua conta</p>
+                                                            <p style={{fontWeight:300}}>Acede a todos os benefícios de ser um trabalhador da TAREFAS.</p>
                                                         </div>
                                                     </div>
                                                     <div className={styles.trial_button}
@@ -831,7 +831,7 @@ const Subscription = props => {
                                                                 </div>
                                                                 {
                                                                     trialActive?
-                                                                    <p className={styles.selected_plan_value_information}>Pode iniciar a sua subscrição regular a qualquer momento.</p>
+                                                                    <p className={styles.selected_plan_value_information}>Podes iniciar a tua subscrição regular a qualquer momento.</p>
                                                                     :
                                                                     !isCanceled?
                                                                     <p className={styles.selected_plan_value_information}>O cancelamento da subscrição pode ser feito a qualquer altura.</p>
@@ -1417,7 +1417,7 @@ const Subscription = props => {
                                                             </div>
                                                             {
                                                                 isCanceled&&endDate>currentDate?
-                                                                <span className={styles.selected_plan_value_information}>Esta nova subscrição apenas será cobrada no fim da sua subscrição atual (<span style={{color:"#FF785A", fontWeight:"400"}}>{getDateToString(endDate/1000)}</span>)</span>
+                                                                <span className={styles.selected_plan_value_information}>Esta nova subscrição apenas será cobrada no fim da tua subscrição atual (<span style={{color:"#FF785A", fontWeight:"400"}}>{getDateToString(endDate/1000)}</span>)</span>
                                                                 :
                                                                 <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
                                                             }

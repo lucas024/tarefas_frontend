@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styles from './auth.module.css'
 import validator from 'validator'
 import axios from 'axios'
@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import {
     registerWithEmailAndPassword, 
     loginWithEmailAndPassword,
-    fetchSignInMethodsForEmailHandler
+    fetchSignInMethodsForEmailHandler,
+    auth,
     } from '../firebase/firebase'
 import { useSearchParams } from 'react-router-dom';
 import Loader from '../general/loader'
@@ -20,9 +21,11 @@ import Sessao from '../transitions/sessao'
 import { useDispatch } from 'react-redux'
 import { 
     user_load,
-    user_update_field
+    user_update_field,
+    user_update_phone_verified
   } from '../store';
 import { useTimer } from 'react-timer-hook';
+import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
 
 
 const AuthWorker = (props) => {
@@ -78,9 +81,21 @@ const AuthWorker = (props) => {
     const [expired, setExpired] = useState(false)
     const [newCodeSent, setNewCodeSent] = useState(false)
     const [wrongCodeInserted, setWrongCodeInserted] = useState(false)
-    const [success, setSuccess] = useState(false)
+    const [success, setSuccess] = useState(null)
     const [skippedVerification, setSkippedVerification] = useState(false)
     const [verificationTab, setVerificationTab] = useState(0)
+
+    const [codeSent, setCodeSent] = useState(null)
+    const [codeStatus, setCodeStatus] = useState(null)
+
+    const [emailSent, setEmailSent] = useState(null)
+    const [emailCodeStatus, setEmailCodeStatus] = useState(null)
+
+    const [sendingError, setSendingError] = useState(null)
+
+    const recaptchaWrapperRef = useRef(null)
+    const [verificationId, setVerificationId] = useState(null)
+    const recaptchaObject = useRef(null)
 
     const codePlaceholder = [0,0,0,0,0,0]
 
@@ -95,18 +110,23 @@ const AuthWorker = (props) => {
         if(paramsAux)
         {
             setSelectedAuth(parseInt(paramsAux.type))
+            // setSelectedAuth(parseInt(2))
         }
     }, [searchParams])
 
     useEffect(() => {
-        if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
-        else if(phone.length>=4) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3)}`)
-        else{
-            setPhoneVisual(`${phone.slice(0,3)}`)
+        if(phone!==null)
+        {
+            if(phone.length>=7) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3,6)} ${phone.slice(6)}`)
+            else if(phone.length>=4) setPhoneVisual(`${phone.slice(0,3)} ${phone.slice(3)}`)
+            else{
+                setPhoneVisual(`${phone.slice(0,3)}`)
+            }
+            if(validator.isMobilePhone(phone, "pt-PT")){
+                setPhoneWrong(false)
+            }
         }
-        if(validator.isMobilePhone(phone, "pt-PT")){
-            setPhoneWrong(false)
-        }
+        
     }, [phone])
 
     useEffect(() => {
@@ -295,7 +315,7 @@ const AuthWorker = (props) => {
         let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: emailLogin} })
         setEmailLoginWrong(false)
         if(res.data != null){
-            setLoginError("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Faça login na Àrea Utlizador.")
+            setLoginError("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Faz login na Àrea Utlizador.")
             setLoading(false)
         }
         else if(validator.isEmail(emailLogin)){
@@ -476,7 +496,7 @@ const AuthWorker = (props) => {
         restart(time)
         setExpired(false)
         setWrongCodeInserted(false)
-        setSuccess(false)
+        setSuccess(null)
         setCode('')
     }
 
@@ -491,11 +511,6 @@ const AuthWorker = (props) => {
         setCode('')
     }
 
-    const verifyCodeHandler = () => {
-        // setWrongCodeInserted(true)
-        setSuccess(true)
-    }
-
     
     const clearFields = () => {
         setPassword(null)
@@ -508,6 +523,113 @@ const AuthWorker = (props) => {
         setSelectedProf(null)
         setSelectedReg(null)
         setSelectedType(0)
+    }
+
+    const restartTimer = () => {
+        const time = new Date()
+        time.setSeconds(time.getSeconds() + 59)
+        restart(time)
+        setExpired(false)
+        setCodeStatus(null)
+        setCode('')
+    }
+
+    const initiateEmailVerification = () => {
+        setSendingError(null)
+        setEmailSent(null)
+        var actionCodeSettings = {
+            url: 'https://localhost:3000/user',
+            handleCodeInApp: false
+        }
+        console.log(auth.currentUser)
+        sendEmailVerification(auth.currentUser, actionCodeSettings)
+            .then(() => {
+                setEmailSent(true)
+                console.log('sent')
+            })
+            .catch(e => {
+                console.log(e)
+                setEmailSent(false)
+                setSendingError('Erro a enviar o e-mail de verificação, por-favor tente mais tarde.')
+            })
+    }
+
+    const completeEmailVerification = () => {
+        setEmailCodeStatus(null)
+        if(auth.currentUser.emailVerified === true)
+        {
+            setEmailCodeStatus(true)
+        }
+        else
+        {
+            setEmailCodeStatus(false)
+        }
+    }
+
+    const initiatePhoneVerification = () => {
+        restartTimer()
+        setCodeSent(null)
+        if(recaptchaObject.current?.destroyed===false && recaptchaWrapperRef.current!==null)
+        {
+            recaptchaObject.current.clear()
+            recaptchaWrapperRef.current.innerHTML = `<div id="recaptcha-container"></div>`
+        }
+        setSendingError(null)
+
+
+        var recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {'size': 'invisible'});
+
+        recaptcha.render()
+        recaptchaObject.current = recaptcha
+
+        recaptcha.verify().then(() => {
+            var provider = new PhoneAuthProvider(auth)
+            provider.verifyPhoneNumber(`+351${phone}`, recaptcha).then(verificationId => {
+                    setVerificationId(verificationId)
+                    setCodeSent(true)
+                }).catch(function (error) {
+                    recaptcha.clear()
+                    setVerificationId(null)
+                    setSuccess(false)
+                    setSendingError('Erro a enviar o código de verificação. Por-favor, tente mais tarde.')
+                    setCodeSent(false)
+                })
+        })
+        .catch(e => {
+            setSuccess(false)
+            setCodeSent(false)
+        })
+    }
+
+    const completePhoneVerification = (code) => {
+        setCodeStatus(null)
+        setSendingError(null)
+        setSuccess(null)
+        var phoneCredential = PhoneAuthProvider.credential(verificationId, code)
+        try {
+            linkWithCredential(auth.currentUser, phoneCredential)
+                .then(() => {
+                    dispatch(user_update_phone_verified(true))
+                    setSuccess(true)
+                    axios.post(`${api_url}/user/phone_verification_status`, {
+                        user_id : user._id,
+                        value: true
+                    }).then(() => {
+                        setCodeStatus(true)
+                    })
+                })
+                .catch(e => {
+                    if(e.code === 'auth/account-exists-with-different-credential')
+                        setSendingError('Este número de telemóvel já se encontra associado a outra conta.')
+                    else
+                        setCodeStatus(false)
+                    
+                })
+            
+        }
+        catch (error){
+            setCodeStatus(false)
+        }
     }
     
 
@@ -530,7 +652,9 @@ const AuthWorker = (props) => {
                     <Sessao text={"Detalhes trabalhador atualizados com sucesso!"}/>
                 </CSSTransition>
             <div className={styles.auth_main_worker}>
-            
+                <div ref={recaptchaWrapperRef}>
+                    <div id='recaptcha-container' className={styles.recaptcha_container}></div>
+                </div>
                 <div className={styles.area} style={{backgroundColor:selectedAuth===2?'transparent':'#fff'}}>
                     {
                         selectedAuth!==2?
@@ -780,15 +904,14 @@ const AuthWorker = (props) => {
                 {
                     selectedAuth===2?
                         <div className={styles.worker_carousel_verification}>
-                            <AuthCarouselVerification
+                        <AuthCarouselVerification
                             worker={true}
                             verificationTab={verificationTab}
                             registarTab={registarTab}
                             email={email}
                             name={name}
                             phone={phoneVisual}
-                            handleNext={val => handleNext(val)}
-                            wrongCodeInserted={wrongCodeInserted}
+                            handleNext={skipped => handleNext(skipped)}
                             success={success}
                             mapPlaceholder={() => mapPlaceholder()}
                             code={code}
@@ -798,6 +921,15 @@ const AuthWorker = (props) => {
                             handleSendCode={() => handleSendCode()}
                             setCodeHandler={val => setCodeHandler(val)}
                             clearEmailAndPhone={() => clearFields()}
+                            initiatePhoneVerification={initiatePhoneVerification}
+                            completePhoneVerification={completePhoneVerification}
+                            initiateEmailVerification={initiateEmailVerification}
+                            completeEmailVerification={completeEmailVerification}
+                            codeStatus={codeStatus}
+                            codeSent={codeSent}
+                            sendingError={sendingError}
+                            emailCodeStatus={emailCodeStatus}
+                            emailSent={emailSent}
                         />
                         </div>
                         :null

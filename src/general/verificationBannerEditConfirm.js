@@ -20,7 +20,7 @@ const VerificationBannerEditConfirm = (props) => {
                     <div className={styles.main_inner}>
                         <p className={styles.phone_description} style={{textAlign:"center"}}>
                             Ao confirmar a edição, esta publicação de tarefa será novamente analisada.
-                            <br/>Pode seguir o processo da publicação na sua àrea pessoal.</p>
+                            <br/>Pode seguir o processo da publicação na tua àrea pessoal.</p>
                         
                         <div className={styles.button} style={{backgroundColor:"#FF785A"}} onClick={() => {props.confirm()&&setNext(1)}}>
                             <span className={styles.button_text}>CONFIRMAR EDIÇÃO</span>

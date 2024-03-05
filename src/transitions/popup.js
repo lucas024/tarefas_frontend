@@ -14,7 +14,7 @@ const Popup = (props) => {
 
     const [refuseMessage, setRefuseMessage] = useState(`Olá ${props.reservation?.user_name}, 
     
-Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
+Para que a tua publicação possa ser aprovada, altere os seguintes campos:`)
 
     const [refusals, setRefusals] = useState([
         {
@@ -67,7 +67,7 @@ Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
             })
             setRefuseMessage(`Olá ${props.reservation.user_name}, 
     
-Para que a sua publicação possa ser aprovada, altere os seguintes campos:`)
+Para que a tua publicação possa ser aprovada, altere os seguintes campos:`)
             props.confirmHandler()
             }
     }

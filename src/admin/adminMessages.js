@@ -477,7 +477,7 @@ const Messages = (props) => {
                                         <div className={styles.bot_flex}>
                                             <TextareaAutosize 
                                                 className={styles.bot_input}
-                                                placeholder="Escreva a sua mensagem..."
+                                                placeholder="Escreve a tua mensagem..."
                                                 onKeyDown={handleKeyDown}
                                                 value={currentText} 
                                                 onChange={e => setCurrentText(e.target.value)} 

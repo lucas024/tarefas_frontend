@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import Home from './general/home.js'
-import Navbar from './general/navbar'
+import Navbar from './general/navbar.js'
 import Publicar from './user/publicar'
 import Auth from './auth/auth';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -61,12 +61,14 @@ onAuthStateChanged(auth, (user_google) => {
 const checkWorkerComplete = (worker, userGoogle) => {
   if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.phoneNumber === null||userGoogle?.emailVerified === false)
   {
+    console.log('here')
     dispatch(worker_update_profile_complete(false))
     if(worker.state!==0)
         axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: worker._id})
   }
   else
   {
+    console.log('here2')
     dispatch(worker_update_profile_complete(true))
     if(worker.state!==1 && worker_is_subscribed)
         axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: worker._id})
@@ -106,6 +108,7 @@ useEffect(() => {
               })
               .then(res2 => {
                   if(res2.data.schedule){
+                      console.log("1")
                       if(new Date().getTime() < new Date(res2.data.schedule.current_phase?.end_date*1000)){
                         dispatch(worker_update_is_subscribed(true))
                       }
@@ -119,6 +122,7 @@ useEffect(() => {
             }
             else if(new Date(res.data.trial?.end_date) > new Date())
             {
+              console.log("2")
               dispatch(worker_update_is_subscribed(true))
             }
             else
@@ -127,12 +131,13 @@ useEffect(() => {
               if(res.data.state!==0)
                 axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
             }
-            checkWorkerComplete(res.data)
+            checkWorkerComplete(res.data, userGoogle)
             setUserLoadAttempt(true)
             setLoading(false)
           }
           else{
-            dispatch(worker_update_is_subscribed(true))
+            console.log("3")
+            dispatch(worker_update_is_subscribed(false))
             setLoading(false)
           }
         })
@@ -142,6 +147,7 @@ useEffect(() => {
     })
   }
   else{
+    dispatch(worker_update_is_subscribed(false))
     setLoading(false)
   }
 }, [userGoogle])
@@ -168,6 +174,7 @@ const refreshWorker = () => {
         .then(res2 => {
             if(res2.data.schedule){
                 if(new Date().getTime() < new Date(res2.data.schedule.current_phase.end_date*1000)){
+                  console.log("4")
                   dispatch(worker_update_is_subscribed(true))
                 }
             }
@@ -175,6 +182,7 @@ const refreshWorker = () => {
       }
       else if(new Date(res.data.trial?.end_date) > new Date())
       {
+        console.log("5")
         dispatch(worker_update_is_subscribed(true))
       }
       else{
@@ -182,7 +190,7 @@ const refreshWorker = () => {
       }
 
       //worker complete
-      checkWorkerComplete(res.data)
+      checkWorkerComplete(res.data, userGoogle)
       setUserLoadAttempt(true)
       setLoading(false)
     }

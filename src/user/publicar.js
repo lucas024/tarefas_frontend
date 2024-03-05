@@ -96,14 +96,6 @@ const Publicar = (props) => {
 
     const [searchParams] = useSearchParams()
 
-    // useEffect(() => {
-    //     textareaRef.current.style.height = "100px";
-    //     const scrollHeight = textareaRef.current.scrollHeight;
-    //     if(scrollHeight <= 400)
-    //         textareaRef.current.style.height = scrollHeight + "px";
-    //     else textareaRef.current.style.height = "400px";
-    // }, [textareaHeight]);
-
     useEffect(() => {
         if(window.google){
         }
@@ -120,17 +112,6 @@ const Publicar = (props) => {
             for(let el of imageFiles) URL.revokeObjectURL(el)
         } 
     }, [])
-
-    // useEffect(() => {
-    //     if(location.state && location.state.carry){
-    //         setDescription(location.state.desc)
-    //         setImages(location.state.images)
-    //         setImageFiles(location.state.imageFiles)
-    //         setTitulo(location.state.title)
-    //         setInProp(true)
-    //         setTimeout(() => setInProp(false), 4000)
-    //     }
-    // }, [location])
 
     useEffect(() => {
         if(user){
@@ -885,7 +866,7 @@ const Publicar = (props) => {
                                         onClick={() => {setSelectedTab(selectedTab-1)}}>
                                     <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                     </div>
-                                    <div className={((user.phone===phone&&user_phone_verified)&&user_email_verified)&&address!=null&&porta!=null?styles.login_button:styles.login_button_disabled}
+                                    <div className={((user.phone===phone&&user_phone_verified)&&user_email_verified)&&address!==null&&porta!==''?styles.login_button:styles.login_button_disabled}
                                         style={{marginLeft:'10px', marginTop:0}}
                                         onClick={() => {setSelectedTab(selectedTab+1)}}>
                                         <p className={styles.login_text}>Continuar</p>

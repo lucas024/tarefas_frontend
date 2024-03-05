@@ -350,12 +350,22 @@
     animation-duration: 2s;
     animation-iteration-count: infinite;
 }
-
+.marker{
+    height: 80px;
+    width: 80px;
+    margin-left: -40px;
+    margin-top: -40px;
+    border-radius: 50%;
+    border: 4px solid var(--job);
+    background-color: #0358e550
+}
 .map_div{
     margin-top: 10px;
-    height: 150px;
+    height: 180px;
+    min-height: 180px;
     margin: auto;
     width: 90%;
+    position: relative;
 }
 .top_desc_text{
     margin-top: 20px;

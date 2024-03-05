@@ -159,7 +159,7 @@ const Home = (props) => {
                 <Sessao text={"Sessão iniciada com Sucesso!"}/>
             </CSSTransition>
             <CSSTransition 
-                in={registerPopup}
+                in={registerPopup!==false}
                 timeout={1000}
                 classNames="transition"
                 unmountOnExit
@@ -172,7 +172,7 @@ const Home = (props) => {
                 classNames="transition"
                 unmountOnExit
                 >{
-                <Sessao text={"Complete o seu perfil!"}/>
+                <Sessao text={"Completa o teu perfil!"}/>
                 }
             </CSSTransition>
             {

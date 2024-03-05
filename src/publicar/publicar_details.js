@@ -10,46 +10,119 @@ import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
 import UnsubscribeIcon from '@mui/icons-material/Unsubscribe';
 import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import SelectAddress from '../selects/selectAddress';
+import Loader from '../general/loader';
 
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
 dayjs.locale('pt')
 
+
+const NOMINATIM_BASE_URL = "https://nominatim.openstreetmap.org/search?"
+
 const PublicarDetails = props => {
 
     const [address, setAddress] = useState('')
+    const [addressOptions, setAddressOptions] = useState([])
+    const [addressOptionsText, setAddressOptionsText] = useState([])
+    const [optionIndex, setOptionIndex] = useState(null)
+    const [loadingMore, setLoadingMore] = useState(null)
+    const [allowNow, setAllowNow] = useState(null)
+    const [allowLater, setAllowLater] = useState(false)
 
-    const setAddressHandler = (val) => {
-        Geocode.fromAddress(val.label).then(
-            (response) => {
-                let longDistrict = null
-                console.log(response.results[0].address_components);
-                for(let el of response.results[0].address_components){
-                    if(el.types.includes("administrative_area_level_1")){
-                        console.log(el.long_name);
-                        longDistrict = el.long_name
-                        break
-                    }
-                }
-                if(longDistrict){
-                    for(let obj of regioes){
-                        if(obj.label === longDistrict){
-                            props.setDistrict(obj.value)
+    const requestOptions = {
+        method: "GET",
+        redirect: "follow"
+    }
+
+    const changeAddressText = val => {
+        const params = {
+            q: val,
+            format: 'json',
+            addressdetails: 1,
+            polygon_geojson: 0
+        }
+
+        props.setAddressParent(null)
+        setAddress(val)
+        setOptionIndex(null)
+        const queryString = new URLSearchParams(params).toString()
+        if(val.length>0)
+        {
+            if(allowNow===null || new Date() > allowNow){
+                console.log('triggering now')
+                setLoadingMore(true)
+                fetch(`${NOMINATIM_BASE_URL}${queryString}`, requestOptions)
+                    .then(res => res.text())
+                    .then(result => {
+                        const result_parsed = JSON.parse(result)
+                        setAddressOptions(result_parsed)
+                        let i = 0
+                        let val = []
+                        for(let el of result_parsed)
+                        {
+                            let res = {value: i, label: `${el.display_name}`}
+                            i++
+                            val.push(res)
                         }
-                    }
-                }
-                const { lat, lng } = response.results[0].geometry.location
-                props.setLat(lat)
-                props.setLng(lng)
-                setAddress(val.label)
-                props.setAddressParent(val.label)
-            })
+                        setAddressOptionsText(val)
+                        setLoadingMore(false)
+                    })
+                var date = new Date()
+                date.setSeconds(date.getSeconds() + 3)
+                setAllowNow(date)
+                setAllowLater(true)
+            }
+            else if(allowLater===true){
+                console.log('going to trigger in', Date.parse(allowNow) - Date.now())
+                setLoadingMore(true)
+                setTimeout(() => {
+                    fetch(`${NOMINATIM_BASE_URL}${queryString}`, requestOptions)
+                    .then(res => res.text())
+                    .then(result => {
+                        const result_parsed = JSON.parse(result)
+                        setAddressOptions(result_parsed)
+                        let i = 0
+                        let val = []
+                        for(let el of result_parsed)
+                        {
+                            let res = {value: i, label: `${el.display_name}`}
+                            i++
+                            val.push(res)
+                        }
+                        setAddressOptionsText(val)
+                        setLoadingMore(false)
+                    })
+                }, [Date.parse(allowNow) - Date.now()])
+                setAllowLater(false)
+            }
+        }
+    }
+
+    const setAddressHandler = (index) => {
+        setOptionIndex(index)
+        setAddress(addressOptionsText[index].label)
+
+        console.log(addressOptions[index])
+        props.setLat(addressOptions[index].lat)
+        props.setLng(addressOptions[index].lon)
+        props.setAddressParent(addressOptionsText[index].label)
+
+        
+        
+        setAddressOptions([])
+        setAddressOptionsText([])
     }
 
 
     return (
         <div>
             <div className={styles.top}>
+                <div className={styles.helper_wrap}>
+                    {/* <span className={styles.helper_divider}>-</span> */}
+                    <span className={styles.helper_text}>campo obrigatório</span>
+                    <span className={styles.helper_asterisc}>*</span>
+                </div>
                 <div className={styles.diff_right_title_container}>
                     <span className={styles.diff_right_title}>
                         Localização da Tarefa<span className={styles.action}>*</span>
@@ -58,22 +131,6 @@ const PublicarDetails = props => {
                         <DoneIcon className={styles.top_check_element}/>
                     </div>
                 </div>
-                {/* <div className={styles.bot_title_wrapper} style={{alignItems:props.editReservation?.type===2&&props.getFieldWrong('location')?'flex-start':""}}>
-                    {
-                        props.editReservation?.type===2&&props.getFieldWrong('location')?
-                        <div className={styles.diff_right_title_container} style={{alignItems:"flex-start"}}>
-                            <span className={styles.bot_title} 
-                                style={{ marginBottom:0}}>Localização
-                            </span>
-                            <span className={styles.diff_right_title_wrong_div}>
-                            <span className={styles.editar_tit}>editar</span> {props.getFieldWrongText('location')}
-                            </span>
-                        </div>
-                        :
-                        <span className={styles.bot_title}>Localização
-                        </span>
-                    }
-                </div> */}
                 <div className={styles.contact_area} onClick={() => props.divRef?.current?.scrollIntoView({ behavior: 'smooth' })}>
                     {
                         props.edit&&!props.activateEditAddress?
@@ -118,73 +175,21 @@ const PublicarDetails = props => {
                                         className={styles.area_label_inverse}>
                                             Morada
                                     <span className={styles.asterisc}>*</span></span>
-                                    <GooglePlacesAutocomplete
-                                        tabindex={props.selectedTab===2?'1':'-1'}
-                                        apiKey="AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk"
-                                        autocompletionRequest={{
-                                            // bounds: [ //BOUNDS LISBOA
-                                            // { lat: 38.74, lng: -9.27 },
-                                            // { lat: 38.83, lng: -9.17 },
-                                            // { lat: 38.79, lng: -9.09 },
-                                            // { lat: 38.69, lng: -9.21 },
-                                            // ],
-                                            componentRestrictions: {
-                                            country: ['pt'],
-                                            }
-                                        }}
-                                        selectProps={{
-                                            address,
-                                            onChange: setAddressHandler,
-                                            styles: {
-                                            input: (provided) => ({
-                                                ...provided,
-                                                color: '#ffffff',
-                                                fontWeight: 500,
-                                            }),
-                                            option: (provided) => ({
-                                                ...provided,
-                                                color: '#161F28',
-                                                fontWeight: 500
-                                            }),
-                                            singleValue: (provided) => ({
-                                                ...provided,
-                                                color: '#ffffff',
-                                                fontWeight: 500,
-                                                textAlign:'left'
-                                            }),
-                                            control: (provided, state) => ({
-                                                ...provided,
-                                                width: "100% !important",
-                                                borderRadius: "2px",
-                                                height: "40px",
-                                                fontSize:"0.9rem",
-                                                backgroundColor: "#161F28",
-                                                border:"none",
-                                                borderBottom: address!==''?'2px solid #0358e5':state.isFocused?"2px solid #ffffffaa":"2px solid #161F28",
-                                                "&:hover": {
-                                                    borderBottom: address===''?"2px solid #ffffffaa":"",
-                                                    cursor: "text",
-                                                },
-                                                boxShadow: state.isFocused?"none":"none",
-                                                zIndex: 1,
-                                            }),
-                                            container: (provided, state) => ({
-                                                ...provided,
-                                                border: state.isFocused?"none":"none",
-                                                zIndex: 1
-                                            }),
-                                            dropdownIndicator: () => ({
-                                                color:"#161F28",
-                                                zIndex: 4
-                                            }),
-                                            indicatorSeparator: () => null
-                                            },
-                                            IndicatorsContainer:()=>(<></>),
-                                            placeholder: "Pesquisar...",
-                                            noOptionsMessage: () => "Pesquisar morada",
-                                            loadingMessage: () => "A pesquisar...",
-                                        }}
-                                        />
+                                    <div className={styles.input_address_wrapper}>
+                                        <input placeholder='Pesquisar localização da tarefa...' type="text" autoComplete='off' value={address} onChange={val => changeAddressText(val.target.value)} className={styles.input_address}/>
+                                        {
+                                            loadingMore?
+                                            <div className={styles.input_address_bottom}>
+                                                <Loader loading={loadingMore} small={true}/>
+                                            </div>
+                                            :addressOptionsText.length===0&&optionIndex==null&&address.length>0?
+                                            <div className={styles.input_address_bottom}>
+                                                <span className={styles.input_address_bottom_none}>Sem resultados para a pesquisa.</span>
+                                            </div>
+                                            :null
+                                        }
+                                    </div>
+                                    <SelectAddress open={loadingMore===false&&addressOptionsText.length>0} options={addressOptionsText} optionIndex={optionIndex} changeOption={val => setAddressHandler(val)}/>
                                     </div>
                                 </div>
                                 <div className={styles.address_flex}>

@@ -132,7 +132,7 @@ const Navbar = (props) => {
  
                                         <div className={styles.user}>
                                             {
-                                                (user.type&&!worker_is_subscribed || user.type&&!(user_email_verified&&user_phone_verified&&user.regioes?.length>0&&user.trabalhos?.length>0))?
+                                                (user.type&&!worker_is_subscribed || user.type&&worker_profile_complete)?
                                                 <span className={styles.drop_div_notification_text}>CONTA DESATIVADA</span>
                                                 :
                                                 (user.type===0&&!(user_phone_verified&&user_email_verified))?
@@ -140,7 +140,7 @@ const Navbar = (props) => {
                                                 :null
                                             }
                                             
-                                            <p className={styles.user_text}>Àrea Pessoal</p>
+                                            <p className={styles.user_text}>Área Pessoal</p>
                                             <KeyboardArrowDownIcon sx={{fontSize: "30px"}} className={styles.user_arrow}/>
                                         </div>
                                         <div hidden={!dropdown}>
@@ -182,11 +182,12 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
-                                                                worker_profile_complete||(user_phone_verified&&user_email_verified)?
+                                                                user.type&&worker_profile_complete&&worker_is_subscribed?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
-                                                                :!worker_profile_complete&&!(user_phone_verified&&user_email_verified)?
-                                                                <span className={styles.drop_div_notification}/>
-                                                                :null
+                                                                :
+                                                                user.type===0&&user_email_verified&&user_phone_verified?
+                                                                <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
+                                                                :<span className={styles.drop_div_notification}/>
                                                             }
                                                             
                                                     </div>  

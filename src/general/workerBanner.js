@@ -42,7 +42,7 @@ const WorkerBanner = (props) => {
                 <div className={styles.line}>
                     <PersonIcon className={styles.line_circle}/>
                     <span className={styles.helper_text}>Perfil:</span>
-                    <span className={styles.line_text}>Criação do seu <span className={styles.action}>perfil de trabalhador</span>, que será acessível a todos utilizadores da TAREFAS. <span className={styles.bold}>Maior exposição</span> ao seu negócio!</span>
+                    <span className={styles.line_text}>Criação do teu <span className={styles.action}>perfil de trabalhador</span>, que será acessível a todos utilizadores da TAREFAS. <span className={styles.bold}>Maior exposição</span> ao teu negócio!</span>
                 </div>
                 <span className={styles.confirm_button} onClick={() => props.confirm()}>
                     REGISTAR-ME COMO TRABALHADOR

@@ -81,7 +81,6 @@ const Auth = (props) => {
     const [expiryTimestamp, setExpiryTimestamp] = useState(null)
     const [expired, setExpired] = useState(false)
     const [success, setSuccess] = useState(null)
-    const [emailSuccess, setEmailSuccess] = useState(null)
     const [skippedVerification, setSkippedVerification] = useState(false)
 
     const [verificationTab, setVerificationTab] = useState(0)
@@ -120,13 +119,16 @@ const Auth = (props) => {
     
 
     useEffect(() => {
-        if(phone?.length>=7) setPhoneVisual(`${phone?.slice(0,3)} ${phone?.slice(3,6)} ${phone?.slice(6)}`)
-        else if(phone?.length>=4) setPhoneVisual(`${phone?.slice(0,3)} ${phone?.slice(3)}`)
-        else{
-            setPhoneVisual(`${phone?.slice(0,3)}`)
-        }
-        if(phone&&validator.isMobilePhone(phone, "pt-PT")){
-            setPhoneWrong(false)
+        if(phone!==null)
+        {
+            if(phone?.length>=7) setPhoneVisual(`${phone?.slice(0,3)} ${phone?.slice(3,6)} ${phone?.slice(6)}`)
+            else if(phone?.length>=4) setPhoneVisual(`${phone?.slice(0,3)} ${phone?.slice(3)}`)
+            else{
+                setPhoneVisual(`${phone?.slice(0,3)}`)
+            }
+            if(phone&&validator.isMobilePhone(phone, "pt-PT")){
+                setPhoneWrong(false)
+            }
         }
     }, [phone])
 
@@ -135,9 +137,13 @@ const Auth = (props) => {
     }, [passwordRepeat, password])
 
     useEffect(() => {
-        if(validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
-            setPasswordWrong(false)
+        if(password)
+        {
+            if(validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
+                setPasswordWrong(false)
+            }
         }
+        
     }, [password])
 
     const navigateHandler = () => {
@@ -299,7 +305,7 @@ const Auth = (props) => {
 
         let res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: emailLogin} })
         if(res.data != null){
-            setLoginError("Este e-mail já se encontra associado a uma conta de TRABALHADOR. Faça login na Àrea Trabalhador.")
+            setLoginError("Este e-mail já se encontra associado a uma conta de TRABALHADOR. Faz login na Àrea Trabalhador.")
             setLoading(false)
         }
         else if(validator.isEmail(emailLogin)){
@@ -801,7 +807,6 @@ const Auth = (props) => {
                             phone={phoneVisual}
                             handleNext={skipped => handleNext(skipped)}
                             success={success}
-                            emailSuccess={emailSuccess}
                             mapPlaceholder={() => mapPlaceholder()}
                             code={code}
                             skippedVerification={skippedVerification}

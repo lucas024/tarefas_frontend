@@ -4,12 +4,11 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FaceIcon from '@mui/icons-material/Face';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
-import GoogleMapReact from 'google-map-react';
 import ImageGallery from 'react-image-gallery';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Marker from './marker';
+import Marker2 from './marker';
 import PopupElimination from '../transitions/popupElimination';
 import axios from 'axios';
 import { storage } from '../firebase/firebase'
@@ -26,11 +25,22 @@ import WorkerBanner from '../general/workerBanner';
 import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao';
 import EditIcon from '@mui/icons-material/Edit';
-import Popup from '../transitions/popup';
+import Popup2 from '../transitions/popup';
 import {profissoesPngs} from '../general/util'
 import { useSelector } from 'react-redux'
+import L from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css';
+import marker from '../assets/map_marker.png'
 
 const ObjectID = require("bson-objectid");
+
+const myIcon = new L.Icon({
+    iconUrl: marker,
+    iconRetinaUrl: marker,
+    popupAnchor:  [-0, -0],
+    iconSize: [130,130],     
+});
 
 
 const Trabalho = (props) => {
@@ -84,17 +94,17 @@ const Trabalho = (props) => {
 
     const [loaded, setLoaded] = useState(false)
 
-    useEffect(() => {
-        if(isMapApiLoaded || window.google){
-        }
-        else{
-            const loader = new Loader({
-                apiKey: "AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk",
-                libraries: ["places"]
-              });
-            loader.load().then(() => setIsMapApiLoaded(true))
-        }
-    }, [])
+    // useEffect(() => {
+    //     if(isMapApiLoaded){
+    //     }
+    //     else{
+    //         const loader = new Loader({
+    //             apiKey: "AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk",
+    //             libraries: ["places"]
+    //           });
+    //         loader.load().then(() => setIsMapApiLoaded(true))
+    //     }
+    // }, [])
 
     useEffect( () => {
         const paramsAux = Object.fromEntries([...searchParams])
@@ -410,7 +420,7 @@ const Trabalho = (props) => {
             }
             {
                 refusePopup?
-                    <Popup
+                    <Popup2
                         type = 'refuse_publication'
                         confirmHandler={() => setRefusePopup(false)}
                         cancelHandler={() => setRefusePopup(false)}
@@ -493,7 +503,7 @@ const Trabalho = (props) => {
                         {
                             reservation.type===2?
                             <div className={styles.wrong}>
-                                <span className={styles.wrong_text}>A sua publicação encontra-se <span className={styles.wrong_text_special}>INCORRETA</span></span>
+                                <span className={styles.wrong_text}>A tua publicação encontra-se <span className={styles.wrong_text_special}>INCORRETA</span></span>
                                 <div className={styles.wrong_button_div} onClick={() => editPublicationHandler()}>
                                     <EditIcon className={styles.drop_div_symbol}/>
                                     <span className={styles.wrong_button}>EDITAR</span>
@@ -613,7 +623,7 @@ const Trabalho = (props) => {
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
                                                 <div className={styles.market_background}>
-                                                    <span className={styles.market_text}>Complete o seu <span className={styles.text_special}>perfil</span> e <span  className={styles.text_special}>subscreva</span> para contactar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>.</span>
+                                                    <span className={styles.market_text}>Completa o teu <span className={styles.text_special} style={{textDecoration:"underline"}}>perfil</span> e <span  className={styles.text_special} style={{textDecoration:"underline"}}>subscreve</span> para poderes contactar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>.</span>
                                                     <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=personal')}>completar perfil</span>
                                                 </div>
                                             </div>
@@ -621,8 +631,8 @@ const Trabalho = (props) => {
                                             loaded&&noSubView?
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
-                                                <div>
-                                                    <span className={styles.market_text}>Só falta activar a sua <span className={styles.text_special}>subscrição</span> para contactar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>.</span>
+                                                <div className={styles.market_background}>
+                                                    <span className={styles.market_text}>Só falta activar a tua <span className={styles.text_special}>subscrição</span> para poderes contactar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>.</span>
                                                     <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=subscription')}>ativar subscrição</span>
                                                 </div>
                                             </div>
@@ -631,7 +641,7 @@ const Trabalho = (props) => {
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
                                                 <div className={styles.market_background}>
-                                                    <span className={styles.market_text}>Só falta completar o seu <span className={styles.text_special}>perfil</span> para contactar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>.</span>
+                                                    <span className={styles.market_text}>Só falta completar o teu <span className={styles.text_special}>perfil</span> para poderes contactar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>.</span>
                                                     <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => navigate('/user?t=personal')}>completar perfil</span>
                                                 </div>
                                             </div>
@@ -667,15 +677,17 @@ const Trabalho = (props) => {
                                 {
                                     loaded&&(showFull||userView)?
                                     <div className={styles.map_div}>
-                                        <GoogleMapReact 
-                                            bootstrapURLKeys={{ key:"AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk", libraries: ["places"]}}
-                                            defaultZoom={13}
-                                            center={{ lat: reservation.lat, lng: reservation.lng}}
-                                            options={{gestureHandling:"none"}}
-                                            
-                                            >
-                                            <Marker lat={reservation.lat} lng={reservation.lng}/>
-                                        </GoogleMapReact>
+                                        <MapContainer center={[reservation.lat, reservation.lng]} zoom={14} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
+                                            <TileLayer
+                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                            />
+                                            <Marker position={[reservation.lat, reservation.lng]} icon={myIcon}>
+                                                <Popup>
+                                                    A pretty CSS3 popup. <br /> Easily customizable.
+                                                </Popup>
+                                            </Marker>
+                                        </MapContainer>
                                     </div>
                                     :<div className={styles.map_div}>
                                         <img src={blurredMap} className={`${styles.blurred_map} ${styles.unselectable}`}/>
@@ -724,11 +736,11 @@ const Trabalho = (props) => {
                                                 noAccountView?
                                                 <span className={styles.frontdrop_text}>crie uma conta de trabalhador</span>
                                                 :noneView?
-                                                <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>perfil</span> e <span style={{color:"white"}}>subscrição</span>.</span>
+                                                <span className={styles.frontdrop_text}>complete o teu <span style={{color:"white"}}>perfil</span> e <span style={{color:"white"}}>subscrição</span>.</span>
                                                 :noSubView?
-                                                <span className={styles.frontdrop_text}>active a sua <span style={{color:"white"}}>subscrição</span>.</span>
+                                                <span className={styles.frontdrop_text}>activa a tua <span style={{color:"white"}}>subscrição</span>.</span>
                                                 :noProfileView?
-                                                <span className={styles.frontdrop_text}>complete o seu <span style={{color:"white"}}>perfil</span>.</span>
+                                                <span className={styles.frontdrop_text}>complete o teu <span style={{color:"white"}}>perfil</span>.</span>
                                                 :null
                                             }
                                             {

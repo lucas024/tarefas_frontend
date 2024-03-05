@@ -13,6 +13,11 @@ const PublicarService = props => {
 
     return (
         <div className={styles.top}>
+            <div className={styles.helper_wrap}>
+                {/* <span className={styles.helper_divider}>-</span> */}
+                <span className={styles.helper_text}>campo obrigatório</span>
+                <span className={styles.helper_asterisc}>*</span>
+            </div>
         <div className={styles.top_check} style={{backgroundColor:props.correct?'#0358e5':""}}>
             <DoneIcon className={styles.top_check_element}/>
         </div>
