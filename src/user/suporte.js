@@ -314,7 +314,7 @@ const Suporte = (props) => {
                                         <div className={styles.chatbox_text_starter_deleted}
                                             style={{borderBottomLeftRadius:0, background:getTypeColorBackground(2)}}>
                                             <div style={{display:"flex", flexDirection:"column", margin:"auto"}}>
-                                                <span className={styles.over_text}>Publicação Novamente Recusada</span>
+                                                <span className={styles.over_text}>Tarefa Novamente Recusada</span>
                                                 <span className={styles.thing}>(NOVA MENSAGEM A BAIXO)</span>
                                                 <ArrowDownwardIcon className={styles.over_img}/>
                                             </div>
@@ -324,7 +324,7 @@ const Suporte = (props) => {
                                         <div className={styles.chatbox_text_starter_solved} 
                                                 style={{borderBottomLeftRadius:0, background:getTypeColorBackground(findReservation(msg.reservation_id)?.type)}}>
                                             <div style={{display:"flex", flexDirection:"column", margin:"auto"}}>
-                                                <span className={styles.over_text}>Publicação Editada</span>
+                                                <span className={styles.over_text}>Tarefa Editada</span>
                                                 {
                                                     findReservation(msg.reservation_id)?.type===0?
                                                     <span className={styles.thing}>(A PROCESSAR)</span>
@@ -335,21 +335,21 @@ const Suporte = (props) => {
                                                     :<span className={styles.thing}>(PROCESSAR)</span>
                                                 }
                                                 <CheckIcon className={styles.over_img}/>
-                                                <span className={styles.ver_public} onClick={() => seePublicationHandler(msg.reservation_id)}>VER PUBLICAÇÃO</span>
+                                                <span className={styles.ver_public} onClick={() => seePublicationHandler(msg.reservation_id)}>VER TAREFA</span>
 
                                             </div>
                                         </div>
                                         :!findReservation(msg.reservation_id)?
                                         <div className={styles.chatbox_text_starter_deleted}>
                                             <div style={{display:"flex", flexDirection:"column", margin:"auto"}}>
-                                                <span className={styles.over_text}>Publicação Removida</span>
+                                                <span className={styles.over_text}>Tarefa Removida</span>
                                                 <ClearIcon className={styles.over_img}/>
                                             </div>
                                         </div>
                                         :null
                                     }
                                     <div className={styles.chatbot_template_wrapper}>
-                                        <p className={styles.chatbot_template}>Problema na publicação</p>
+                                        <p className={styles.chatbot_template}>Problema na tarefa</p>
                                     </div>
                                     
                                     <div className={styles.chatbox_template_title_wrapper} onClick={() => editPublicationHandler(msg.reservation_id)}>
@@ -364,7 +364,7 @@ const Suporte = (props) => {
                                        
                                         :null
                                     }
-                                    <p onClick={() => editPublicationHandler(msg.reservation_id)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Carregue aqui para editar publicação.</p>
+                                    <p onClick={() => editPublicationHandler(msg.reservation_id)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Carregue aqui para editar tarefa.</p>
                                 </div>
                                 :
                                 <div className={msg.origin_type!==4?styles.chatbox_text_send:styles.chatbox_text_receive}

@@ -236,7 +236,7 @@
     padding: 5px 0;
 }
 .drop_div_main:hover{
-    background-color: var(--action);
+    background-color: var(--job);
 
 }
 .drop_div_main:hover{
@@ -244,10 +244,19 @@
 }
 .drop_div{
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     margin: auto;
     padding: 5px;
     align-items: center;
+}
+.drop_div_main_delete{
+    width: 100%;
+    cursor: pointer;
+    padding: 5px 0;
+}
+.drop_div_main_delete:hover{
+    background-color: var(--red);
+    color: white;
 }
 .item_indicator{
     background-color: white;
@@ -372,6 +381,28 @@
     font-weight: 600;
     font-size: 1rem;
 }
+.no_map_div{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    background-color: #0358e580;
+    border: 2px solid var(--job);
+    border-radius: 5px;
+    padding: 15px 0;
+}
+.no_map{
+    font-style: italic;
+    font-size: 0.9rem;
+    color: white;
+    margin-top: 10px;
+}
+.no_map_icon{
+    width: 30px !important;
+    height: 30px !important;
+    color: white;
+}
 .top_desc{
     margin-top: 5px;
     text-align: left;
@@ -467,7 +498,7 @@
 }
 .location{
     font-size: 0.9rem;
-    font-weight: 400;
+    font-weight: 500;
     margin-left: 10px;
 }
 .location_blur{
@@ -546,6 +577,60 @@
     height: 1px;
     background-color: var(--brand);
     margin: 20px auto;
+}
+.separator{
+    width: 100%;
+    height: 2px;
+    background-color: var(--neutral);
+    display: block;
+    margin: 50px auto;
+    border-radius: 20px;
+}
+.edit{
+    background-color: var(--action);
+    margin: auto;
+    margin-top: 10px;
+    padding: 15px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+}
+.edit:hover{
+    opacity: 0.8;
+    transition: 150ms all;
+}
+.edit_icon{
+    width: 40px !important;
+    height: 40px !important;
+    color: var(--neutral);
+}
+.edit_icon_text{
+    color: var(--neutral);
+    font-weight: 600;
+}
+.delete{
+    background-color: var(--brand);
+    border: 2px solid var(--red);
+    color: var(--red);
+    margin: auto;
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 40px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 600;
+}
+.delete:hover{
+    transition: 150ms all;
+    background-color: var(--red);
+    color: var(--neutral);
 }
 .message{
     background-color: white;

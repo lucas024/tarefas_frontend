@@ -3,6 +3,7 @@ import styles from './carta.module.css'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
 import {regioesOptions, profissoesOptions, profissoesPngs} from '../general/util'
+import FaceIcon from '@mui/icons-material/Face';
 
 const Carta = (props) => {
     
@@ -75,8 +76,16 @@ const Carta = (props) => {
                 {
                 worker?
                 <div className={styles.top_flex}>
-                    <img className={styles.worker_img} 
-                        src={worker.img!==""?worker.photoUrl:""}/>
+                    {
+                        worker.photoUrl!==""?
+                        <img className={styles.worker_img} 
+                            src={worker.photoUrl}/>
+                        :
+                        <div className={styles.image_tbd_wrapper}>
+                            <FaceIcon className={styles.image_tbd}/>
+                        </div>
+                    }   
+                    
                     <div className={styles.worker_info_div}>
                         <span className={styles.worker_info_name}>{worker.name}</span>
                         <span className={styles.worker_info_type}>

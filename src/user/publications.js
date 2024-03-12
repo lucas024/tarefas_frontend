@@ -99,11 +99,11 @@ const Publications = (props) => {
                                 <div className={styles.remove_div}>
                                     <div className={styles.center_text_div}>
                                         <span className={styles.center_text}>
-                                            Tem a certeza de que quer <span className={styles.center_text_special}>eliminar</span> a publicação?
+                                            Tens a certeza que queres <span className={styles.center_text_special}>remover</span> a tarefa?
                                         </span>
                                     </div>
                                     <span className={styles.button_eliminate} onClick={e => deleteHandler(e, res)}>
-                                        Eliminar
+                                        REMOVER TAREFA
                                     </span>
                                     <span className={styles.button_cancel} onClick={e => cancelHandler(e, res._id)}>
                                         Cancelar

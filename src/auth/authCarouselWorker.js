@@ -174,7 +174,7 @@ const AuthCarouselWorker = props => {
             </div>
 
             <div className={styles.login}>
-                <p className={styles.register_title}>Os distritos onde trabalha</p>
+                <p className={styles.register_title}>Os distritos ou regiões onde trabalha</p>
                 <span className={styles.selected_number}>({props.selectedReg.length}/18)</span>
                 <div className={styles.map_div}>
                     {mapRegioes()}
@@ -202,7 +202,7 @@ const AuthCarouselWorker = props => {
                     </div>
                     <span className={styles.bottom_divider}></span>
                     <div className={styles.bottom_wrapper}>
-                        <span className={styles.bottom_title}>Distritos</span>
+                        <span className={styles.bottom_title}>Regiões</span>
                         <div className={styles.list}>
                             {mapRegioesList()}
                         </div>

@@ -751,7 +751,7 @@ const AuthWorker = (props) => {
                                     <p className={styles.area_bot_title_helper} style={{color:"#FF785A"}}>({registarTab-2}/4)</p>
                                 }
                                 
-                                <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Palavra-passe', 'Detalhes do utilizador', 'Particular ou Empresa', 'Tarefas que excerço', 'Distritos onde trabalho', 'Concluir'][registarTab]}</p>
+                                <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Palavra-passe', 'Detalhes do utilizador', 'Particular ou Empresa', 'Tarefas que excerço', 'Distritos ou regiões onde trabalho', 'Concluir'][registarTab]}</p>
                                 {
                                     registarTab<=2?
                                     <div className={styles.login_div}>

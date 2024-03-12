@@ -62,7 +62,7 @@ const Auth = (props) => {
     
     const [phone, setPhone] = useState("")
     const [phoneVisual, setPhoneVisual] = useState('')
-    const [phoneWrong, setPhoneWrong] = useState(false)
+    const [phoneWrong, setPhoneWrong] = useState(null)
 
     const [registarTab, setRegistarTab] = useState(0)
 
@@ -205,15 +205,19 @@ const Auth = (props) => {
     }
 
     const validatePhoneHandler = () => {
-        if(validator.isMobilePhone(phone, "pt-PT")){
-            setPhoneWrong(false)
-            setRegistarTab(2)
-            return true
+        if(phone!==null)
+        {
+            if(validator.isMobilePhone(phone, "pt-PT")){
+                setPhoneWrong(false)
+                setRegistarTab(2)
+                return true
+            }
+            else{
+                setPhoneWrong(true)
+                return false
+            }
         }
-        else{
-            setPhoneWrong(true)
-            return false
-        }
+        
     }
 
     const validateEmailHandler = () => {
@@ -403,7 +407,7 @@ const Auth = (props) => {
                                 setEmailWrong("Este e-mail já se encontra associado a uma conta de TRABALHADOR. Por-favor, utilize outro email.")
                             }
                             else{
-                                axios.get(`${props.api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                                axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
                                     if(res.data.registerMethod != "email"){
                                         setEmailWrong('Este e-mail encontra-se registado através da Google.')
                                     }

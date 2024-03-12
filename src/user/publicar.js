@@ -49,6 +49,7 @@ const Publicar = (props) => {
     const [phoneWrong, setPhoneWrong] = useState(false)
     const [email, setEmail] = useState('')
     const [address, setAddress] = useState('')
+    const [addressManual, setAddressManual] = useState('')
     const [porta, setPorta] = useState('')
     const [portaWrong, setPortaWrong] = useState(false)
     const [andar, setAndar] = useState('')
@@ -70,6 +71,7 @@ const Publicar = (props) => {
     const [verifyEmail, setVerifyEmail] = useState(0)
     const [loading, setLoading] = useState(false)
     const [loadingConfirm, setLoadingConfirm] = useState(false)
+    const [taskType, setTaskType] = useState(0)
 
     const [photoPrincipal, setPhotoPrincipal] = useState(null)
     const [expired, setExpired] = useState(true)
@@ -85,7 +87,25 @@ const Publicar = (props) => {
 
     const [sendingError, setSendingError] = useState(null)
 
-    const allFieldsCorrect = (user.phone===phone&&user_phone_verified)&&user_email_verified&&titulo.length>5&&selectedWorker!=null&&address!=null&&porta.length>0&&!loadingConfirm
+
+    const checkAllFieldsCorrect = () => {
+        let first_phase_correct = titulo.length>6&&selectedWorker!=null
+        let second_third_correct = (user.phone===phone&&user_phone_verified)&&user_email_verified&&!loadingConfirm
+        let porta_correct = (taskType===2&&true)||porta.length>0
+        let both_phases = first_phase_correct&&second_third_correct&&porta_correct
+
+        return both_phases&&checkAddressCorrect()
+    }
+
+    const checkAddressCorrect = () => {
+        if(taskType===0)
+            return address?.length>5&&lat!=""&&lng!=""&&district!=null
+        else if(taskType===1)
+            return addressManual?.length>10&&district!=null
+        else if(taskType===2)
+            return true
+        return false
+    }
 
     const maxFiles = 6
     const inputRef = useRef(null);
@@ -147,6 +167,7 @@ const Publicar = (props) => {
                     setPhotoPrincipal(res.data.photo_principal)
                     setImages(res.data.photos)
                     setLoading(false)
+                    setTaskType(res.data.task_type)
                     console.log(res.data);
                 }
                 else{
@@ -195,16 +216,6 @@ const Publicar = (props) => {
         const time = new Date()
         time.setSeconds(time.getSeconds() + 59)
         restart(time)
-    }
-    
-    const checkAll = () => {
-        return nome.length>0 && 
-        validator.isMobilePhone(phone, "pt-PT") && 
-        validator.isEmail(email) && 
-        (address.length>0 || editAddress?.length>0) && 
-        titulo.length>5 && 
-        porta.length>0 &&
-        selectedWorker != null
     }
 
     const uploadImageFileHandler = async (file, postId, arr) => {
@@ -262,7 +273,8 @@ const Publicar = (props) => {
             user_email: user.email,
             title: titulo,
             desc: description,
-            localizacao: address || editAddress,
+            localizacao: taskType===0?(address||editAddress):taskType===1?addressManual:null,
+            task_type: taskType,
             porta: porta,
             andar: andar,
             type: 0,
@@ -401,8 +413,15 @@ const Publicar = (props) => {
     }
 
     const setTituloHandler = val => {
-        setTitulo(val)
-        if(titulo.length>5) setTituloWrong(false)
+        console.log(val)
+        if(titulo.length===0)
+            setTitulo(val.replace(/\s/g, ''))
+        else
+            setTitulo(val)
+
+        let aux = val.replace(/\s/g, '').length
+        if(aux>6) setTituloWrong(false)
+        else setTituloWrong(true)
     }
 
     const setActivateEditAddressHandler = () => {
@@ -635,7 +654,7 @@ const Publicar = (props) => {
                                 null
                                 :
                                 <p className={styles.reservar_upper_desc}>
-                                    Criar e publicar a tua <span className={styles.action}>tarefa</span>.<br/>
+                                    Criar e publicar a tua <span className={styles.action} style={{fontWeight:600}}>Tarefa</span>.<br/>
                                     <br></br>
                                 </p>
                             }
@@ -713,7 +732,7 @@ const Publicar = (props) => {
                                     tituloWrong={tituloWrong}
                                     description={description}
                                     setDescription={setDescription}
-                                    correct={titulo.length>5&&selectedWorker!=null}
+                                    correct={!tituloWrong&&selectedWorker!=null}
                                     selectedTab={selectedTab}
                                     />
                             </div>
@@ -762,13 +781,19 @@ const Publicar = (props) => {
                                     getFieldWrong={getFieldWrong}
                                     getFieldWrongText={getFieldWrongText}
                                     selectedTab={selectedTab}
-                                    correct_location={address!==null&&porta.length>0}
+                                    correct_location={checkAddressCorrect()&&porta.length>0}
+                                    correct_location_online={checkAddressCorrect()}
                                     correct_phone={user.phone===phone&&user_phone_verified}
                                     correct_email={user_email_verified}
                                     setVerifyPhone={val => setVerifyPhone(val)}
                                     setVerifyEmail={val => setVerifyEmail(val)}
                                     expired={expired}
                                     seconds={seconds}
+                                    setTaskType={val => setTaskType(val)}
+                                    taskType={taskType}
+                                    setAddressManual={val => setAddressManual(val)}
+                                    setDistrictHelper={val => setDistrict(val)}
+                                    district={district}
                                     />
                             </div>
                             <div className={styles.carousel_div}>
@@ -815,8 +840,13 @@ const Publicar = (props) => {
                                         <p className={styles.zone_title}>Detalhes</p>
                                         <div className={styles.zone_flex}>
                                             <div className={styles.zone_label_div}>
-                                                <p className={styles.zone_label}>Localização</p>
-                                                <span className={styles.zone_label_value}>{address||editAddress}, {porta}{andar?`, ${andar}`:null}</span>
+                                                <p className={styles.zone_label}>Morada</p>
+                                                {
+                                                    taskType===2?
+                                                    <span className={styles.zone_label_value}>Tarefa Online</span>
+                                                    :
+                                                    <span className={styles.zone_label_value}>{taskType===0?address||editAddress:taskType===1?addressManual:null}, {porta}{andar?`, ${andar}`:null}</span>
+                                                }
                                             </div>
                                             <div className={styles.zone_label_div}>
                                                 <p className={styles.zone_label}>Nome</p>
@@ -841,9 +871,9 @@ const Publicar = (props) => {
                         <div className={styles.buttons}>
                             {
                                 selectedTab===0?
-                                <div className={titulo.length>5&&selectedWorker!=null?styles.login_button:styles.login_button_disabled}
+                                <div className={!tituloWrong&&titulo.length>6&&selectedWorker!=null?styles.login_button:styles.login_button_disabled}
                                     style={{marginTop:0}}
-                                    onClick={() => {titulo.length>5&&selectedWorker!=null&&setSelectedTab(1)}}>
+                                    onClick={() => {!tituloWrong&&titulo.length>6&&selectedWorker!=null&&setSelectedTab(1)}}>
                                     <p className={styles.login_text}>Continuar</p>
                                 </div>
                                 :
@@ -866,9 +896,9 @@ const Publicar = (props) => {
                                         onClick={() => {setSelectedTab(selectedTab-1)}}>
                                     <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                     </div>
-                                    <div className={((user.phone===phone&&user_phone_verified)&&user_email_verified)&&address!==null&&porta!==''?styles.login_button:styles.login_button_disabled}
+                                    <div className={((user.phone===phone&&user_phone_verified)&&user_email_verified)&&checkAddressCorrect()?styles.login_button:styles.login_button_disabled}
                                         style={{marginLeft:'10px', marginTop:0}}
-                                        onClick={() => {setSelectedTab(selectedTab+1)}}>
+                                        onClick={() => {((user.phone===phone&&user_phone_verified)&&user_email_verified)&&checkAddressCorrect()&&setSelectedTab(selectedTab+1)}}>
                                         <p className={styles.login_text}>Continuar</p>
                                     </div>
                                 </div>
@@ -880,9 +910,9 @@ const Publicar = (props) => {
                                         onClick={() => {!loadingConfirm&&!publicationSent&&setSelectedTab(selectedTab-1)}}>
                                         <p className={styles.login_text}>EDITAR</p>
                                     </div>
-                                    <div className={allFieldsCorrect?styles.login_button:styles.login_button_disabled}
+                                    <div className={checkAllFieldsCorrect()?styles.login_button:styles.login_button_disabled}
                                         style={{marginTop:'5px', backgroundColor:edit?"#FF785A":""}}
-                                        onClick={() => !loadingConfirm&&!publicationSent&&allFieldsCorrect&&confirmarHandler()}>
+                                        onClick={() => !publicationSent&&checkAllFieldsCorrect()&&confirmarHandler()}>
                                         {
                                             edit?
                                             <p className={styles.login_text}>CONFIRMAR EDIÇÃO</p>

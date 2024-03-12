@@ -5,11 +5,9 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import {profissoesPngs} from '../general/util'
 import TopSelect from '../selects/selectStyling';
 import TextareaAutosize from 'react-textarea-autosize';
-import { useNavigate } from 'react-router-dom';
 import DoneIcon from '@mui/icons-material/Done';
 
 const PublicarService = props => {
-    const navigate = useNavigate()
 
     return (
         <div className={styles.top}>
@@ -69,7 +67,7 @@ const PublicarService = props => {
                     onChange={e => props.setTitulo(e.target.value)} 
                     value={props.titulo} 
                     className={styles.top_input_short} 
-                    style={{borderColor:props.titulo.length>5?"#0358e5":""}}></input>
+                    style={{borderColor:!props.tituloWrong?"#0358e5":"", width:'100%', maxWidth:'700px'}}></input>
             </div>
             <div className={styles.diff_right}>
                     {

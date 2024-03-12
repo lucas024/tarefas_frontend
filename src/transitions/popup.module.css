@@ -103,15 +103,16 @@
     max-width: 400px;
     margin: 0 auto;
     border-radius: 3px;
-    border: 1px solid var(--action);
     text-align: center;
     padding: 5px 0;
     cursor: pointer;
     color: white;
     font-size: 1rem;
     text-transform: uppercase;
-    color: var(--brand);
+    color: var(--red);
     font-weight: 600;
+    border: 2px solid var(--red);
+    background-color: var(--neutral);
 }
 .button_cancel{
     width: 50%;
@@ -130,16 +131,16 @@
     color: var(--neutral);
 }
 .button_cancel:hover{
-    opacity: 0.7;
-    transition: 150ms all ease-in-out;
+    opacity: 0.8;
+    transition: 150ms all;
 }
 .button_eliminate:hover{
-    color: white;
-    background-color: var(--action);
-    transition: 150ms all ease-in-out;
+    background-color: var(--red);
+    color: var(--neutral);
+    transition: 150ms all;
 }
 .center_text_special{
-    color: var(--action);
+    color: var(--red);
     text-transform: uppercase;
 }
 .worker{
@@ -209,7 +210,7 @@
 .cancel_text:hover{
     cursor: pointer;
     text-decoration: underline;
-    transition: 200ms;
+    transition: 150ms;
 }
 .confirm_button_pagar{
     margin: 10px auto 0 auto;
@@ -224,7 +225,7 @@
 }
 .confirm_button_pagar:hover{
     background-color: #1EACAA;
-    transition: 100ms all;
+    transition: 150ms all;
 }
 .line_total{
     width: fit-content;

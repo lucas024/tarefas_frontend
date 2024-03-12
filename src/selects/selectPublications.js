@@ -123,7 +123,7 @@ const SelectPublications = (props) => {
                 props.type==="zona"?
                 <span className={styles.placeholder}>
                     <LocationOnOutlinedIcon className={styles.placeholder_icon}/>
-                    Distrito
+                    Região
                 </span>
                 :props.trabalho?
                 <span className={styles.placeholder}>

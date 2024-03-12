@@ -276,7 +276,7 @@ const Messages = (props) => {
                                 msg.refusal_start?
                                 <div className={styles.chatbox_text_starter} style={{borderBottomLeftRadius:0}}>
                                     <div className={styles.chatbot_template_wrapper}>
-                                        <p className={styles.chatbot_template}>Problema na publicação</p>
+                                        <p className={styles.chatbot_template}>Problema na tarefa</p>
                                     </div>
                                     
                                     <div className={styles.chatbox_template_title_wrapper} onClick={() => navigate(`/main/publications/publication?id=${msg.reservation_id}`)}>
@@ -291,7 +291,7 @@ const Messages = (props) => {
                                        
                                         :null
                                     }
-                                    <p onClick={() => navigate(`/main/publications/publication?id=${msg.reservation_id}`)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Carregue aqui para editar publicação.</p>
+                                    <p onClick={() => navigate(`/main/publications/publication?id=${msg.reservation_id}`)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Carregua aqui para editares a tarefa.</p>
                                 </div>
                                 :
                                 <div className={msg.origin_type===4?styles.chatbox_text_send:styles.chatbox_text_receive}>

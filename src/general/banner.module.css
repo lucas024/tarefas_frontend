@@ -101,7 +101,7 @@
 .button_text{
     font-weight: 600;
     text-transform: uppercase;
-    color: var(--brand);
+    color: var(--neutral);
 }
 .resend{
     background-color: var(--yellow);

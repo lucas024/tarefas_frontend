@@ -13,7 +13,8 @@ const slice = createSlice({
     worker_is_subscribed: false,
     user_subscription_active: false,
     user_admin_verified: false,
-    api_url: "https://vender-344408.ew.r.appspot.com" //"http://localhost:5200" //"https://docker-image-fixed-v2-z4uucaddha-ew.a.run.app"
+    // api_url: "http://localhost:5200",
+    api_url: "https://vender-344408.ew.r.appspot.com",
   },
   reducers: {
     user_load: (state, action) => {

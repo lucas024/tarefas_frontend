@@ -65,7 +65,7 @@ const AuthCarousel = props => {
 
                 <p className={styles.register_title} style={{marginTop:'10px'}}>Telemóvel</p>
                 <div className={styles.input_wrapper} 
-                    style={{borderColor:props.phoneWrong?"red":validator.isMobilePhone(props.phone, "pt-PT")&&props.phone?.length===9?props.type==='worker'?"#FF785A":"#0358e5":""}}>
+                    style={{borderColor:props.phoneWrong?"red":!props.phoneWrong&&props.phone?.length===9?props.type==='worker'?"#FF785A":"#0358e5":""}}>
                     <img src={portugal} className={styles.flag}/>
                     <span className={styles.input_wrapper_divider}>.</span>
                     <input

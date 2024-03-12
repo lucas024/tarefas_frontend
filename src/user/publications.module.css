@@ -121,7 +121,7 @@
     margin-left: 3px;
 }
 .more_wrapper:hover{
-    background-color: var(--action);
+    background-color: var(--red);
 }
 .more{
     color: var(--neutral);
@@ -137,7 +137,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border: 2px solid var(--action);
+    border: 2px solid var(--red);
     box-sizing: border-box;
 }
 .center_text_div{
@@ -154,13 +154,14 @@
     max-width: 400px;
     margin: 0 auto;
     border-radius: 3px;
-    border: 1px solid var(--action);
+    border: 1px solid var(--red);
     text-align: center;
     padding: 5px 0;
     cursor: pointer;
     color: white;
     font-size: 0.8rem;
     text-transform: uppercase;
+    font-weight: 600;
 }
 .button_cancel{
     width: 50%;
@@ -179,11 +180,12 @@
 }
 .button_cancel:hover{
     opacity: 0.7;
-    transition: 150ms;
+    transition: 150ms all;
 }
 .button_eliminate:hover{
     color: white;
-    background-color: var(--action);
+    background-color: var(--red);
+    transition: 150ms all;
 }
 .item_flex_indicator{
     display: flex;

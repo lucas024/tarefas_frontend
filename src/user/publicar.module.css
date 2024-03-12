@@ -71,7 +71,7 @@
     padding: 20px;
     border-radius: 5px;
     position: relative;
-    height: 425px;
+    height: 475px;
     width: 100%;
     min-width: 400px;
 }
@@ -398,7 +398,7 @@ input::placeholder{
 }
 .top_desc_area{
     width: 100%;
-    height: 100px;
+    min-height: 200px !important;
     border-radius: 2px;
     resize: none;
     border: none;
@@ -411,7 +411,7 @@ input::placeholder{
     color: var(--neutral);
     border-bottom: 2px solid var(--brand);
     box-sizing: border-box;
-    max-height: 165px;
+    max-height: 175px;
     overflow: auto;
     resize: none;
     font-family: 'Montserrat', sans-serif !important;
@@ -764,9 +764,15 @@ input::placeholder{
     display: flex;
     z-index: 3;
 }
+.bot_input_div_search_select{
+    min-width: 200px;
+    margin-top: 5px;
+    margin-left: 5px;
+}
 .address_flex{
     display: flex;
 }
+
 .top_input_short{
     border-radius: 3px;
     height: 40px;
@@ -1058,6 +1064,7 @@ input::placeholder{
     margin: 0 auto;
     margin-top: 40px;
     position: relative;
+    height: 475px;
 }
 .display_divider{
     width: 100%;
@@ -1372,9 +1379,14 @@ input::placeholder{
     padding: 5px;
     outline: none;
     color: var(--neutral);
+    border-bottom: 2px solid var(--brand);
+    border-right: 1px solid var(--brand);
 }
 .input_address::placeholder{
     font-style: normal !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 .input_address_bottom{
     height: 40px;
@@ -1400,7 +1412,6 @@ input::placeholder{
     align-items: center;
     padding: 2px 5px;
     border-radius: 5px;
-
 }
 .helper_asterisc{
     text-align: center;
@@ -1417,6 +1428,73 @@ input::placeholder{
     text-transform: uppercase;
     font-size: 0.7rem;
     font-weight: 600;
+}
+.address_help_wrapper{
+    margin-top: -49px;
+    width: max-content;
+    border-radius: 5px;
+    margin-left: auto;
+}
+.address_help_title{
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 3px;
+    font-weight: 500;
+}
+.address_help_button_wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-radius: 3px;
+    border: 2px solid var(--job);
+    margin-top: 2px;
+}
+.address_help_button{
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    background-color: var(--job);
+    color: var(--neutral);
+    font-weight: 500;
+    margin: 0 auto;
+    padding: 5px;
+    cursor: pointer;
+    flex: 1;
+}
+.address_help_button:hover{
+    opacity: 0.8;
+    transition: all 150ms;
+}
+.online_task_button{
+    background-color: var(--neutral);
+    height: 30px;
+    text-transform: uppercase;
+    color: var(--neutral);
+    border-radius: 3px;
+    margin-top: 20px;
+    cursor: pointer;
+    display: flex;
+    border: 2px solid var(--job);
+    transition: all 150ms;
+}
+
+.online_task_button_side_wrapper{
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.online_task_button_side_wrapper:hover{
+    opacity: 0.8;
+    transition: all 150ms;
+}
+.tarefa_separator{
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid var(--brand);
+    margin-top: 15px;
+    margin-bottom: 10px;
 }
 @media (max-width: 1200px){
     .foto_img_wrapper{

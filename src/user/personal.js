@@ -35,6 +35,7 @@ const Personal = (props) => {
     const api_url = useSelector(state => {return state.api_url})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
     const user_phone_verified = useSelector(state => {return state.user_phone_verified})
+    const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
     const user = useSelector(state => {return state.user})
 
     const dispatch = useDispatch()
@@ -277,7 +278,12 @@ const Personal = (props) => {
                     setBottomPop(true)
                     setTimeout(() => setBottomPop(false), 4000)
                     if(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)
+                    {
                         dispatch(worker_update_profile_complete(true))
+                        if(user.state!==1 && worker_is_subscribed)
+                            axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: user._id})
+                    }
+                        
                 })
             }
         }
@@ -637,13 +643,13 @@ const Personal = (props) => {
                                             {
                                                 selectedReg?.length>0&&!editBottom?
                                                 <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text_complete}>Distritos onde trabalho</span>
+                                                    <span className={styles.line_text_complete}>Distritos ou regiões onde trabalho</span>
                                                     <CheckIcon className={styles.line_val_complete}></CheckIcon>
                                                 </div>
                                                 
                                                 :
                                                 <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text}>Distritos onde trabalho</span>
+                                                    <span className={styles.line_text}>Distritos ou regiões onde trabalho</span>
                                                     <ClearIcon className={styles.line_val}></ClearIcon>
                                                 </div>
 
@@ -869,11 +875,11 @@ const Personal = (props) => {
                                     </div>
                                 </div>
                                 <div className={styles.flex_left}>
-                                    <span className={styles.flex_title}>Distritos onde trabalho</span>
+                                    <span className={styles.flex_title}>Distritos ou regiões onde trabalho</span>
                                     <span className={editBottom?styles.divider_active:styles.divider}></span>
                                     {
                                         editBottom&&selectedReg.length===0?
-                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um distrito!</span>
+                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um distrito ou região!</span>
                                         :null
                                     }
                                     <div className={styles.flex_select_div}>

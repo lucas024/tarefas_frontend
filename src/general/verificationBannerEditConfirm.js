@@ -13,14 +13,14 @@ const VerificationBannerEditConfirm = (props) => {
     return (
         <div className={styles.verification}>
             <div className={styles.main} style={{borderColor:"#FF785A"}} onClick={e => e.stopPropagation()}>
-                <p className={styles.title}>EDITAR PUBLICAÇÃO</p>
+                <p className={styles.title}>EDITAR TAREFA</p>
                 <span className={styles.title_separator}/>
                 {
                     next===0?
                     <div className={styles.main_inner}>
                         <p className={styles.phone_description} style={{textAlign:"center"}}>
-                            Ao confirmar a edição, esta publicação de tarefa será novamente analisada.
-                            <br/>Pode seguir o processo da publicação na tua àrea pessoal.</p>
+                            Ao confirmar a edição, esta tarefa será novamente analisada.
+                            <br/>Podes seguir o processo da tarefa na tua àrea pessoal.</p>
                         
                         <div className={styles.button} style={{backgroundColor:"#FF785A"}} onClick={() => {props.confirm()&&setNext(1)}}>
                             <span className={styles.button_text}>CONFIRMAR EDIÇÃO</span>
@@ -41,8 +41,13 @@ const VerificationBannerEditConfirm = (props) => {
                                     rendererSettings= {
                                         {preserveAspectRatio: 'xMidYMid slice'}
                                     }
-                                    height={80}
-                                    width={80}
+                                    style={{
+                                        width:'80px',
+                                        height:'80px',
+                                        justifySelf:'center',
+                                        alignSelf:'center',
+                                        marginTop:'30px'
+                                    }}
                                     // isStopped={this.state.isStopped}
                                     // isPaused={this.state.isPaused}
                                 />
@@ -56,8 +61,13 @@ const VerificationBannerEditConfirm = (props) => {
                                     rendererSettings= {
                                         {preserveAspectRatio: 'xMidYMid slice'}
                                     }
-                                    height={80}
-                                    width={80}
+                                    style={{
+                                        width:'80px',
+                                        height:'80px',
+                                        justifySelf:'center',
+                                        alignSelf:'center',
+                                        margin:'0 auto 20px auto'
+                                    }}
                                 />
                                 <p className={styles.phone_description}>Tarefa editada com sucesso. Será rápidamente analisado pela equipa da Tarefas.</p>
                                 <div style={{display:'flex', justifyContent:'center'}}>

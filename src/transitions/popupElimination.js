@@ -25,7 +25,7 @@ const PopupElimination = (props) => {
                 unmountOnExit
                 >
                     <div className={styles.popup}>
-                        <span className={styles.value} style={{color:"#FF785A"}}>Remover Publicação</span>
+                        <span className={styles.value} style={{color:"#ff3b30"}}>Remover Tarefa</span>
                         <div className={styles.divider}></div>
                         {/* <div className={styles.list_item}>
                             <div className={styles.list_item_left}>
@@ -47,7 +47,7 @@ const PopupElimination = (props) => {
                         </div> */}
                         <div className={styles.center_text_div}>
                             <span className={styles.center_text}>
-                                Tem a certeza de que quer <span className={styles.center_text_special} style={{fontWeight:600}}>remover</span> a publicação?
+                                Tens a certeza que queres <span className={styles.center_text_special} style={{fontWeight:600}}>remover</span> a Tarefa?
                             </span>
                         </div>
                     

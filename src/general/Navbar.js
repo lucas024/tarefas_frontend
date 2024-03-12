@@ -132,7 +132,7 @@ const Navbar = (props) => {
  
                                         <div className={styles.user}>
                                             {
-                                                (user.type&&!worker_is_subscribed || user.type&&worker_profile_complete)?
+                                                (user.type&&!worker_is_subscribed || user.type&&!worker_profile_complete)?
                                                 <span className={styles.drop_div_notification_text}>CONTA DESATIVADA</span>
                                                 :
                                                 (user.type===0&&!(user_phone_verified&&user_email_verified))?

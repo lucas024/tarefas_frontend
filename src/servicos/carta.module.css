@@ -24,6 +24,17 @@
 .box_underline{
     
 }
+.image_tbd_wrapper{
+    background-color: #FF785A80;
+    border-radius: 5px;
+    width: 80px;
+    height: 80px;
+}
+.image_tbd{
+    color: var(--brand);
+    height: 100% !important;
+    width: 100% !important;
+}
 .box_mask{
     width: 100%;
     height: 100%;

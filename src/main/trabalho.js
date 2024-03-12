@@ -32,6 +32,9 @@ import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import marker from '../assets/map_marker.png'
+import ExploreOffIcon from '@mui/icons-material/ExploreOff';
+import SignpostIcon from '@mui/icons-material/Signpost';
+import { regioesOptions } from '../general/util';
 
 const ObjectID = require("bson-objectid");
 
@@ -159,7 +162,7 @@ const Trabalho = (props) => {
     useEffect(() => {
         if(props.userLoadAttempt)
         {
-            if(user?._id!=null&&reservation)
+            if(reservation)
             {
                 axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: reservation.user_id} })
                     .then(res => {
@@ -178,7 +181,6 @@ const Trabalho = (props) => {
             {
                 viewToAux()
             }
-
             if(user?.chats)
             {
                 for(let chat of user.chats)
@@ -503,7 +505,7 @@ const Trabalho = (props) => {
                         {
                             reservation.type===2?
                             <div className={styles.wrong}>
-                                <span className={styles.wrong_text}>A tua publicação encontra-se <span className={styles.wrong_text_special}>INCORRETA</span></span>
+                                <span className={styles.wrong_text}>A tua tarefa encontra-se <span className={styles.wrong_text_special}>INCORRETA</span></span>
                                 <div className={styles.wrong_button_div} onClick={() => editPublicationHandler()}>
                                     <EditIcon className={styles.drop_div_symbol}/>
                                     <span className={styles.wrong_button}>EDITAR</span>
@@ -534,7 +536,7 @@ const Trabalho = (props) => {
                                         
                                         <div className={styles.dropdown} hidden={!more}>
                                             <div className={styles.dropdown_top}>
-                                                <span className={styles.dropdown_top_text}>Publicação</span>
+                                                <span className={styles.dropdown_top_text}>TAREFA</span>
                                             </div>
                                             <div onClick={() => {}} className={styles.drop_div_main} style={{borderTop:"1px solid #ccc"}}>
                                                 <div className={styles.drop_div} onClick={() => editPublicationHandler()}>
@@ -542,7 +544,7 @@ const Trabalho = (props) => {
                                                     <span className={styles.drop_div_text} >Editar</span>
                                                 </div>
                                             </div>
-                                            <div onClick={() => {}} className={styles.drop_div_main} style={{borderTop:"1px solid #ccc", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
+                                            <div onClick={() => {}} className={styles.drop_div_main_delete} style={{borderTop:"1px solid #ccc", borderBottomLeftRadius:"5px", borderBottomRightRadius:"5px"}}>
                                                 <div className={styles.drop_div} onClick={() => setEliminationPopup(true)}>
                                                     {/* <DeleteOutlineIcon className={styles.drop_div_symbol}/> */}
                                                     <span className={styles.drop_div_text} >REMOVER</span>
@@ -580,7 +582,7 @@ const Trabalho = (props) => {
                                     <div className={styles.divider} style={{backgroundColor:userView&&"white"}}></div>
                                         <div className={styles.details}>
                                             <span className={styles.details_id} style={{color:userView&&"white"}}>ID: {reservation._id}</span>
-                                            <span className={styles.details_id} style={{color:userView&&"white"}}>Visualizações: {reservation.clicks}</span>
+                                            {/* <span className={styles.details_id} style={{color:userView&&"white"}}>Visualizações: {reservation.clicks}</span> */}
                                         </div>
                                     </div>
                                 </div>
@@ -665,17 +667,42 @@ const Trabalho = (props) => {
                                 </div>
                                 <span className={styles.top_right_user} style={{marginTop:"40px"}}>Localização</span>
                                 <div className={styles.location_div}>
-                                    <LocationOnIcon className={styles.location_pin}/>
+                                    <SignpostIcon className={styles.location_pin}/>
                                     {
                                         loaded&&(showFull||userView)?
+                                        reservation.task_type===2?
+                                        <span className={styles.location} style={{fontWeight:600}}>Tarefa Online</span>
+                                        :
                                         <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}, ${reservation.andar}`}</span>
                                         :loaded&&(!showFull&&!userView)?
                                         <span className={`${styles.location_blur} ${styles.unselectable}`}>R. Abcdefg Hijklmonpqrstuvxyz 99, Porta 99</span> 
                                         :<span className={styles.skeleton} style={{width:"490px", height:"20px", marginLeft:"10px", borderRadius:"5px"}}></span>
                                         }
                                 </div>
+                                <div className={styles.location_div} style={{marginTop:'-5px'}}>
+                                    <LocationOnIcon className={styles.location_pin}/>
+                                    {
+                                        loaded&&(showFull||userView)?
+                                        reservation.task_type===2?
+                                        null
+                                        :
+                                        <span className={styles.location}>{regioesOptions[reservation.district]}</span>
+                                        :loaded&&(!showFull&&!userView)?
+                                        <span className={`${styles.location_blur} ${styles.unselectable}`}>Abcdefg ab Hijklmonpqrstuv</span> 
+                                        :<span className={styles.skeleton} style={{width:"490px", height:"20px", marginLeft:"10px", borderRadius:"5px"}}></span>
+                                        }
+                                </div>
                                 {
                                     loaded&&(showFull||userView)?
+                                    reservation.task_type===2?
+                                    null
+                                    :
+                                    reservation.task_type===1?
+                                    <div className={styles.no_map_div}>
+                                        <ExploreOffIcon className={styles.no_map_icon}/>
+                                        <span className={styles.no_map}>Sem mapa disponível para esta localização</span>
+                                    </div>
+                                    :
                                     <div className={styles.map_div}>
                                         <MapContainer center={[reservation.lat, reservation.lng]} zoom={14} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
                                             <TileLayer
@@ -794,7 +821,18 @@ const Trabalho = (props) => {
                                 </div>
                             </div>
                             :loaded&&userView?
-                            null
+                            <div style={{width:"100%"}}>
+                                <span className={styles.separator}/>
+                                <div className={styles.edit} onClick={() => editPublicationHandler()}>
+                                    <div className={styles.edit_icon_wrapper}>
+                                        <EditIcon className={styles.edit_icon}/>
+                                    </div>
+                                    <span className={styles.edit_icon_text}>EDITAR TAREFA</span>
+                                </div>
+                                <div className={styles.delete} onClick={() => setEliminationPopup(true)}>
+                                    <span>REMOVER TAREFA</span>
+                                </div>
+                            </div>
                             :
                             <div className={styles.skeleton} style={{marginTop:"10px", width:"100%", height:"200px", marginBottom:"20px", borderRadius:"5px"}}></div>
                         }

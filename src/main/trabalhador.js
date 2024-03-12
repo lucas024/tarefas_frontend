@@ -218,27 +218,35 @@ const Trabalhador = props => {
                             <img src={worker.photoUrl} className={styles.left_img}></img>
                             :<FaceIcon className={styles.left_img}/>
                         }
-                        <div className={styles.left_div}>
-                            <div className={styles.left_name_wrapper}>
-                                <p className={styles.left_name}>{worker.name}</p>
+                        <div className={styles.left_div_wrapper}>
+                            <div className={styles.left_div}>
+                                <div style={{display:'flex'}}>
+                                    <div className={styles.left_name_wrapper}>
+                                        <p className={styles.left_name}>{worker.name}</p>
+                                    </div>
+                                    <div className={styles.middle_images}>
+                                        <div className={styles.middle_images_background}>
+                                            {worker&&displayTrabalhosImages()}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <span className={styles.left_type}>{worker.entity?"Empresa":"Particular"}</span>
+                                {
+                                    worker.entity?
+                                        <span className={styles.left_type_company}>({worker.entity_name})</span>
+                                    :null
+                                }
+
                             </div>
-                            <span className={styles.left_type}>{worker.entity?"Empresa":"Particular"}</span>
-                            {
-                                worker.entity?
-                                    <span className={styles.left_type_company}>({worker.entity_name})</span>
-                                :null
-                            }
-                        </div>
-                    </div>
-                    <div className={styles.description_wrapper}>
-                        <div className={styles.middle_images}>
-                            <div className={styles.middle_images_background}>
-                                {worker&&displayTrabalhosImages()}
+                            <div className={styles.description_wrapper}>
+                                <span className={styles.description_title}>Descrição</span>
+                                <span className={styles.description}>{worker.description}</span>
                             </div>
                         </div>
-                        <span className={styles.description_title}>Sobre</span>
-                        <span className={styles.description}>{worker.description}</span>
+                        
                     </div>
+                    
                     {
                         !ownPost&&loaded?
                         <span 
@@ -277,7 +285,7 @@ const Trabalhador = props => {
                         </div>
                         <span className={styles.bottom_right_divider}></span>
                         <div className={styles.bottom_right_wrapper}>
-                            <span className={styles.bottom_right_title}>Distritos</span>
+                            <span className={styles.bottom_right_title}>Regiões</span>
                             <div className={styles.list}>
                                 {mapRegioesList()}
                             </div>

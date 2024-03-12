@@ -263,7 +263,7 @@ const Home = (props) => {
                                             optionFirst={first} 
                                             option={third} 
                                             changeOption={val => setThird(val)}
-                                            placeholder={'Distrito...'}/>
+                                            placeholder={'Região...'}/>
                                     </div>
                                 </div>
                             </div>
@@ -289,30 +289,35 @@ const Home = (props) => {
                 <div className={styles.home_divider} style={{backgroundColor:first==="trabalhadores"?"#FF785A":"#0358e5"}}>_</div>
                 <span className={styles.home_explorar}>EXPLORAR</span>
                 {
-                    user.type!==1&&loaded?
-                    <div className={styles.home_back_publish}>
-                        <p className={styles.back_publish_title}>PUBLICAR</p>
-                            <div className={styles.back_publish_div}>
-                                {/* {
-                                    user?.type===1?
-                                    <span className={styles.back_publish_div_frontdrop}></span>
-                                    :null
-                                } */}
-                                <PostAddIcon className={styles.section_img_mini}/>
-                                <span className={styles.back_publish_text}>Publicar uma tarefa</span>
-                                {
-                                    user._id!=null?
-                                    <span className={styles.back_publish_button} style={{fontSize:'0.9rem'}} onClick={() => navigate('/publicar/novo')}>PUBLICAR</span>
-                                    :
-                                    <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'20px'}}>
-                                        <div className={styles.back_publish_button_disabled} data-tooltip-id='home' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
-                                            <span className={styles.back_publish_div_frontdrop}></span>
-                                            <span style={{fontSize:'0.9rem'}}>PUBLICAR</span>
-                                        </div>
-                                        <span className={styles.auth}><span onClick={() => handleMoveAuth(1)} className={styles.auth_specific}>Iniciar Sessão</span> | <span onClick={() => handleMoveAuth(0)} className={styles.auth_specific}>Criar Conta</span></span>
+                    loaded?
+                    <div>
+                        <div className={styles.home_back_publish}>
+                            <p className={styles.back_publish_title}>PUBLICAR</p>
+                            {
+                                user._id!=null?
+                                <div className={styles.back_publish_div} onClick={() => navigate('/publicar/novo')}>
+                                    <div className={styles.home_back_publish_wrapper}>
+                                        <PostAddIcon className={styles.section_img_mini}/>
+                                        <span className={styles.section_publicar}>NOVA TAREFA</span>
                                     </div>
-                                }
+                                </div>
+                                :
+                                <div className={styles.back_publish_div_disabled} data-tooltip-id={'home'} data-tooltip-content="Por favor entra na tua conta ou regista-te para publicares uma tarefa.">
+                                    <div className={styles.home_back_publish_wrapper} style={{opacity:0.3}}>
+                                        <PostAddIcon className={styles.section_img_mini}/>
+                                        <span className={styles.section_publicar}>NOVA TAREFA</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        {
+                            user._id!=null?
+                            null
+                            :
+                            <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'0px'}}>
+                                <span className={styles.auth}><span onClick={() => handleMoveAuth(1)} className={styles.auth_specific}>Iniciar Sessão</span> | <span onClick={() => handleMoveAuth(0)} className={styles.auth_specific}>Criar Conta</span></span>
                             </div>
+                        }
                     </div>
                     :!loaded?
                     <div className={styles.section_content}>
@@ -430,7 +435,7 @@ const Home = (props) => {
                         </div>  
                     </div>
                 </div>
-                <Tooltip effect='solid' place='right' id="home"/>
+                <Tooltip effect='solid' place='top' id="home"/>
             </div>
             
 

@@ -6,13 +6,13 @@ const SelectHome = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: props.option==='trabalhos'?"#0358e5":props.option==='trabalhadores'?"#FF785A":props.option?"#161F28":"#252d36",
+            backgroundColor: props.publicar?'#161F28':props.option==='trabalhos'?"#0358e5":props.option==='trabalhadores'?"#FF785A":props.option?"#161F28":"#252d36",
             borderColor: "#ffffff",
             fontSize: "0.7rem",
-            textTransform: "uppercase",
+            textTransform: props.publicar?"normal":"uppercase",
             color: "#ffffff",
             fontWeight: 600,
-            width:"160px",
+            width:props.publicar?"100%":"160px",
             transition: "0.5s all ease-in-out",
             borderRadius: "5px",
             // borderBottomRightRadius: "0px",
@@ -27,7 +27,7 @@ const SelectHome = (props) => {
         }),
         option: (base, state) => ({
             ...base,
-            textTransform: "uppercase",
+            textTransform: props.publicar?"normal":"uppercase",
             cursor: "pointer",
             color: "#161F28",
             fontSize:"0.8rem",
@@ -36,8 +36,8 @@ const SelectHome = (props) => {
         }),
         menu: base => ({
             ...base,
-            textTransform: "uppercase",
-            width:"160px",
+            textTransform: props.publicar?"normal":"uppercase",
+            width:props.publicar?"100%":"160px",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
@@ -47,12 +47,14 @@ const SelectHome = (props) => {
             borderBottomLeftRadius: "10px",
             borderBottomRightRadius: "10px",
             padding: "0",
-            zIndex: 4
+            zIndex: 5,
         }),
         dropdownIndicator : base => ({
             ...base,
             color: "#ffffff",
             transition: "0.15s all ease-in-out",
+            zIndex:1,
+            marginTop:'-10px',
             "&:hover": {
                 color: "#161F28",
             }
@@ -65,7 +67,7 @@ const SelectHome = (props) => {
             ...base,
             color: "#ffffff",
             margin: "auto",
-            fontSize: "0.7rem"
+            fontSize: props.publicar?"0.8rem":"0.7rem",
         }),
         indicatorSeparator : base => ({
             ...base,
