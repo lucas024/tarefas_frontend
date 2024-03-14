@@ -7,7 +7,7 @@ const SelectHome = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: props.publicar?'#161F28':props.option==='trabalhos'?"#0358e5":props.option==='trabalhadores'?"#FF785A":props.option?"#161F28":"#252d36",
+            backgroundColor: props.publicar?'#161F28':props.option?.value==='trabalhos'?"#0358e5":props.option?.value==='trabalhadores'?"#FF785A":props.option?.value?"#161F28":"#252d36",
             borderColor: "#ffffff",
             fontSize: "0.7rem",
             textTransform: props.publicar?"normal":"uppercase",
@@ -120,7 +120,6 @@ const SelectHome = (props) => {
                 <p className={styles.label_label} style={{marginLeft:data.img?"5px":"0px"}}>{data.label}</p>
             </div>
         )
-        
     }
     
     return(
@@ -132,7 +131,7 @@ const SelectHome = (props) => {
             isSearchable={true}
             formatGroupLabel={formatGroupLabelAux}
             formatOptionLabel={formatOptionLabelAux}
-            menuIsOpen={true}
+            // menuIsOpen={true}
             onChange={value => {
                 selectChange(value)
             }}

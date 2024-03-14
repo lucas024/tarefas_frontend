@@ -44,7 +44,7 @@ const Home = (props) => {
     const [registerPopup, setRegisterPopup] = useState(false)
     const [loaded, setLoaded] = useState(false)
 
-    const [first, setFirst] = useState('trabalhadores')
+    const [first, setFirst] = useState({ value: 'trabalhadores', label: 'Trabalhadores' })
     const [second, setSecond] = useState(null)
     const [third, setThird] = useState(null)
 
@@ -56,7 +56,7 @@ const Home = (props) => {
     useEffect(() => {
         if(!parseInt(localStorage.getItem('firstAccessMade')))
             setShowWelcomeTrigger(true)
-        if(user.type===1) setFirst('trabalhos')
+        if(user.type===1) setFirst({ value: 'trabalhos', label: 'Tarefas' })
         else if(location.state?.carry==="login"){
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
@@ -113,16 +113,16 @@ const Home = (props) => {
 
     const searchHandler = () => {
         if(second&&third){
-            navigate(`/main/publications/${first}?work=${second}&region=${third}`)
+            navigate(`/main/publications/${first?.value}?work=${second?.value}&region=${third.value}`)
         }
         else if(second){
-            navigate(`/main/publications/${first}?work=${second}`)
+            navigate(`/main/publications/${first?.value}?work=${second?.value}`)
         }
         else if(third){
-            navigate(`/main/publications/${first}?region=${third}`)
+            navigate(`/main/publications/${first?.value}?region=${third.value}`)
         }
         else{
-            navigate(`/main/publications/${first}`)
+            navigate(`/main/publications/${first?.value}`)
         }
         
     }
@@ -188,8 +188,8 @@ const Home = (props) => {
             <div className={styles.home_back}>
             {/* <img className={styles.text_brand} src={logo_text}/> */}
                 <div className={styles.home_back_top}>
-                    <img className={styles.text_brand} src={logo_text} style={{opacity:first==='trabalhos'?1:0}}/>
-                    <img className={styles.text_brand} src={logo_text_worker} style={{opacity:first==='trabalhadores'?1:0}}/>
+                    <img className={styles.text_brand} src={logo_text} style={{opacity:first?.value==='trabalhos'?1:0}}/>
+                    <img className={styles.text_brand} src={logo_text_worker} style={{opacity:first?.value==='trabalhadores'?1:0}}/>
                     
                     {/* <span className={styles.text_title}>O que procura hoje?</span> */}
                     {
@@ -197,9 +197,9 @@ const Home = (props) => {
                         <div className={styles.main_wrapper}>
                             <div className={styles.main}>
                                 <div className={styles.zone}>
-                                    <div className={styles.zone_img} style={{backgroundColor:first==="trabalhadores"?"#FF785A":"#0358e5", borderColor:first==="trabalhadores"?"#FF785A":"#0358e5"}}>
+                                    <div className={styles.zone_img} style={{backgroundColor:first?.value==="trabalhadores"?"#FF785A":"#0358e5", borderColor:first?.value==="trabalhadores"?"#FF785A":"#0358e5"}}>
                                         {
-                                            first==="trabalhadores"?
+                                            first?.value==="trabalhadores"?
                                             <BackHandIcon className={styles.zone_person_icon} style={{transform: 'scaleX(-1)', color:"#ffffff"}}/>
                                             :
                                             <AssignmentIcon className={styles.zone_build_icon} style={{color:"#ffffff"}}/>
@@ -216,17 +216,17 @@ const Home = (props) => {
                                     </div>
                                 </div>
                                 <div className={styles.zone_arrow_div}>
-                                    <span className={first==="trabalhos"?second?styles.zone_arrow_trabalhos:styles.zone_arrow_trabalhos_half
-                                                    :second?styles.zone_arrow_trabalhadores:styles.zone_arrow_trabalhadores_half}>
+                                    <span className={first?.value==="trabalhos"?second?.value?styles.zone_arrow_trabalhos:styles.zone_arrow_trabalhos_half
+                                                    :second?.value?styles.zone_arrow_trabalhadores:styles.zone_arrow_trabalhadores_half}>
                                         {/* arrow */}
                                     </span>
                                 </div>
                                 <div className={styles.zone}>
-                                    <div className={styles.zone_img} style={{borderColor:second?first==="trabalhadores"?"#FF785A":"#0358e5":"#252d36",
-                                                backgroundColor:second?'#161F28':'#252d36'}}>
+                                    <div className={styles.zone_img} style={{borderColor:second?.value?first?.value==="trabalhadores"?"#FF785A":"#0358e5":"#252d36",
+                                                backgroundColor:second?.value?'#161F28':'#252d36'}}>
                                         {
-                                            second? 
-                                            <img src={profissoesPngs[second.value]} className={styles.zone_image_prof}/>
+                                            second?.value? 
+                                            <img src={second.img} className={styles.zone_image_prof}/>
                                             :
                                             <BuildIcon className={styles.zone_build_icon}/>
                                         }
@@ -242,15 +242,15 @@ const Home = (props) => {
                                     </div>
                                 </div>
                                 <div className={styles.zone_arrow_div}>
-                                    <span className={second&&third?first==='trabalhos'?styles.zone_arrow_trabalhos:styles.zone_arrow_trabalhadores
-                                                    :second?first==='trabalhos'?styles.zone_arrow_trabalhos_half:styles.zone_arrow_trabalhadores_half
-                                                    :third?first==='trabalhos'?styles.zone_arrow_trabalhos_half_reverse:styles.zone_arrow_trabalhadores_half_reverse
+                                    <span className={second&&third?first?.value==='trabalhos'?styles.zone_arrow_trabalhos:styles.zone_arrow_trabalhadores
+                                                    :second?first?.value==='trabalhos'?styles.zone_arrow_trabalhos_half:styles.zone_arrow_trabalhadores_half
+                                                    :third?first?.value==='trabalhos'?styles.zone_arrow_trabalhos_half_reverse:styles.zone_arrow_trabalhadores_half_reverse
                                                     :styles.zone_arrow_none}>
                                         {/* arrow */}
                                     </span>
                                 </div>
                                 <div className={styles.zone}>
-                                    <div className={styles.zone_img} style={{borderColor:third?first==="trabalhadores"?"#FF785A":"#0358e5":"#252d36",
+                                    <div className={styles.zone_img} style={{borderColor:third?first.value==="trabalhadores"?"#FF785A":"#0358e5":"#252d36",
                                                 backgroundColor:third?'#161F28':'#252d36'}}>
                                         {
                                             third? 
@@ -271,8 +271,8 @@ const Home = (props) => {
                                 </div>
                             </div>
                             <div onClick={() => second&&third&&searchHandler()} className={second&&third?styles.search_wrapper:styles.search_wrapper_disabled} 
-                                            style={{backgroundColor:second&&third?first==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff10",
-                                                    borderColor:(!second||!third)?first==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff10"}}>
+                                            style={{backgroundColor:second&&third?first?.value==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff10",
+                                                    borderColor:(!second||!third)?first?.value==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff10"}}>
                                 <SearchIcon className={styles.zone_search_icon} style={{color:second&&third?"#ffffff":"#ffffff90"}}/>
                                 <span className={styles.zone_search_button} style={{color:second&&third?"#ffffff":"#ffffff90"}}>PROCURAR</span>
                             </div>
@@ -289,7 +289,7 @@ const Home = (props) => {
                     }
                     
                 </div>
-                <div className={styles.home_divider} style={{backgroundColor:first==="trabalhadores"?"#FF785A":"#0358e5"}}>_</div>
+                <div className={styles.home_divider} style={{backgroundColor:first?.value==="trabalhadores"?"#FF785A":"#0358e5"}}>_</div>
                 <span className={styles.home_explorar}>EXPLORAR</span>
                 {
                     loaded?

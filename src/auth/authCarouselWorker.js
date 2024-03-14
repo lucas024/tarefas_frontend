@@ -6,11 +6,6 @@ import {regioes, profissoes, regioesOptions, profissoesOptions} from '../general
 import SelectWorker from '../selects/selectWorker';
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import EmailIcon from '@mui/icons-material/Email';
-import PersonIcon from '@mui/icons-material/Person';
-import PhoneIcon from '@mui/icons-material/Phone';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import BuildIcon from '@mui/icons-material/Build';
 
 const AuthCarouselWorker = props => {
 

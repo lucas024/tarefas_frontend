@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import Select from 'react-select'
 import styles from '../servicos/main.module.css'
+import select_styles from './select.module.css'
 import PersonIcon from '@mui/icons-material/Person';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
-import {regioes, profissoes, profissoesPngs} from '../general/util'
+import {regioes, profissoesGrouped, profissoesPngs} from '../general/util'
 
 const SelectPublications = (props) => {
 
@@ -16,7 +17,7 @@ const SelectPublications = (props) => {
             setOptions(regioes)
         }
         else if(props.type === "worker"){
-            setOptions(profissoes)
+            setOptions(profissoesGrouped)
         }
     }, [props.type])
 
@@ -96,24 +97,58 @@ const SelectPublications = (props) => {
         placeholder: base => ({
             ...base,
             color: "#ccc",
-        })
+        }),
+        group: base => ({
+            ...base,
+            padding: "0px 0px 0px 0",
+            borderBottom: '1px dashed #ccc',
+            "&:last-child": {
+                borderBottom: 'none',
+            }
+        }),
+    }
+
+    const formatGroupLabelAux = data => (
+        data.label==='no-label'?
+        null
+        :
+        <div className={select_styles.group_label}>
+            <img src={data.img} className={select_styles.group_icon}/>
+            <span className={select_styles.group_title}>{data.label}</span>
+        </div>
+    )
+
+    const formatOptionLabelAux = data => {
+        return (
+            <div className={select_styles.label} style={{marginTop:data.solo?'-3px':''}}>
+                {
+                    data.img?
+                    <img src={data.img} className={select_styles.label_img} style={{marginLeft:data.solo?'-7px':''}}/>
+                    :null
+                }
+                
+                <p className={select_styles.label_label} style={{marginLeft:data.img?"5px":"0px"}}>{data.label}</p>
+            </div>
+        )
     }
 
     return (
         <Select
             styles={stylesSelect}
             options={options}
-            value={options.filter(option => option.value === selectedValue)}
-            formatOptionLabel={option => (
-                <div className={styles.option}>
-                    {
-                        props.type==="worker"?
-                        <img src={profissoesPngs[option.value]} className={styles.option_image}/>
-                        :null
-                    }
-                    <span>{option.label}</span>
-                </div>
-              )}
+            value={selectedValue}
+            formatGroupLabel={formatGroupLabelAux}
+            formatOptionLabel={formatOptionLabelAux}
+            // formatOptionLabel={option => (
+            //     <div className={styles.option}>
+            //         {
+            //             props.type==="worker"?
+            //             <img src={selectedValue.img} className={styles.option_image}/>
+            //             :null
+            //         }
+            //         <span>{option.label}</span>
+            //     </div>
+            //   )}
             isSearchable={true}
             onChange={value => {
                 props.valueChanged(value.value)
