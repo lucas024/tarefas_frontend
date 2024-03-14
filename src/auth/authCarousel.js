@@ -9,7 +9,6 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import validator from 'validator'
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneIcon from '@mui/icons-material/Phone';
-import {regioes, profissoes} from '../general/util'
 
 
 const AuthCarousel = props => {

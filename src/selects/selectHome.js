@@ -1,5 +1,6 @@
 import React from 'react';
 import Select from 'react-select'
+import styles from './select.module.css'
 
 const SelectHome = (props) => {
     
@@ -12,7 +13,7 @@ const SelectHome = (props) => {
             textTransform: props.publicar?"normal":"uppercase",
             color: "#ffffff",
             fontWeight: 600,
-            width:props.publicar?"100%":"160px",
+            width:props.publicar?"100%":"200px",
             transition: "0.5s all ease-in-out",
             borderRadius: "5px",
             // borderBottomRightRadius: "0px",
@@ -37,7 +38,7 @@ const SelectHome = (props) => {
         menu: base => ({
             ...base,
             textTransform: props.publicar?"normal":"uppercase",
-            width:props.publicar?"100%":"160px",
+            width:props.publicar?"100%":"200px",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
@@ -54,7 +55,7 @@ const SelectHome = (props) => {
             color: "#ffffff",
             transition: "0.15s all ease-in-out",
             zIndex:1,
-            marginTop:'-10px',
+            marginTop:props.home?'':'-10px',
             "&:hover": {
                 color: "#161F28",
             }
@@ -62,6 +63,11 @@ const SelectHome = (props) => {
         container: base => ({
             ...base,
             width: "100%",
+        }),
+        input: base => ({
+            ...base,
+            color: "#ffffff",
+            paddingLeft:"5px"
         }),
         singleValue: base => ({
             ...base,
@@ -77,23 +83,58 @@ const SelectHome = (props) => {
         valueContainer: base => ({
             ...base,
             padding: "2px 10px 2px 2px",
-        })
+        }),
+        group: base => ({
+            ...base,
+            padding: "0px 0px 0px 0",
+            borderBottom: '1px dashed #ccc',
+            "&:last-child": {
+                borderBottom: 'none',
+            }
+        }),
     }
 
     const selectChange = (val) => {
         props.changeOption(val)
     }
 
+    const formatGroupLabelAux = data => (
+        data.label==='no-label'?
+        null
+        :
+        <div className={styles.group_label}>
+            <img src={data.img} className={styles.group_icon}/>
+            <span className={styles.group_title}>{data.label}</span>
+        </div>
+    )
+
+    const formatOptionLabelAux = data => {
+        return (
+            <div className={styles.label} style={{marginTop:data.solo?'-3px':''}}>
+                {
+                    data.img?
+                    <img src={data.img} className={styles.label_img} style={{marginLeft:data.solo?'-7px':''}}/>
+                    :null
+                }
+                
+                <p className={styles.label_label} style={{marginLeft:data.img?"5px":"0px"}}>{data.label}</p>
+            </div>
+        )
+        
+    }
     
     return(
         <Select
             placeholder={<span style={{marginLeft:'5px', color:'#ffffff80'}}>{props.placeholder}</span>}
             styles={stylesSelect}
             options={props.options}
-            value={props.options?.filter(option => option.value === props.option)}
-            isSearchable={false}
+            value={props.option}
+            isSearchable={true}
+            formatGroupLabel={formatGroupLabelAux}
+            formatOptionLabel={formatOptionLabelAux}
+            menuIsOpen={true}
             onChange={value => {
-                selectChange(value.value)
+                selectChange(value)
             }}
         />
     )

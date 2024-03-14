@@ -54,7 +54,7 @@ const AuthCarouselWorker = props => {
                         <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
                         <span className={styles.checkmark}></span>
                         <div className={styles.checkbox_flex}>
-                            <img src={trab.img_cor} className={styles.checkbox_image}/>
+                            <img src={trab.img} className={styles.checkbox_image}/>
                             <span className={styles.checkbox_text}>{trab.label}</span>
                         </div>
                         

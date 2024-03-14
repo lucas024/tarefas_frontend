@@ -10,7 +10,7 @@ import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import {auth} from '../firebase/firebase'
 
 import SelectHome from '../selects/selectHome';
-import {profissoes, profissoesPngs, regioes, regioesOptions} from './util'
+import {profissoesGrouped, profissoesPngs, regioes, regioesOptions} from './util'
 import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import {Tooltip} from 'react-tooltip';
@@ -133,10 +133,10 @@ const Home = (props) => {
     }
 
     
-  const showWelcomeHandler = () => {
-    localStorage.setItem('firstAccessMade', 1)
-    setShowWelcomeTrigger(false)
-  }
+    const showWelcomeHandler = () => {
+        localStorage.setItem('firstAccessMade', 1)
+        setShowWelcomeTrigger(false)
+    }
     
     return(
         <div className={styles.home}>
@@ -206,7 +206,8 @@ const Home = (props) => {
                                         }
                                     </div>
                                     <div className={styles.zone_select}>
-                                        <SelectHome 
+                                        <SelectHome
+                                            home={true}
                                             options={firstOptions} 
                                             optionFirst={first} 
                                             option={first} 
@@ -225,14 +226,15 @@ const Home = (props) => {
                                                 backgroundColor:second?'#161F28':'#252d36'}}>
                                         {
                                             second? 
-                                            <img src={profissoesPngs[second]} className={styles.zone_image_prof}/>
+                                            <img src={profissoesPngs[second.value]} className={styles.zone_image_prof}/>
                                             :
                                             <BuildIcon className={styles.zone_build_icon}/>
                                         }
                                     </div>
                                     <div className={styles.zone_select}>
                                         <SelectHome 
-                                            options={profissoes}
+                                            home={true}
+                                            options={profissoesGrouped}
                                             optionFirst={first} 
                                             option={second} 
                                             changeOption={val => setSecond(val)}
@@ -252,13 +254,14 @@ const Home = (props) => {
                                                 backgroundColor:third?'#161F28':'#252d36'}}>
                                         {
                                             third? 
-                                            <span className={styles.zone_image_region}>{regioesOptions[third]}</span>
+                                            <span className={styles.zone_image_region}>{regioesOptions[third.value]}</span>
                                             :
                                             <LocationOnIcon className={styles.zone_build_icon}/>
                                         }
                                     </div>
                                     <div className={styles.zone_select}>
-                                        <SelectHome 
+                                        <SelectHome
+                                            home={true}
                                             options={regioes}
                                             optionFirst={first} 
                                             option={third} 

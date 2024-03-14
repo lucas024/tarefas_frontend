@@ -234,7 +234,7 @@ const PublicarDetails = props => {
                                         <SelectHome 
                                             publicar={true}
                                             options={regioes}
-                                            option={props.district} 
+                                            option={props.district}
                                             changeOption={val => {
                                                 props.setDistrictHelper(val)}}
                                             placeholder={'Região...'}/>

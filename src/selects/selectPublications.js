@@ -4,7 +4,7 @@ import styles from '../servicos/main.module.css'
 import PersonIcon from '@mui/icons-material/Person';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
-import {regioes, profissoes} from '../general/util'
+import {regioes, profissoes, profissoesPngs} from '../general/util'
 
 const SelectPublications = (props) => {
 
@@ -108,7 +108,7 @@ const SelectPublications = (props) => {
                 <div className={styles.option}>
                     {
                         props.type==="worker"?
-                        <img src={option.img_cor} className={styles.option_image}/>
+                        <img src={profissoesPngs[option.value]} className={styles.option_image}/>
                         :null
                     }
                     <span>{option.label}</span>
