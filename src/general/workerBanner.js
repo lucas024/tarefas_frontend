@@ -27,7 +27,7 @@ const WorkerBanner = (props) => {
                     unmountOnExit
                     >
             <div className={styles.popup}  onClick={e => e.stopPropagation()}>
-                <span className={styles.value}>Trabalhador na TAREFAS</span>
+                <span className={styles.value}>Trabalhador no Tarefas</span>
                 <div className={styles.divider}/>
                 <div className={styles.line}>
                     <BuildIcon className={styles.line_circle}/>
@@ -42,7 +42,7 @@ const WorkerBanner = (props) => {
                 <div className={styles.line}>
                     <PersonIcon className={styles.line_circle}/>
                     <span className={styles.helper_text}>Perfil:</span>
-                    <span className={styles.line_text}>Criação do teu <span className={styles.action}>perfil de trabalhador</span>, que será acessível a todos utilizadores da TAREFAS. <span className={styles.bold}>Maior exposição</span> ao teu negócio!</span>
+                    <span className={styles.line_text}>Criação do teu <span className={styles.action}>perfil de trabalhador</span>, que será acessível a todos utilizadores do Tarefas. <span className={styles.bold}>Maior exposição</span> ao teu negócio!</span>
                 </div>
                 <span className={styles.confirm_button} onClick={() => props.confirm()}>
                     REGISTAR-ME COMO TRABALHADOR

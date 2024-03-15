@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styles from './carta.module.css'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
-import {regioesOptions, profissoesOptions, profissoesPngs} from '../general/util'
+import {regioesOptions, profissoesMap} from '../general/util'
 import FaceIcon from '@mui/icons-material/Face';
 
 const Carta = (props) => {
@@ -39,7 +39,7 @@ const Carta = (props) => {
         })
         return arrTrabalhos.map((val, i) => {
             return (
-                <span key={i} className={props.workerActive===val?styles.options_selected:styles.options}> {profissoesOptions[val]}<span style={{color:"#71848d"}}>{i+1<worker.trabalhos.length?" |":null}</span></span>
+                <span key={i} className={props.workerActive===val?styles.options_selected:styles.options}> {profissoesMap[val]?.label}<span style={{color:"#71848d"}}>{i+1<worker.trabalhos.length?" |":null}</span></span>
             )
         })
     }
@@ -55,7 +55,7 @@ const Carta = (props) => {
             return (
                 <div key={i} className={props.workerActive===val?styles.top_image_div_selected:styles.top_image_div} 
                         style={{marginLeft:i!==0?'5px':'0px'}}>
-                    <img className={styles.top_image} src={profissoesPngs[val]}/>
+                    <img className={styles.top_image} src={profissoesMap[val]?.img}/>
                 </div>
                 
             )

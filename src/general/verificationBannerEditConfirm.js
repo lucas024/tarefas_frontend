@@ -19,8 +19,8 @@ const VerificationBannerEditConfirm = (props) => {
                     next===0?
                     <div className={styles.main_inner}>
                         <p className={styles.phone_description} style={{textAlign:"center"}}>
-                            Ao confirmar a edição, esta tarefa será novamente analisada.
-                            <br/>Podes seguir o processo da tarefa na tua àrea pessoal.</p>
+                            Ao confirmares a edição, a publicação será novamente analisada.
+                            <br/>Poderás seguir o processo de publicação na tua área pessoal.</p>
                         
                         <div className={styles.button} style={{backgroundColor:"#FF785A"}} onClick={() => {props.confirm()&&setNext(1)}}>
                             <span className={styles.button_text}>CONFIRMAR EDIÇÃO</span>
@@ -33,7 +33,7 @@ const VerificationBannerEditConfirm = (props) => {
                         {
                             props.loadingConfirm?
                             <div style={{marginTop:"0px"}}>
-                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A editar a seu tarefa</p>
+                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A editar a tua tarefa</p>
                                 <Lottie
                                     loop={true}
                                     autoplay={true}
@@ -69,7 +69,7 @@ const VerificationBannerEditConfirm = (props) => {
                                         margin:'0 auto 20px auto'
                                     }}
                                 />
-                                <p className={styles.phone_description}>Tarefa editada com sucesso. Será rápidamente analisado pela equipa da Tarefas.</p>
+                                <p className={styles.phone_description}>A edição da publicação foi enviada para análise pela equipa do Tarefas. Poderás seguir o processo de publicação na tua area pessoal.</p>
                                 <div style={{display:'flex', justifyContent:'center'}}>
                                     <div 
                                         className={styles.button}

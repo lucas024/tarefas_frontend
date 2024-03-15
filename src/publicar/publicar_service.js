@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import styles from '../user/publicar.module.css'
 import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import {profissoesPngs} from '../general/util'
+import {profissoesMap} from '../general/util'
 import TopSelect from '../selects/selectStyling';
 import TextareaAutosize from 'react-textarea-autosize';
 import DoneIcon from '@mui/icons-material/Done';
@@ -29,7 +29,7 @@ const PublicarService = props => {
                 <span className={styles.left_image_border} style={{borderColor:props.selectedWorker?"#0358e5":"#161F28"}}>
                     {
                         props.selectedWorker?
-                        <img src={profissoesPngs[props.selectedWorker]} className={styles.left_img}></img>
+                        <img src={profissoesMap[props.selectedWorker]?.img} className={styles.left_img}></img>
                         :
                         <QuestionMarkOutlinedIcon className={styles.left_img_qm}/>
                     }                                    
@@ -37,8 +37,8 @@ const PublicarService = props => {
                 <span className={props.selectedWorker?styles.left_spacer_complete:styles.left_spacer}/>
                 <div className={styles.left_select}>
                     <TopSelect
-                        id={props.selectedWorker}
-                        changeWorker={val => props.setSelectedWorker(val)}
+                        worker={props.selectedWorker}
+                        changeWorker={val => props.setSelectedWorker(val.value)}
                     />
                 </div>
             </div>

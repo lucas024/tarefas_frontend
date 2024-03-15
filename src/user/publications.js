@@ -8,6 +8,7 @@ import axios from 'axios';
 import Loader from '../general/loader';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import { useSelector } from 'react-redux'
+import { profissoesMap } from '../general/util';
 
 const Publications = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -156,7 +157,7 @@ const Publications = (props) => {
                                     <div className={styles.item_time}>{getTime(res.timestamp)}</div>
                                 </div>
                                 <div className={styles.item_flex}>
-                                    <span className={styles.item_flex_worker_text}>{res.workerType}</span>
+                                    <span className={styles.item_flex_worker_text}>{[profissoesMap[res.workerType]?.label]}</span>
                                 </div>
                             </div>
                             

@@ -10,7 +10,7 @@ import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import {auth} from '../firebase/firebase'
 
 import SelectHome from '../selects/selectHome';
-import {profissoesGrouped, profissoesPngs, regioes, regioesOptions} from './util'
+import {profissoesGrouped, regioes, regioesOptions} from './util'
 import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import {Tooltip} from 'react-tooltip';

@@ -211,7 +211,7 @@ const UserSidebar = (props) => {
                     :
                     user?.state===2?
                     <div className={styles.worker_text_div} style={{color:"#fdd835"}}>
-                        A tua conta foi desativada pela equipa da TAREFAS.
+                        A tua conta foi desativada pela equipa do Tarefas.
                     </div>
                     :null
                 }

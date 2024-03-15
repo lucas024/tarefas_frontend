@@ -20,6 +20,29 @@ const regioes = [
     { value: 'vila_real', label: 'Vila Real' },
     { value: 'viseu', label: 'Viseu' }
 ]
+const regioesMap = {
+    acores: { value: 'acores', label: 'Açores' },
+    aveiro: { value: 'aveiro', label: 'Aveiro' },
+    beja: { value: 'beja', label: 'Beja' },
+    braga: { value: 'braga', label: 'Braga' },
+    braganca: { value: 'braganca', label: 'Bragança' },
+    castelo_branco: { value: 'castelo_branco', label: 'Castelo Branco' },
+    coimbra: { value: 'coimbra', label: 'Coimbra' },
+    evora: { value: 'evora', label: 'Évora' },
+    faro: { value: 'faro', label: 'Faro' },
+    guarda: { value: 'guarda', label: 'Guarda' },
+    leiria: { value: 'leiria', label: 'Leiria' },
+    lisboa: { value: 'lisboa', label: 'Lisboa' },
+    madeira: { value: 'madeira', label: 'Madeira' },
+    portalegre: { value: 'portalegre', label: 'Portalegre' },
+    porto: { value: 'porto', label: 'Porto' },
+    santarem: { value: 'santarem', label: 'Santarém' },
+    setubal: { value: 'setubal', label: 'Setúbal' },
+    viana_do_castelo: { value: 'viana_do_castelo', label: 'Viana do Castelo' },
+    vila_real: { value: 'vila_real', label: 'Vila Real' },
+    viseu: { value: 'viseu', label: 'Viseu' }
+}
+
 const regioesOptions = {
     acores : 'Açores',
     aveiro : 'Aveiro',
@@ -41,18 +64,6 @@ const regioesOptions = {
     viana_do_castelo : 'Viana do Castelo',
     vila_real : 'Vila Real',
     viseu : 'Viseu'
-}
-
-const profissoesOptions = {
-    arranjo_geral : 'Arranjo Geral',
-    canalizador : 'Canalizador',
-    carpinteiro : 'Carpinteiro',
-    eletricista : 'Eletricista',
-    empreiteiro : 'Empreiteiro',
-    mudancas : 'Mudanças',
-    pintor : 'Pintor',
-    piscinas : 'Piscinas',
-    jardineiro : 'Jardineiro',
 }
 
 const profissoesPngs = {
@@ -95,65 +106,111 @@ const profissoesPngs = {
     more: require('../assets/professions/more.png'),
 }
 
-const profissoes = [
-    { value: 'canalizador', label: 'Canalizador', img: profissoesPngs['canalizador']},
-    { value: 'carpinteiro', label: 'Carpinteiro', img: profissoesPngs['carpinteiro']},
-    { value: 'eletricista', label: 'Eletricista', img: profissoesPngs['eletricista']},
-    { value: 'empreiteiro', label: 'Empreiteiro', img: profissoesPngs['empreiteiro']},
-    { value: 'jardineiro', label: 'Jardineiro', img: profissoesPngs['jardineiro']},
-    { value: 'mudancas', label: 'Mudanças', img: profissoesPngs['mudancas']},
-    { value: 'pintor', label: 'Pintor', img: profissoesPngs['pintor']},
-    { value: 'piscinas', label: 'Piscinas', img: profissoesPngs['piscinas']},
-]
+const profissoesMap = {
+    animais_lavagem_e_tosquia: { value: 'animais_lavagem_e_tosquia', label: 'Lavagem e Tosquia', img: profissoesPngs['animal']},
+    animais_passear: { value: 'animais_passear', label: 'Passear', img: profissoesPngs['animal']},
+    animais_geral: { value: 'animais_geral', label: 'Geral', img: profissoesPngs['animal']},
+    financas_contabilista: { value: 'financas_contabilista', label: 'Contabilista', img: profissoesPngs['finance']},
+    financas_credito_e_emprestimos: { value: 'financas_credito_e_emprestimos', label: 'Credito e Empréstimos', img: profissoesPngs['finance']},
+    financas_geral: { value: 'financas_geral', label: 'Geral', img: profissoesPngs['finance']},
+    construcao_azulejos: { value: 'construcao_azulejos', label: 'Azulejos', img: profissoesPngs['build']},
+    construcao_demolicao: { value: 'construcao_demolicao', label: 'Demolição', img: profissoesPngs['build']},
+    construcao_estucador: { value: 'construcao_estucador', label: 'Estucador', img: profissoesPngs['build']},
+    construcao_pequenos_arranjos: { value: 'construcao_pequenos_arranjos', label: 'Pequenos Arranjos', img: profissoesPngs['build']},
+    construcao_pintor: { value: 'construcao_pintor', label: 'Pintor', img: profissoesPngs['build']},
+    construcao_remocao_de_entulho: { value: 'construcao_remocao_de_entulho', label: 'Remoção de Entulho', img: profissoesPngs['build']},
+    construcao_geral: { value: 'construcao_geral', label: 'Geral', img: profissoesPngs['build']},
+    auto_bate_chapa: { value: 'auto_bate_chapa', label: 'Bate-Chapa', img: profissoesPngs['auto']},
+    auto_estofador: { value: 'auto_estofador', label: 'Estofador', img: profissoesPngs['auto']},
+    auto_mecanico: { value: 'auto_mecanico', label: 'Mecânico', img: profissoesPngs['auto']},
+    auto_vidros: { value: 'auto_vidros', label: 'Vidros', img: profissoesPngs['auto']},
+    auto_geral: { value: 'auto_geral', label: 'Geral', img: profissoesPngs['auto']},
+    vestuario_costura: { value: 'vestuario_costura', label: 'Costura', img: profissoesPngs['profissoes_vestuario']},
+    vestuario_lavagem_e_engomacao: { value: 'vestuario_lavagem_e_engomacao', label: 'Lavagem e Engomação', img: profissoesPngs['profissoes_vestuario']},
+    vestuario_sapateiro: { value: 'vestuario_sapateiro', label: 'Sapateiro', img: profissoesPngs['profissoes_vestuario']},
+    vestuario_geral: { value: 'vestuario_geral', label: 'Geral', img: profissoesPngs['profissoes_vestuario']},
+    limpeza_chamines: { value: 'limpeza_chamines', label: 'Chaminés', img: profissoesPngs['clean']},
+    limpeza_domestica: { value: 'limpeza_domestica', label: 'Doméstica', img: profissoesPngs['clean']},
+    limpeza_fachadas: { value: 'limpeza_fachadas', label: 'Fachadas', img: profissoesPngs['clean']},
+    limpeza_geral: { value: 'limpeza_geral', label: 'Geral', img: profissoesPngs['clean']},
+    advogado: { value: 'advogado', label: 'Advogado',  img: profissoesPngs['advogado'], solo: true},
+    arquiteto: { value: 'arquiteto', label: 'Arquiteto', img: profissoesPngs['arquiteto'], solo: true},
+    ar_condicionados: { value: 'ar_condicionados', label: 'Ar-Condicionados', img: profissoesPngs['ar_condicionado'], solo: true },
+    baby_sitter: { value: 'baby_sitter', label: 'Baby-sitter', img: profissoesPngs['baby_sitter'], solo: true },
+    canalizador: { value: 'canalizador', label: 'Canalizador', img: profissoesPngs['canalizador'], solo: true },
+    carpinteiro: { value: 'carpinteiro', label: 'Carpinteiro', img: profissoesPngs['carpinteiro'], solo: true },
+    culinaria_e_catering: { value: 'culinaria_e_catering', label: 'Culinaria e Catering', img: profissoesPngs['cooking'], solo: true },
+    decoracao_e_interiores: { value: 'decoracao_e_interiores', label: 'Decoração e Interiores', img: profissoesPngs['lamp'], solo: true },
+    desenho_e_ilustracao: { value: 'desenho_e_ilustracao', label: 'Desenho e Ilustração', img: profissoesPngs['pencil'], solo: true },
+    designer_grafico: { value: 'designer_grafico', label: 'Designer Gráfico', img: profissoesPngs['logo'], solo: true },
+    desporto: { value: 'desporto', label: 'Desporto', img: profissoesPngs['jogging'], solo: true },
+    eletricista: { value: 'eletricista', label: 'Eletricista', img: profissoesPngs['eletricista'], solo: true },
+    energias_verdes: { value: 'energias_verdes', label: 'Energias Verdes', img: profissoesPngs['solar_panel'], solo: true },
+    estofador: { value: 'estofador', label: 'Estofador', img: profissoesPngs['estofos'], solo: true },
+    explicador: { value: 'explicador', label: 'Explicador', img: profissoesPngs['explicador'], solo: true },
+    fotografia: { value: 'fotografia', label: 'Fotografia', img: profissoesPngs['camera'], solo: true },
+    informatica: { value: 'informatica', label: 'Informática', img: profissoesPngs['desktop'], solo: true },
+    jardinagem: { value: 'jardinagem', label: 'Jardinagem', img: profissoesPngs['jardineiro'], solo: true },
+    joelheria: { value: 'joelheria', label: 'Joelheria', img: profissoesPngs['ring'], solo: true },
+    motorista: { value: 'motorista', label: 'Motorista', img: profissoesPngs['driver'], solo: true },
+    mudancas: { value: 'mudancas', label: 'Mudanças', img: profissoesPngs['mudancas'], solo: true },
+    musica: { value: 'musica', label: 'Música', img: profissoesPngs['music'], solo: true },
+    piscinas: { value: 'piscinas', label: 'Piscinas', img: profissoesPngs['piscinas'], solo: true },
+    publicidade: { value: 'publicidade', label: 'Publicidade', img: profissoesPngs['megaphone'], solo: true },
+    soldador_e_serralheiro: { value: 'soldador_e_serralheiro', label: 'Soldador e Serralheiro', img: profissoesPngs['beam'], solo: true },
+    traducao: { value: 'traducao', label: 'Tradução', img: profissoesPngs['translate'], solo: true },
+    turismo: { value: 'turismo', label: 'Turismo', img: profissoesPngs['map'], solo: true },
+    outros: { value: 'outros', label: 'Outros', img: profissoesPngs['more'], solo: true },
+}
 
 const profissoes_animais = [
-    { value: 'animais_lavagem_e_tosquia', label: 'Lavagem e Tosquia', img: profissoesPngs['animal']},
-    { value: 'animais_passear', label: 'Passear', img: profissoesPngs['animal']},
-    { value: 'animais_geral', label: 'Geral', img: profissoesPngs['animal']},
+    profissoesMap.animais_lavagem_e_tosquia,
+    profissoesMap.animais_passear,
+    profissoesMap.animais_geral,
 ]
 
 const profissoes_financas = [
-    { value: 'financas_contabilista', label: 'Contabilista', img: profissoesPngs['finance']},
-    { value: 'financas_credito_e_emprestimos', label: 'Credito e Empréstimos', img: profissoesPngs['finance']},
-    { value: 'financas_geral', label: 'Geral', img: profissoesPngs['finance']},
+    profissoesMap.financas_contabilista,
+    profissoesMap.financas_credito_e_emprestimos,
+    profissoesMap.financas_geral,
 ]
 
 const profissoes_construcao = [
-    { value: 'construcao_azulejos', label: 'Azulejos', img: profissoesPngs['build']},
-    { value: 'construcao_demolicao', label: 'Demolição', img: profissoesPngs['build']},
-    { value: 'construcao_estucador', label: 'Estucador', img: profissoesPngs['build']},
-    { value: 'construcao_pequenos_arranjos', label: 'Pequenos Arranjos', img: profissoesPngs['build']},
-    { value: 'construcao_pintor', label: 'Pintor', img: profissoesPngs['build']},
-    { value: 'construcao_remocao_de_entulho', label: 'Remoção de Entulho', img: profissoesPngs['build']},
-    { value: 'construcao_geral', label: 'Geral', img: profissoesPngs['build']},
+    profissoesMap.construcao_azulejos,
+    profissoesMap.construcao_demolicao,
+    profissoesMap.construcao_estucador,
+    profissoesMap.construcao_pequenos_arranjos,
+    profissoesMap.construcao_pintor,
+    profissoesMap.construcao_remocao_de_entulho,
+    profissoesMap.construcao_geral,
 ]
 
 const profissoes_automoveis = [
-    { value: 'auto_bate_chapa', label: 'Bate-Chapa', img: profissoesPngs['auto']},
-    { value: 'auto_estofador', label: 'Estofador', img: profissoesPngs['auto']},
-    { value: 'auto_mecanico', label: 'Mecânico', img: profissoesPngs['auto']},
-    { value: 'auto_vidros', label: 'Vidros', img: profissoesPngs['auto']},
-    { value: 'auto_geral', label: 'Geral', img: profissoesPngs['auto']},
+    profissoesMap.auto_bate_chapa,
+    profissoesMap.auto_estofador,
+    profissoesMap.auto_mecanico,
+    profissoesMap.auto_vidros,
+    profissoesMap.auto_geral,
 ]
 
 const profissoes_vestuario = [
-    { value: 'vestuario_costura', label: 'Costura', img: profissoesPngs['profissoes_vestuario']},
-    { value: 'vestuario_lavagem_e_engomacao', label: 'Lavagem e Engomação', img: profissoesPngs['profissoes_vestuario']},
-    { value: 'vestuario_sapateiro', label: 'Sapateiro', img: profissoesPngs['profissoes_vestuario']},
-    { value: 'vestuario_geral', label: 'Geral', img: profissoesPngs['profissoes_vestuario']},
+    profissoesMap.vestuario_costura,
+    profissoesMap.vestuario_lavagem_e_engomacao,
+    profissoesMap.vestuario_sapateiro,
+    profissoesMap.vestuario_geral,
 ]
 
 const profissoes_limpeza = [
-    { value: 'limpeza_chamines', label: 'Chaminés', img: profissoesPngs['clean']},
-    { value: 'limpeza_domestica', label: 'Doméstica', img: profissoesPngs['clean']},
-    { value: 'limpeza_fachadas', label: 'Fachadas', img: profissoesPngs['clean']},
-    { value: 'limpeza_geral', label: 'Geral', img: profissoesPngs['clean']},
+    profissoesMap.limpeza_chamines,
+    profissoesMap.limpeza_domestica,
+    profissoesMap.limpeza_fachadas,
+    profissoesMap.limpeza_geral,
 ]
 
 const profissoesGrouped = [
     {
         label: 'no-label',
-        options: [{ value: 'advogado', label: 'Advogado',  img: profissoesPngs['advogado'], solo: true}],
+        options: [profissoesMap.advogado],
     },
     {
         label: 'Animais',
@@ -162,7 +219,7 @@ const profissoesGrouped = [
     },
     {
         label: 'no-label',
-        options: [{ value: 'arquiteto', label: 'Arquiteto', img: profissoesPngs['arquiteto'], solo: true}],
+        options: [profissoesMap.arquiteto],
     },
     {
         label: 'Auto',
@@ -171,19 +228,19 @@ const profissoesGrouped = [
     },
     {
         label: 'no-label',
-        options: [{ value: 'ar_condicionados', label: 'Ar-Condicionados', img: profissoesPngs['ar_condicionado'], solo: true }],
+        options: [profissoesMap.ar_condicionados],
     },
     {
         label: 'no-label',
-        options: [{ value: 'babysitter', label: 'Baby-sitter', img: profissoesPngs['baby_sitter'], solo: true }],
+        options: [profissoesMap.baby_sitter],
     },
     {
         label: 'no-label',
-        options: [{ value: 'canalizador', label: 'Canalizador', img: profissoesPngs['canalizador'], solo: true }],
+        options: [profissoesMap.canalizador],
     },
     {
         label: 'no-label',
-        options: [{ value: 'carpinteiro', label: 'Carpinteiro', img: profissoesPngs['carpinteiro'], solo: true }],
+        options: [profissoesMap.carpinteiro],
     },
     {
         label: 'Construção',
@@ -192,39 +249,39 @@ const profissoesGrouped = [
     },
     {
         label: 'no-label',
-        options: [{ value: 'culinaria_e_catering', label: 'Culinaria e Catering', img: profissoesPngs['cooking'], solo: true }],
+        options: [profissoesMap.culinaria_e_catering],
     },
     {
         label: 'no-label',
-        options: [{ value: 'decoracao_e_interiores', label: 'Decoração e Interiores', img: profissoesPngs['lamp'], solo: true }],
+        options: [profissoesMap.decoracao_e_interiores],
     },
     {
         label: 'no-label',
-        options: [{ value: 'desenho_e_ilustracao', label: 'Desenho e Ilustração', img: profissoesPngs['pencil'], solo: true }],
+        options: [profissoesMap.desenho_e_ilustracao],
     },
     {
         label: 'no-label',
-        options: [{ value: 'designer_grafico', label: 'Designer Gráfico', img: profissoesPngs['logo'], solo: true }],
+        options: [profissoesMap.designer_grafico],
     },
     {
         label: 'no-label',
-        options: [{ value: 'desporto', label: 'Desporto', img: profissoesPngs['jogging'], solo: true }],
+        options: [profissoesMap.desporto],
     },
     {
         label: 'no-label',
-        options: [{ value: 'eletricista', label: 'Eletricista', img: profissoesPngs['eletricista'], solo: true }],
+        options: [profissoesMap.eletricista],
     },
     {
         label: 'no-label',
-        options: [{ value: 'energias_verdes', label: 'Energias Verdes', img: profissoesPngs['solar_panel'], solo: true }],
+        options: [profissoesMap.energias_verdes],
     },
     {
         label: 'no-label',
-        options: [{ value: 'estofador', label: 'Estofador', img: profissoesPngs['estofos'], solo: true }],
+        options: [profissoesMap.estofador],
     },
     {
         label: 'no-label',
-        options: [{ value: 'explicador', label: 'Explicador', img: profissoesPngs['explicador'], solo: true }],
+        options: [profissoesMap.explicador],
     },
     {
         label: 'Finanças',
@@ -233,19 +290,19 @@ const profissoesGrouped = [
     },
     {
         label: 'no-label',
-        options: [{ value: 'fotografia', label: 'Fotografia', img: profissoesPngs['camera'], solo: true }],
+        options: [profissoesMap.fotografia],
     },
     {
         label: 'no-label',
-        options: [{ value: 'informatica', label: 'Informática', img: profissoesPngs['desktop'], solo: true }],
+        options: [profissoesMap.informatica],
     },
     {
         label: 'no-label',
-        options: [{ value: 'jardinagem', label: 'Jardinagem', img: profissoesPngs['jardineiro'], solo: true }],
+        options: [profissoesMap.jardinagem],
     },
     {
         label: 'no-label',
-        options: [{ value: 'joelheria', label: 'Joelheria', img: profissoesPngs['ring'], solo: true }],
+        options: [profissoesMap.joelheria],
     },
     {
         label: 'Limpeza',
@@ -254,52 +311,51 @@ const profissoesGrouped = [
     },
     {
         label: 'no-label',
-        options: [{ value: 'motorista', label: 'Motorista', img: profissoesPngs['driver'], solo: true }],
+        options: [profissoesMap.motorista],
     },
     {
         label: 'no-label',
-        options: [{ value: 'mudancas', label: 'Mudanças', img: profissoesPngs['mudancas'], solo: true }],
+        options: [profissoesMap.mudancas],
     },
     {
         label: 'no-label',
-        options: [{ value: 'musica', label: 'Música', img: profissoesPngs['music'], solo: true }],
+        options: [profissoesMap.musica],
     },
     {
         label: 'no-label',
-        options: [{ value: 'piscinas', label: 'Piscinas', img: profissoesPngs['piscinas'], solo: true }],
+        options: [profissoesMap.piscinas],
     },
     {
         label: 'no-label',
-        options: [{ value: 'publicidade', label: 'Publicidade', img: profissoesPngs['megaphone'], solo: true }],
+        options: [profissoesMap.publicidade],
     },
     {
         label: 'no-label',
-        options: [{ value: 'soldador_e_serralheiro', label: 'Soldador e Serralheiro', img: profissoesPngs['beam'], solo: true }],
+        options: [profissoesMap.soldador_e_serralheiro],
     },
     {
         label: 'no-label',
-        options: [{ value: 'traducao', label: 'Tradução', img: profissoesPngs['translate'], solo: true }],
+        options: [profissoesMap.traducao],
     },
     {
         label: 'no-label',
-        options: [{ value: 'turismo', label: 'Turismo', img: profissoesPngs['map'], solo: true }],
+        options: [profissoesMap.turismo],
     },
     {
         label: 'Vestuário',
         options: profissoes_vestuario,
-        img: profissoesPngs['clothes']
+        img: profissoesPngs['profissoes_vestuario']
     },
     {
         label: 'no-label',
-        options: [{ value: 'outros', label: 'Outros', img: profissoesPngs['more'], solo: true }],
+        options: [profissoesMap.outros],
     },
 ]
 
 module.exports = {
     regioes,
-    profissoes,
     regioesOptions,
-    profissoesOptions,
-    profissoesPngs,
-    profissoesGrouped
+    regioesMap,
+    profissoesGrouped,
+    profissoesMap
 }

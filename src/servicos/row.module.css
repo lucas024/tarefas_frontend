@@ -149,6 +149,20 @@
     /* margin-left: 2px; */
 }
 
+.no_photo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-width: 150px;
+}
+.no_photo_text{
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-style: italic;
+    opacity: 0.5;
+}
+
 @media (max-width: 924px){
     .title{
         font-size: 1rem;
@@ -156,7 +170,7 @@
     .desc{
         text-overflow: ellipsis;
         overflow: hidden; 
-        width: 150px;
+        width: 300px;
         white-space: nowrap;
     }
 }
@@ -167,7 +181,7 @@
     .desc{
         text-overflow: ellipsis;
         overflow: hidden; 
-        width: 100px;
+        width: 200px;
         white-space: nowrap;
     }
 }

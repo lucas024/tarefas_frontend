@@ -10,7 +10,7 @@ import SelectPublications from '../selects/selectPublications';
 import Row from './row';
 import Loader from '../general/loader';
 import NoPage from '../general/noPage';
-import {regioesOptions, profissoesOptions} from '../general/util'
+import {regioesMap, profissoesMap} from '../general/util'
 import SelectPosts from '../selects/selectPosts';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
@@ -40,7 +40,6 @@ const Main = (props) => {
     const navigate = useNavigate()
     const [scrollPosition, setScrollPosition] = useState(0)
     const [loading, setLoading] = useState(false)
-    const [clear, setClear] = useState(false)
     const [searchVal, setSearchVal] = useState('')
     dayjs.locale('pt')
     const [allItemsLength, setAllItemsLength] = useState(0)
@@ -131,7 +130,6 @@ const Main = (props) => {
     }, [items])
 
     const setItemsAux = (items, size, currPage) => {
-        console.log(currPage)
         if(items!==null){
             let items_aux = {data: items.data, type: items.type}
 
@@ -388,7 +386,6 @@ const Main = (props) => {
         searchParams.delete("work")
         searchParams.delete("region")
         setSearchParams(searchParams)
-        setClear(!clear)
         setSearchVal("")
         dispatch(search_scroll_save(null))
         if(selectedType==="trabalhos")
@@ -401,6 +398,7 @@ const Main = (props) => {
         { value: 'trabalhadores', label: 'trabalhadores' },
         { value: 'trabalhos', label: 'tarefas' },
     ]
+
 
     return (        
         <div className={styles.servicos}>
@@ -432,8 +430,7 @@ const Main = (props) => {
                             <SelectPublications
                                         type="worker"
                                         trabalho={true}
-                                        clear={clear}
-                                        urlVal={params.work}
+                                        option={params.work}
                                         selected={selectedType}
                                         valueChanged={val => {
                                             params.region&&setSearchParams({'work': val, 'region': params.region})
@@ -443,8 +440,7 @@ const Main = (props) => {
                                 <div style={{marginLeft:"10px"}}>
                                 <SelectPublications 
                                     type="zona"
-                                    clear={clear}
-                                    urlVal={params.region}
+                                    option={params.region}
                                     selected={selectedType}
                                     valueChanged={val => {
                                         params.work&&setSearchParams({'work': params.work, 'region': val})
@@ -482,7 +478,7 @@ const Main = (props) => {
                             {
                                 params.work?
                                 <span className={styles.top_info_filter_value_on}>
-                                    {profissoesOptions[params.work]}
+                                    {profissoesMap[params.work]?.label}
                                 </span>
                                 :
                                 <span  className={styles.top_info_filter_value}>
@@ -502,7 +498,7 @@ const Main = (props) => {
                             {
                                 params.region?
                                 <span  className={styles.top_info_filter_value_on}>
-                                    {regioesOptions[params.region]}
+                                    {regioesMap[params.region].label}
                                 </span>
                                 :
                                 <span  className={styles.top_info_filter_value}>

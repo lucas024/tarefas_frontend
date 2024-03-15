@@ -26,7 +26,7 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao';
 import EditIcon from '@mui/icons-material/Edit';
 import Popup2 from '../transitions/popup';
-import {profissoesPngs} from '../general/util'
+import {profissoesMap} from '../general/util'
 import { useSelector } from 'react-redux'
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
@@ -551,9 +551,9 @@ const Trabalho = (props) => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <img src={profissoesPngs[reservation.workerType]} className={styles.item_worker_type_in}/>
+                                        <img src={profissoesMap[reservation.workerType]?.img} className={styles.item_worker_type_in}/>
                                     </div>
-                                    :<img src={profissoesPngs[reservation.workerType]} className={styles.item_worker_type}/>
+                                    :<img src={profissoesMap[reservation.workerType]?.img} className={styles.item_worker_type}/>
 
                                 }
                                 <div className={styles.top_left_top}>

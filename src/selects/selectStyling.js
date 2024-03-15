@@ -1,19 +1,20 @@
 import React from 'react';
 import Select from 'react-select'
-import {profissoes} from '../general/util'
+import {profissoesGrouped, profissoesMap} from '../general/util'
+import select_styles from './select.module.css'
 
-const TopSelect = (props) => {
+const TopSelect = (props) => {  
     
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: props.id==null? "#161F28":"#0358e5",
+            backgroundColor: props.worker==null? "#161F28":"#0358e5",
             borderColor: "#0358e5",
             fontSize: "0.8rem",
             textTransform: "uppercase",
             color: "#fff",
             fontWeight: 600,
-            width:"200px",
+            width:"250px",
             transition: "0.2s all ease-in-out",
             borderRadius: "5px",
             borderBottomLeftRadius: state.isFocused? 0: "5px",
@@ -35,12 +36,13 @@ const TopSelect = (props) => {
             color: "#fff",
             fontWeight: state.isSelected? 600: 400,
             backgroundColor: state.isSelected? "#0358e5": state.isFocused? '#0358e550': "transparent",
-            fontSize: '0.8rem'
+            fontSize: '0.8rem',
+            textAlign: 'left'
         }),
         menu: base => ({
             ...base,
             textTransform: "uppercase",
-            width:"200px",
+            width:"250px",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
@@ -76,23 +78,59 @@ const TopSelect = (props) => {
         valueContainer: base => ({
             ...base,
             padding: "2px 10px 2px 2px",
-        })
+        }),
+        input: base => ({
+            ...base,
+            marginLeft:'5px',
+            fontWeight:600,
+            color:'#ffffff'
+        }),
+        group: base => ({
+            ...base,
+            padding: "5px 0",
+            borderBottom: '1px dashed #cccccc80',
+            "&:last-child": {
+                borderBottom: 'none',
+            }
+        }),
     }
 
-    const selectChange = (val) => {
-        props.changeWorker(val)
-    }
+    const formatGroupLabelAux = data => (
+        data.label==='no-label'?
+        null
+        :
+        <div className={select_styles.group_label}>
+            <img src={data.img} className={select_styles.group_icon}/>
+            <span className={select_styles.group_title}>{data.label}</span>
+        </div>
+    )
 
+    const formatOptionLabelAux = data => {
+        return (
+            <div className={select_styles.label} style={{marginTop:data.solo?'-3px':''}}>
+                {
+                    data.img?
+                    <img src={data.img} className={select_styles.label_img} style={{marginLeft:data.solo?'-7px':''}}/>
+                    :null
+                }
+                
+                <p className={select_styles.label_label} style={{marginLeft:data.img?"5px":"0px"}}>{data.label}</p>
+            </div>
+        )
+    }
     
     return(
         <Select
             styles={stylesSelect}
-            options={profissoes}
-            value={profissoes.filter(option => option.value === props.id)}
-            isSearchable={false}
+            options={profissoesGrouped}
+            formatGroupLabel={formatGroupLabelAux}
+            formatOptionLabel={formatOptionLabelAux}
+            isSearchable={true}
+            value={props.worker?profissoesMap[props.worker]:null}
             placeholder={<span style={{color:"#fff", fontSize:'0.8rem', marginLeft:"10px"}}>ESCOLHER TAREFA</span>}
-            onChange={value => {
-                selectChange(value.value)
+            onChange={val => {
+                console.log(val)
+                props.changeWorker(val)
             }}
         />
     )

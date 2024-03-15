@@ -3,7 +3,7 @@ import styles from '../user/publicar.module.css'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Geocode, { setLanguage } from "react-geocode";
 import dayjs from 'dayjs';
-import { regioes } from '../general/util';
+import { regioes, regioesMap } from '../general/util';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DoneIcon from '@mui/icons-material/Done';
 import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
@@ -125,7 +125,7 @@ const PublicarDetails = props => {
             {
                 if(reg.label === capital)
                 {
-                    props.setDistrictHelper(reg.value)
+                    props.setDistrictHelper(reg)
                     found = true
                     break
                 }
@@ -135,11 +135,10 @@ const PublicarDetails = props => {
             props.setDistrictHelper(null)
         console.log(addressOptions[index])
         props.setLat(addressOptions[index].lat)
-        props.setLng(addressOptions[index].lon)
+        props.setLng(addressOptions[index].lng || addressOptions[index].lon)
         setAddressOptions([])
         setAddressOptionsText([])
     }
-
 
     return (
         <div>

@@ -558,11 +558,6 @@ const Personal = (props) => {
                         user?.type===1?
                         <div className={styles.top}>
                             <div className={styles.top_info}  onClick={() => setDisplayTop(!displayTop)}>
-                                {/* {
-                                    displayTop?
-                                    <span className={styles.top_desc}>Assim que tiveres o perfil <span style={{color:"#0358e5", fontWeight:"600"}}>100% completo</span>, este será verificado pela pela equipa do Arranja.</span>
-                                    :null
-                                } */}
                                 <div style={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
                                     <span className={styles.top_complete}>O teu perfil está <span style={{color:getPercentagem()<100?"#fdd835":"#0358e5", fontWeight:"600"}}>{getPercentagem()}%</span> completo:</span>
                                     <ArrowForwardIosIcon className={!displayTop?styles.top_complete_arrow:styles.top_complete_arrow_show}/>

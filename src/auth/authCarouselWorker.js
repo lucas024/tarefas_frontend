@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './auth.module.css'
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import {regioes, profissoes, regioesOptions, profissoesOptions} from '../general/util'
+import {regioes, profissoes, regioesOptions, profissoesMap} from '../general/util'
 import SelectWorker from '../selects/selectWorker';
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
@@ -88,7 +88,7 @@ const AuthCarouselWorker = props => {
             return arrTrabalhos.map((val, i) => {
                 return (
                     <div key={i} className={styles.list_el_wrapper}>
-                        <span className={styles.list_el}>{profissoesOptions[val]}</span>
+                        <span className={styles.list_el}>{profissoesMap[val]?.label}</span>
                     </div>
                 )
             })

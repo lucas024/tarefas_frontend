@@ -5,11 +5,10 @@ import select_styles from './select.module.css'
 import PersonIcon from '@mui/icons-material/Person';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
-import {regioes, profissoesGrouped, profissoesPngs} from '../general/util'
+import {regioes, profissoesGrouped, profissoesMap, regioesMap} from '../general/util'
 
 const SelectPublications = (props) => {
 
-    const [selectedValue, setSelectedValue] = useState(null)
     const [options, setOptions] = useState([])
 
     useEffect(() => {
@@ -22,18 +21,14 @@ const SelectPublications = (props) => {
     }, [props.type])
 
     useEffect(() => {
-        setSelectedValue(null)
-    }, [props.clear])
-
-    useEffect(() => {
-        props.urlVal!=null&&setSelectedValue(props.urlVal)
-    }, [props.urlVal])
-    
+        console.log(props.option)
+    }, [props.option])
+   
  
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: selectedValue?props.selected==='trabalhos'?"#0358e5":'#FF785A':"#ffffff",
+            backgroundColor: props.option?props.selected==='trabalhos'?"#0358e5":'#FF785A':"#ffffff",
             borderColor: "#161F28",
             fontSize: "1rem",
             fontFamily: "inherit",
@@ -76,7 +71,7 @@ const SelectPublications = (props) => {
         }),
         dropdownIndicator : base => ({
             ...base,
-            color: !selectedValue?props.selected==='trabalhos'?"#0358e5":'#FF785A':"#ffffff",
+            color: !props.option?props.selected==='trabalhos'?"#0358e5":'#FF785A':"#ffffff",
             transition: "0.15s all ease-in-out",
             "&:hover": {
                 color: "#0358e5",
@@ -106,6 +101,11 @@ const SelectPublications = (props) => {
                 borderBottom: 'none',
             }
         }),
+        input: base => ({
+            ...base,
+            color: props.option?'#ffffff':'#000000',
+            fontWeight: 600
+        })
     }
 
     const formatGroupLabelAux = data => (
@@ -136,23 +136,12 @@ const SelectPublications = (props) => {
         <Select
             styles={stylesSelect}
             options={options}
-            value={selectedValue}
+            value={props.option?props.type==='zona'?regioesMap[props.option]:profissoesMap[props.option]:null}
             formatGroupLabel={formatGroupLabelAux}
             formatOptionLabel={formatOptionLabelAux}
-            // formatOptionLabel={option => (
-            //     <div className={styles.option}>
-            //         {
-            //             props.type==="worker"?
-            //             <img src={selectedValue.img} className={styles.option_image}/>
-            //             :null
-            //         }
-            //         <span>{option.label}</span>
-            //     </div>
-            //   )}
             isSearchable={true}
             onChange={value => {
                 props.valueChanged(value.value)
-                setSelectedValue(value.value)
             }}
             placeholder={
                 props.type==="zona"?

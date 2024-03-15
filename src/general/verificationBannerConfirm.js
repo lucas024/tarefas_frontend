@@ -18,8 +18,8 @@ const VerificationBannerConfirm = (props) => {
                 {
                     next===0?
                     <div className={styles.main_inner}>
-                        <p className={styles.phone_description}>Ao confirmar, a tua tarefa será analisada, 
-                        podendo seguir o processo da tarefa na tua àrea pessoal.</p>
+                        <p className={styles.phone_description}>Ao confirmares, a tua publicação será analisada.
+                        Poderás seguir o processo de publicação na tua área pessoal.</p>
                         
                         <div className={styles.button} style={{backgroundColor:"#0358e5"}} onClick={() => {props.confirm()&&setNext(1)}}>
                             <span className={styles.button_text} style={{color:"white"}}>CONFIRMAR</span>
@@ -65,7 +65,7 @@ const VerificationBannerConfirm = (props) => {
                                     height={80}
                                     width={80}
                                 />
-                                <p className={styles.phone_description}>Tarefa publicada com sucesso. Será rápidamente analisado pela equipa da Tarefas.</p>
+                                <p className={styles.phone_description}>Publicação enviada para análise pela equipa do Tarefas. Poderás seguir o processo de publicação na tua area pessoal.</p>
                                 <div style={{display:'flex', justifyContent:'center'}}>
                                     <div 
                                         className={styles.button}

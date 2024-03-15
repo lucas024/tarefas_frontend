@@ -21,7 +21,7 @@ import { useTimer } from 'react-timer-hook';
 import PublicarService from '../publicar/publicar_service';
 import PublicarPhoto from '../publicar/publicar_photo';
 import PublicarDetails from '../publicar/publicar_details';
-import {profissoesPngs, profissoesOptions} from '../general/util'
+import {profissoesMap} from '../general/util'
 import Loader2 from '../general/loader';
 import VerificationBannerConfirm from '../general/verificationBannerConfirm';
 import VerificationBannerEditConfirm from '../general/verificationBannerEditConfirm';
@@ -41,7 +41,7 @@ const Publicar = (props) => {
 
     const [selectedWorker, setSelectedWorker] = useState(null)
     const [titulo, setTitulo] = useState('')
-    const [tituloWrong, setTituloWrong] = useState(false)
+    const [tituloWrong, setTituloWrong] = useState(true)
     const [description, setDescription] = useState('')
     const [nome, setNome] = useState('')
     const [phone, setPhone] = useState('')
@@ -286,7 +286,7 @@ const Publicar = (props) => {
             lng: lng,
             photoUrl: user.photoUrl,
             timestamp: time.getTime(),
-            district: district
+            district: district?.value
         }
         axios.post(`${api_url}/reservations/add`, reserva).then(() => {
             setLoadingConfirm(false)
@@ -732,7 +732,7 @@ const Publicar = (props) => {
                                     tituloWrong={tituloWrong}
                                     description={description}
                                     setDescription={setDescription}
-                                    correct={!tituloWrong&&selectedWorker!=null}
+                                    correct={(!tituloWrong)&&selectedWorker!=null}
                                     selectedTab={selectedTab}
                                     />
                             </div>
@@ -812,9 +812,9 @@ const Publicar = (props) => {
                                         <div className={styles.zone_flex}>
                                             <div className={styles.zone_flex_area}>
                                                 <div className={styles.zone_service_icon_wrapper}>
-                                                    <img className={styles.zone_service_icon} src={profissoesPngs[selectedWorker]}/>
+                                                    <img className={styles.zone_service_icon} src={profissoesMap[selectedWorker]?.img}/>
                                                 </div>
-                                                <span className={styles.zone_service_text}>{profissoesOptions[selectedWorker]}</span>
+                                                <span className={styles.zone_service_text}>{profissoesMap[selectedWorker]?.label}</span>
                                             </div>
                                             <div className={styles.zone_label_div}>
                                                 <p className={styles.zone_label}>Título</p>

@@ -7,7 +7,7 @@ import axios from 'axios'
 import Loader from '../general/loader';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import {regioesOptions, profissoesOptions, profissoesPngs} from '../general/util'
+import {regioesOptions, profissoesMap} from '../general/util'
 import ChatIcon from '@mui/icons-material/Chat';
 import { useSelector } from 'react-redux'
 
@@ -130,7 +130,7 @@ const Trabalhador = props => {
             return arrTrabalhos.map((val, i) => {
                 return (
                     <div key={i} className={styles.list_el_wrapper}>
-                        <span className={workerActive===val?styles.list_el_active:styles.list_el}>{profissoesOptions[val]}</span>
+                        <span className={workerActive===val?styles.list_el_active:styles.list_el}>{profissoesMap[val]?.label}</span>
                     </div>
                 )
             })
@@ -179,7 +179,7 @@ const Trabalhador = props => {
                         key={i} 
                         className={workerActive===val?styles.top_image_div_selected:styles.top_image_div}
                         style={{marginLeft:i===0?'-10px':''}}>
-                        <img className={styles.top_image} src={profissoesPngs[val]}/>
+                        <img className={styles.top_image} src={profissoesMap[val]?.img}/>
                     </div>
                     
                 )

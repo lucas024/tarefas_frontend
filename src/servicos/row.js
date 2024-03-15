@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './row.module.css'
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import {regioesOptions, profissoesOptions, profissoesPngs} from '../general/util'
+import {regioesOptions, profissoesMap} from '../general/util'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import BuildIcon from '@mui/icons-material/Build';
 
@@ -71,7 +71,10 @@ const Row = (props) => {
                         props.item.photos?.length>0?
                         <img className={styles.row_img} src={getMainPhoto(props.item.photos, props.item.photo_principal)}/>
                         :
-                        <NoPhotographyIcon className={styles.item_no_img}/>
+                        <div className={styles.no_photo}>
+                            <p className={styles.no_photo_text}>SEM</p>
+                            <p className={styles.no_photo_text}>FOTOGRAFIAS</p>
+                        </div>
                     }
                     <div className={styles.title_div}>
                         <span className={styles.title}>{props.item.title}</span>
@@ -81,12 +84,12 @@ const Row = (props) => {
                 
                 <div className={styles.row_right_right}>
                     {
-                        <img src={profissoesPngs[props.item.workerType]} className={styles.item_worker_type}/>
+                        <img src={profissoesMap[props.item.workerType]?.img} className={styles.item_worker_type}/>
                     }
                     <div>
                         <div className={styles.right_flex}>
                             <BuildIcon className={styles.right_type_icon} style={{color:props.workerActive?"#0358e5":"#71848d"}}/>
-                            <span className={styles.right_type} style={{color:props.workerActive?"#0358e5":"#71848d"}}>{profissoesOptions[props.item.workerType]}</span>
+                            <span className={styles.right_type} style={{color:props.workerActive?"#0358e5":"#71848d"}}>{profissoesMap[props.item.workerType]?.label}</span>
                         </div>
                         <div className={styles.right_flex}>
                             <LocationOnIcon className={styles.right_type_icon} style={{color:props.locationActive?"#0358e5":"#71848d"}}/>
