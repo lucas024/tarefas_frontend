@@ -17,10 +17,14 @@ const SelectPosts = (props) => {
     
  
     const stylesSelect = {
+        container : (base, state) => ({
+            ...base,
+            height: '100%',
+            minHeight: '100%',
+        }),
         control: (base, state) => ({
             ...base,
-            minHeight: '90px',
-            height: '90px',
+            height: '100%',
             backgroundColor: props.type==='trabalhos'?"#0358e5":"#FF785A",
             borderColor: "#161F28",
             fontSize: "0.9rem",
@@ -32,7 +36,6 @@ const SelectPosts = (props) => {
             borderRadius: "5px",
             border: state.isSelected? "1px solid white": 0,
             boxShadow: "white",
-            height: "40px",
             padding: "0 5px",
             color: "#ccc",
             display:'flex',

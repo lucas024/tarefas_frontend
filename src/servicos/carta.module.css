@@ -25,7 +25,8 @@
     
 }
 .image_tbd_wrapper{
-    background-color: #FF785A80;
+    /* background-color: var(--brand); */
+    /* border: 1px solid var(--action); */
     border-radius: 5px;
     width: 80px;
     height: 80px;
@@ -74,7 +75,7 @@
 }
 .worker_info_name{
     font-weight: 500;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
 }
 .worker_info_type{
     font-size: 0.8rem;
@@ -109,29 +110,37 @@
     margin-top: 4px;
 }
 .bottom_div_icon{
-    width: 15px !important;
-    height: 15px !important;
-    color: var(--grey);
+    width: 18px !important;
+    height: 18px !important;
+    color: var(--neutral);
+}
+.bottom_div_icon_wrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    padding: 3px;
 }
 .bottom_div_text{
     font-size: 0.8rem;
     color: var(--grey);
-    align-self: flex-end;
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 500px;
     overflow: hidden;
     font-weight: 600;
     text-transform: uppercase;
+    margin-left: 4px;
 }
 .options{
-    font-weight: 500;
-    font-size: 0.7rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--brand);
 }
 .options_selected{
     color: var(--action);
     font-weight: 600;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
 }
 .top_image_div{
     margin: 0 0px;

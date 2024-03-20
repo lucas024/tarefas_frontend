@@ -53,8 +53,8 @@ Para que a tua tarefa possa ser aprovada, altere os seguintes campos:`)
 
             let chatId = ObjectID()
             await axios.post(`${api_url}/admin_chats/create_or_update_chat`, {
-                admin_name: user.name,
-                admin_id: user._id,
+                admin_name: user?.name,
+                admin_id: user?._id,
                 user_id: props.user_id,
                 user_type: 0,
                 user_name: props.reservation.user_name,

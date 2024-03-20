@@ -753,7 +753,7 @@ const Personal = (props) => {
                                         <div className={styles.edit_area_left}>
                                             {
                                                 user?.type===1?
-                                                <span className={styles.input_title} style={{marginTop:"10px"}}>Descrição</span>
+                                                <span className={styles.input_title} style={{marginTop:"10px"}}>Descrição e Experiência</span>
                                                 :null
                                             }
                                         </div>
@@ -771,7 +771,7 @@ const Personal = (props) => {
                                                     rows={5}
                                                     onChange={e => setDescription(e.target.value)}
                                                     disabled={!edit}
-                                                    placeholder="Uma breve descrição sobre ti/a tua empresa...">
+                                                    placeholder="Uma breve descrição sobre ti/a tua empresa e o tipo de trabalhos exercicidos, anos de experiência...">
                                                 </textarea>
                                                 :null
                                             }
@@ -789,7 +789,7 @@ const Personal = (props) => {
                                         }
                                         {
                                             edit&&description?.length===0?
-                                                <span className={styles.helper}>Introduza uma breve descrição</span>
+                                                <span className={styles.helper}>Introduz uma descrição sobre ti/a tua empresa e a experiência</span>
                                             :null
                                         }
                                     </div>

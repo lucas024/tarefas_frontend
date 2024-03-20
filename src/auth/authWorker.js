@@ -26,7 +26,7 @@ import {
   } from '../store';
 import { useTimer } from 'react-timer-hook';
 import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
-
+import TosBanner from '../general/tosBanner'
 
 const AuthWorker = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -84,6 +84,8 @@ const AuthWorker = (props) => {
     const [success, setSuccess] = useState(null)
     const [skippedVerification, setSkippedVerification] = useState(false)
     const [verificationTab, setVerificationTab] = useState(0)
+    const [tosAccepted, setTosAccepted] = useState(false)
+    const [tosBanner, setTosBanner] = useState(false)
 
     const [codeSent, setCodeSent] = useState(null)
     const [codeStatus, setCodeStatus] = useState(null)
@@ -651,6 +653,15 @@ const AuthWorker = (props) => {
                     >
                     <Sessao text={"Detalhes trabalhador atualizados com sucesso!"}/>
                 </CSSTransition>
+            {
+                tosBanner?
+                <TosBanner 
+                    confirm={() => {
+                        setTosBanner(false)
+                    }}
+                    cancel={() => setTosBanner(false)}/>
+                :null
+            }
             <div className={styles.auth_main_worker}>
                 <div ref={recaptchaWrapperRef}>
                     <div id='recaptcha-container' className={styles.recaptcha_container}></div>
@@ -775,6 +786,9 @@ const AuthWorker = (props) => {
                                             setPassword={val => setPassword(val)}
                                             setNameHandler={val => setNameHandler(val)}
                                             setPhoneHandler={val => setPhoneHandler(val)}
+                                            setTosAccepted={val => setTosAccepted(val)}
+                                            tosAccepted={tosAccepted}
+                                            setTosBanner={() => setTosBanner(true)}
                                         />
                                     </div>
                                     :
@@ -832,9 +846,9 @@ const AuthWorker = (props) => {
                                             onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
                                         <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                         </div>
-                                        <div className={!passwordWrong||!passwordRepeatWrong?styles.login_button_worker:styles.login_button_disabled}
+                                        <div className={(!passwordWrong||!passwordRepeatWrong)&&tosAccepted?styles.login_button_worker:styles.login_button_disabled}
                                             style={{marginLeft:'10px', marginTop:0}}
-                                            onClick={() => {validatePasswordHandler()}}>
+                                            onClick={() => {tosAccepted&&validatePasswordHandler()}}>
                                             <p className={styles.login_text}>Criar Conta</p>
                                         </div>
                                     </div>

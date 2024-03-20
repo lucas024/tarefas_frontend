@@ -13,7 +13,7 @@ import NoPage from '../general/noPage';
 import {regioesMap, profissoesMap} from '../general/util'
 import SelectPosts from '../selects/selectPosts';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import BuildIcon from '@mui/icons-material/Build';
+import TitleIcon from '@mui/icons-material/Title';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import Carta from './carta'
@@ -322,7 +322,7 @@ const Main = (props) => {
                             item={item}
                             locationActive={params.region}
                             workerActive={params.work}
-                            user_id={user._id}
+                            user_id={user?._id}
                             trabalhoVisto={trabalhosVistos.includes(item._id)}
                         />
                     </div>
@@ -343,7 +343,7 @@ const Main = (props) => {
                                                                     })}
                                                                 }>
                     <Carta
-                        user_id={user._id}
+                        user_id={user?._id}
                         id={id}
                         worker={worker}
                         locationActive={params.region}
@@ -406,10 +406,10 @@ const Main = (props) => {
             <div className={styles.main}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_left}>
-                    <SelectPosts
-                        options={options}
-                        type={selectedType}
-                    />
+                        <SelectPosts
+                            options={options}
+                            type={selectedType}
+                        />
                     </div>
                     <div className={styles.search_right}>
                         <div className={styles.search_input_div}>
@@ -427,7 +427,7 @@ const Main = (props) => {
                         </div>
                         <div className={styles.search_filter_div_wrapper}>
                             <div className={styles.search_filter_div}>
-                            <SelectPublications
+                                <SelectPublications
                                         type="worker"
                                         trabalho={true}
                                         option={params.work}
@@ -437,15 +437,15 @@ const Main = (props) => {
                                             !params.region&&setSearchParams({'work': val})
                                             setParams({work: val, region: params.region})}}/>
                                 
-                                <div style={{marginLeft:"10px"}}>
-                                <SelectPublications 
-                                    type="zona"
-                                    option={params.region}
-                                    selected={selectedType}
-                                    valueChanged={val => {
-                                        params.work&&setSearchParams({'work': params.work, 'region': val})
-                                        !params.work&&setSearchParams({'region': val})
-                                        setParams({work: params.work, region: val})}}/>
+                                <div className={styles.search_filter_div_left}>
+                                    <SelectPublications 
+                                        type="zona"
+                                        option={params.region}
+                                        selected={selectedType}
+                                        valueChanged={val => {
+                                            params.work&&setSearchParams({'work': params.work, 'region': val})
+                                            !params.work&&setSearchParams({'region': val})
+                                            setParams({work: params.work, region: val})}}/>
                                 </div>
                             </div>
                             <div className={styles.search_clear_wrapper} onClick={() => limparPesquisa()}>
@@ -470,9 +470,9 @@ const Main = (props) => {
                             <div className={styles.top_info_filter_flex}>
                                 {
                                     params.work?
-                                    <BuildIcon className={styles.top_info_filter_icon}/>
+                                    <TitleIcon className={styles.top_info_filter_icon}/>
                                     :
-                                    <BuildOutlinedIcon className={styles.top_info_filter_icon}/>
+                                    <TitleIcon className={styles.top_info_filter_icon}/>
                                 }
                             </div>
                             {
@@ -530,7 +530,7 @@ const Main = (props) => {
                                 </div>
                                 :
                                 !loading?
-                                <div style={{gridTemplateRows: `repeat(${Math.ceil(items?.data?.length/2+1)}, 140px)`}} 
+                                <div style={{gridTemplateRows: `repeat(${Math.ceil(items?.data?.length/2+1)}, 160px)`}} 
                                         className={styles.grid}
                             
                                 >

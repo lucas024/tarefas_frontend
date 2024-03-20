@@ -54,29 +54,29 @@ const Trabalhador = props => {
     }, [props.userLoadAttempt])
 
     const sendMessageHandler = async () => {
-        if(text!==""&&worker.type!==user.type&&worker._id!==user._id){
+        if(text!==""&&worker.type!==user?.type&&worker._id!==user?._id){
             setLoadingChat(true)
 
             let time = new Date().getTime()
             let text_object = {
-                origin_type : user.type,
+                origin_type : user?.type,
                 timestamp : time,
                 text: text,
             }
 
             var repeated = false
 
-            if(user.chats)
+            if(user?.chats)
             {
-                for(let chat of user.chats)
+                for(let chat of user?.chats)
                 {
                     if(chat.worker_id === worker._id && chat.reservation_id === null)
                     {
                         console.log("repeated chat")
                         repeated=true
                         await axios.post(`${api_url}/chats/update_common_chat`, {
-                            worker_read: user.type===1?true:false,
-                            user_read: user.type===0?true:false,
+                            worker_read: user?.type===1?true:false,
+                            user_read: user?.type===0?true:false,
                             chat_id: chat.chat_id,
                             text: text_object,
                             updated: time
@@ -97,11 +97,11 @@ const Trabalhador = props => {
                     worker_photoUrl: worker.photoUrl,
                     worker_phone: worker.phone,
                     worker_id: worker._id,
-                    user_name: user.name,
-                    user_surname: user.surname,
-                    user_photoUrl: user.photoUrl,
-                    user_phone: user.phone,
-                    user_id: user._id,
+                    user_name: user?.name,
+                    user_surname: user?.surname,
+                    user_photoUrl: user?.photoUrl,
+                    user_phone: user?.phone,
+                    user_id: user?._id,
                     text: text_object,
                     updated: time,
                     chat_id: chatId
@@ -240,7 +240,7 @@ const Trabalhador = props => {
 
                             </div>
                             <div className={styles.description_wrapper}>
-                                <span className={styles.description_title}>Descrição</span>
+                                <span className={styles.description_title}>Descrição e Experiência</span>
                                 <span className={styles.description}>{worker.description}</span>
                             </div>
                         </div>
@@ -307,7 +307,7 @@ const Trabalhador = props => {
                             <span className={styles.user_info_number} style={{opacity:"0.6"}}>Mensagem</span> 
                         </div>
                         {
-                            !user._id?
+                            !user?._id?
                             <div className={styles.textarea_wrapper}>
                                 <textarea   
                                         disabled={!user}

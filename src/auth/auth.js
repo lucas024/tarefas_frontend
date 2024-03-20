@@ -33,6 +33,7 @@ import AuthCarouselVerification from './authCarouselVerification'
 import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao'
 import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
+import TosBanner from '../general/tosBanner'
 
 const Auth = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -82,6 +83,8 @@ const Auth = (props) => {
     const [expired, setExpired] = useState(false)
     const [success, setSuccess] = useState(null)
     const [skippedVerification, setSkippedVerification] = useState(false)
+    const [tosAccepted, setTosAccepted] = useState(false)
+    const [tosBanner, setTosBanner] = useState(false)
 
     const [verificationTab, setVerificationTab] = useState(0)
 
@@ -629,6 +632,15 @@ const Auth = (props) => {
                 >
                 <Sessao text={"Conta criada com sucesso!"}/>
             </CSSTransition>
+            {
+                tosBanner?
+                <TosBanner 
+                    confirm={() => {
+                        setTosBanner(false)
+                    }}
+                    cancel={() => setTosBanner(false)}/>
+                :null
+            }
             <div className={styles.auth_main}>
                 <div ref={recaptchaWrapperRef}>
                     <div id='recaptcha-container' className={styles.recaptcha_container}></div>
@@ -752,6 +764,9 @@ const Auth = (props) => {
                                         setPassword={val => setPassword(val)}
                                         setNameHandler={val => setNameHandler(val)}
                                         setPhoneHandler={val => setPhoneHandler(val)}
+                                        setTosAccepted={val => setTosAccepted(val)}
+                                        tosAccepted={tosAccepted}
+                                        setTosBanner={() => setTosBanner(true)}
                                     />
                                 </div>
                             </div>
@@ -782,9 +797,9 @@ const Auth = (props) => {
                                             onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
                                         <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                         </div>
-                                        <div className={!nameWrong?styles.login_button:styles.login_button_disabled}
+                                        <div className={tosAccepted?styles.login_button:styles.login_button_disabled}
                                             style={{marginLeft:'10px', marginTop:0}}
-                                            onClick={() => {validatePasswordHandler()}}>
+                                            onClick={() => {tosAccepted&&validatePasswordHandler()}}>
                                             <p className={styles.login_text}>Criar Conta</p>
                                         </div>
                                     </div>

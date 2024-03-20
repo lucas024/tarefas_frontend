@@ -4,7 +4,7 @@ import styles from '../servicos/main.module.css'
 import select_styles from './select.module.css'
 import PersonIcon from '@mui/icons-material/Person';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
+import TitleIcon from '@mui/icons-material/Title';
 import {regioes, profissoesGrouped, profissoesMap, regioesMap} from '../general/util'
 
 const SelectPublications = (props) => {
@@ -34,7 +34,7 @@ const SelectPublications = (props) => {
             fontFamily: "inherit",
             fontWeight: "400",
             color: "#FF785A",
-            width:"200px",
+            width:"250px",
             transition: "0.2s all ease-in-out",
             borderRadius: "5px",
             border: state.isSelected? "1px solid white": 0,
@@ -81,7 +81,12 @@ const SelectPublications = (props) => {
             ...base,
             color: "#ffffff",
             textTransform: "Capitalize",
-            fontWeight: "500"
+            fontWeight: "500",
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            minWidth: '150px',
+            marginLeft: '5px'
         }),
         indicatorSeparator : () => ({}),
         valueContainer: base => ({
@@ -151,7 +156,7 @@ const SelectPublications = (props) => {
                 </span>
                 :props.trabalho?
                 <span className={styles.placeholder}>
-                    <BuildOutlinedIcon className={styles.placeholder_icon}/>
+                    <TitleIcon className={styles.placeholder_icon}/>
                     Tarefa
                 </span>
                 :

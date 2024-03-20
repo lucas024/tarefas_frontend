@@ -24,23 +24,8 @@ const slice = createSlice({
       state.user_google = action.payload
     },
     user_reset : (state) => {
-      state.user = {
-        "_id": null,
-        "name": "",
-        "surname": "",
-        "phone": "",
-        "email": "",
-        "google_uid": null,
-        "address": "",
-        "photoUrl": "",
-        "type": null,
-        "email_verified": false,
-        "phone_verified": false,
-        "admin": false,
-        "chats": [],
-        "trial": {}
-      }
-  },
+      state.user = null
+    },
     user_update_photo_and_phone: (state, action) => {
         state.user.photoUrl = action.payload.photo
         state.user.phone = action.payload.phone

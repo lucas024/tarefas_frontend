@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import styles from './workerBanner.module.css'
-import BuildIcon from '@mui/icons-material/Build';
+import styles from './banner.module.css'
+import TitleIcon from '@mui/icons-material/Title';
 import PersonIcon from '@mui/icons-material/Person';
 import MessageIcon from '@mui/icons-material/Message';
 import {CSSTransition}  from 'react-transition-group';
@@ -30,7 +30,7 @@ const WorkerBanner = (props) => {
                 <span className={styles.value}>Trabalhador no Tarefas</span>
                 <div className={styles.divider}/>
                 <div className={styles.line}>
-                    <BuildIcon className={styles.line_circle}/>
+                    <TitleIcon className={styles.line_circle}/>
                     <span className={styles.helper_text}>Tarefas:</span>
                     <span className={styles.line_text}>Acesso desbloqueado aos detalhes de <span className={styles.action}>contacto</span> e <span className={styles.action}>localização</span> de <span className={styles.bold}>todas as tarefas publicadas</span>.</span>
                 </div>

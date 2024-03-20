@@ -36,6 +36,7 @@ import ConfirmEmail from './general/confirmEmail';
 function App() {
   const api_url = useSelector(state => {return state.api_url})
   const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
+  const user = useSelector(state => {return state.user})
 
   const dispatch = useDispatch()
   
@@ -231,6 +232,7 @@ const refreshWorker = () => {
                   <ProtectedRoute
                     redirectPath='/'
                     isAllowed={
+                      user?.type===0&&
                       parseInt(window.localStorage.getItem('loggedIn'))
                     }>
                     <Publicar
@@ -246,6 +248,7 @@ const refreshWorker = () => {
                   <ProtectedRoute
                     redirectPath='/'
                     isAllowed={
+                      user?.type===0&&
                       parseInt(window.localStorage.getItem('loggedIn'))
                     }>
                     <Publicar

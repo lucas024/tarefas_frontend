@@ -31,7 +31,7 @@ import NoPage from '../general/noPage';
 import SubscriptionAlterar from './subscription_alterar';
 import ConfirmBanner from '../general/confirmBanner';
 import { useSelector } from 'react-redux'
-import BuildIcon from '@mui/icons-material/Build';
+import TitleIcon from '@mui/icons-material/Title';
 import PersonIcon from '@mui/icons-material/Person';
 import MessageIcon from '@mui/icons-material/Message';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
@@ -594,7 +594,7 @@ const Subscription = props => {
                                             <div className={styles.activate_info}>
                                                 <div className={styles.line}>
                                                     <div className={styles.line_left}>
-                                                        <BuildIcon className={styles.line_circle}/>
+                                                        <TitleIcon className={styles.line_circle}/>
                                                         <span className={styles.helper_text}>Tarefas</span>
                                                     </div>
                                                     <span className={styles.connector}/>

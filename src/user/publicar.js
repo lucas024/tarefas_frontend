@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState, useRef, useCallback } from 'react'
+import { useSearchParams, useNavigate, useLocation, useBeforeUnload } from 'react-router-dom';
 import styles from './publicar.module.css'
-import validator from 'validator';
 import {Tooltip} from 'react-tooltip';
 
 import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao';
-import Popup from '../transitions/popup';
 import axios from 'axios'
 import { storage } from '../firebase/firebase'
 import { getDownloadURL, ref, uploadBytes, deleteObject} from "firebase/storage";
@@ -27,17 +25,28 @@ import VerificationBannerConfirm from '../general/verificationBannerConfirm';
 import VerificationBannerEditConfirm from '../general/verificationBannerEditConfirm';
 import VerificationBannerTooMany from '../general/verificationBannerTooMany';
 import { auth } from '../firebase/firebase'
-import { user_update_field, user_update_phone_verified, user_update_email_verified } from '../store';
+import { user_update_phone_verified, user_update_email_verified } from '../store';
 import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
 import VerificationBannerEmail from '../general/verificationBannerEmail';
 
-const Publicar = (props) => {
+const Publicar = () => {
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
     const user_phone_verified = useSelector(state => {return state.user_phone_verified})
 
     const dispatch = useDispatch()
+
+    useBeforeUnload(
+        useCallback(
+          (event) => {
+            event.preventDefault();
+            event.returnValue = "";
+          },
+          [],
+        ),
+        { capture: true },
+      )
 
     const [selectedWorker, setSelectedWorker] = useState(null)
     const [titulo, setTitulo] = useState('')
@@ -821,7 +830,7 @@ const Publicar = (props) => {
                                                 <p className={styles.zone_label_value}>{titulo}</p>
                                             </div>
                                             <div className={styles.zone_label_div}>
-                                                <p className={styles.zone_label}>Descrição</p>
+                                                <p className={styles.zone_label}>Descrição da Tarefa</p>
                                                 <p className={styles.zone_label_value}>{description}</p>
                                             </div>
                                         </div>

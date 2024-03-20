@@ -50,13 +50,13 @@
 }
 .sub_title_title{
     color: var(--neutral);
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-top: -10px;
     margin-bottom: 10px;
 }
 .sub_title{
     color: var(--neutral);
-    font-size: 1rem;
+    font-size: 1.1rem;
     text-align: center;
     font-weight: 500;
 }
@@ -70,7 +70,7 @@
     margin: 0px;
     color: var(--grey);
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
 }
 .main_inner{
@@ -80,25 +80,33 @@
 .button{
     padding: 10px 15px;
     border-radius: 5px;
-    background-color: var(--neutral);
+    background-color: var(--job);
     font-weight: 600;
     cursor: pointer;
     transition: 150ms all;
     width: max-content;
-    margin: auto;
-    margin-top: 300px;
     font-weight: 600;
-    color: var(--brand);
+    color: var(--neutral);
     text-align: center;
     font-size: 1.1rem;
+    transition: 150ms all;
 }
 .button:hover{
     background-color: var(--neutral);
     color: var(--job);
 }
 .text_brand{
-    width: 258px;
+    width: 280px;
     /* height: 144px; */
     margin: auto;
     margin-bottom: -20px;
+}
+.sub_main_wrapper{
+    height: 120px;
+}
+.button_wrapper{
+    height: 30px;
+    margin: auto;
+    margin-top: 300px;
+    transition: 150ms all;
 }

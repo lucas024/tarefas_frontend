@@ -183,7 +183,7 @@ const Trabalho = (props) => {
             }
             if(user?.chats)
             {
-                for(let chat of user.chats)
+                for(let chat of user?.chats)
                 {
                     if(chat.reservation_id === reservation._id)
                     {
@@ -216,7 +216,7 @@ const Trabalho = (props) => {
             setViewTo("showFull")
             setLoading(false)
         }
-        else if(!user._id||user.type===0){
+        else if(!user?._id||user?.type===0){
             setViewTo('noAccount')
             setLoading(false)
         }
@@ -339,12 +339,12 @@ const Trabalho = (props) => {
     }
 
     const sendMessageHandler = async () => {
-        if(text!==""&&reservation.user_id!==user._id){
+        if(text!==""&&reservation.user_id!==user?._id){
             setLoadingChat(true)
 
             let time = new Date().getTime()
             let text_object = {
-                origin_type : user.type,
+                origin_type : user?.type,
                 timestamp : time,
                 text: text,
                 starter: true
@@ -352,11 +352,11 @@ const Trabalho = (props) => {
             let chatId = ObjectID()
 
             await axios.post(`${api_url}/chats/create_chat`, {
-                worker_name: user.name,
-                worker_surname: user.surname,
-                worker_photoUrl: user.photoUrl,
-                worker_phone: user.phone,
-                worker_id: user._id,
+                worker_name: user?.name,
+                worker_surname: user?.surname,
+                worker_photoUrl: user?.photoUrl,
+                worker_phone: user?.phone,
+                worker_id: user?._id,
                 user_name: publicationUser.name,
                 user_surname: publicationUser.surname,
                 user_photoUrl: publicationUser.photoUrl,
@@ -565,7 +565,7 @@ const Trabalho = (props) => {
                                         </div>
                                         }
                                     </div>
-                                    <span className={styles.top_desc_text} style={{color:userView&&"white"}}>DESCRIÇÃO</span>
+                                    <span className={styles.top_desc_text} style={{color:userView&&"white"}}>DESCRIÇÃO DA TAREFA</span>
                                     {   
                                         reservation.desc!==""?
                                             <span className={styles.top_desc} style={{color:userView&&"white"}}>
@@ -796,7 +796,7 @@ const Trabalho = (props) => {
                                             navigate(`/user?t=messages&id=${chatId}`, {
                                                 state: {
                                                     from_page: true,
-                                                    worker_id: user._id,
+                                                    worker_id: user?._id,
                                                     user_id: reservation.user_id
                                                 }})}>Ir para Conversa</span>
                                         </div>

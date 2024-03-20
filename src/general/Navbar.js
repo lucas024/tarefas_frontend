@@ -43,17 +43,17 @@ const Navbar = (props) => {
     }, [props.userLoadAttempt])
 
     useEffect(() => {
-        if(user.chats?.length>0){
+        if(user?.chats?.length>0){
             let clear = true
-            for(const el of user.chats){
+            for(const el of user?.chats){
                 //user
-                if(user.type===0&&!el.user_read){
+                if(user?.type===0&&!el.user_read){
                     setHasUnreadTexts(true)
                     clear = false
                     break
                 }
                 //worker
-                else if(user.type===1&&!el.worker_read){
+                else if(user?.type===1&&!el.worker_read){
                     setHasUnreadTexts(true)
                     clear = false
                     break
@@ -89,14 +89,14 @@ const Navbar = (props) => {
                                 <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/main/publications/trabalhos')}}>
                                         TAREFAS
                                 </span>
-                                :loaded&&user.type===0?
+                                :loaded&&user?.type===0?
                                 <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
-                                        PUBLICAR
+                                        NOVA TAREFA
                                 </span>
                                 :loaded?
-                                <div className={styles.user_button_disabled} data-tooltip-id='navbar' data-tooltip-content="Por favor crie conta ou inicie sessão para publicar.">
+                                <div className={styles.user_button_disabled} data-tooltip-id='navbar' data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
                                         <span className={styles.back_publish_div_frontdrop}></span>
-                                        <span>PUBLICAR</span>
+                                        <span>NOVA TAREFA</span>
                                 </div>
 
                                 
@@ -106,7 +106,7 @@ const Navbar = (props) => {
                                 
                             }
                             {
-                                user._id?
+                                user?._id?
                                 <div className={styles.chat_div} onClick={() => navigate('/user?t=messages')}>
                                     {
                                         hasUnreadTexts?
@@ -123,7 +123,7 @@ const Navbar = (props) => {
                             }
                             <div className={styles.flex_end}>
                                 {
-                                    user._id?
+                                    user?._id?
                                     <div className={styles.user_main} 
                                             onMouseEnter={() => setDropdown(true)} 
                                             onMouseOut={() => setDropdown(false)}
@@ -132,10 +132,10 @@ const Navbar = (props) => {
  
                                         <div className={styles.user}>
                                             {
-                                                (user.type&&!worker_is_subscribed || user.type&&!worker_profile_complete)?
+                                                (user?.type&&!worker_is_subscribed || user?.type&&!worker_profile_complete)?
                                                 <span className={styles.drop_div_notification_text}>CONTA DESATIVADA</span>
                                                 :
-                                                (user.type===0&&!(user_phone_verified&&user_email_verified))?
+                                                (user?.type===0&&!(user_phone_verified&&user_email_verified))?
                                                 <span className={styles.drop_div_notification_text} style={{marginRight:'10px'}}>VERIFICAR PERFIL</span>                                              
                                                 :null
                                             }
@@ -149,7 +149,7 @@ const Navbar = (props) => {
                                             </div>
                                             <div className={styles.user_dropdown}>   
                                             <div className={styles.drop_user}>
-                                                <span className={styles.drop_user_text}>{user.name} {user.surname}</span>
+                                                <span className={styles.drop_user_text}>{user?.name} {user?.surname}</span>
                                             </div>
                                             {
                                                 user?.type===0?
@@ -182,10 +182,10 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
-                                                                user.type&&worker_profile_complete&&worker_is_subscribed?
+                                                                user?.type&&worker_profile_complete&&worker_is_subscribed?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
                                                                 :
-                                                                user.type===0&&user_email_verified&&user_phone_verified?
+                                                                user?.type===0&&user_email_verified&&user_phone_verified?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
                                                                 :<span className={styles.drop_div_notification}/>
                                                             }

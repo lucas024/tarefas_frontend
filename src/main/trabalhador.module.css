@@ -188,6 +188,7 @@
     display: inline-block;
     font-size: 1rem;
     margin-top: 10px;
+    width: max-content;
 }
 .description{
     color: var(--brand);

@@ -141,6 +141,16 @@ const AuthCarousel = props => {
                         <span className={styles.field_error}>As passwords escritas não são identicas.</span>
                         :null
                     }
+                
+
+                <div style={{cursor:"pointer"}} className={styles.container} onClick={() => props.setTosAccepted(!props.tosAccepted)}>
+                    <input type="checkbox" readOnly checked={props.tosAccepted}/>
+                    <span className={styles.checkmark}></span>
+                    <span className={styles.checkbox_text}>Li e aceito os <span onClick={e => {
+                        props.setTosBanner()
+                        e.stopPropagation()
+                    }} style={{color:"#0358e5", cursor:'pointer'}}>Termos e Condições.</span></span>
+                </div>
             </div>
         </Carousel>
     )

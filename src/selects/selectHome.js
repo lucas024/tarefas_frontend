@@ -13,7 +13,7 @@ const SelectHome = (props) => {
             textTransform: props.publicar?"normal":"uppercase",
             color: "#ffffff",
             fontWeight: 600,
-            width:props.publicar?"100%":"200px",
+            width:props.publicar?"100%":"250px",
             transition: "0.5s all ease-in-out",
             borderRadius: "5px",
             // borderBottomRightRadius: "0px",
@@ -38,7 +38,7 @@ const SelectHome = (props) => {
         menu: base => ({
             ...base,
             textTransform: props.publicar?"normal":"uppercase",
-            width:props.publicar?"100%":"200px",
+            width:props.publicar?"100%":"250px",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
@@ -73,7 +73,11 @@ const SelectHome = (props) => {
             ...base,
             color: "#ffffff",
             margin: "auto",
+            minWidth: '200px',
+            display: 'flex',
+            justifyContent: 'center',
             fontSize: props.publicar?"0.8rem":"0.7rem",
+            alignItems: 'center'
         }),
         indicatorSeparator : base => ({
             ...base,
@@ -83,6 +87,7 @@ const SelectHome = (props) => {
         valueContainer: base => ({
             ...base,
             padding: "2px 10px 2px 2px",
+            margin: 'auto',
         }),
         group: base => ({
             ...base,

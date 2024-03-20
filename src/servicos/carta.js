@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from './carta.module.css'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import BuildIcon from '@mui/icons-material/Build';
+import TitleIcon from '@mui/icons-material/Title';
 import {regioesOptions, profissoesMap} from '../general/util'
 import FaceIcon from '@mui/icons-material/Face';
 
@@ -119,13 +119,18 @@ const Carta = (props) => {
                 }
                 <div className={styles.bottom}>
                     <div className={styles.bottom_div}>
-                        <BuildIcon className={styles.bottom_div_icon} style={{color:worker?.trabalhos.includes(props.workerActive)?"#FF785A":"#71848d"}}/>
+                        <div className={styles.bottom_div_icon_wrap} style={{backgroundColor:worker?.trabalhos.includes(props.workerActive)?"#FF785A":"#161F28"}}>
+                            <TitleIcon className={styles.bottom_div_icon}/>
+                        </div>
+                        
                         <div className={styles.bottom_div_text}>
                             {worker&&displayTrabalhosExtense()}
                         </div>
                     </div>
                     <div className={styles.bottom_div}>
-                        <LocationOnIcon className={styles.bottom_div_icon} style={{color:worker?.regioes.includes(props.locationActive)?"#FF785A":"#71848d"}}/>
+                        <div className={styles.bottom_div_icon_wrap} style={{backgroundColor:worker?.regioes.includes(props.locationActive)?"#FF785A":"#161F28"}}>
+                            <LocationOnIcon className={styles.bottom_div_icon}/>
+                        </div>
                         <div className={styles.bottom_div_text}>
                             {worker&&displayRegioesExtense()}
                         </div>

@@ -31,6 +31,13 @@
     color: var(--action);
     font-weight: 600;
 }
+
+.value_brand{
+    align-self: left;
+    font-size: 1.5rem;
+    color: var(--brand);
+    font-weight: 600;
+}
 .divider{
     width: 100%;
     margin: auto;
@@ -100,4 +107,8 @@
 .cancel:hover{
     opacity: 0.5;
     transition: all 150ms;
+}
+.tos_wrapper{
+    max-height: 500px;
+    overflow-y: auto;
 }

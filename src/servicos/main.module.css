@@ -194,6 +194,7 @@
 }
 .search_left{
     width: 20%;
+    height: 90px;
 }
 .search_right{
     width: 80%;
@@ -397,6 +398,10 @@
     }
 } */
 
+.search_filter_div_left{
+    margin-left: 10px;
+}
+
 @media (min-width: 1200px){
     .placeholder_left_text{
         font-size: 1.3rem;
@@ -432,14 +437,26 @@
     .placeholder_left{
         font-size: 0.8rem;
     }
+    .search_clear{
+        display: none;
+    }
 }
 
 @media (max-width: 768px){
     .cor{
         font-size: 0.7rem;
     }
-    
+    .search_left{
+        height: 135px;
+    }
     .search_clear{
-        display: none;
+        display: block;
+    }
+    .search_filter_div{
+        flex-direction: column;
+    }
+    .search_filter_div_left{
+        margin-left: 0px;
+        margin-top: 5px;
     }
 }

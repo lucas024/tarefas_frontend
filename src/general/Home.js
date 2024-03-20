@@ -11,21 +11,20 @@ import {auth} from '../firebase/firebase'
 
 import SelectHome from '../selects/selectHome';
 import {profissoesGrouped, regioes, regioesOptions} from './util'
-import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import {Tooltip} from 'react-tooltip';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SearchIcon from '@mui/icons-material/Search';
 import BackHandIcon from '@mui/icons-material/BackHand';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import BuildIcon from '@mui/icons-material/Build';
+import TitleIcon from '@mui/icons-material/Title';
 import { useDispatch, useSelector } from 'react-redux';
 import { search_scroll_save } from '../store';
 import Welcome from './welcome'
 
 import logo_text from '../assets/logo_text.png'
 import logo_text_worker from '../assets/logo_text_worker.png'
+import TosBanner from './tosBanner';
 
 const firstOptions = [
     { value: 'trabalhadores', label: 'Trabalhadores' },
@@ -38,6 +37,7 @@ const Home = (props) => {
     const user = useSelector(state => {return state.user})
 
     const [workerBanner, setWorkerBanner] = useState(false)
+    const [tosBanner, setTosBanner] = useState(false)
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
     const [loginPopup, setLoginPopup] = useState(false)
@@ -49,14 +49,16 @@ const Home = (props) => {
     const [third, setThird] = useState(null)
 
     const [showWelcomeTrigger, setShowWelcomeTrigger] = useState(false)
+    const [showWelcomeTrigger1000, setShowWelcomeTrigger1000] = useState(false)
 
     const location = useLocation()
     const navigate = useNavigate()
 
     useEffect(() => {
-        if(!parseInt(localStorage.getItem('firstAccessMade')))
+        if(!parseInt(localStorage.getItem('firstAccessMade'))&&!showWelcomeTrigger)
             setShowWelcomeTrigger(true)
-        if(user.type===1) setFirst({ value: 'trabalhos', label: 'Tarefas' })
+            
+        if(user?.type===1) setFirst({ value: 'trabalhos', label: 'Tarefas' })
         else if(location.state?.carry==="login"){
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
@@ -142,11 +144,12 @@ const Home = (props) => {
         <div className={styles.home}>
             <CSSTransition 
                 in={showWelcomeTrigger}
+                onEntered={() => setShowWelcomeTrigger1000(true)}
                 timeout={1000}
                 classNames="fade"
                 unmountOnExit
                 >
-                <Welcome closeWelcome={() => showWelcomeHandler()}/>
+                <Welcome showWelcomeTrigger1000={showWelcomeTrigger1000} closeWelcome={() => showWelcomeHandler()}/>
             </CSSTransition>
 
 
@@ -183,6 +186,15 @@ const Home = (props) => {
                         navigate('/authentication/worker?type=0')
                     }}
                     cancel={() => setWorkerBanner(false)}/>
+                :null
+            }
+            {
+                tosBanner?
+                <TosBanner 
+                    confirm={() => {
+                        setTosBanner(false)
+                    }}
+                    cancel={() => setTosBanner(false)}/>
                 :null
             }
             <div className={styles.home_back}>
@@ -228,7 +240,7 @@ const Home = (props) => {
                                             second?.value? 
                                             <img src={second.img} className={styles.zone_image_prof}/>
                                             :
-                                            <BuildIcon className={styles.zone_build_icon}/>
+                                            <TitleIcon className={styles.zone_build_icon}/>
                                         }
                                     </div>
                                     <div className={styles.zone_select}>
@@ -297,7 +309,7 @@ const Home = (props) => {
                         <div className={styles.home_back_publish}>
                             <p className={styles.back_publish_title}>PUBLICAR</p>
                             {
-                                user._id!=null?
+                                user?._id!=null&&user?.type===0?
                                 <div className={styles.back_publish_div} onClick={() => navigate('/publicar/novo')}>
                                     <div className={styles.home_back_publish_wrapper}>
                                         <PostAddIcon className={styles.section_img_mini}/>
@@ -305,7 +317,7 @@ const Home = (props) => {
                                     </div>
                                 </div>
                                 :
-                                <div className={styles.back_publish_div_disabled} data-tooltip-id={'home'} data-tooltip-content="Por favor entra na tua conta ou regista-te para publicares uma tarefa.">
+                                <div className={styles.back_publish_div_disabled} data-tooltip-id={'home'} data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
                                     <div className={styles.home_back_publish_wrapper} style={{opacity:0.3}}>
                                         <PostAddIcon className={styles.section_img_mini}/>
                                         <span className={styles.section_publicar}>NOVA TAREFA</span>
@@ -314,7 +326,7 @@ const Home = (props) => {
                             }
                         </div>
                         {
-                            user._id!=null?
+                            user?._id!=null?
                             null
                             :
                             <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'0px'}}>
@@ -338,92 +350,117 @@ const Home = (props) => {
                         :null
                     }
                     
-                    <div className={styles.home_back_bottom}>
-                        <div className={styles.section_one}>
+                    {
+                        user?.type===0&&loaded?
+                        <div className={styles.home_back_bottom}>
+                            <div className={styles.section_content}>
+                                <div className={styles.section_image_wrapper}>
+                                    <BackHandIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
+                                </div>
+                                <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
+                                    TRABALHADORES
+                                </span>
+                                <span className={styles.section_image_text}>
+                                    Ver todos os trabalhadores disponíveis
+                                </span>
+                                <div className={styles.section_button_right} onClick={() => navigate('/main/publications/trabalhadores')}>
+                                    <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
+                                        VER TRABALHADORES
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        :
+                        <div className={styles.home_back_bottom}>
+                            <div className={styles.section_one}>
+                                {
+                                    loaded?
+                                    <div className={styles.section_content}>
+                                        <div className={styles.section_image_wrapper}>
+                                            <AssignmentIcon className={styles.section_img} style={{color:"white"}}/>
+                                        </div>
+                                        <span className={styles.section_image_text_title} style={{color:"#0358e5"}}>
+                                            TAREFAS
+                                        </span>
+                                        <span className={styles.section_image_text}>
+                                            Ver todas as tarefas disponíveis
+                                        </span>
+                                        <div className={styles.section_button} onClick={() => navigate('/main/publications/trabalhos')}>
+                                            <p className={styles.section_title} style={{fontSize: '0.9rem'}}>
+                                                VER TAREFAS
+                                            </p>
+                                        </div>
+                                    </div> 
+                                    :
+                                    <div className={styles.section_content}>
+                                        <span className={styles.skeleton_content_in_img}></span>
+                                        <p className={styles.skeleton_content_in}></p>
+                                    </div>        
+                                }
+                            </div>
+                            <span className={styles.section_spacer}></span>
                             {
-                                user&&loaded?
-                                <div className={styles.section_content}>
-                                    <div className={styles.section_image_wrapper}>
-                                        <AssignmentIcon className={styles.section_img} style={{color:"white"}}/>
+                                user?.type===1&&loaded?
+                                <div className={styles.section_two}>
+                                    <div className={styles.section_content}>
+                                        <div className={styles.section_image_wrapper}>
+                                            <AccessibilityIcon className={styles.section_img} style={{color:"#ffffff"}}/>
+                                        </div>
+                                        <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
+                                            PERFIL
+                                        </span>
+                                        <span className={styles.section_image_text}>
+                                            Ver ou editar perfil
+                                        </span>
+                                        <div className={styles.section_button_right} onClick={() => navigate('/user?t=personal')}>
+                                            <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
+                                                VER PERFIL
+                                            </p>
+                                        </div>
                                     </div>
-                                    <span className={styles.section_image_text_title} style={{color:"#0358e5"}}>
-                                        TAREFAS
-                                    </span>
-                                    <span className={styles.section_image_text}>
-                                        Ver todas as tarefas disponíveis
-                                    </span>
-                                    <div className={styles.section_button} onClick={() => navigate('/main/publications/trabalhos')}>
-                                        <p className={styles.section_title} style={{fontSize: '0.9rem'}}>
-                                            VER TAREFAS
-                                        </p>
-                                    </div>
-                                </div> 
+                                </div>
                                 :
-                                <div className={styles.section_content}>
-                                    <span className={styles.skeleton_content_in_img}></span>
-                                    <p className={styles.skeleton_content_in}></p>
-                                </div>        
+                                loaded?
+                                <div className={styles.section_two}>
+                                    <div className={styles.section_content}>
+                                        <div className={styles.section_image_wrapper}>
+                                            <BackHandIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
+                                        </div>
+                                        <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
+                                            TRABALHADORES
+                                        </span>
+                                        <span className={styles.section_image_text}>
+                                            Ver todos os trabalhadores disponíveis
+                                        </span>
+                                        <div className={styles.section_button_right} onClick={() => navigate('/main/publications/trabalhadores')}>
+                                            <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
+                                                VER TRABALHADORES
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                :
+                                <div className={styles.section_two}>
+                                    <div className={styles.section_content}>
+                                        <span className={styles.skeleton_content_in_img}></span>
+                                        <p className={styles.skeleton_content_in}></p>
+                                    </div>
+                                </div>
+                                
+                                
                             }
                         </div>
-                        <span className={styles.section_spacer}></span>
-                        {
-                            user?.type===1&&loaded?
-                            <div className={styles.section_two}>
-                                <div className={styles.section_content}>
-                                    <div className={styles.section_image_wrapper}>
-                                        <AccessibilityIcon className={styles.section_img} style={{color:"#ffffff"}}/>
-                                    </div>
-                                    <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
-                                        PERFIL
-                                    </span>
-                                    <span className={styles.section_image_text}>
-                                        Ver ou editar perfil
-                                    </span>
-                                    <div className={styles.section_button_right} onClick={() => navigate('/user?t=personal')}>
-                                        <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
-                                            VER PERFIL
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            :
-                            loaded?
-                            <div className={styles.section_two}>
-                                <div className={styles.section_content}>
-                                    <div className={styles.section_image_wrapper}>
-                                        <BackHandIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
-                                    </div>
-                                    <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
-                                        TRABALHADORES
-                                    </span>
-                                    <span className={styles.section_image_text}>
-                                        Ver todos os trabalhadores disponíveis
-                                    </span>
-                                    <div className={styles.section_button_right} onClick={() => navigate('/main/publications/trabalhadores')}>
-                                        <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
-                                            VER TRABALHADORES
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            :
-                            <div className={styles.section_two}>
-                                <div className={styles.section_content}>
-                                    <span className={styles.skeleton_content_in_img}></span>
-                                    <p className={styles.skeleton_content_in}></p>
-                                </div>
-                            </div>
-                            
-                            
-                        }
-                    </div>
+                    }
                 </div>
+                    
                 <div className={styles.footer}>
                     <div className={styles.footer_div}>
                         <div className={styles.footer_div_column}>
-                            <p className={styles.footer_div_text}>APP Tarefas</p>
-                            <p className={styles.footer_div_text}>Ajuda e contactos</p>
+                            <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
+                            <p className={styles.footer_div_text}>Sugestões</p>
+                            <p className={styles.footer_div_text}>Contactos</p>
                             <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me trabalhador</p>
+                            <p className={styles.footer_div_text} style={{color: '#71848d'}}>APP Tarefas (brevemente)</p>
                         </div>
                         {/* <div className={styles.footer_div_column}>
                             
@@ -432,7 +469,7 @@ const Home = (props) => {
                             <div>
                                 <p className={styles.footer_div_text} style={{fontWeight:400}}>Segue-nos nas redes:</p>
                                 <div className={styles.footer_icon_div}>
-                                    <InstagramIcon className={styles.footer_icon}/>
+                                    <InstagramIcon className={styles.footer_icon} onClick={() => window.open('https://instagram.com/tarefaspt', "_blank", "noreferrer")}/>
                                 </div>
                             </div>
                         </div>  
