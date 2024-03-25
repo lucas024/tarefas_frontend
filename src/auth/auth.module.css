@@ -44,6 +44,15 @@
     background-image: url('../assets/to_repeat2.png');
     background-position: left 120px top 0px; 
 }
+.auth_main_worker_frontdrop{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background-color: #00000060;
+}
 .area{
     padding-bottom: 20px;
     width: 400px;
@@ -475,15 +484,19 @@
 }
 .user_button{
     margin-right: 5px;
-    font-weight: 600;
     background-color: var(--brand);
     border: 3px solid var(--brand);
-    border-radius: 5px;
-    padding: 10px 20px;
+    border-radius: 10px;
+    padding: 15px 0;
     z-index: 3;
-    font-size: 1rem;
+    font-size: 1.1rem;
     box-sizing: border-box;
     color: white;
+    width: 400px;
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 5px;
+    font-weight: 600;
 }
 .user_button:hover{
     cursor: pointer;
@@ -492,16 +505,19 @@
     transition: 150ms;
 }
 .worker_button{
-    margin-right: 5px;
     font-weight: 600;
     background-color: var(--action);
     border: 3px solid var(--action);
-    border-radius: 5px;
-    padding: 10px 20px;
+    border-radius: 10px;
+    padding: 15px 0;
     z-index: 3;
-    font-size: 1rem;
+    font-size: 1.1rem;
     box-sizing: border-box;
     color: white;
+    width: 400px;
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 5px;
 }
 .worker_button:hover{
     cursor: pointer;
@@ -511,11 +527,7 @@
 }
 .button_area{
     display: flex;
-    width: 100%;
-    justify-content: flex-end;
-    position: fixed;
-    bottom: 10px;
-    right: 5px;
+    justify-content: center;
 }
 .buttons{
     margin-top: 20px;
@@ -963,4 +975,45 @@ transform: rotate(45deg);
     justify-content: center;
     align-items: center;
     height: 100%;
+}
+.split_wrapper{
+    margin: 20px auto;
+    width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.split{
+    height: 1px;
+    background-color: var(--neutral);
+    width: 100%;
+}
+.split_text_wrapper{
+    position: absolute;
+    background-color: var(--action);
+    padding: 0 15px;
+    height: 20px;
+    width: 20px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    display: flex;
+    justify-content: center;
+    margin-left: -10px;
+}
+.split_text_frontdrop{
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #00000060;
+    display: flex;
+    justify-content: center;
+}
+.split_text{
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
 }

@@ -32,7 +32,7 @@ const TosBanner = (props) => {
                 </div>
 
 
-                <span className={styles.cancel} onClick={() => props.cancel()}>fechar</span>
+                <span className={styles.cancel} style={{marginTop:"20px"}} onClick={() => props.cancel()}>fechar</span>
             </div>
             </CSSTransition>
         </div>

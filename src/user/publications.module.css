@@ -224,14 +224,12 @@
     align-self: flex-end;
 }
 .item_type_tbd{
-    margin-left: 5px;
     color: #ffffff80;
     font-weight: 500;
     font-style: italic;
 }
 
 .item_type{
-    margin-left: 5px;
     font-weight: 600;
     color: white;
     text-transform: uppercase;

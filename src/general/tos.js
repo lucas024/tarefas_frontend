@@ -25,17 +25,12 @@ const Tos = () => {
                     <li className={styles.tos_li}>
                         <span className={styles.tos_li_title}>TAREFAS/Serviço/Website</span>
                         <span> - </span>
-                        <span className={styles.tos_desc}>plataforma online gerida por esta entidade que serve o serviço aos Utilizadores/Trabalhadores/Visitantes, disponível no domínio pt-tarefas.pt e na aplicação móvel TAREFAS.</span>
+                        <span className={styles.tos_desc}>plataforma online gerida por esta entidade que serve o serviço aos Utilizadores/Visitantes, disponível no domínio pt-tarefas.pt e na aplicação móvel TAREFAS.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_li_title}>Tarefa/Anúncio/Publicação</span>
                         <span> - </span>
                         <span className={styles.tos_desc}>uma proposta de requisição de um serviço colocado/disponibilizado pelo utilizador no website/aplicação.</span>
-                    </li>
-                    <li className={styles.tos_li}>
-                        <span className={styles.tos_li_title}>Trabalhador/Profissional</span>
-                        <span> - </span>
-                        <span className={styles.tos_desc}>entidade singular ou coletiva que se inscreve no website com fim de aceder a diferentes tarefas e publicitar o seu perfil.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_li_title}>Conta</span>
@@ -50,7 +45,7 @@ const Tos = () => {
                     <li className={styles.tos_li}>
                         <span className={styles.tos_li_title}>Subscrição</span>
                         <span> - </span>
-                        <span className={styles.tos_desc}>utilização sem restringimentos que é oferecido ao trabalhador pelo Tarefas que subscrevem a um plano.</span>
+                        <span className={styles.tos_desc}>utilização sem restringimentos que é oferecido ao profissional pelo Tarefas que subscrevem a um plano.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_li_title}>Termos e Condições</span>
@@ -63,9 +58,9 @@ const Tos = () => {
                         <span className={styles.tos_desc}>processo de criação de uma Conta de Utilizador, depois de fornecer os seus dados, aceitar o Termos e Condições e ativar a Conta.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_li_title}>Registo trabalhador</span>
+                        <span className={styles.tos_li_title}>Registo profissional</span>
                         <span> - </span>
-                        <span className={styles.tos_desc}>processo de criação de uma Conta de Trabalhador feito por um Utilizador, depois de fornecer os seus dados, aceitar o Termos e Condições e ativar a Conta.</span>
+                        <span className={styles.tos_desc}>processo de criação de uma Conta de Profissional feito por um Utilizador, depois de fornecer os seus dados, aceitar o Termos e Condições e ativar a Conta.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_li_title}>Anunciante/Utilizador</span>
@@ -74,9 +69,9 @@ const Tos = () => {
                     </li>
 
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_li_title}>Trabalhador</span>
+                        <span className={styles.tos_li_title}>Profissional</span>
                         <span> - </span>
-                        <span className={styles.tos_desc}>pessoa singular, pessoa colectiva ou entidade organizacional sem personalidade jurídica, com capacidade jurídica plena para a promoção e/ou celebração de transações relativas à subscrição que pretende iniciar, de acordo com o direito português, e que utiliza o Serviço depois de iniciar a sessão na Conta/fazer login.</span>
+                        <span className={styles.tos_desc}>pessoa singular, pessoa colectiva ou entidade organizacional sem personalidade jurídica, com capacidade jurídica plena para a promoção e/ou celebração de transações relativas à subscrição que pretende aceder a diferentes tarefas, publicitar o seu perfil e subscrever-se a conteúdo pago, de acordo com o direito português, e que utiliza o Serviço depois de iniciar a sessão na Conta/fazer login.</span>
                     </li>
                 </ol>
 
@@ -85,7 +80,7 @@ const Tos = () => {
 
                 <p className={styles.tos_title_info}>Estes Termos e Condições fornecem-lhe as regras de utilização do nosso site pt-servicos.pt (“Website”) e da nossa aplicação para dispositivos móveis denominada “TAREFAS” (“Aplicação”) e contêm a informação pré-contratual obrigatória nos termos da lei aplicável.</p>
                 <p className={styles.tos_title_info}>Os contratos de prestação de serviços com a TAREFAS são celebrados em português.</p>
-                <p className={styles.tos_title_info}>A contratação através desta plataforma é uma contratação eletrónica, nos termos do disposto nos artigos 26.º do Decreto-Lei n.º 7/2004, de 7 de janeiro e 3.º do Decreto-Lei n.º 290-D/99, de 2 de agosto e cumpre o disposto no Decreto-Lei n.º 24/2014, de 14 de fevereiro. Caso não concorde com a celebração do contrato por meios eletrónicos, não deverá utilizar o Website ou a Aplicação. Ao aceitar os presentes Termos e Condições o Utilizador/Trabalhador aceita e reconhece que:</p>
+                <p className={styles.tos_title_info}>A contratação através desta plataforma é uma contratação eletrónica, nos termos do disposto nos artigos 26.º do Decreto-Lei n.º 7/2004, de 7 de janeiro e 3.º do Decreto-Lei n.º 290-D/99, de 2 de agosto e cumpre o disposto no Decreto-Lei n.º 24/2014, de 14 de fevereiro. Caso não concorde com a celebração do contrato por meios eletrónicos, não deverá utilizar o Website ou a Aplicação. Ao aceitar os presentes Termos e Condições o Utilizador/Profissional aceita e reconhece que:</p>
 
 
                 <ol className={styles.tos_ol}>
@@ -108,7 +103,7 @@ const Tos = () => {
                         <span className={styles.tos_desc}>Os conteúdos publicados no Serviço, incluindo em particular Anúncios, qualquer que seja a sua forma, isto é texto, gráfico ou vídeo, estão sujeitos à proteção dos direitos de propriedade intelectual, incluindo copyright e direitos de propriedade industrial do TAREFAS, dos Vendedores ou de terceiros. É proibido fazer qualquer utilização destes conteúdos sem o consentimento por escrito das pessoas autorizadas. É proibida qualquer agregação e processamento de dados e outras informações disponíveis no Website tendo em vista a sua partilha com terceiros noutros Websites e fora da Internet. É igualmente proibido o uso do Website e das designações do TAREFAS, incluindo elementos gráficos característicos sem o consentimento do TAREFAS.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O TAREFAS não é uma parte na prestação de uma tarefa feita pelo trabalhador/profissional, assim sendo:</span>
+                        <span className={styles.tos_desc}>O TAREFAS não é uma parte na prestação de uma tarefa feita pelo profissional, assim sendo:</span>
                         <ol className={styles.tos_inner_ol} type="a">
                             <li className={styles.tos_inner_li}>
                                 <span className={styles.tos_desc}>O TAREFAS não se responsabiliza pelo comportamento dos anunciantes, ou itens e serviços anunciados por eles para venda como descrito nos seus anúncios. Ao infringir num determinado Anúncio as regras vigentes no TAREFAS, o utilizador assumirá toda e qualquer responsabilidade resultando em danos ou prejuízos perante qualquer entidade, pessoa singular ou colectiva, estando o TAREFAS isento de qualquer tipo de responsabilidade resultante.</span>
@@ -134,10 +129,10 @@ const Tos = () => {
                                 <span className={styles.tos_desc}>publicar Anúncios dentro dos limites disponíveis a cada utilizador.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>publicitar o seu serviço através da existência da conta trabalhador que é de livre acesso a qualquer utilizador do website.</span>
+                                <span className={styles.tos_desc}>publicitar o seu serviço através da existência da conta profissional que é de livre acesso a qualquer utilizador do website.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>utilizar o serviço de subscrição, que retira os restringimentos à conta de trabalhador.</span>
+                                <span className={styles.tos_desc}>utilizar o serviço de subscrição, que retira os restringimentos à conta de profissional.</span>
                             </li>
                         </ol>
                     </li>
@@ -171,7 +166,7 @@ const Tos = () => {
                         <span className={styles.tos_desc}>Os anúncios ou publicações devem respeitar, obrigatoriamente, as condições indicadas na secção "Conteúdo e Anúncios" dos Termos e Condições.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Os Utilizadores que comuniquem com outros Utilizadores ou Trabalhadores através da funcionalidade de chat do Serviço reconhecem que estas conversações não são privadas e que o respetivo conteúdo pode ser acedido, recolhido e lido pelo TAREFAS. Ao aceitar os presentes Termos e Condições, o Utilizador/Trabalhador aceita e reconhece o direito do TAREFAS consultar e aceder ao conteúdo das conversações mantidas através da funcionalidade de chat do Website, tendo em vista o aumento da segurança e proteção dos Utilizadores, bem como para efeitos de prevenção de fraudes e o aperfeiçoamento do Website. Para mais informações sobre a forma e os motivos pelos quais o TAREFAS acede e analisa o conteúdo das conversações mantidas através das funcionalidades de sala de chat do Serviço.</span>
+                        <span className={styles.tos_desc}>Os Utilizadores que comuniquem com outros Utilizadores ou Profissionais através da funcionalidade de chat do Serviço reconhecem que estas conversações não são privadas e que o respetivo conteúdo pode ser acedido, recolhido e lido pelo TAREFAS. Ao aceitar os presentes Termos e Condições, o Utilizador/Profissional aceita e reconhece o direito do TAREFAS consultar e aceder ao conteúdo das conversações mantidas através da funcionalidade de chat do Website, tendo em vista o aumento da segurança e proteção dos Utilizadores, bem como para efeitos de prevenção de fraudes e o aperfeiçoamento do Website. Para mais informações sobre a forma e os motivos pelos quais o TAREFAS acede e analisa o conteúdo das conversações mantidas através das funcionalidades de sala de chat do Serviço.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_desc}>As mensagens e respectivos anexos armazenados no Website, através do registo da conta, permanecem no sistema por um período de 4 (quatro) meses.</span>
@@ -183,12 +178,12 @@ const Tos = () => {
                                 <span className={styles.tos_desc}>Procurar por um certo tipo de tarefa, região ou os dois em simultâneo</span>
                             </li>
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>Procurar por texto nomes de trabalhadores, tarefas, regiões e outros</span>
+                                <span className={styles.tos_desc}>Procurar por texto nomes de profissionais, tarefas, regiões e outros</span>
                             </li>
                         </ol>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>As recomendações de Anúncios baseiam-se numa análise de critérios que avaliam a proximidade entre a expressão ou frase procurada pelo Utilizador/Trabalhador e o título do Anúncio, os seus parâmetros, os filtros de pesquisa aplicados e a categoria mais relevante relacionada com a expressão ou frase. O sistema de recomendação tem em conta os seguintes parâmetros:</span>
+                        <span className={styles.tos_desc}>As recomendações de Anúncios baseiam-se numa análise de critérios que avaliam a proximidade entre a expressão ou frase procurada pelo Utilizador/Profissional e o título do Anúncio, os seus parâmetros, os filtros de pesquisa aplicados e a categoria mais relevante relacionada com a expressão ou frase. O sistema de recomendação tem em conta os seguintes parâmetros:</span>
                         <ol className={styles.tos_inner_ol} type="a">
                             <li className={styles.tos_inner_li}>
                                 <span className={styles.tos_desc}>A correspondência entre o que foi introduzido durante a pesquisa e o conteúdo e título do Anúncio.</span>
@@ -203,7 +198,7 @@ const Tos = () => {
                     </li>
 
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O Serviço também apresenta conteúdos publicitários. Os conteúdos publicitários disponíveis no Serviço são apresentados de acordo com as escolhas do Utilizador/Trabalhador relativamente à utilização de cookies ou às definições do browser. Se o Utilizador/Trabalhador tiver consentido na personalização do conteúdo, os conteúdos publicitários apresentados são adaptados às preferências do Utilizador/Trabalhador com base na sua atividade no Serviço. Se o TAREFAS não tiver obtido o consentimento para a personalização do conteúdo publicitário, o conteúdo apresentado não será personalizado e irá basear-se em criações publicitárias preparadas para a base geral de Utilizadores.</span>
+                        <span className={styles.tos_desc}>O Serviço também apresenta conteúdos publicitários. Os conteúdos publicitários disponíveis no Serviço são apresentados de acordo com as escolhas do Utilizador/Profissional relativamente à utilização de cookies ou às definições do browser. Se o Utilizador/Profissional tiver consentido na personalização do conteúdo, os conteúdos publicitários apresentados são adaptados às preferências do Utilizador/Profissional com base na sua atividade no Serviço. Se o TAREFAS não tiver obtido o consentimento para a personalização do conteúdo publicitário, o conteúdo apresentado não será personalizado e irá basear-se em criações publicitárias preparadas para a base geral de Utilizadores.</span>
                     </li>
                 </ol>
 
@@ -211,7 +206,7 @@ const Tos = () => {
                 <li className={styles.tos_main_li}>Contas</li>
                 <ol className={styles.tos_ol}>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Para fazer uso de toda a funcionalidade do Serviço, o Visitante deve registar uma conta e utilizar o Serviço como um Utilizador/Trabalhador com sessão iniciada. A conta dá ao Utilizador/Trabalhador a possibilidade de utilizar, entre outras, as seguintes funcionalidades do Website:</span>
+                        <span className={styles.tos_desc}>Para fazer uso de toda a funcionalidade do Serviço, o Visitante deve registar uma conta e utilizar o Serviço como um Utilizador/Profissional com sessão iniciada. A conta dá ao Utilizador/Profissional a possibilidade de utilizar, entre outras, as seguintes funcionalidades do Website:</span>
                         <ol className={styles.tos_inner_ol} type="a">
                             <li className={styles.tos_inner_li}>
                                 <span className={styles.tos_desc}>publicar e gerir Anúncios publicados.</span>
@@ -220,7 +215,7 @@ const Tos = () => {
                                 <span className={styles.tos_desc}>consultar os Anúncios de outros Utilizadores.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>enviar e receber mensagens para e de outros utilizadores/trabalhadores.</span>
+                                <span className={styles.tos_desc}>enviar e receber mensagens para e de outros utilizadores/profissionais.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
                                 <span className={styles.tos_desc}>enviar e/ou receber mensagens através da sua conta, facilitando a comunicação com outros utilizadores.</span>
@@ -253,22 +248,22 @@ const Tos = () => {
                         </ol>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O Utilizador/Trabalhador apenas pode ser uma pessoa singular com capacidade jurídica total, pessoa coletiva ou unidade organizacional sem personalidade jurídica, à qual o ato confira capacidade jurídica. No caso de pessoas coletivas e unidades organizacionais sem personalidade jurídica, deve criar uma Conta no seu nome, sendo que apenas a pessoa autorizada a agir em nome dessas entidades pode executar todas as atividades no Website</span>
+                        <span className={styles.tos_desc}>O Utilizador/Profissional apenas pode ser uma pessoa singular com capacidade jurídica total, pessoa coletiva ou unidade organizacional sem personalidade jurídica, à qual o ato confira capacidade jurídica. No caso de pessoas coletivas e unidades organizacionais sem personalidade jurídica, deve criar uma Conta no seu nome, sendo que apenas a pessoa autorizada a agir em nome dessas entidades pode executar todas as atividades no Website</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O Utilizador/Trabalhador pode ter apenas uma conta no Serviço, pelo que a cada Anunciante ou Visitante apenas pode corresponder um registo. Podemos cancelar e bloquear definitivamente qualquer registo subsequente efetuado pelo mesmo Anunciante ou Visitante, sendo o Anunciante ou Visitante notificado para o efeito</span>
+                        <span className={styles.tos_desc}>O Utilizador/Profissional pode ter apenas uma conta no Serviço, pelo que a cada Anunciante ou Visitante apenas pode corresponder um registo. Podemos cancelar e bloquear definitivamente qualquer registo subsequente efetuado pelo mesmo Anunciante ou Visitante, sendo o Anunciante ou Visitante notificado para o efeito</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_desc}>O disposto no número anterior não é aplicável nas seguintes situações:</span>
                         <ol className={styles.tos_inner_ol} type="a">
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>O Utilizador/Trabalhador utiliza diferentes contas no âmbito de ser utilizador ou trabalhador/profissional.</span>
+                                <span className={styles.tos_desc}>O Utilizador/Profissional utiliza diferentes contas no âmbito de ser utilizador ou profissional.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
                                 <span className={styles.tos_desc}>É necessário configurar outra conta devido à falta de possibilidade de acesso à conta (esquecimento da senha).</span>
                             </li>
                         </ol>
-                        <span className={styles.tos_desc}>No entanto, todas as exclusões a este respeito serão verificadas e analisadas em detalhes pelo TAREFAS, que tem o direito de suspender a Conta pelo tempo de verificação ou excluir as Contas na ausência de confirmação das circunstâncias que justificam a aplicação das exclusões acima. As exclusões acima não serão aplicáveis se forem utilizadas pelo Utilizador/Trabalhador única e exclusivamente com o propósito de evitar o pagamento de contas pelos serviços prestados no Website.</span>
+                        <span className={styles.tos_desc}>No entanto, todas as exclusões a este respeito serão verificadas e analisadas em detalhes pelo TAREFAS, que tem o direito de suspender a Conta pelo tempo de verificação ou excluir as Contas na ausência de confirmação das circunstâncias que justificam a aplicação das exclusões acima. As exclusões acima não serão aplicáveis se forem utilizadas pelo Utilizador/Profissional única e exclusivamente com o propósito de evitar o pagamento de contas pelos serviços prestados no Website.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_desc}>O registo da conta requer:</span>
@@ -282,34 +277,34 @@ const Tos = () => {
                         </ol>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Após o registo, o Anunciante ou Utilizador/Trabalhador passa a ser titular de um código de acesso à sua conta (login e password), sendo a conta do Anunciante ou Visitante pessoal e intransmissível. O titular da conta é o único responsável pelas ações efetuadas com o seu registo</span>
+                        <span className={styles.tos_desc}>Após o registo, o Anunciante ou Utilizador/Profissional passa a ser titular de um código de acesso à sua conta (login e password), sendo a conta do Anunciante ou Visitante pessoal e intransmissível. O titular da conta é o único responsável pelas ações efetuadas com o seu registo</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Uma vez preenchidos os dados requeridos para o Registo, será enviada uma confirmação de Registo de Conta para o endereço de correio eletrónico indicado pelo Utilizador/Trabalhador, com uma ligação para ativar a Conta e os Termos e Condições em vigor. O Registo é concluído quando o Utilizador/Trabalhador ativa a sua Conta. Neste momento, é concluído um contrato de serviços de Conta. Se a ativação não for realizada no prazo de 30 Dias após a receção do correio eletrónico de confirmação do Registo de Conta, a ligação de ativação expira e a Conta não é ativada. O utilizador só poderá voltar a registar-se utilizando o mesmo endereço de correio eletrónico contactando o TAREFAS: ajuda.tarefas@gmail.com.</span>
+                        <span className={styles.tos_desc}>Uma vez preenchidos os dados requeridos para o Registo, será enviada uma confirmação de Registo de Conta para o endereço de correio eletrónico indicado pelo Utilizador/Profissional, com uma ligação para ativar a Conta e os Termos e Condições em vigor. O Registo é concluído quando o Utilizador/Profissional ativa a sua Conta. Neste momento, é concluído um contrato de serviços de Conta. Se a ativação não for realizada no prazo de 30 Dias após a receção do correio eletrónico de confirmação do Registo de Conta, a ligação de ativação expira e a Conta não é ativada. O utilizador só poderá voltar a registar-se utilizando o mesmo endereço de correio eletrónico contactando o TAREFAS: pt.tarefas@gmail.com.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O Utilizador/Trabalhador declara que os dados fornecidos durante o processo de Registo e a utilização do Serviço são verdadeiros, corretos e atualizados e que está autorizado a utilizar tais dados. O utilizador compromete-se a atualizar os dados se os mesmos sofrerem alterações.</span>
+                        <span className={styles.tos_desc}>O Utilizador/Profissional declara que os dados fornecidos durante o processo de Registo e a utilização do Serviço são verdadeiros, corretos e atualizados e que está autorizado a utilizar tais dados. O utilizador compromete-se a atualizar os dados se os mesmos sofrerem alterações.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Uma pessoa que atue no Website por ou em nome de um Utilizador/Trabalhador, que seja uma pessoa coletiva ou uma entidade organizacional sem personalidade jurídica, à qual tenha sido conferida capacidade jurídica pela lei, declara que está devidamente autorizada a agir e executar todas as atividades no Website por conta e em nome do Utilizador/Trabalhador.</span>
+                        <span className={styles.tos_desc}>Uma pessoa que atue no Website por ou em nome de um Utilizador/Profissional, que seja uma pessoa coletiva ou uma entidade organizacional sem personalidade jurídica, à qual tenha sido conferida capacidade jurídica pela lei, declara que está devidamente autorizada a agir e executar todas as atividades no Website por conta e em nome do Utilizador/Profissional.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O utilizador compromete-se a manter os dados de acesso à conta em segredo e a protegê-los contra o acesso por terceiros não autorizados. O Utilizador/Trabalhador deverá informar imediatamente o TAREFAS caso tome conhecimento de qualquer acesso não autorizado à sua Conta por terceiros e, se possível, deverá alterá-la imediatamente.</span>
+                        <span className={styles.tos_desc}>O utilizador compromete-se a manter os dados de acesso à conta em segredo e a protegê-los contra o acesso por terceiros não autorizados. O Utilizador/Profissional deverá informar imediatamente o TAREFAS caso tome conhecimento de qualquer acesso não autorizado à sua Conta por terceiros e, se possível, deverá alterá-la imediatamente.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_desc}>O contrato de serviços de Conta é concluído por um período de tempo indefinido após a ativação da Conta:</span>
                         <ol className={styles.tos_inner_ol} type="a">
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>o direito de eliminar a conta não afetará o direito do Utilizador/Trabalhador de se retratar ou rescindir o contrato, nos termos previstos da lei e para efeitos destes Termos e Condições.</span>
+                                <span className={styles.tos_desc}>o direito de eliminar a conta não afetará o direito do Utilizador/Profissional de se retratar ou rescindir o contrato, nos termos previstos da lei e para efeitos destes Termos e Condições.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>É possível eliminar uma conta: (i) selecionando a opção correspondente nas opções de Conta, (ii) enviando uma declaração de resolução para um endereço de correio eletrónico: ajuda.tarefas@gmail.com.</span>
+                                <span className={styles.tos_desc}>É possível eliminar uma conta: (i) selecionando a opção correspondente nas opções de Conta, (ii) enviando uma declaração de resolução para um endereço de correio eletrónico: pt.tarefas@gmail.com.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>depois de o Utilizador/Trabalhador eliminar a Conta, os restantes acordos entre o TAREFAS e o Utilizador/Trabalhador respeitantes aos serviços prestados no Website expirarão.</span>
+                                <span className={styles.tos_desc}>depois de o Utilizador/Profissional eliminar a Conta, os restantes acordos entre o TAREFAS e o Utilizador/Profissional respeitantes aos serviços prestados no Website expirarão.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>A rescisão do contrato de Conta tornar-se-á efetiva no momento da sua execução (para o futuro), o que significa que os pagamentos realizados pelo Utilizador/Trabalhador pelos serviços prestados não serão reembolsáveis. O TAREFAS também não é obrigado a reembolsar o equivalente aos valores não utilizados e quantias já pagas para utilização dos Serviços previamente contratados (p.ex. colocação de destaques).</span>
+                                <span className={styles.tos_desc}>A rescisão do contrato de Conta tornar-se-á efetiva no momento da sua execução (para o futuro), o que significa que os pagamentos realizados pelo Utilizador/Profissional pelos serviços prestados não serão reembolsáveis. O TAREFAS também não é obrigado a reembolsar o equivalente aos valores não utilizados e quantias já pagas para utilização dos Serviços previamente contratados (p.ex. colocação de destaques).</span>
                             </li>
                             <li className={styles.tos_inner_li}>
                                 <span className={styles.tos_desc}>a leitura dos Termos e Condições e dos respetivos anexos e a aceitação das respetivas provisões.</span>
@@ -317,10 +312,10 @@ const Tos = () => {
                         </ol>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O TAREFAS poderá rescindir o contrato com o Utilizador/Trabalhador, se este:</span>
+                        <span className={styles.tos_desc}>O TAREFAS poderá rescindir o contrato com o Utilizador/Profissional, se este:</span>
                         <ol className={styles.tos_inner_ol} type="a">
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>não tiver iniciado sessão na Conta durante mais de 24 meses. Neste caso, o Utilizador/Trabalhador deixará de poder utilizar a Conta eliminada. As informações sobre a rescisão do contrato serão enviadas ao Utilizador/Trabalhador com uma antecedência mínima de 30 Dias, para o endereço de correio eletrónico indicado durante o Registo. O Utilizador/Trabalhador poderá expressar a sua vontade de continuar a utilizar a Conta utilizando a funcionalidade disponibilizada para o efeito, devendo o Utilizador/Trabalhador iniciar sessão na Conta. O direito do TAREFAS de rescindir o contrato em conformidade com esta provisão não limita o direito do Utilizador/Trabalhador de voltar a registar-se no Serviço. Contudo, o TAREFAS não garante que o nome de Utilizador/Trabalhador existente, associado à Conta anterior, estará disponível para utilização no novo registo.</span>
+                                <span className={styles.tos_desc}>não tiver iniciado sessão na Conta durante mais de 24 meses. Neste caso, o Utilizador/Profissional deixará de poder utilizar a Conta eliminada. As informações sobre a rescisão do contrato serão enviadas ao Utilizador/Profissional com uma antecedência mínima de 30 Dias, para o endereço de correio eletrónico indicado durante o Registo. O Utilizador/Profissional poderá expressar a sua vontade de continuar a utilizar a Conta utilizando a funcionalidade disponibilizada para o efeito, devendo o Utilizador/Profissional iniciar sessão na Conta. O direito do TAREFAS de rescindir o contrato em conformidade com esta provisão não limita o direito do Utilizador/Profissional de voltar a registar-se no Serviço. Contudo, o TAREFAS não garante que o nome de Utilizador/Profissional existente, associado à Conta anterior, estará disponível para utilização no novo registo.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
                                 <span className={styles.tos_desc}>apesar de ser notificado pelo TAREFAS para que ponha fim a alguns atos ou omissões que violem as provisões dos Termos e Condições ou as provisões da lei geralmente aplicável, continuar a agir como lhe é advertido na notificação.</span>
@@ -328,13 +323,13 @@ const Tos = () => {
                         </ol>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O TAREFAS pode ainda, a qualquer momento, cancelar ou eliminar, de forma temporária ou permanente, o registo do Utilizador/Trabalhador ou Trabalhador se este: (i) não cumprir os presentes Termos e Condições; (ii) ceder a sua posição contratual a terceiros sem a nossa prévia autorização por escrito; e/ou (iii) atuar de forma a acarretar prejuízos para nós, restantes Anunciantes e/ou Visitantes do Site ou da Aplicação. Contudo, qualquer alteração será a título definitivo será comunicada num suporte duradouro aos utilizadores dentro de um prazo razoável de pré-aviso não inferior a 30 Dias</span>
+                        <span className={styles.tos_desc}>O TAREFAS pode ainda, a qualquer momento, cancelar ou eliminar, de forma temporária ou permanente, o registo do Utilizador/Profissional ou Profissional se este: (i) não cumprir os presentes Termos e Condições; (ii) ceder a sua posição contratual a terceiros sem a nossa prévia autorização por escrito; e/ou (iii) atuar de forma a acarretar prejuízos para nós, restantes Anunciantes e/ou Visitantes do Site ou da Aplicação. Contudo, qualquer alteração será a título definitivo será comunicada num suporte duradouro aos utilizadores dentro de um prazo razoável de pré-aviso não inferior a 30 Dias</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Para assegurar o funcionamento adequado do Serviço, proteger e garantir a segurança das pessoas que o utilizam, o TAREFAS reserva-se o direito de levar a cabo uma verificação adicional da validade e veracidade dos dados fornecidos pelo Utilizador/Trabalhador e de solicitar ao Utilizador/Trabalhador que confirme a sua identidade, as informações contidas no Anúncio ou as informações relacionadas com a transação realizada, da forma determinada pelo TAREFAS</span>
+                        <span className={styles.tos_desc}>Para assegurar o funcionamento adequado do Serviço, proteger e garantir a segurança das pessoas que o utilizam, o TAREFAS reserva-se o direito de levar a cabo uma verificação adicional da validade e veracidade dos dados fornecidos pelo Utilizador/Profissional e de solicitar ao Utilizador/Profissional que confirme a sua identidade, as informações contidas no Anúncio ou as informações relacionadas com a transação realizada, da forma determinada pelo TAREFAS</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Os perfis associados a contas de Utilizador/Trabalhador que sejam ilegais ou violem as provisões do Termos e Condições, em particular: duplicadas, consideradas ofensivos, com conteúdo pornográfico ou erótico, conteúdo que possa ser interpretado como promoção de atividades sexuais ou eróticas em troca de dinheiro, que constituam uma tentativa de fraude ou violem qualquer direito de propriedade intelectual (copyright) serão removidos.</span>
+                        <span className={styles.tos_desc}>Os perfis associados a contas de Utilizador/Profissional que sejam ilegais ou violem as provisões do Termos e Condições, em particular: duplicadas, consideradas ofensivos, com conteúdo pornográfico ou erótico, conteúdo que possa ser interpretado como promoção de atividades sexuais ou eróticas em troca de dinheiro, que constituam uma tentativa de fraude ou violem qualquer direito de propriedade intelectual (copyright) serão removidos.</span>
                     </li>
                 </ol>
 
@@ -345,7 +340,7 @@ const Tos = () => {
                         <span className={styles.tos_desc}>O TAREFAS permite ao Utilizador publicar o Anúncio no Website. A Publicação, pelo Utilizador, de um Anúncio no Website tem lugar após o preenchimento do formulário adequado e sob a condição de que o SMS seja verificado. A verificação por SMS é levada a cabo uma vez e consiste no envio de um código de verificação para o número de telefone indicado pelo Utilizador, código esse que o Utilizador introduz seguidamente no formulário, onde um número de telefone é utilizado para a verificação de e-mail e SMS, em uma conta. A verificação por SMS pode ser repetida no âmbito de procedimentos de segurança internos.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Um Anúncio publicado pelo Utilizador no Serviço está parcialmente disponível para todos os utilizadores e visitantes do Website. Detalhes de localização, e-mail e contacto telefónico apenas estarão disponíveis a contas de trabalhador verificadas e com subscrição activa, apen Com o Anúncio, também será disponibilizado um formulário para permitir aos Trabalhadores contactar o anunciante e enviar-lhe uma mensagem. O respetivo número de telefone também será disponibilizado ao trabalhador verificado que visualiza o Anúncio.</span>
+                        <span className={styles.tos_desc}>Um Anúncio publicado pelo Utilizador no Serviço está parcialmente disponível para todos os utilizadores e visitantes do Website. Detalhes de localização, e-mail e contacto telefónico apenas estarão disponíveis a contas de profissional verificadas e com subscrição activa, apen Com o Anúncio, também será disponibilizado um formulário para permitir aos Profissionais contactar o anunciante e enviar-lhe uma mensagem. O respetivo número de telefone também será disponibilizado ao profissional verificado que visualiza o Anúncio.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_desc}>No momento da publicação do Anúncio, o Utilizador concede ao TAREFAS uma licença não exclusiva, territorialmente ilimitada e gratuita, para registar, multiplicar e distribuir a totalidade ou parte do conteúdo dos Anúncios divulgados no Website, bem como aos parceiros do TAREFAS através dos quais a promoção do Serviço seja levada a cabo e, também, em qualquer local através da Internet, incluindo motores de busca (como, por exemplo, o Google) e redes sociais (como, por exemplo, o Facebook). A concessão de uma licença é necessária para uma utilização completa do Serviço. Devido à natureza específica da Internet, o TAREFAS não tem um total controlo sobre a distribuição dos conteúdos publicados ou transmitidos utilizando as funcionalidades do Serviço para outros Utilizadores e não assume qualquer responsabilidade nesta matéria por terceiros, em particular no caso da cópia e distribuição de Anúncios por tais pessoas em Websites e portais não relacionados com o presente Serviço.</span>
@@ -406,22 +401,22 @@ const Tos = () => {
                 <li className={styles.tos_main_li}>Pagamentos</li>
                 <ol className={styles.tos_ol}>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O Trabalhador será informado de forma visível no Website acerca do preço atual dos planos de Subscrição existentes e selecionados em cada momento. Todos os preços apresentados no Website ou nas tabelas de preços são preços finais.</span>
+                        <span className={styles.tos_desc}>O Profissional será informado de forma visível no Website acerca do preço atual dos planos de Subscrição existentes e selecionados em cada momento. Todos os preços apresentados no Website ou nas tabelas de preços são preços finais.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_desc}>Os pagamentos da subscrição serão realizados através de cartão de crédito/cartão bancário mediado pelo serviço Stripe.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O Trabalhador subscrito a um plano de Subscrição poderá alterar o plano se assim desejar, com a cobrança do novo plano a ser feito no final do termo do plano antigo (ou seja, no início do plano novo).</span>
+                        <span className={styles.tos_desc}>O Profissional subscrito a um plano de Subscrição poderá alterar o plano se assim desejar, com a cobrança do novo plano a ser feito no final do termo do plano antigo (ou seja, no início do plano novo).</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O Trabalhador subscrito a um plano de Subscrição poderá cancelar a subscrição, ficando subscrito até ao final do termo do plano que acabára de cancelar.</span>
+                        <span className={styles.tos_desc}>O Profissional subscrito a um plano de Subscrição poderá cancelar a subscrição, ficando subscrito até ao final do termo do plano que acabára de cancelar.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Em caso da conta ser apagada pelo Trabalhador, não será reembolsado o valor cobrado pela subscrição selecionado. Esta subscrição será cancelada no final do termo do plano de subscrição selecionada.</span>
+                        <span className={styles.tos_desc}>Em caso da conta ser apagada pelo Profissional, não será reembolsado o valor cobrado pela subscrição selecionado. Esta subscrição será cancelada no final do termo do plano de subscrição selecionada.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Em caso da conta ser apagada pelo TAREFAS, em consequência do Trabalhador infringir qualquer conduta descrita nos Termos e Condições, não será reembolsado o valor cobrado pela subscrição selecionada. Esta subscrição será cancelada no final do termo do plano de sbscrição selecionado.</span>
+                        <span className={styles.tos_desc}>Em caso da conta ser apagada pelo TAREFAS, em consequência do Profissional infringir qualquer conduta descrita nos Termos e Condições, não será reembolsado o valor cobrado pela subscrição selecionada. Esta subscrição será cancelada no final do termo do plano de sbscrição selecionado.</span>
                     </li>
                 </ol>
 
@@ -440,7 +435,7 @@ const Tos = () => {
                         <span className={styles.tos_desc}>A lei aplicável ao Website, à Aplicação e aos presentes Termos e Condições é a lei portuguesa</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O Utilizador/Trabalhador poderá entrar em contato com o TAREFAS, por escrito, sobre os Serviços através do e-mail ajuda.tarefas@gmail.com:</span>
+                        <span className={styles.tos_desc}>O Utilizador/Profissional poderá entrar em contato com o TAREFAS, por escrito, sobre os Serviços através do e-mail pt.tarefas@gmail.com:</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_desc}>Os tribunais portugueses são exclusivamente competentes para dirimir quaisquer litígios relacionados com a utilização do Website e da Aplicação e com os presentes Termos e Condições.</span>
@@ -463,7 +458,7 @@ const Tos = () => {
                         <span className={styles.tos_desc}>O TAREFAS reserva-se o direito de alterar os Termos e Condições, quando se verifique uma das seguintes situações:</span>
                         <ol className={styles.tos_inner_ol} type="a">
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>a necessidade de melhorar a segurança do Utilizador/Trabalhador.</span>
+                                <span className={styles.tos_desc}>a necessidade de melhorar a segurança do Utilizador/Profissional.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
                                 <span className={styles.tos_desc}>a necessidade de melhorar o funcionamento do Website, sendo que alterações efetuadas nesta base não resultarão num aumento ou introdução de taxas adicionais em relação às taxas já cobradas (pagas) e permitirão uma maior utilização do Website.</span>
@@ -486,7 +481,7 @@ const Tos = () => {
                         </ol>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>O Utilizador/Trabalhador será informado de cada alteração através da publicação de informação no Website e por via eletrónica.</span>
+                        <span className={styles.tos_desc}>O Utilizador/Profissional será informado de cada alteração através da publicação de informação no Website e por via eletrónica.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_desc}>As alterações entram em vigor na data indicada pelo TAREFAS, num prazo não inferior a 15 Dias a contar da data de notificação da alteração aos Termos e Condições, salvo disposição em contrário prevista na legislação aplicável.</span>
@@ -495,10 +490,10 @@ const Tos = () => {
                         <span className={styles.tos_desc}>Aplicar-se-ão as provisões atuais destes Termos e Condições às subscrições que se encontrem ativas antes da data de entrada em vigor dos novos Termos e Condições.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Para efeitos de execução do Serviço, o TAREFAS reserva-se o direito de introduzir novos serviços e funcionalidades, que podem ser precedidos de testes de produtos, sem prejuízo dos direitos adquiridos dos Utilizadores/Trabalhadores.</span>
+                        <span className={styles.tos_desc}>Para efeitos de execução do Serviço, o TAREFAS reserva-se o direito de introduzir novos serviços e funcionalidades, que podem ser precedidos de testes de produtos, sem prejuízo dos direitos adquiridos dos Utilizadores/Profissionais.</span>
                     </li>
                     <li className={styles.tos_li}>
-                        <span className={styles.tos_desc}>Salvo estipulação diferente pela lei, a lei aplicável aos contratos entre o Utilizador/Trabalhador e o TAREFAS será a lei portuguesa. A escolha da lei portuguesa não priva o Consumidor da proteção que lhe é proporcionada ao abrigo de provisões que não possam ser derrogadas contratualmente em virtude da lei aplicável em caso de ausência de escolha.</span>
+                        <span className={styles.tos_desc}>Salvo estipulação diferente pela lei, a lei aplicável aos contratos entre o Utilizador/Profissional e o TAREFAS será a lei portuguesa. A escolha da lei portuguesa não priva o Consumidor da proteção que lhe é proporcionada ao abrigo de provisões que não possam ser derrogadas contratualmente em virtude da lei aplicável em caso de ausência de escolha.</span>
                     </li>
                     <li className={styles.tos_li}>
                         <span className={styles.tos_desc}>O não exercício, ou o exercício tardio ou parcial, de qualquer direito que nos assista ao abrigo destes Termos e Condições, em nenhum caso poderá significar a renúncia a esse direito, ou acarretar a sua caducidade, pelo que o mesmo se manterá válido e eficaz, não obstante o seu não exercício.</span>

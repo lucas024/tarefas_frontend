@@ -134,13 +134,13 @@ const Publications = (props) => {
                             <div className={styles.item_right}>
                                 <div className={styles.top_left_indicator_more}>
                                     <div className={styles.item_flex_indicator} style={{backgroundColor:getTypeColor(res.type)}}>
-                                        <span className={styles.item_indicator}></span>
+                                        {/* <span className={styles.item_indicator}></span> */}
                                         <span className={styles.item_type}>
                                             {
-                                                res.type===1?"Activo":
-                                                res.type===2?"Incorreto":
-                                                res.type===3?"Concluído":
-                                                    "Processar"
+                                                res.type===1?"Activa":
+                                                res.type===2?"Incorreta":
+                                                res.type===3?"Concluída":
+                                                    "A Processar"
                                             }
                                         </span>
                                     </div>

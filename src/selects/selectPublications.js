@@ -162,7 +162,7 @@ const SelectPublications = (props) => {
                 :
                 <span className={styles.placeholder}>
                     <PersonIcon className={styles.placeholder_icon}/>
-                    Trabalhador
+                    Profissional
                 </span>
             }
         />

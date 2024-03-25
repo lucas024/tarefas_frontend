@@ -37,18 +37,19 @@ const AdminTrabalhosA = (props) => {
         return "#FFFFFF"
     }
 
-    const acceptHandler = (e, id) => {
+    const interromperHandler = (e, id) => {
         e.stopPropagation()
         let reservationsAux = [...reservations]
         for(let el of reservationsAux)
         {
             if(el._id === id)
             {
-                el.type=1
+                console.log('teste')
+                el.type=2
                 break
             }
         }
-        axios.post(`${props.api_url}/reservations/update_reservation_type`, {id:id, type:1})
+        axios.post(`${props.api_url}/reservations/update_reservation_type`, {id:id, type:2})
         setReservations(reservationsAux)
     }
 
@@ -83,7 +84,7 @@ const AdminTrabalhosA = (props) => {
                                 </span>
                             </div>
                         </div>
-                        <span className={styles.item_middle_stop} onClick={e => acceptHandler(e, res._id)}>
+                        <span className={styles.item_middle_stop} onClick={e => interromperHandler(e, res._id)}>
                             INTERROMPER
                         </span>
                         <div className={styles.item_right}>

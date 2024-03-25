@@ -15,7 +15,7 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from './../transitions/sessao';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
-import {regioes, profissoes} from '../general/util'
+import {regioes, profissoes, profissoesGrouped} from '../general/util'
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import EmailVerified from '@mui/icons-material/MarkEmailRead';
@@ -167,7 +167,7 @@ const Personal = (props) => {
     }
 
     const mapTrabalhos = () => {
-        return profissoes.map((trab, i) => {
+        return profissoesGrouped?.map((trab, i) => {
             return (
                 <div key={i} style={{cursor:editBottom?"pointer":"default"}} className={styles.container} onClick={() => setCheckedProf(trab.value)}>
                     <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
@@ -450,7 +450,7 @@ const Personal = (props) => {
                     <div className={styles.personal_title}>
                     {
                         user?.type===1?
-                        <span className={styles.top_title}>Perfil Trabalhador</span>
+                        <span className={styles.top_title}>Perfil Profissional</span>
                         :
                         <span className={styles.top_title}>Perfil</span>
                     }
@@ -483,7 +483,7 @@ const Personal = (props) => {
                     classNames="transition"
                     unmountOnExit
                     >
-                    <Sessao text={"Detalhes trabalhador atualizados com sucesso!"}/>
+                    <Sessao text={"Detalhes profissional atualizados com sucesso!"}/>
                 </CSSTransition>
                 {
                     user?.type===1?
@@ -802,7 +802,7 @@ const Personal = (props) => {
                         <div>
                             <div className={styles.title_flex}>
                                 <div>
-                                    <span className={styles.personal_subtitle}>Detalhes Trabalhador</span>
+                                    <span className={styles.personal_subtitle}>Detalhes Profissional</span>
                                     <div className={styles.radio_div}>
                                         <SelectWorker 
                                             editBottom={editBottom} 

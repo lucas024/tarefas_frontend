@@ -40,6 +40,16 @@ const slice = createSlice({
     user_update_chats: (state, action) => {
       state.user.chats = action.payload
     },
+    user_update_single_read: (state, action) => {
+      if(action.payload.type===1)
+      {
+        state.user.chats[action.payload.index].worker_read = true
+      }
+      else
+      {
+        state.user.chats[action.payload.index].user_read = true
+      }
+    },
     user_update_field: (state, action) => {
       console.log(action.p)
       for(let el of action.payload)
@@ -86,6 +96,7 @@ export const {
     user_update_phone, 
     set_socket, 
     user_update_chats,
+    user_update_single_read,
     user_update_field,
     search_save,
     search_scroll_save,

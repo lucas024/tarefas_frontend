@@ -450,7 +450,7 @@
         height: 135px;
     }
     .search_clear{
-        display: block;
+        display: none;
     }
     .search_filter_div{
         flex-direction: column;

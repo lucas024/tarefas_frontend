@@ -248,7 +248,7 @@ const AuthWorker = (props) => {
         {
             res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} })
             if(res.data){
-                setEmailWrong('Este e-mail já se encontra registado a uma conta de trabalhador.')
+                setEmailWrong('Este e-mail já se encontra registado a uma conta de profissional.')
                 setLoading(false)
             }
             else{
@@ -317,7 +317,7 @@ const AuthWorker = (props) => {
         let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: emailLogin} })
         setEmailLoginWrong(false)
         if(res.data != null){
-            setLoginError("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Faz login na Àrea Utlizador.")
+            setLoginError("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Faz login na Área Utlizador.")
             setLoading(false)
         }
         else if(validator.isEmail(emailLogin)){
@@ -417,7 +417,7 @@ const AuthWorker = (props) => {
                                 setEmailWrong('Este e-mail já se encontra registado a uma conta de utilizador.')
                             }
                             else{
-                                setEmailWrong('Este e-mail já se encontra registado a uma conta de trabalhador.')
+                                setEmailWrong('Este e-mail já se encontra registado a uma conta de profissional.')
                             }
                             setLoading(false)
                             setPassword(null)
@@ -651,7 +651,7 @@ const AuthWorker = (props) => {
                     classNames="transition"
                     unmountOnExit
                     >
-                    <Sessao text={"Detalhes trabalhador atualizados com sucesso!"}/>
+                    <Sessao text={"Detalhes profissional atualizados com sucesso!"}/>
                 </CSSTransition>
             {
                 tosBanner?
@@ -666,6 +666,7 @@ const AuthWorker = (props) => {
                 <div ref={recaptchaWrapperRef}>
                     <div id='recaptcha-container' className={styles.recaptcha_container}></div>
                 </div>
+                <div className={styles.auth_main_worker_frontdrop}></div>
                 <div className={styles.area} style={{backgroundColor:selectedAuth===2?'transparent':'#fff'}}>
                     {
                         selectedAuth!==2?
@@ -732,10 +733,10 @@ const AuthWorker = (props) => {
                             </div>
                             <div className={!loading?styles.login_button_worker:styles.login_button_disabled} onClick={() => {
                                 if(!loading) loginHandler()}}>
-                                <p className={styles.login_text}>LOGIN TRABALHADOR</p>
+                                <p className={styles.login_text}>LOGIN PROFISSIONAL</p>
                             </div>
                             <div className={styles.bottom_switch}>
-                                <span className={styles.bottom_switch_text}>Não tens conta de trabalhador? </span>
+                                <span className={styles.bottom_switch_text}>Não tens conta de profissional? </span>
                                 <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Registar</span>
                             </div>
                         </div>
@@ -749,7 +750,7 @@ const AuthWorker = (props) => {
                             <div className={styles.area_bot_wrapper} style={{backgroundColor:"#FF785A30"}}>
                                 {
                                     registarTab<=2?
-                                    <p className={styles.area_bot_title} style={{backgroundColor:"#FF785A"}}>Criar conta de trabalhador</p>
+                                    <p className={styles.area_bot_title} style={{backgroundColor:"#FF785A"}}>Criar conta de profissional</p>
                                     :
                                     <div>
                                         <p className={styles.area_bot_title} style={{backgroundColor:"#FF785A"}}>Preencher detalhes</p>
@@ -948,10 +949,19 @@ const AuthWorker = (props) => {
                         </div>
                         :null
                 }
+                <div className={styles.split_wrapper}>
+                    <span className={styles.split}/>
+                    <div className={styles.split_text_wrapper}>
+                        <div className={styles.split_text_frontdrop}>
+                        <span className={styles.split_text}>OU</span>
+                        </div>
+                    </div>
+                </div>
                 <div className={styles.button_area}>
-                    <span className={styles.user_button} onClick={() => navigate('/authentication?type=1')}>Àrea Utilizador</span>
+                    <span className={styles.user_button} onClick={() => navigate('/authentication?type=1')}>Área Utilizador</span>
                 </div>
             </div>
+            
         </div>
     )
 }

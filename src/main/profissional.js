@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react'
-import styles from './trabalhador.module.css'
+import styles from './profissional.module.css'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import FaceIcon from '@mui/icons-material/Face';
@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux'
 
 const ObjectID = require("bson-objectid");
 
-const Trabalhador = props => {
+const Profissional = props => {
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
 
@@ -189,7 +189,7 @@ const Trabalhador = props => {
 
     return(
         <div className={styles.worker}>
-            <p className={styles.reservar_upper_title}>TRABALHADOR</p>
+            <p className={styles.reservar_upper_title}>PROFISSIONAL</p>
             <div className={styles.normal_back}>
                 <Link className={styles.normal_back_left} 
                     to={-1}
@@ -198,12 +198,12 @@ const Trabalhador = props => {
                     <span className={styles.normal_back_left_text}>VOLTAR</span>
                 </Link>
                 <div className={styles.normal_back_right}>
-                    <span className={styles.normal_back_right_dir} onClick={() => navigate(-1)}>Trabalhadores</span>
+                    <span className={styles.normal_back_right_dir} onClick={() => navigate(-1)}>Profissionais</span>
                     <div className={styles.normal_back_right_sep_wrapper}>
                         <div className={styles.normal_back_right_sep}>|</div>
                     </div>
                     <span className={styles.normal_back_right_dir} onClick={() => navigate({
-                    pathname: '/main/publications/trabalhadores',
+                    pathname: '/main/publications/profissionais',
                     search: `?page=${page}`,
                     state: {from_page: true}
                     })}>Página {page}</span>
@@ -220,7 +220,7 @@ const Trabalhador = props => {
                         }
                         <div className={styles.left_div_wrapper}>
                             <div className={styles.left_div}>
-                                <div style={{display:'flex'}}>
+                                <div className={styles.left_div_inner}>
                                     <div className={styles.left_name_wrapper}>
                                         <p className={styles.left_name}>{worker.name}</p>
                                     </div>
@@ -366,4 +366,4 @@ const Trabalhador = props => {
     )
 }
 
-export default Trabalhador
+export default Profissional

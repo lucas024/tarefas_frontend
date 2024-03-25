@@ -140,15 +140,15 @@ const Trabalho = (props) => {
                 }
                 setImages(arr)
                 let listaTrabalhosVistos = JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))
-                if(listaTrabalhosVistos?.length>0 && !listaTrabalhosVistos.includes(res.data._id))
+                if(listaTrabalhosVistos?.length>0 && !listaTrabalhosVistos.includes(res.data?._id))
                 {
-                    listaTrabalhosVistos.push(res.data._id)
+                    listaTrabalhosVistos.push(res.data?._id)
                     window.localStorage.setItem('listaTrabalhosVistos', JSON.stringify(listaTrabalhosVistos))
                 }
                 else if(listaTrabalhosVistos?.length===0 || !listaTrabalhosVistos)
                 {
                     let arr = []
-                    arr.push(res.data._id)
+                    arr.push(res.data?._id)
                     window.localStorage.setItem('listaTrabalhosVistos', JSON.stringify(arr))
                 }
             }
@@ -185,7 +185,7 @@ const Trabalho = (props) => {
             {
                 for(let chat of user?.chats)
                 {
-                    if(chat.reservation_id === reservation._id)
+                    if(chat.reservation_id === reservation?._id)
                     {
                         setNoRepeatedChats(true)
                         setChatId(chat.chat_id)
@@ -506,11 +506,7 @@ const Trabalho = (props) => {
                             reservation.type===2?
                             <div className={styles.wrong}>
                                 <span className={styles.wrong_text}>A tua tarefa encontra-se <span className={styles.wrong_text_special}>INCORRETA</span></span>
-                                <div className={styles.wrong_button_div} onClick={() => editPublicationHandler()}>
-                                    <EditIcon className={styles.drop_div_symbol}/>
-                                    <span className={styles.wrong_button}>EDITAR</span>
-                                </div>
-                                
+                                <p className={styles.wrong_text} style={{fontSize:'1rem'}}>Mais informações sobre o(s) erro(s) no chat de Suporte.</p>
                             </div>
                             
                             :null
@@ -522,13 +518,13 @@ const Trabalho = (props) => {
                                     userView?
                                     <div className={styles.top_left_indicator_more}>
                                         <div className={styles.item_flex_indicator} style={{backgroundColor:getTypeColor(reservation.type)}}>
-                                            <span className={styles.item_indicator}></span>
+                                            {/* <span className={styles.item_indicator}></span> */}
                                             <span className={styles.item_type}>
                                                 {
-                                                    reservation.type===1?"Activo":
-                                                    reservation.type===2?"Incorreto":
-                                                    reservation.type===3?"Concluído":
-                                                        "Processar"
+                                                    reservation.type===1?"Activa":
+                                                    reservation.type===2?"Incorreta":
+                                                    reservation.type===3?"Concluída":
+                                                        "A Processar"
                                                 }
                                             </span>
                                         </div>
@@ -617,7 +613,7 @@ const Trabalho = (props) => {
                                                 <img src={arrow} className={styles.market_arrow}/>
                                                 <div className={styles.market_background}>
                                                     <span className={styles.market_text}>Gostava de contacar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>?</span>
-                                                    <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                                                    <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Tornar-me Profissional</span>
                                                 </div>
                                             </div>
                                             :
@@ -761,7 +757,7 @@ const Trabalho = (props) => {
                                             <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"#161F28", textTransform:"capitalize", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>,</span>
                                             {
                                                 noAccountView?
-                                                <span className={styles.frontdrop_text}>crie uma conta de trabalhador</span>
+                                                <span className={styles.frontdrop_text}>crie uma conta de profissional</span>
                                                 :noneView?
                                                 <span className={styles.frontdrop_text}>complete o teu <span style={{color:"white"}}>perfil</span> e <span style={{color:"white"}}>subscrição</span>.</span>
                                                 :noSubView?
@@ -772,7 +768,7 @@ const Trabalho = (props) => {
                                             }
                                             {
                                                 noAccountView?
-                                                <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>Tornar-me Trabalhador</span>
+                                                <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>Tornar-me Profissional</span>
                                                 :noneView?
                                                 <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=personal')}>completar perfil</span>
                                                 :noSubView?

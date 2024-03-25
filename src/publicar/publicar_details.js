@@ -16,6 +16,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import SelectHome from '../selects/selectHome';
 
+
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
 dayjs.locale('pt')
@@ -28,63 +29,51 @@ const PublicarDetails = props => {
     const api_url = useSelector(state => {return state.api_url})
 
     const [address, setAddress] = useState('')
-    const [addressManual, setAddressManual] = useState('')
+    const [selectedAddress, setSelectedAddress] = useState('')
     const [addressOptions, setAddressOptions] = useState([])
     const [addressOptionsText, setAddressOptionsText] = useState([])
     const [optionIndex, setOptionIndex] = useState(null)
     const [loadingMore, setLoadingMore] = useState(null)
-    const [allowNow, setAllowNow] = useState(null)
-    const [allowLater, setAllowLater] = useState(false)
     const [openTing, setOpenTing] = useState(true)
-    // 0 = presencial, 1 = presencial, morada manual, 2 = online
-    const [manualSelected, setManualSelected] = useState(false)
 
-    const changeAddressText = val => {
+    useEffect(() => {
+        props.setDistrictHelper(null)
+        props.setLat(null)
+        props.setLng(null)
+        setSelectedAddress(null)
+
+        address.length>0&&setLoadingMore(true)
+
+        const delayDebounceFn = setTimeout(() => {
+            searchAddressText(address)
+        }, 1000)
+    
+        return () => clearTimeout(delayDebounceFn)
+      }, [address])
+
+
+
+    const searchAddressText = val => {
         const params = {
             q: val,
             format: 'json',
             country:'PT'
         }
 
-        props.setAddressParent(null)
-        setAddress(val)
         setOptionIndex(null)
         setOpenTing(true)
-        if(val.length>0)
-            setLoadingMore(true)
-        else setLoadingMore(false)
-        const queryString = new URLSearchParams(params).toString()
+
         if(val.length>0)
         {
-            if(allowNow===null || new Date() > allowNow){
-                console.log('triggering now')
-                axios.post(`${api_url}/fulltextsearch`, {search: val})
-                .then(result => {
-                    addressSearchHelper(result.data?.response?.docs)
-                })
-                var date = new Date()
-                date.setSeconds(date.getSeconds() + 3)
-                setAllowNow(date)
-                setAllowLater(true)
-            }
-            else if(allowLater===true){
-                console.log('going to trigger in', Date.parse(allowNow) - Date.now())
-                setTimeout(() => {
-                    axios.post(`${api_url}/fulltextsearch`, {search: address})
-                    .then(result => {
-                        addressSearchHelper(result.data?.response?.docs)
-                        console.log('triggered successfuly')
-                    })
-                }, [Date.parse(allowNow) - Date.now()])
-                setAllowLater(false)
-            }
+            console.log('triggering now')
+            axios.post(`${api_url}/fulltextsearch`, {search: val})
+            .then(result => {
+                addressSearchHelper(result.data?.response?.docs)
+                setLoadingMore(false)
+            })
         }
     }
-
-    const changeAddressTextManual = val => {
-        setAddressManual(val)
-        props.setAddressManual(val)
-    }
+    
 
     const addressSearchHelper = docs => {
         setAddressOptions(docs)
@@ -111,9 +100,8 @@ const PublicarDetails = props => {
         {
             if(el.value === index)
             {
-                setAddress(el.label)
+                setSelectedAddress(el.label)
                 props.setAddressParent(el.label)
-                console.log(el)
                 break
             }
         }
@@ -144,15 +132,9 @@ const PublicarDetails = props => {
         <div>
             <div className={styles.top} onClick={() => setOpenTing(false)}>
                 <div className={styles.helper_wrap}>
-                    {/* <span className={styles.helper_divider}>-</span> */}
                     <span className={styles.helper_text}>campo obrigatório</span>
                     <span className={styles.helper_asterisc}>*</span>
                 </div>
-                {/* <div className={styles.diff_right_title_container}>
-                    <span className={styles.diff_right_title}>
-                        Tipo de Tarefa<span className={styles.action}>*</span>
-                    </span>
-                </div> */}
                 <div className={styles.contact_area} onClick={() => props.divRef?.current?.scrollIntoView({ behavior: 'smooth' })}>
                 <div className={styles.diff_right_title_container}>
                     <span className={styles.diff_right_title}>
@@ -165,19 +147,13 @@ const PublicarDetails = props => {
                 <div className={styles.online_task_button}>
                         <div 
                             className={styles.online_task_button_side_wrapper}
-                            style={{backgroundColor:props.taskType!==2?"#0358e5":"#0358e580"}}
-                            onClick={() =>  {
-                                if(manualSelected)
-                                {
-                                    props.setTaskType(1)
-                                }
-                                else
-                                {
-                                    props.setTaskType(0)
-                                }
-                            }}>
+                            style={{backgroundColor:props.taskType!==2?"#0358e5":"#0358e580"}}>
                             <span style={{fontWeight:props.taskType!==2?500:400}}
-                                className={styles.online_task_button_side}>tarefa presencial</span>
+                                className={styles.online_task_button_side}
+                                onClick={() => {
+                                    props.setTaskType(0)
+                                }}
+                                >tarefa presencial</span>
                         </div>
                         <div 
                             className={styles.online_task_button_side_wrapper}
@@ -195,7 +171,7 @@ const PublicarDetails = props => {
                         :null
                     }
                     
-                {
+                    {
                         props.taskType!==2?
                         <div>
                             {
@@ -207,17 +183,14 @@ const PublicarDetails = props => {
                                                 placeholder='Pesquisar morada da tarefa...' 
                                                 type="text" 
                                                 autoComplete='off' 
-                                                value={address} 
-                                                onChange={val => changeAddressText(val.target.value)} className={styles.input_address}
+                                                value={selectedAddress||address} 
+                                                onChange={val => setAddress(val.target.value)&&props.setAddressParent(val.target.value)} 
+                                                className={styles.input_address}
                                                 style={{borderBottomColor:!props.wrongAddress&&optionIndex!==null?"#0358e5":""}}/>
                                             {
                                                 loadingMore&&openTing?
                                                 <div className={styles.input_address_bottom}>
                                                     <Loader loading={loadingMore} small={true}/>
-                                                </div>
-                                                :addressOptionsText.length===0&&optionIndex==null&&address.length>0&&openTing?
-                                                <div className={styles.input_address_bottom}>
-                                                    <span className={styles.input_address_bottom_none}>Sem resultados para a pesquisa.</span>
                                                 </div>
                                                 :null
                                             }
@@ -245,36 +218,7 @@ const PublicarDetails = props => {
                                     </div>
                                 </div>
                                 :
-                                <div className={styles.bot_address_flex}>
-                                    <div className={styles.bot_input_div_search} style={{flex:1}}>
-                                            <input 
-                                                placeholder='Morada manual' 
-                                                type="text" 
-                                                autoComplete='off' 
-                                                value={addressManual} 
-                                                onChange={val => changeAddressTextManual(val.target.value)} className={styles.input_address}
-                                                style={{fontWeight:500, borderBottomColor:!props.wrongAddress&&addressManual.length>10?"#0358e5":"", borderBottomLeftRadius:'5px', borderBottomRightRadius:'5px'}}/>
-                                        <span 
-                                            style={{borderColor:props.badAddress||props.wrongAddress?"red":!props.badAddress&&!props.wrongAddress&&optionIndex!==null?"#0358e5":"", borderBottomRightRadius:'5px'}}
-                                            className={styles.area_label_inverse}>
-                                                Morada Manual
-                                        <span className={styles.asterisc}>*</span></span>
-                                    </div>
-                                    <div className={styles.bot_input_div_search_select}>
-                                        <SelectHome 
-                                            publicar={true}
-                                            options={regioes}
-                                            option={props.district} 
-                                            changeOption={val => {
-                                                props.setDistrictHelper(val)}}
-                                            placeholder={'Região...'}/>
-                                        <span 
-                                            style={{borderColor:props.badAddress||props.wrongAddress?"red":!props.badAddress&&!props.wrongAddress&&optionIndex!==null?"#0358e5":"", borderBottomRightRadius:'5px', zIndex:0}}
-                                            className={styles.area_label_inverse}>
-                                                Região
-                                        <span className={styles.asterisc}>*</span></span>
-                                    </div>
-                                </div>
+                                null
                             }
                             
                             <div className={styles.address_flex}>
@@ -311,7 +255,7 @@ const PublicarDetails = props => {
                         null
                         
                     }
-                    {
+                    {/* {
                         props.taskType!==2?
                         <div style={{display:"flex"}}>
                             <div className={styles.address_help_wrapper}>
@@ -335,9 +279,9 @@ const PublicarDetails = props => {
                             </div>
                         </div>
                         :null
-                    }
+                    } */}
                 </div>
-                <div className={styles.diff_right_title_container} style={{marginTop:'60px'}}>
+                <div className={styles.diff_right_title_container_bottom}>
                     <span className={styles.diff_right_title}>
                         Detalhes de Contacto<span className={styles.action}>*</span>
                     </span>

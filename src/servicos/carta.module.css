@@ -86,7 +86,7 @@
     width: 100%; 
     max-width: 90%;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
     overflow: hidden;
     font-size: 0.8rem;
@@ -95,7 +95,7 @@
     text-align: left;
     color: var(--grey);
     align-self: flex-end;
-    max-height: 30px;
+    max-height: 60px;
     margin-left: 10px;
     margin-top: 10px;
 }
@@ -185,5 +185,10 @@
 @media (max-width: 1200px){
     .bottom_div_text{
         max-width: 430px;
+    }
+}
+@media (max-width: 768px){
+    .bottom{
+        max-width: 300px;
     }
 }

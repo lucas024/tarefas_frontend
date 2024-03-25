@@ -8,7 +8,6 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao';
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import {auth} from '../firebase/firebase'
-
 import SelectHome from '../selects/selectHome';
 import {profissoesGrouped, regioes, regioesOptions} from './util'
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -25,9 +24,11 @@ import Welcome from './welcome'
 import logo_text from '../assets/logo_text.png'
 import logo_text_worker from '../assets/logo_text_worker.png'
 import TosBanner from './tosBanner';
+import SuggestionBanner from './suggestionBanner';
+
 
 const firstOptions = [
-    { value: 'trabalhadores', label: 'Trabalhadores' },
+    { value: 'profissionais', label: 'Profissionais' },
     { value: 'trabalhos', label: 'Tarefas' },
 ]
 
@@ -38,13 +39,14 @@ const Home = (props) => {
 
     const [workerBanner, setWorkerBanner] = useState(false)
     const [tosBanner, setTosBanner] = useState(false)
+    const [suggestionBanner, setSuggestionBanner] = useState(false)
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
     const [loginPopup, setLoginPopup] = useState(false)
     const [registerPopup, setRegisterPopup] = useState(false)
     const [loaded, setLoaded] = useState(false)
 
-    const [first, setFirst] = useState({ value: 'trabalhadores', label: 'Trabalhadores' })
+    const [first, setFirst] = useState({ value: 'profissionais', label: 'Profissionais' })
     const [second, setSecond] = useState(null)
     const [third, setThird] = useState(null)
 
@@ -197,21 +199,30 @@ const Home = (props) => {
                     cancel={() => setTosBanner(false)}/>
                 :null
             }
+            {
+                suggestionBanner?
+                <SuggestionBanner
+                    confirm={() => {
+                        setSuggestionBanner(false)
+                    }}
+                    cancel={() => setSuggestionBanner(false)}/>
+                :null
+            }
             <div className={styles.home_back}>
             {/* <img className={styles.text_brand} src={logo_text}/> */}
                 <div className={styles.home_back_top}>
                     <img className={styles.text_brand} src={logo_text} style={{opacity:first?.value==='trabalhos'?1:0}}/>
-                    <img className={styles.text_brand} src={logo_text_worker} style={{opacity:first?.value==='trabalhadores'?1:0}}/>
+                    <img className={styles.text_brand} src={logo_text_worker} style={{opacity:first?.value==='profissionais'?1:0}}/>
                     
-                    {/* <span className={styles.text_title}>O que procura hoje?</span> */}
+                    <span className={styles.text_title}>O que procura?</span>
                     {
                         loaded?
                         <div className={styles.main_wrapper}>
                             <div className={styles.main}>
                                 <div className={styles.zone}>
-                                    <div className={styles.zone_img} style={{backgroundColor:first?.value==="trabalhadores"?"#FF785A":"#0358e5", borderColor:first?.value==="trabalhadores"?"#FF785A":"#0358e5"}}>
+                                    <div className={styles.zone_img} style={{backgroundColor:first?.value==="profissionais"?"#FF785A":"#0358e5", borderColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>
                                         {
-                                            first?.value==="trabalhadores"?
+                                            first?.value==="profissionais"?
                                             <BackHandIcon className={styles.zone_person_icon} style={{transform: 'scaleX(-1)', color:"#ffffff"}}/>
                                             :
                                             <AssignmentIcon className={styles.zone_build_icon} style={{color:"#ffffff"}}/>
@@ -219,6 +230,7 @@ const Home = (props) => {
                                     </div>
                                     <div className={styles.zone_select}>
                                         <SelectHome
+                                            searcheable={false}
                                             home={true}
                                             options={firstOptions} 
                                             optionFirst={first} 
@@ -234,7 +246,7 @@ const Home = (props) => {
                                     </span>
                                 </div>
                                 <div className={styles.zone}>
-                                    <div className={styles.zone_img} style={{borderColor:second?.value?first?.value==="trabalhadores"?"#FF785A":"#0358e5":"#252d36",
+                                    <div className={styles.zone_img} style={{borderColor:second?.value?first?.value==="profissionais"?"#FF785A":"#0358e5":"#252d36",
                                                 backgroundColor:second?.value?'#161F28':'#252d36'}}>
                                         {
                                             second?.value? 
@@ -262,7 +274,7 @@ const Home = (props) => {
                                     </span>
                                 </div>
                                 <div className={styles.zone}>
-                                    <div className={styles.zone_img} style={{borderColor:third?first.value==="trabalhadores"?"#FF785A":"#0358e5":"#252d36",
+                                    <div className={styles.zone_img} style={{borderColor:third?first.value==="profissionais"?"#FF785A":"#0358e5":"#252d36",
                                                 backgroundColor:third?'#161F28':'#252d36'}}>
                                         {
                                             third? 
@@ -282,11 +294,14 @@ const Home = (props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div onClick={() => second&&third&&searchHandler()} className={second&&third?styles.search_wrapper:styles.search_wrapper_disabled} 
-                                            style={{backgroundColor:second&&third?first?.value==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff10",
-                                                    borderColor:(!second||!third)?first?.value==="trabalhadores"?"#FF785A":"#0358e5":"#ffffff10"}}>
-                                <SearchIcon className={styles.zone_search_icon} style={{color:second&&third?"#ffffff":"#ffffff90"}}/>
-                                <span className={styles.zone_search_button} style={{color:second&&third?"#ffffff":"#ffffff90"}}>PROCURAR</span>
+                            <div onClick={() => {
+                                                // second&&third&&
+                                                searchHandler()
+                                            }} className={styles.search_wrapper} 
+                                            style={{backgroundColor:first?.value==="profissionais"?"#FF785A":"#0358e5",
+                                                    borderColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>
+                                <SearchIcon className={styles.zone_search_icon} style={{color:"#ffffff"}}/>
+                                <span className={styles.zone_search_button} style={{color:"#ffffff"}}>PROCURAR</span>
                             </div>
                             <div onClick={() => (second||third)&&clearTopSearch()} className={second||third?styles.search_clear_wrapper:styles.search_clear_wrapper_disabled} style={{borderColor:second||third?'#ffffff':"#ffffff80"}}>
                                 {/* <SearchOffIcon className={styles.zone_search_icon} style={{color:second&&third?"#ffffff":"#ffffff90"}}/> */}
@@ -301,15 +316,20 @@ const Home = (props) => {
                     }
                     
                 </div>
-                <div className={styles.home_divider} style={{backgroundColor:first?.value==="trabalhadores"?"#FF785A":"#0358e5"}}>_</div>
+                <div className={styles.home_divider} style={{backgroundColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>_</div>
                 <span className={styles.home_explorar}>EXPLORAR</span>
                 {
                     loaded?
                     <div>
                         <div className={styles.home_back_publish}>
-                            <p className={styles.back_publish_title}>PUBLICAR</p>
                             {
-                                user?._id!=null&&user?.type===0?
+                                user?.type!==1?
+                                <p className={styles.back_publish_title}>PUBLICAR</p>
+                                :null
+                            }
+                            
+                            {
+                                user?._id!==null&&user?.type===0?
                                 <div className={styles.back_publish_div} onClick={() => navigate('/publicar/novo')}>
                                     <div className={styles.home_back_publish_wrapper}>
                                         <PostAddIcon className={styles.section_img_mini}/>
@@ -317,12 +337,14 @@ const Home = (props) => {
                                     </div>
                                 </div>
                                 :
+                                user?._id===null||!user?
                                 <div className={styles.back_publish_div_disabled} data-tooltip-id={'home'} data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
                                     <div className={styles.home_back_publish_wrapper} style={{opacity:0.3}}>
                                         <PostAddIcon className={styles.section_img_mini}/>
                                         <span className={styles.section_publicar}>NOVA TAREFA</span>
                                     </div>
                                 </div>
+                                :null
                             }
                         </div>
                         {
@@ -358,14 +380,14 @@ const Home = (props) => {
                                     <BackHandIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
                                 </div>
                                 <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
-                                    TRABALHADORES
+                                    PROFISSIONAIS
                                 </span>
                                 <span className={styles.section_image_text}>
-                                    Ver todos os trabalhadores disponíveis
+                                    Ver todos os profissionais disponíveis
                                 </span>
-                                <div className={styles.section_button_right} onClick={() => navigate('/main/publications/trabalhadores')}>
+                                <div className={styles.section_button_right} onClick={() => navigate('/main/publications/profissionais')}>
                                     <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
-                                        VER TRABALHADORES
+                                        VER PROFISSIONAIS
                                     </p>
                                 </div>
                             </div>
@@ -427,14 +449,14 @@ const Home = (props) => {
                                             <BackHandIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
                                         </div>
                                         <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
-                                            TRABALHADORES
+                                            PROFISSIONAIS
                                         </span>
                                         <span className={styles.section_image_text}>
-                                            Ver todos os trabalhadores disponíveis
+                                            Ver todos os profissionais disponíveis
                                         </span>
-                                        <div className={styles.section_button_right} onClick={() => navigate('/main/publications/trabalhadores')}>
+                                        <div className={styles.section_button_right} onClick={() => navigate('/main/publications/profissionais')}>
                                             <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
-                                                VER TRABALHADORES
+                                                VER PROFISSIONAIS
                                             </p>
                                         </div>
                                     </div>
@@ -456,15 +478,12 @@ const Home = (props) => {
                 <div className={styles.footer}>
                     <div className={styles.footer_div}>
                         <div className={styles.footer_div_column}>
-                            <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
-                            <p className={styles.footer_div_text}>Sugestões</p>
-                            <p className={styles.footer_div_text}>Contactos</p>
-                            <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me trabalhador</p>
                             <p className={styles.footer_div_text} style={{color: '#71848d'}}>APP Tarefas (brevemente)</p>
+                            <p className={styles.footer_div_text}>Contactos</p>
+                            <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dê uma sugestão</p>
+                            <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
+                            <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me profissional</p>
                         </div>
-                        {/* <div className={styles.footer_div_column}>
-                            
-                        </div> */}
                         <div className={styles.footer_div_column}>
                             <div>
                                 <p className={styles.footer_div_text} style={{fontWeight:400}}>Segue-nos nas redes:</p>

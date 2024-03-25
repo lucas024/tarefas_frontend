@@ -24,7 +24,7 @@ const NoPage = (props) => {
                     <span className={styles.blank_text} style={{color:"white"}}>Ainda não tens mensagens</span>
                     <ChatIcon className={styles.blank_face} style={{color:"white"}}/>
                     <span className={styles.blank_request} style={{color:"white"}}>
-                        Procurar <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/trabalhadores')}>trabalhadores</span>
+                        Procurar <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/profissionais')}>profissionais</span>
                     </span>
                 </div>
                 :props.object==="no_subscritption"?
@@ -58,6 +58,14 @@ const NoPage = (props) => {
                     {/* <span className={styles.button} style={{backgroundColor:props.type==="trabalhos"?"#0358e5":"#FF785A"}} onClick={() => props.limparPesquisa()}>
                         Limpar Pesquisa
                     </span> */}
+                </div>
+                :props.object==="publicação"?
+                <div className={styles.blank_flex}>
+                    <span className={styles.blank_text} style={{color:"#ffffff"}}>Esta tarefa já não existe...</span>
+                    <Sad className={styles.blank_face} style={{color:"#ffffff"}}/>
+                    <span className={styles.blank_request} style={{color:"#ffffff"}}>
+                        Voltar à <span className={styles.blank_request_click} onClick={() => navigate('/')}>página inícial</span>
+                    </span>
                 </div>
                 :
                 <div className={styles.blank_flex}>

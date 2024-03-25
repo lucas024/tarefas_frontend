@@ -50,12 +50,12 @@ const Row = (props) => {
                     props.item.user_id===props.user_id?
                     <div className={styles.item_user}>
                         <div className={styles.item_flex_indicator} style={{backgroundColor:getTypeColor(props.item.type)}}>
-                            <span className={styles.item_indicator}></span>
+                            {/* <span className={styles.item_indicator}></span> */}
                             <span className={styles.item_type}>
                                 {
-                                    props.item.type===1?"Activo":
-                                    props.item.type===2?"Concluído":
-                                        "Processar"
+                                    props.item.type===1?"Activa":
+                                    props.item.type===2?"Concluída":
+                                        "A Processar"
                                 }
                             </span>
                         </div>

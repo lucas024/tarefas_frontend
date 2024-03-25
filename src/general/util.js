@@ -115,6 +115,7 @@ const profissoesPngs = {
     forklift: require('../assets/professions/forklift.png'),
     food: require('../assets/professions/food.png'),
     hotel: require('../assets/professions/hotel.png'),
+    speaking: require('../assets/professions/speaking.png'),
 }
 
 const profissoesMap = {
@@ -162,7 +163,7 @@ const profissoesMap = {
     fotografia: { value: 'fotografia', label: 'Fotografia', img: profissoesPngs['camera'], solo: true },
     informatica: { value: 'informatica', label: 'Informática', img: profissoesPngs['desktop'], solo: true },
     jardinagem: { value: 'jardinagem', label: 'Jardinagem', img: profissoesPngs['jardineiro'], solo: true },
-    joalharia: { value: 'joalharia', label: 'Joalharia', img: profissoesPngs['ring'], solo: true },
+    joalharia_e_trabalhos_manuais: { value: 'joalharia_e_trabalhos_manuais', label: 'Joalharia e Trabalhos Manuais', img: profissoesPngs['ring'], solo: true },
     motorista: { value: 'motorista', label: 'Motorista', img: profissoesPngs['driver'], solo: true },
     mudancas: { value: 'mudancas', label: 'Mudanças', img: profissoesPngs['mudancas'], solo: true },
     musica: { value: 'musica', label: 'Música', img: profissoesPngs['music'], solo: true },
@@ -173,7 +174,7 @@ const profissoesMap = {
     turismo: { value: 'turismo', label: 'Turismo', img: profissoesPngs['map'], solo: true },
     outros: { value: 'outros', label: 'Outros', img: profissoesPngs['more'], solo: true },
     saude_acupuntura : { value: 'saude_acupuntura', label: 'Acupuntura', img: profissoesPngs['saude']},
-    saude_fisioterapia : { value: 'saude_fisioterapia', label: 'Fisioterapia', img: profissoesPngs['saude']},
+    saude_fisioterapeuta : { value: 'saude_fisioterapeuta', label: 'Fisioterapeuta', img: profissoesPngs['saude']},
     saude_massagista : { value: 'saude_massagista', label: 'Massagista', img: profissoesPngs['saude']},
     saude_nutricionista : { value: 'saude_nutricionista', label: 'Nutricionista', img: profissoesPngs['saude']},
     saude_quiroprata : { value: 'saude_quiroprata', label: 'Quiroprata', img: profissoesPngs['saude']},
@@ -194,6 +195,7 @@ const profissoesMap = {
     restauracao_empregado_bar: { value: 'restauracao_empregado_bar', label: 'Empregado Bar', img: profissoesPngs['food']},
     restauracao_geral: { value: 'restauracao_geral', label: 'Geral', img: profissoesPngs['food']},
     hotelaria: { value: 'hotelaria', label: 'Hotelaria', img: profissoesPngs['hotel']},
+    interprete: { value: 'interprete', label: 'Intérprete', img: profissoesPngs['speaking'], solo: true},
 }
 
 const profissoes_animais = [
@@ -241,7 +243,7 @@ const profissoes_limpeza = [
 
 const profissoes_saude  = [
     profissoesMap.saude_acupuntura,
-    profissoesMap.saude_fisioterapia,
+    profissoesMap.saude_fisioterapeuta,
     profissoesMap.saude_massagista,
     profissoesMap.saude_nutricionista,
     profissoesMap.saude_quiroprata,
@@ -382,11 +384,15 @@ const profissoesGrouped = [
     },
     {
         label: 'no-label',
+        options: [profissoesMap.interprete],
+    },
+    {
+        label: 'no-label',
         options: [profissoesMap.jardinagem],
     },
     {
         label: 'no-label',
-        options: [profissoesMap.joalharia],
+        options: [profissoesMap.joalharia_e_trabalhos_manuais],
     },
     {
         label: 'Limpeza',

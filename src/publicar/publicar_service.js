@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import styles from '../user/publicar.module.css'
 import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
 import {profissoesMap} from '../general/util'
 import TopSelect from '../selects/selectStyling';
 import TextareaAutosize from 'react-textarea-autosize';

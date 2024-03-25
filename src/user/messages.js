@@ -17,10 +17,8 @@ import letter_t from '../assets/letter-t.png'
 import BackHandIcon from '@mui/icons-material/BackHand';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useSelector, useDispatch } from 'react-redux'
-import {user_update_chats} from '../store'
+import {user_update_single_read} from '../store'
 
-
-const URL = "http://localhost:5500";
 
 const AdminMessages = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -39,11 +37,12 @@ const AdminMessages = (props) => {
     const [loadingChats, setLoadingChats] = useState(false)
     const [loadingChatBox, setLoadingChatBox] = useState(false)
     const [chatInformation, setChatInformation] = useState({})
-    const [skip, setSkip] = useState(1)
+    const [skip, setSkip] = useState(0)
     const limit = 15
     const [loadingNew, setLoadingNew] = useState(false)
     const [displayLoadingNew, setDisplayLoadingNew] = useState(false)
     const [allLoaded, setAllLoaded] = useState(false)
+    const [landingLoad, setLandingLoad] = useState(true)
 
 
     const [isLoaded, setIsLoaded] = useState(false)
@@ -70,7 +69,11 @@ const AdminMessages = (props) => {
         if(paramsAux.id)
         {
             setSelectedChatId(paramsAux.id)
-            triggerChatLoad()
+            if(landingLoad)
+            {
+                triggerChatLoad(paramsAux.id, true)
+                setLandingLoad(false)
+            }
         }
         if(chats?.length>0)
         {
@@ -98,7 +101,7 @@ const AdminMessages = (props) => {
                 axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: user._id} })
                 .then(res => {
                     if(res.data!==''){
-                        setChats(res.data.chats?.sort(sortByTimestamp))
+                        setChats(res.data.chats?.sort(sortByTimestamp)) 
                         setIsLoaded(true)
                         setLoadingChats(false)
                         setLoading(false)
@@ -118,7 +121,7 @@ const AdminMessages = (props) => {
             }         
 
             const newSocket = io(
-                'http://localhost:5500',
+                'https://socket-dot-vender-344408.ew.r.appspot.com/',
                 { query: {id: user._id} }
             )
             setS(newSocket)
@@ -446,44 +449,7 @@ const AdminMessages = (props) => {
             return chatInformation.worker_id
         }
     }
-    
-    // const removeNotificationHandler = (chat_id, other_user_id, bool) => {
-    //     let val = []
-    //     if(user.notifications){
-    //         val = [...user.notifications]
-    //     }
-    //     if(val.length>0) val?.splice(val.indexOf(chat_id), 1)
 
-    //     if(user.type===0){
-    //         axios.post(`${api_url}/user/set_user_notifications`, {
-    //             notification_array: val,
-    //             _id: user._id
-    //         })
-    //     }
-    //     else{
-    //         axios.post(`${api_url}/worker/set_worker_notifications`, {
-    //             notification_array: val,
-    //             _id: user._id
-    //         })
-    //     }
-        
-    //     axios.post(`${api_url}/chats/update_user_notifications`, {
-    //         user_id: user._id,
-    //         other_user_id: other_user_id,
-    //         chat_id: chat_id
-    //     })
-    //     if(bool){
-    //         let arr = [...chats]
-    //         for(let el of arr){
-    //             if(el._id === chat_id){
-    //                 el[`${user._id}_read`] = true
-    //                 break
-    //             }
-    //         }
-    //         setChats(arr)
-    //     }
-        
-    // }
 
     const updateReadDatabaseAndNavigate = async (chat_id, type) => {
         //type 0 == user
@@ -498,37 +464,22 @@ const AdminMessages = (props) => {
         }, {replace: true})
     }
 
-    const updateReadLocal = async (chat_id, type) => {
+    const updateReadLocal = (chat_id, type) => {
         let arrChats = [...chats]
+        let i = 0
         for(let chat of arrChats){
             if(chat.chat_id === chat_id){
-                if(type===1){
-                    chat.worker_read = true
-                }
-                else{
-                    chat.user_read = true
-                }
+                dispatch(user_update_single_read({
+                    index: i,
+                    type: type
+                }))
                 break
             }
+            i++
         }
-        let sorted = arrChats.sort(sortByTimestamp)
-        setChats(sorted)
-
-        // var arr = [...user?.chats]
-        // let user_type = user?.type
-        // for(let i = 0; i < arr.length; i++){
-        //     if(arr[i].chat_id === chat_id){
-        //         if(user_type===1)
-        //             arr[i].worker_read = true
-        //         else
-        //             arr[i].user_read = true
-        //         break
-        //     }
-        // }
-        dispatch(user_update_chats(sorted))
     }
 
-    const setChatDisplayInformation = (chat, type) => {
+    const setChatDisplayInformation = chat => {
         setChatInformation(
             {
                 user_name: chat.user_name,
@@ -552,7 +503,8 @@ const AdminMessages = (props) => {
                     {
                         updateReadDatabaseAndNavigate(item.chat_id, 1)
                         updateReadLocal(item.chat_id, 1)
-                        setChatDisplayInformation(item, 1)
+                        setChatDisplayInformation(item)
+                        triggerChatLoad(item.chat_id, true)
                     }
                     }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
                     {
@@ -563,7 +515,7 @@ const AdminMessages = (props) => {
                         :item.user_photoUrl!==""?
                         <img className={styles.row_img} src={item.user_photoUrl}/>
                         :
-                        <FaceIcon className={styles.chatbox_user_img}/>
+                        <FaceIcon className={styles.chatbox_user_img} style={{color:"#0358e5"}}/>
                     }
                     <div className={styles.row_main}>
                         <div className={styles.main_top}>
@@ -600,10 +552,9 @@ const AdminMessages = (props) => {
                     {
                         updateReadDatabaseAndNavigate(item.chat_id, 0)
                         updateReadLocal(item.chat_id, 0)
-                        setChatDisplayInformation(item, 0)
+                        setChatDisplayInformation(item)
+                        triggerChatLoad(item.chat_id, true)
                     }
-                    //props.updateNotification(item._id)
-                    //removeNotificationHandler(item._id, other_user, true)
                     }} key={i} className={
                         selectedChatId===item.chat_id?chatInformation.reservation_title?styles.row_selected:styles.row_selected_just_worker:item.reservation_title?styles.row:styles.row_just_worker}>
                     {   
@@ -654,55 +605,48 @@ const AdminMessages = (props) => {
         return false
     }
 
-    const triggerChatLoad = () => {
+    const triggerChatLoad = (chat_id, new_load) => {
 
-        const paramsAux = Object.fromEntries([...searchParams])
+        // const paramsAux = Object.fromEntries([...searchParams])
         let local_all_loaded = false
-        if(!loadingNew)
-        {
-            setLoadingNew(true)
-            setDisplayLoadingNew(true)
-            axios.get(`${api_url}/chats/get_chat`, { params: {chat_id: paramsAux.id, skip: selectedChatTexts.length===0?0:skip*limit, limit: limit} })
-            .then(res => {
-                if(res.data!==''){
-                    setSelectedChat(res.data)
-                    if(skip === 1)
+        setDisplayLoadingNew(true)
+        axios.get(`${api_url}/chats/get_chat`, { params: {chat_id: chat_id, skip: skip*limit, limit: limit} })
+        .then(res => {
+            if(res.data!==''){
+                setSelectedChat(res.data)
+                if(skip === 0)
+                {
+                    setSelectedChatTexts(res.data.texts.reverse())
+                }
+                else
+                {
+                    let newItems = res.data.texts.reverse().concat([...selectedChatTexts])
+                    if(newItems.length===[...selectedChatTexts].length)
                     {
-                        setSelectedChatTexts(res.data.texts.reverse())
+                        setAllLoaded(true)
+                        local_all_loaded = true
                     }
                     else
                     {
-                        let newItems = res.data.texts.reverse().concat([...selectedChatTexts])
-                        if(newItems.length===[...selectedChatTexts].length)
-                        {
-                            setAllLoaded(true)
-                            local_all_loaded = true
-                        }
-                        else
-                        {
-                            setSelectedChatTexts(newItems)
-                        }
+                        setSelectedChatTexts(newItems)
                     }
-                    if(skip===1)
-                    {
-                        scrollToBottom()
-                        setTimeout(() => {
-                            setLoadingNew(false)
-                        }, 2000)
-                    }
-                        
-                    else if(!local_all_loaded){
-                        onLoadBubbleRef.current.scrollIntoView({behavior: 'instant', block: 'start', inline: 'nearest'})
-                        setTimeout(() => {
-                            setLoadingNew(false)
-                        }, 2000)
-                    } 
-
-                    setSkip(skip+1)
-                    setDisplayLoadingNew(false)
                 }
-            })
-        }
+
+                if(skip===1)
+                {
+                    scrollToBottom()
+                }
+                else if(!local_all_loaded){
+                    onLoadBubbleRef.current?.scrollIntoView({behavior: 'instant', block: 'start', inline: 'nearest'})
+                } 
+                if(new_load)
+                    setSkip(0)
+                else
+                    setSkip(skip+1)
+
+                setDisplayLoadingNew(false)
+            }
+        })
     }
 
     const Content = () => {
@@ -711,7 +655,7 @@ const AdminMessages = (props) => {
         useEffect(() => {
             if(sticky)
             {
-                selectedChatTexts.length>10&&!allLoaded&&selectedChatId&&triggerChatLoad()
+                selectedChatTexts.length>10&&!allLoaded&&selectedChatId&&triggerChatLoad(selectedChatId, false)
             }
         }, [sticky])
     
@@ -754,7 +698,7 @@ const AdminMessages = (props) => {
                                     <div className={styles.top}>
                                         <div 
                                             className={user?.type===0?styles.top_left_flex_for_user:styles.top_left_flex}
-                                            onClick={() => user?.type===0&&navigate(`/main/publications/trabalhador?id=${chatInformation.worker_id}`)}
+                                            onClick={() => user?.type===0&&navigate(`/main/publications/profissional?id=${chatInformation.worker_id}`)}
                                             >
                                             {/* <span className={styles.top_left_indicator} style={{backgroundColor:isUserOnline()?"#6EB241":"white", border:!isUserOnline()?"1px solid #F40009":"1px solid transparent"}}></span> */}
                                             {/* drena do ultima vez online */}
@@ -779,7 +723,7 @@ const AdminMessages = (props) => {
                                                     <span className={styles.type_indicator}>
                                                             <div className={styles.indicator_div}>
                                                                 {/* <BackHandIcon className={styles.indicator_icon}/> */}
-                                                                <span className={styles.indicator_name}>TRABALHADOR</span>
+                                                                <span className={styles.indicator_name}>PROFISSIONAL</span>
                                                             </div>
                                                     </span>
                                                 </div>

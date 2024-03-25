@@ -14,7 +14,7 @@ const TopSelect = (props) => {
             textTransform: "uppercase",
             color: "#fff",
             fontWeight: 600,
-            width:"250px",
+            width:"100%",
             transition: "0.2s all ease-in-out",
             borderRadius: "5px",
             borderBottomLeftRadius: state.isFocused? 0: "5px",

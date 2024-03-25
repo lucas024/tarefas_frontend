@@ -80,7 +80,7 @@ const AdminSidebar = (props) => {
                         </ListItemIcon>
                         <ListItemText primary={
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
-                                <span className={styles.prox}>Trabalhadores P.A</span>
+                                <span className={styles.prox}>Profissionais P.A</span>
                             </div>
                             } sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                     </ListItemButton >
@@ -92,7 +92,7 @@ const AdminSidebar = (props) => {
                         </ListItemIcon>
                         <ListItemText primary={
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
-                                <span className={styles.prox}>Trabalhadores A</span>
+                                <span className={styles.prox}>Profissionais A</span>
                             </div>
                             } sx={{color:selectedSidebar==="personal"?"#FF785A":"#fff"}}/>
                     </ListItemButton >

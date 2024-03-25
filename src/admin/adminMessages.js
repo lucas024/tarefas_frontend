@@ -79,7 +79,7 @@ const Messages = (props) => {
     useEffect(() => {
         if(user){
             const newSocket = io(
-                'http://localhost:5500',
+                'https://socket-dot-vender-344408.ew.r.appspot.com/',
                 { query: {id: user._id} }
             )
             setS(newSocket)
@@ -459,7 +459,7 @@ const Messages = (props) => {
                                                 :
                                                 <div className={styles.name_indicator}>
                                                     <span className={styles.top_left_name}>{selectedChat.worker_name}</span>
-                                                    <span className={styles.type_indicator}>TRABALHADOR</span>
+                                                    <span className={styles.type_indicator}>PROFISSIONAL</span>
                                                 </div>
                                                 
                                             }                                     

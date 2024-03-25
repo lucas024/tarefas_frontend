@@ -53,11 +53,11 @@ const Navbar = (props) => {
                     break
                 }
                 //worker
-                else if(user?.type===1&&!el.worker_read){
-                    setHasUnreadTexts(true)
-                    clear = false
-                    break
-                }
+                // else if(user?.type===1&&!el.worker_read){
+                //     setHasUnreadTexts(true)
+                //     clear = false
+                //     break
+                // }
             }
             if(clear) setHasUnreadTexts(false)
         }
@@ -66,7 +66,6 @@ const Navbar = (props) => {
     const logoutHandler = () => {
         setDropdown(false)
         logout()
-        dispatch(user_reset())
         navigate('/authentication?type=1')
     }
 
@@ -182,14 +181,13 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
-                                                                user?.type&&worker_profile_complete&&worker_is_subscribed?
+                                                                user?.type&&worker_profile_complete?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
                                                                 :
                                                                 user?.type===0&&user_email_verified&&user_phone_verified?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
                                                                 :<span className={styles.drop_div_notification}/>
                                                             }
-                                                            
                                                     </div>  
                                                 </div>
                                             </div>
@@ -205,10 +203,11 @@ const Navbar = (props) => {
                                                                 <CardMembershipIcon className={styles.drop_div_flex_icon}/>
                                                                 <span className={styles.drop_div_text}>Subscrição</span>
                                                             </div>
+                                                            {}
                                                             {
                                                                 !worker_is_subscribed?
                                                                 <span className={styles.drop_div_notification}/>
-                                                                :null
+                                                                :<CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
                                                             }
                                                         </div>
                                                     </div>

@@ -58,7 +58,6 @@ const Publicar = () => {
     const [phoneWrong, setPhoneWrong] = useState(false)
     const [email, setEmail] = useState('')
     const [address, setAddress] = useState('')
-    const [addressManual, setAddressManual] = useState('')
     const [porta, setPorta] = useState('')
     const [portaWrong, setPortaWrong] = useState(false)
     const [andar, setAndar] = useState('')
@@ -100,20 +99,16 @@ const Publicar = () => {
     const checkAllFieldsCorrect = () => {
         let first_phase_correct = titulo.length>6&&selectedWorker!=null
         let second_third_correct = (user.phone===phone&&user_phone_verified)&&user_email_verified&&!loadingConfirm
-        let porta_correct = (taskType===2&&true)||porta.length>0
-        let both_phases = first_phase_correct&&second_third_correct&&porta_correct
+        let both_phases = first_phase_correct&&second_third_correct
 
         return both_phases&&checkAddressCorrect()
     }
 
     const checkAddressCorrect = () => {
-        if(taskType===0)
-            return address?.length>5&&lat!=""&&lng!=""&&district!=null
-        else if(taskType===1)
-            return addressManual?.length>10&&district!=null
-        else if(taskType===2)
+        if(taskType===2)
             return true
-        return false
+        return address?.length>10&&district!=null&&porta.length>0
+        
     }
 
     const maxFiles = 6
@@ -282,7 +277,7 @@ const Publicar = () => {
             user_email: user.email,
             title: titulo,
             desc: description,
-            localizacao: taskType===0?(address||editAddress):taskType===1?addressManual:null,
+            localizacao: (address||editAddress),
             task_type: taskType,
             porta: porta,
             andar: andar,
@@ -443,7 +438,7 @@ const Publicar = () => {
     const initiateEmailVerification = () => {
         setSendingError(null)
         var actionCodeSettings = {
-            url: 'https://google.com',
+            url: 'https://pt-tarefas.pt/confirm-email',
             handleCodeInApp: false
         }
 
@@ -800,7 +795,6 @@ const Publicar = () => {
                                     seconds={seconds}
                                     setTaskType={val => setTaskType(val)}
                                     taskType={taskType}
-                                    setAddressManual={val => setAddressManual(val)}
                                     setDistrictHelper={val => setDistrict(val)}
                                     district={district}
                                     />
@@ -854,7 +848,7 @@ const Publicar = () => {
                                                     taskType===2?
                                                     <span className={styles.zone_label_value}>Tarefa Online</span>
                                                     :
-                                                    <span className={styles.zone_label_value}>{taskType===0?address||editAddress:taskType===1?addressManual:null}, {porta}{andar?`, ${andar}`:null}</span>
+                                                    <span className={styles.zone_label_value}>{address}, {porta}{andar?`, ${andar}`:null}</span>
                                                 }
                                             </div>
                                             <div className={styles.zone_label_div}>

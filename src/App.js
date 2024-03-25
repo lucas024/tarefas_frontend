@@ -16,7 +16,7 @@ import User from './user/user';
 import Main from './servicos/main';
 import Trabalho from './main/trabalho';
 import AuthWorker from './auth/authWorker';
-import Trabalhador from './main/trabalhador';
+import Profissional from './main/profissional';
 import Admin from './admin/admin';
 
 
@@ -99,6 +99,7 @@ useEffect(() => {
       else{
         axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle?.uid} }).then(res => {
           if(res.data !== null){
+            console.log(res.data)
             dispatch(user_load(res.data))
             checkUserComplete(userGoogle)
             if(res.data.subscription){
@@ -152,14 +153,6 @@ useEffect(() => {
     setLoading(false)
   }
 }, [userGoogle])
-
-// const refreshUser = async () => {
-//   window.history.replaceState({}, document.title)
-//   let res = await axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle?.uid} })
-//   if(res.data !== null){
-//     dispatch(user_load(res.data))
-//   }
-// }
 
 const refreshWorker = () => {
   window.history.replaceState({}, document.title)
@@ -216,8 +209,8 @@ const refreshWorker = () => {
                   userLoadAttempt={userLoadAttempt}
                   />}
               />
-              <Route exact path="/main/publications/trabalhador" 
-                element={<Trabalhador
+              <Route exact path="/main/publications/profissional" 
+                element={<Profissional
                   userLoadAttempt={userLoadAttempt}
                   />}
               />

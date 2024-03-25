@@ -286,7 +286,7 @@ const Auth = (props) => {
             res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} })
             console.log(res)
             if(res.data){
-                setEmailWrong('Este e-mail já se encontra registado a uma conta de trabalhador.')
+                setEmailWrong('Este e-mail já se encontra registado a uma conta de profissional.')
                 setLoading(false)
             }
             else{
@@ -312,7 +312,7 @@ const Auth = (props) => {
 
         let res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: emailLogin} })
         if(res.data != null){
-            setLoginError("Este e-mail já se encontra associado a uma conta de TRABALHADOR. Faz login na Àrea Trabalhador.")
+            setLoginError("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Faz login na Área Profissional.")
             setLoading(false)
         }
         else if(validator.isEmail(emailLogin)){
@@ -407,7 +407,7 @@ const Auth = (props) => {
                         axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
                             setLoading(false)
                             if(res.data != null){
-                                setEmailWrong("Este e-mail já se encontra associado a uma conta de TRABALHADOR. Por-favor, utilize outro email.")
+                                setEmailWrong("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Por-favor, utilize outro email.")
                             }
                             else{
                                 axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
@@ -845,10 +845,17 @@ const Auth = (props) => {
                             emailSent={emailSent}
                         />
                     :
-                    <div className={styles.button_area}>
-                        <span className={styles.worker_button} onClick={() => navigate('/authentication/worker?type=1')}>Àrea Trabalhador</span>
-                    </div>
+                    null
                 }
+                <div className={styles.split_wrapper}>
+                    <span className={styles.split}/>
+                    <div className={styles.split_text_wrapper} style={{backgroundColor:"#161F28"}}>
+                        <span className={styles.split_text}>OU</span>
+                    </div>
+                </div>
+                <div className={styles.button_area}>
+                        <span className={styles.worker_button} onClick={() => navigate('/authentication/worker?type=1')}>Área Profissional</span>
+                    </div>
             </div>
         </div>
     )

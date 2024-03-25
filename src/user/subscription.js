@@ -584,7 +584,7 @@ const Subscription = props => {
                             <div className={styles.sub_info_main}>
                                 <div className={styles.sub_info_wrap}>
                                     <div className={styles.sub_info}>
-                                        <span className={styles.sub_info_title}>Trabalhador no Tarefas</span>
+                                        <span className={styles.sub_info_title}>Profissional no Tarefas</span>
                                         {display===1 && applyDiscount?
                                             <p className={styles.sub_info_title_discount}>SUBSCRIÇÃO EXCLUSICA FUNDADOR</p>
                                             :null
@@ -614,7 +614,7 @@ const Subscription = props => {
                                                         <span className={styles.helper_text}>Perfil</span>
                                                     </div>
                                                     <span className={styles.connector}/>
-                                                    <span className={styles.line_text}>Criação do teu <strong>perfil de trabalhador</strong>, que será acessível a todos utilizadores do Tarefas. Maior exposição ao teu negócio!</span>
+                                                    <span className={styles.line_text}>Criação do teu <strong>perfil de profissional</strong>, que será acessível a todos utilizadores do Tarefas. Maior exposição ao teu negócio!</span>
                                                 </div>
                                             </div>
                                             :null
@@ -661,7 +661,7 @@ const Subscription = props => {
                                                     <div className={styles.info_bottom_text_wrapper}>
                                                         <div className={styles.info_bottom_text}>
                                                             <p>Ativa a tua conta</p>
-                                                            <p style={{fontWeight:300}}>Acede a todos os benefícios de ser um trabalhador do Tarefas.</p>
+                                                            <p style={{fontWeight:300}}>Acede a todos os benefícios de ser um profissional do Tarefas.</p>
                                                         </div>
                                                     </div>
                                                     <div className={styles.trial_button}

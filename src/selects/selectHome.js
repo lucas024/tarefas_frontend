@@ -7,13 +7,13 @@ const SelectHome = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: props.publicar?'#161F28':props.option?.value==='trabalhos'?"#0358e5":props.option?.value==='trabalhadores'?"#FF785A":props.option?.value?"#161F28":"#252d36",
+            backgroundColor: props.publicar?'#161F28':props.option?.value==='trabalhos'?"#0358e5":props.option?.value==='profissionais'?"#FF785A":props.option?.value?"#161F28":"#252d36",
             borderColor: "#ffffff",
             fontSize: "0.7rem",
             textTransform: props.publicar?"normal":"uppercase",
             color: "#ffffff",
             fontWeight: 600,
-            width:props.publicar?"100%":"250px",
+            width: props.publicar||props.home?"100%":"250px",
             transition: "0.5s all ease-in-out",
             borderRadius: "5px",
             // borderBottomRightRadius: "0px",
@@ -97,6 +97,14 @@ const SelectHome = (props) => {
                 borderBottom: 'none',
             }
         }),
+        placeholder: base => ({
+            ...base,
+            fontStyle: 'normal !important',
+            fontFamily: 'Montserrat, sans-serif !important',
+            fontWeight: '400',
+            fontSize: '0.9rem',
+            textAlign: 'left'
+        })
     }
 
     const selectChange = (val) => {
@@ -133,7 +141,7 @@ const SelectHome = (props) => {
             styles={stylesSelect}
             options={props.options}
             value={props.option}
-            isSearchable={true}
+            isSearchable={props.searcheable===false?false:true}
             formatGroupLabel={formatGroupLabelAux}
             formatOptionLabel={formatOptionLabelAux}
             // menuIsOpen={true}

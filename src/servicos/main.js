@@ -71,7 +71,7 @@ const Main = (props) => {
         setSelectedType(arr_pathname[3])
 
         if(arr_pathname[3]==="trabalhos") setVisualSelected("tarefas")
-        else setVisualSelected("trabalhadores")
+        else setVisualSelected("profissionais")
 
         if(search_context?.list == null 
             || ((search_context?.work !== paramsAux.work) && paramsAux.work != undefined)
@@ -229,7 +229,7 @@ const Main = (props) => {
             if(res.data!=='non_existing'){
                 // let arr = res.data.data
                 // arr = fisher_yates_shuffle(arr)
-                let all_items = {data: res.data.data, type: 'trabalhadores'}
+                let all_items = {data: res.data.data, type: 'profissionais'}
                 setAllItemsLength(res.data.size)
                 setItemsAux(all_items, res.data.size, params_aux?.p?parseInt(params_aux?.p):1)
             }
@@ -244,7 +244,7 @@ const Main = (props) => {
             if(res.data!==null){
                 // let arr = res.data.data
                 // arr = fisher_yates_shuffle(arr)
-                let all_items = {data: res.data.data, type: 'trabalhadores'}
+                let all_items = {data: res.data.data, type: 'profissionais'}
                 setAllItemsLength(res.data.size)
                 setItemsAux(all_items, res.data.size, params_aux?.p?parseInt(params_aux?.p):1)
             }
@@ -338,7 +338,7 @@ const Main = (props) => {
                 <div key={i} ref={i===search_scroll?postRef:null} className={styles.box_case} onClick={() => {
                                                                     dispatch(search_scroll_save(i))
                                                                     navigate({
-                                                                        pathname: `/main/publications/trabalhador`,
+                                                                        pathname: `/main/publications/profissional`,
                                                                         search: getSearchParams(worker._id)
                                                                     })}
                                                                 }>
@@ -395,7 +395,7 @@ const Main = (props) => {
     }
 
     const options = [
-        { value: 'trabalhadores', label: 'trabalhadores' },
+        { value: 'profissionais', label: 'profissionais' },
         { value: 'trabalhos', label: 'tarefas' },
     ]
 
@@ -463,7 +463,7 @@ const Main = (props) => {
                         
                         {
                             allItemsLength===1?
-                            <span className={styles.top_info_numbers}>1 {visualSelected.slice(0, selectedType==="trabalhos"?-1:-2)}</span>
+                            <span className={styles.top_info_numbers}>1 {selectedType==="trabalhos"?"trabalho":"profissional"}</span>
                             :<span className={styles.top_info_numbers}>{allItemsLength} {visualSelected}</span>
                         }
                         <div className={styles.top_info_filter}>
@@ -530,12 +530,12 @@ const Main = (props) => {
                                 </div>
                                 :
                                 !loading?
-                                <div style={{gridTemplateRows: `repeat(${Math.ceil(items?.data?.length/2+1)}, 160px)`}} 
+                                <div style={{gridTemplateRows: `repeat(${Math.ceil(items?.data?.length/2+1)}, 180px)`}} 
                                         className={styles.grid}
                             
                                 >
                                 {
-                                    items?.type==="trabalhadores"?
+                                    items?.type==="profissionais"?
                                     mapBoxesToDisplay()
                                     :null
                                 }

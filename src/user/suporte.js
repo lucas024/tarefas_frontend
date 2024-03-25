@@ -80,7 +80,7 @@ const Suporte = (props) => {
 
         if(user){
             const newSocket = io(
-                'http://localhost:5500',
+                'https://socket-dot-vender-344408.ew.r.appspot.com/',
                 { query: {id: user._id} }
             )
             setS(newSocket)

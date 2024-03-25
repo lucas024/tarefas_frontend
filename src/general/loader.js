@@ -14,13 +14,13 @@ const override: CSSProperties = {
 };
 
 const small_override = css`
-  display: block;
-  margin: 0 auto;
-  border-color: red;
-  position: absolute;
-  z-index: 11;
-  left: calc(50% - 10px);
-  top: calc(50% - 15px);
+  display: block,
+  margin: 0 auto,
+  border-color: red,
+  position: absolute,
+  z-index: 11,
+  left: calc(50% - 10px),
+  top: calc(50% - 15px),
 `;
 
 const border_override = css`
