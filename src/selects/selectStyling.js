@@ -42,7 +42,7 @@ const TopSelect = (props) => {
         menu: base => ({
             ...base,
             textTransform: "uppercase",
-            width:"250px",
+            width:"100%",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,

@@ -14,8 +14,9 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import { useSelector, useDispatch } from 'react-redux'
-import { user_reset } from '../store';
 import logo from '../assets/logo.png'
+import LoginIcon from '@mui/icons-material/Login';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const Navbar = (props) => {
     const dispatch = useDispatch()
@@ -139,8 +140,18 @@ const Navbar = (props) => {
                                                 :null
                                             }
                                             
+                                            {
+                                                
+                                            }
                                             <p className={styles.user_text}>Área Pessoal</p>
-                                            <KeyboardArrowDownIcon sx={{fontSize: "30px"}} className={styles.user_arrow}/>
+                                            <div className={styles.user_arrow}>
+                                                <KeyboardArrowDownIcon sx={{fontSize: "30px"}}/>
+                                            </div>
+                                            <div className={styles.user_short}>
+                                            <MenuIcon />
+                                            </div>
+                                            
+                                            
                                         </div>
                                         <div hidden={!dropdown}>
                                             <div className={styles.dropdown_invis}>
@@ -259,9 +270,14 @@ const Navbar = (props) => {
                     
                                     </div>
                                     :loaded?
-                                    <p className={styles.user_login} 
-                                    onClick={() => navigate('/authentication?type=1')}>
-                                    Iniciar Sessão</p>
+                                    <div>
+                                        <p className={styles.user_login} 
+                                            onClick={() => navigate('/authentication?type=1')}>
+                                            Iniciar Sessão</p>
+                                        <div className={styles.user_login_short} onClick={() => navigate('/authentication?type=1')}>
+                                            <LoginIcon className={styles.user_login_icon} />
+                                        </div>
+                                    </div>
                                     :<span className={styles.skeleton_text}></span>
                                 }
                             </div>

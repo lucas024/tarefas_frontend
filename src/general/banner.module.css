@@ -233,3 +233,24 @@
     position: absolute;
     margin-top: 110px;
 }
+
+@media (max-width: 500px){
+    .main{
+        width: 80%;
+    }
+    .title{
+        font-size: 0.9rem;
+    }
+    .phone_description{
+        font-size: 0.8rem;
+    }
+    .button{
+        width: 90%;
+    }
+    .button_text{
+        font-size: 0.9rem;
+    }
+    .cancel{
+        font-size: 0.8rem;
+    }
+}

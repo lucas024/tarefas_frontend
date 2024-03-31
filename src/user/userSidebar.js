@@ -5,8 +5,6 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
-import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import { useSearchParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
 import FaceIcon from '@mui/icons-material/Face';
@@ -16,8 +14,6 @@ import ChatIcon from '@mui/icons-material/Chat';
 import CircleIcon from '@mui/icons-material/Circle';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import Loader from '../general/loader';
-import UnpublishedOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import AssignmentdIcon from '@mui/icons-material/Assignment';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useSelector } from 'react-redux'
@@ -90,7 +86,7 @@ const UserSidebar = (props) => {
                                 :null
                             }
                             <ListItemIcon>
-                                <AssignmentdIcon sx={{color:"#ffffff", zIndex:1}}/>
+                                <AssignmentdIcon sx={{color:"#ffffff", zIndex:1}} className={styles.sidebar_small_icon}/>
                             </ListItemIcon>
                             <ListItemText primary={<span className={styles.prox}>Minhas Tarefas</span>} sx={{color:"#ffffff", zIndex:1}}/>
                         </ListItemButton >
@@ -103,7 +99,7 @@ const UserSidebar = (props) => {
                             :null
                         }
                         <ListItemIcon>
-                            <AccountCircleIcon sx={{color:"#ffffff", zIndex:1}}/>
+                            <AccountCircleIcon sx={{color:"#ffffff", zIndex:1}} className={styles.sidebar_small_icon}/>
                         </ListItemIcon>
                         <ListItemText primary={
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
@@ -128,7 +124,7 @@ const UserSidebar = (props) => {
                                 :null
                             }
                             <ListItemIcon>
-                                <CardMembershipIcon sx={{color:"#fff", zIndex:1}}/>
+                                <CardMembershipIcon sx={{color:"#fff", zIndex:1}} className={styles.sidebar_small_icon}/>
                             </ListItemIcon>
                             <ListItemText primary={
                                 <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
@@ -150,7 +146,7 @@ const UserSidebar = (props) => {
                             :null
                         }
                         <ListItemIcon>
-                            <ChatIcon sx={{color:"#fff", zIndex:1}}/>
+                            <ChatIcon sx={{color:"#fff", zIndex:1}} className={styles.sidebar_small_icon}/>
                         </ListItemIcon>
                         <ListItemText primary={
                             <span style={{display:"flex"}}>
@@ -240,7 +236,7 @@ const UserSidebar = (props) => {
                             :null
                         }
                         <ListItemIcon>
-                            <LogoutIcon sx={{color:"#fff", zIndex:1}} style={{transform:'rotate(180deg)'}}/>
+                            <LogoutIcon sx={{color:"#fff", zIndex:1}} style={{transform:'rotate(180deg)'}} className={styles.sidebar_small_icon}/>
                         </ListItemIcon>
                         <ListItemText primary={<span className={styles.prox}>Logout</span>} sx={{color:"#fff", zIndex:1}}/>
                     </ListItemButton>

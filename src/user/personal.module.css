@@ -533,6 +533,9 @@ input[type=file]{
     margin: 10px 0;
     background-color: var(--job);
 }
+.subcontainer{
+    margin-left: 20px;
+}
 .flex_bottom{
     display: flex;
     width: 100%;
@@ -550,7 +553,7 @@ input[type=file]{
     display: flex;
     flex-direction: column;
     height: 100%;
-    margin-bottom: 180px;
+    margin-bottom: 280px;
 }
 .flex_title{
     font-size: 1rem;
@@ -558,24 +561,52 @@ input[type=file]{
     text-transform: uppercase;
     color: white;
 }
+.checkbox_submap{
+    color: var(--neutral);
+    font-size: 1rem;
+    width: max-content;
+    display: block;
+}
+.checkbox_submap_disabled{
+    color: var(--grey);
+    font-size: 1rem;
+    width: max-content;
+    display: block;
+}
 .flex_select_div{
-    width: 50%;
+    width: 100%;
     margin-top: 10px;
     height: min-content;
+    max-height: 700px;
+    overflow: hidden;
+    overflow-y: auto;
 }
 /* Customize the label (the container) */
 .container {
-    display: block;
+    display: flex;
     position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
     font-size: 1.2rem;
+    align-items: center;
+    height: 25px;
+    margin-bottom: 10px;
 }
-
+.checkmark_image{
+    width: 25px !important;
+    height: 25px !important;
+    margin-right: 5px;
+    margin-left: 30px;
+}
+.checkmark_image_disabled{
+    width: 25px !important;
+    height: 25px !important;
+    margin-right: 5px;
+    margin-left: 30px;
+    opacity: 0.4;
+}
 /* Hide the browser's default checkbox */
 .container input {
 position: absolute;
@@ -683,6 +714,32 @@ transform: rotate(45deg);
 
 .shake{
     animation: shake 1s infinite;
+}
+
+.input_wrapper{
+    width: 100%;
+}
+.input_list{
+    width: 90%;
+    outline: none;
+    height: 30px;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    padding-left: 5px;
+    max-width: 350px;
+    border-radius: 4px;
+}
+.input_list::placeholder{
+    font-family: 'Montserrat', sans-serif;
+    font-style: normal;
+}
+.input_list:disabled{
+    background-color: var(--grey);
+}
+.input_list:disabled::placeholder{
+    color: #ffffff30 !important;
+    font-weight: 400;
 }
 
 @keyframes shake {
@@ -917,5 +974,86 @@ transform: rotate(45deg);
 @media (max-width: 850px){
     .item_wrapper{
         font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 768px){
+    .item_title{
+        text-overflow: ellipsis;
+        overflow: hidden; 
+        width: 250px;
+        white-space: nowrap;
+    }
+    .item_left{
+        margin-left: 0px;
+    }
+    .item_title_div{
+        width: 150px;
+    }
+    .item_title{
+        font-size: 0.9rem;
+    }
+    .item_desc{
+        font-size: 0.7rem;
+    }
+    .item_flex_indicator{
+        height: 25px;
+        padding: 0 5px;
+        border-radius: 3px;
+    }
+    .item_type{
+        font-size: 0.8rem;
+    }
+    .more_wrapper{
+        border-radius: 3px;
+        height: 25px;
+    }
+    .more{
+        font-size: 1.2rem !important;
+    }
+    .item_flex_worker_text{
+        font-size: 0.7rem;
+    }
+    .item_time{
+        font-size: 0.6rem;
+    }
+    .flex{
+        flex-direction: column;
+        border-bottom: none;
+    }
+    .top_right_flex{
+        margin-left: 0px;
+        margin-top: 50px;
+    }
+    .input_flex{
+        padding-left: 0px;
+    }
+    .personal_subtitle{
+        font-size: 0.9rem;
+    }
+    .edit_top{
+        width: 100%;
+        position: unset;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 500px){
+    .top_title{
+        font-size: 1rem;
+    }
+    .personal_title{
+        height: 50px;
+    }
+    .input_email{
+        font-size: 0.8rem;
+    }
+    .input_input{
+        font-size: 0.8rem;
+    }
+    .input_icon{
+        width: 18px !important;
+        height: 18px !important;
     }
 }

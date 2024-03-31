@@ -12,7 +12,7 @@ const SelectWorker = (props) => {
             textTransform: "uppercase",
             color: props.worker?"#161F28":"#FF785A",
             fontWeight: 600,
-            width:props.worker?"300px":"170px",
+            width:props.worker?"100%":"170px",
             transition: "0.2s all ease-in-out",
             borderRadius: "5px",
             borderBottomLeftRadius: state.isFocused? 0: "5px",
@@ -35,7 +35,7 @@ const SelectWorker = (props) => {
         menu: base => ({
             ...base,
             textTransform: "uppercase",
-            width:props.worker?"300px":"170px",
+            width:props.worker?"100%":"170px",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,

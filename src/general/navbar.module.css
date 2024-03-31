@@ -58,10 +58,13 @@
 .user_login{
     font-weight: 500;
     margin-right: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
     cursor: pointer;
     position: relative;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--action);
+    text-transform: uppercase;
 }
 .chat_div{
     display: flex;
@@ -366,5 +369,84 @@
     }
     100% {
       background-color: var(--skeleton);
+    }
+}
+
+
+.user_login_short{
+    display: none;
+}
+
+.user_short{
+    display: none;
+}
+.user_arrow{
+    display: block;
+    margin-top: 3px;
+}
+@media (max-width: 500px){
+    .user_button_disabled{
+        margin-right: 5px;
+        padding: 10px 10px;
+        font-size: 0.9rem;
+        width: min-content;
+        text-align: center;
+    }
+    .user_login{
+        display: none;
+    }
+    .user_login_short{
+        display: block;
+        margin: 0 5px;
+    }
+    .user_login_icon{
+        color: var(--brand);
+    }
+    .user_text{
+        display: none;
+    }
+    .user_arrow{
+        display: none;
+    }
+    .user_short{
+        display: block;
+        margin-top: 3px;
+        margin-right: 3px;
+    }
+    .user{
+        width: min-content;
+    }
+    .dropdown_invis{
+        margin-top: 2px;
+    }
+    .user_dropdown{
+        position: absolute;
+        right: 0px;
+        width: 180px;
+    }
+    .user_main{
+        align-self: center;
+        align-self: flex-start;
+    }
+    .navbar{
+        height: 40px;
+    }
+    .logo{
+        width: 30px;
+        height: 30px;
+    }
+    .user_button_disabled{
+        padding: 0 5px;
+        font-size: 0.8rem;
+        border-radius: 3px;
+        width: max-content;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .user_login_icon{
+        width: 20px !important;
+        height: 20px !important;
+        margin-top: 3px;
     }
 }

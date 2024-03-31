@@ -34,6 +34,7 @@ const Publicar = () => {
     const user = useSelector(state => {return state.user})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
     const user_phone_verified = useSelector(state => {return state.user_phone_verified})
+    const scrolltopref = useRef(null)
 
     const dispatch = useDispatch()
 
@@ -313,9 +314,11 @@ const Publicar = () => {
         axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} }).then(res => {
             if(edit)
             {
+                scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                 setConfirmationEditPopup(true)
             }
             else if(res.data?.length<3){
+                scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                 setConfirmationPopup(true)
             }
             else{
@@ -417,7 +420,6 @@ const Publicar = () => {
     }
 
     const setTituloHandler = val => {
-        console.log(val)
         if(titulo.length===0)
             setTitulo(val.replace(/\s/g, ''))
         else
@@ -483,6 +485,8 @@ const Publicar = () => {
         recaptcha.render()
         recaptchaObject.current = recaptcha
 
+        scrolltopref.current.scrollIntoView({behavior: 'smooth'})
+
         recaptcha.verify().then(() => {
             var provider = new PhoneAuthProvider(auth)
             provider.verifyPhoneNumber(`+351${user.phone}`, recaptcha).then(verificationId => {
@@ -541,6 +545,7 @@ const Publicar = () => {
                 :null
             }
             <div className={styles.flex}>
+            <div className={verifyPhone||confirmationPopup||confirmationEditPopup||tooManyReservations?styles.backdrop:null} onClick={() => !publicationSent&&(setVerifyPhone(false)||setConfirmationPopup(false)||setConfirmationEditPopup(false)||setTooManyReservations(false))}/>
                 <div className={styles.main}>
                     <div ref={recaptchaWrapperRef}>
                         <div id='recaptcha-container' className={styles.recaptcha_container}></div>
@@ -559,7 +564,6 @@ const Publicar = () => {
                     >
                     <Sessao text={"Excedeste o limite de fotografias (max. 6)"}/>
                     </CSSTransition>
-                    <div className={verifyPhone||confirmationPopup||confirmationEditPopup||tooManyReservations?styles.backdrop:null} onClick={() => !publicationSent&&(setVerifyPhone(false)||setConfirmationPopup(false)||setConfirmationEditPopup(false)||setTooManyReservations(false))}/>
                     <CSSTransition
                         in={verifyPhone}
                         timeout={1000}
@@ -646,7 +650,7 @@ const Publicar = () => {
                     </CSSTransition>
 
                     <div className={styles.reservar}>
-                        <div className={styles.reservar_upper} style={{marginTop:edit?"100px":""}}>
+                        <div className={styles.reservar_upper} style={{marginTop:edit?"100px":""}} ref={scrolltopref}>
                             <p className={styles.reservar_upper_title}>
                                 {edit?
                                 <div><span style={{color:'#FF785A'}}>EDITAR</span><span> TAREFA</span></div>:
@@ -789,8 +793,14 @@ const Publicar = () => {
                                     correct_location_online={checkAddressCorrect()}
                                     correct_phone={user.phone===phone&&user_phone_verified}
                                     correct_email={user_email_verified}
-                                    setVerifyPhone={val => setVerifyPhone(val)}
-                                    setVerifyEmail={val => setVerifyEmail(val)}
+                                    setVerifyPhone={val => {
+                                        scrolltopref.current.scrollIntoView({behavior: 'smooth'})
+                                        setVerifyPhone(val)}}
+                                        
+                                    setVerifyEmail={val => {
+                                        scrolltopref.current.scrollIntoView({behavior: 'smooth'})
+                                        setVerifyEmail(val)
+                                    }}
                                     expired={expired}
                                     seconds={seconds}
                                     setTaskType={val => setTaskType(val)}

@@ -236,7 +236,7 @@ const Home = (props) => {
                                             optionFirst={first} 
                                             option={first} 
                                             changeOption={val => setFirst(val)}
-                                            placeholder={"Secção..."}/>
+                                            placeholder={"Tipo"}/>
                                     </div>
                                 </div>
                                 <div className={styles.zone_arrow_div}>
@@ -262,7 +262,7 @@ const Home = (props) => {
                                             optionFirst={first} 
                                             option={second} 
                                             changeOption={val => setSecond(val)}
-                                            placeholder={'Tarefa...'}/>
+                                            placeholder={'Tarefa'}/>
                                     </div>
                                 </div>
                                 <div className={styles.zone_arrow_div}>
@@ -290,7 +290,7 @@ const Home = (props) => {
                                             optionFirst={first} 
                                             option={third} 
                                             changeOption={val => setThird(val)}
-                                            placeholder={'Região...'}/>
+                                            placeholder={'Região'}/>
                                     </div>
                                 </div>
                             </div>
@@ -482,7 +482,7 @@ const Home = (props) => {
                             <p className={styles.footer_div_text}>Contactos</p>
                             <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dê uma sugestão</p>
                             <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
-                            <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me profissional</p>
+                            <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>
                         </div>
                         <div className={styles.footer_div_column}>
                             <div>

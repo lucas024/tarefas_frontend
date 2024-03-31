@@ -27,6 +27,8 @@ import {
 import { useTimer } from 'react-timer-hook';
 import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
 import TosBanner from '../general/tosBanner'
+import WorkerBanner from '../general/workerBanner';
+import logo_text from '../assets/logo_action_png_white_background.png'
 
 const AuthWorker = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -86,6 +88,7 @@ const AuthWorker = (props) => {
     const [verificationTab, setVerificationTab] = useState(0)
     const [tosAccepted, setTosAccepted] = useState(false)
     const [tosBanner, setTosBanner] = useState(false)
+    const [showLanding, setShowLanding] = useState(false)
 
     const [codeSent, setCodeSent] = useState(null)
     const [codeStatus, setCodeStatus] = useState(null)
@@ -109,10 +112,13 @@ const AuthWorker = (props) => {
 
     useEffect(() => {
         const paramsAux = Object.fromEntries([...searchParams])
+        console.log(paramsAux)
         if(paramsAux)
         {
-            setSelectedAuth(parseInt(paramsAux.type))
-            // setSelectedAuth(parseInt(2))
+            // setSelectedAuth(parseInt(paramsAux.type))
+            setSelectedAuth(2)
+            if(parseInt(paramsAux.landing)===1)
+                setShowLanding(true)
         }
     }, [searchParams])
 
@@ -152,6 +158,17 @@ const AuthWorker = (props) => {
         else{
             setNameWrong(true)
         }
+    }
+
+    const setEntityNameHandler = val => {
+        if(entityName.length===0)
+            setEntityName(val.replace(/\s/g, ''))
+        else
+            setEntityName(val)
+
+        let aux = val.replace(/\s/g, '').length
+        if(aux>1) setEntityNameWrong(false)
+        else setEntityNameWrong(true)
     }
 
     const setPhoneHandler = (val) => {
@@ -662,6 +679,16 @@ const AuthWorker = (props) => {
                     cancel={() => setTosBanner(false)}/>
                 :null
             }
+            {
+                showLanding?
+                <WorkerBanner 
+                    authPage={true}
+                    confirm={() => {
+                        setShowLanding(false)
+                    }}
+                    cancel={() => setShowLanding(false)}/>
+                :null
+            }
             <div className={styles.auth_main_worker}>
                 <div ref={recaptchaWrapperRef}>
                     <div id='recaptcha-container' className={styles.recaptcha_container}></div>
@@ -671,6 +698,9 @@ const AuthWorker = (props) => {
                     {
                         selectedAuth!==2?
                         <div className={styles.area_top} style={{borderBottom:"1px solid #FF785A50"}}>
+                            <div className={styles.text_brand_wrapper}>
+                                <img className={styles.text_brand} src={logo_text}/>
+                            </div>
                             <ul>
                                 <li onClick={() => setSelectedAuth(1)} style={{color:"#FF785A"}} className={selectedAuth?styles.li_active_worker:""}>
                                     <span className={selectedAuth?styles.li_text_active_worker:styles.li_text}>Login</span>
@@ -811,7 +841,7 @@ const AuthWorker = (props) => {
                                             updateSelectedProfessions={list => setSelectedProf(list)}
                                             updateSelectedRegions={list => setSelectedReg(list)}
                                             updateSelectedType={val => setSelectedType(val)&&setEntityNameWrong(false)}
-                                            updateEntityName={val => setEntityName(val)}
+                                            updateEntityName={val => setEntityNameHandler(val)}
                                             verifySelectedProfessions={() => verifySelectedProfessions()}
                                             verifySelectedRegions={() => verifySelectedRegions()}
                                             verifySelectedType={() => verifySelectedType()}
@@ -949,17 +979,28 @@ const AuthWorker = (props) => {
                         </div>
                         :null
                 }
-                <div className={styles.split_wrapper}>
-                    <span className={styles.split}/>
-                    <div className={styles.split_text_wrapper}>
-                        <div className={styles.split_text_frontdrop}>
-                        <span className={styles.split_text}>OU</span>
+                {
+                    selectedAuth===2?
+                    null
+                    :
+                    <div className={styles.split_wrapper}>
+                        <span className={styles.split}/>
+                        <div className={styles.split_text_wrapper}>
+                            <div className={styles.split_text_frontdrop}>
+                            <span className={styles.split_text}>OU</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className={styles.button_area}>
-                    <span className={styles.user_button} onClick={() => navigate('/authentication?type=1')}>Área Utilizador</span>
-                </div>
+                }
+                
+                {
+                    selectedAuth===2?
+                    null
+                    :
+                    <div className={styles.button_area}>
+                        <span className={styles.user_button} onClick={() => navigate('/authentication?type=1')}>Área Utilizador</span>
+                    </div>
+                }
             </div>
             
         </div>

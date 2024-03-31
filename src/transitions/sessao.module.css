@@ -19,3 +19,14 @@
 .sessao_text{
 
 }
+
+
+@media (max-width: 500px){
+    .sessao{
+        max-width: 120px;
+        font-size: 0.8rem;
+        top: 40px;
+        z-index: 6;
+        right: 30px;
+    }
+}

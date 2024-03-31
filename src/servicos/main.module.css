@@ -62,7 +62,7 @@
     animation: 0.6s ease-out 0s 1 slideInFromLeft;
 }
 .day_splitter{
-    margin: 40px auto;
+    margin: 30px auto;
     width: 100%;
     height: 1px;
     background-color: white;
@@ -210,6 +210,7 @@
 }
 .placeholder_left_text{
     text-transform: uppercase;
+    font-size: 1.3rem;
 }
 .placeholder_left_text_nonselcted{
     color: var(--brand);
@@ -291,6 +292,7 @@
 .searchTop{
     width: 100%;
     padding: 10px 15px;
+    height: 100%;
     border-radius: 5px;
     font-size: 1rem;
     box-sizing: border-box;
@@ -400,16 +402,31 @@
 
 .search_filter_div_left{
     margin-left: 10px;
+    width: 250px;
+}
+.search_filter_div_right{
+    width: 250px;
 }
 
-@media (min-width: 1200px){
+@media (max-width: 1500px){
     .placeholder_left_text{
-        font-size: 1.3rem;
+        font-size: 1rem;
         margin-left: 10px;
     }
     .placeholder_left_icon{
-        width: 40px !important;
-        height: 40px !important;
+        width: 30px !important;
+        height: 30px !important;
+    }
+}
+
+@media (max-width: 1250px){
+    .placeholder_left_text{
+        font-size: 0.9rem;
+        margin-left: 10px;
+    }
+    .placeholder_left_icon{
+        width: 15px !important;
+        height: 15px !important;
     }
 }
 
@@ -423,22 +440,29 @@
     .searchInfoDiv{
         font-size: 0.8rem;
     }
-    .placeholder_left_icon{
-        width: 20px !important;
-        height: 20px !important;
+    .placeholder_left_text{
+        font-size: 0.8rem;
+        margin-left: 5px;
     }
 }
 
 
-@media (max-width: 900px){
+@media (max-width: 1000px){
     .cor{
         font-size: 0.8rem;
     }
     .placeholder_left{
-        font-size: 0.8rem;
+        justify-content: center;
     }
     .search_clear{
         display: none;
+    }
+    .placeholder_left_text{
+        display: none;
+    }
+    .placeholder_left_icon{
+        width: 30px !important;
+        height: 30px !important;
     }
 }
 
@@ -458,5 +482,84 @@
     .search_filter_div_left{
         margin-left: 0px;
         margin-top: 5px;
+    }
+}
+
+@media (max-width: 500px){
+    .servicos{
+        height: calc(100vh - 108px);
+    }
+    .top_info_numbers{
+        font-size: 0.8rem;
+    }
+    .top_info_filter_value_on{
+        font-size: 0.6rem;
+    }
+    .top_info_filter_value{
+        font-size: 0.6rem;
+    }
+    .top_info_filter_icon{
+        width: 12px !important;
+        height: 12px !important;
+    }
+    .search_input_div{
+        height: 30px;
+    }
+    .searchTop{
+        height: 100%;
+        font-size: 0.8rem;
+        padding: 0 5px;
+    }
+    .search_final_icon{
+        width: 25px !important;
+        height: 25px !important;
+        right: 5px;
+        top: 2.5px;
+    }
+    .search_filter_div{
+        /* height: 25px; */
+    }
+    .search_left{
+        height: 112px;
+        width: 25%;
+    }
+    .search_right{
+        /* margin-top: -38px; */
+    }
+    .search_filter_div_wrapper{
+        margin-top: 5px;
+    }
+    .search_filter_div_left{
+        width: 200px;
+    }
+    .search_filter_div_right{
+        width: 200px;
+    }
+    .num_wrapper{
+        height: 30px;
+    }
+    .num_flex_content{
+        /* padding: 0px 5px; */
+        border-radius: 0px;
+        width: 100%;
+        border-top-width: 1px;
+    }
+    .divider{
+        margin: 10px auto;
+    }
+    .placeholder_left_text{
+        display: none;
+    }
+    .placeholder_left_icon{
+        width: 22px !important;
+        height: 22px !important;
+    }
+    .day_value{
+        font-size: 0.8rem;
+        height: 10px;
+        width: 150px;
+    }
+    .day_splitter{
+        margin: 20px auto;
     }
 }

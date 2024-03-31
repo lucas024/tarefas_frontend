@@ -38,7 +38,7 @@ const SelectHome = (props) => {
         menu: base => ({
             ...base,
             textTransform: props.publicar?"normal":"uppercase",
-            width:props.publicar?"100%":"250px",
+            width:props.publicar||props.home?"100%":"250px",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,
@@ -103,7 +103,7 @@ const SelectHome = (props) => {
             fontFamily: 'Montserrat, sans-serif !important',
             fontWeight: '400',
             fontSize: '0.9rem',
-            textAlign: 'left'
+            textAlign: props.home?'center':'left'
         })
     }
 

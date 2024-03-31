@@ -64,3 +64,9 @@
         min-width: 0;
     }
 }
+
+@media (max-width: 768px) {
+    .flex{
+        height: calc(100vh - 41px);
+    }
+}

@@ -29,7 +29,9 @@ import { user_update_field, user_update_phone_verified, user_update_email_verifi
 import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
 import { auth } from '../firebase/firebase'
 import VerificationBannerEmail from '../general/verificationBannerEmail';
-    
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
+
 const Personal = (props) => {
 
     const api_url = useSelector(state => {return state.api_url})
@@ -52,7 +54,7 @@ const Personal = (props) => {
     const [editBottom, setEditBottom] = useState(false)
     const [selectedProf, setSelectedProf] = useState([])
     const [selectedReg, setSelectedReg] = useState([])
-    const [shake, setShake] = useState(false);
+    const [shake, setShake] = useState(false)
     const [photo, setPhoto] = useState("")
     const [loadingPhoto, setLoadingPhoto] = useState(false)
     const [photoPop, setPhotoPop] = useState(false)
@@ -64,6 +66,7 @@ const Personal = (props) => {
     const [radioSelected, setRadioSelected] = useState(null)
     const [entityName, setEntityName] = useState("")
     const [entityWrong, setEntityWrong] = useState(false)
+    const [listValue, setListValue] = useState('')
 
     const [verifyPhone, setVerifyPhone] = useState(0)
     const [verifyEmail, setVerifyEmail] = useState(0)
@@ -98,6 +101,7 @@ const Personal = (props) => {
             }
             if(user.regioes?.length===0||user.trabalhos?.length===0){
                 setEditBottom(true)
+                setListValue('')
             }
             if(user.phone===""){
                 setEdit(true)
@@ -144,7 +148,8 @@ const Personal = (props) => {
             else{
                 arr.push(trab)
             }
-            setSelectedProf(arr) 
+            setSelectedProf(arr)
+            // setListValue('')
         }
     }
 
@@ -166,14 +171,64 @@ const Personal = (props) => {
         }
     }
 
+    const checkExistsInSearch = options => {
+        for(let el of options)
+        {
+            if(listValue.length===0||el.value.toLowerCase().includes(listValue.toLowerCase()))
+                return true
+        }
+        return false
+    }
+
+    const subMapTrabalhos = options => {
+        return options?.map((trab, i) => {
+            return (
+                listValue.length===0||trab.value.toLowerCase().includes(listValue.toLowerCase())?
+                <div key={i} style={{cursor:editBottom?"pointer":"default"}} className={`${styles.container} ${styles.subcontainer}`} onClick={() => setCheckedProf(trab.value)}>
+                    <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
+                    <span className={editBottom?styles.checkmark:styles.checkmark_disabled}></span>
+                    <div style={{display:'flex', alignItems:'center'}}>
+                        <img src={trab.img} className={editBottom?styles.checkmark_image:styles.checkmark_image_disabled}/>
+                        <span className={editBottom?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.label}</span>
+                    </div>
+                </div>
+                :null
+            )
+            
+        })
+    }
+
     const mapTrabalhos = () => {
         return profissoesGrouped?.map((trab, i) => {
             return (
-                <div key={i} style={{cursor:editBottom?"pointer":"default"}} className={styles.container} onClick={() => setCheckedProf(trab.value)}>
-                    <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
-                    <span className={editBottom?styles.checkmark:styles.checkmark_disabled}></span>
-                    <span className={editBottom?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.label}</span>
+                trab.label==='no-label'?
+                    listValue.length===0||trab.options[0].value.toLowerCase().includes(listValue.toLowerCase())?
+                    <div key={i} style={{cursor:editBottom?"pointer":"default"}} className={styles.container} onClick={() => setCheckedProf(trab.options[0].value)}>
+                        <input type="checkbox" readOnly checked={getCheckedProf(trab.options[0].value)}/>
+                        <span className={editBottom?styles.checkmark:styles.checkmark_disabled}></span>
+                        <div style={{display:'flex', alignItems:'center'}}>
+                            <img src={trab.options[0].img} className={editBottom?styles.checkmark_image:styles.checkmark_image_disabled}/>
+                            <span className={editBottom?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.options[0].label}</span>
+                        </div>
+                    </div>
+                    :null
+                :
+                <div className={styles.checkbox_submap}>
+                    {
+                        checkExistsInSearch(trab.options)?
+                        <div style={{display:'flex', alignItems:'center', marginBottom:'10px'}}>
+                            <img src={trab.img} className={editBottom?styles.checkmark_image:styles.checkmark_image_disabled} style={{marginLeft:0}}/>
+                            <span className={editBottom?styles.checkbox_submap:styles.checkbox_submap_disabled}>{trab.label}</span>
+                        </div>
+                        :null
+                    }
+                    
+                    <div>
+                        {subMapTrabalhos(trab.options)}
+                    </div>
+                    
                 </div>
+                
             )
         })
     }
@@ -181,7 +236,7 @@ const Personal = (props) => {
     const mapRegioes = () => {
         return regioes.map((trab, i) => {
             return (
-                <div key={i} style={{cursor:editBottom?"pointer":"default"}} className={styles.container} onClick={() => setCheckedReg(trab.value)}>
+                <div key={i} style={{cursor:editBottom?"pointer":"default", paddingLeft:"35px"}} className={styles.container} onClick={() => setCheckedReg(trab.value)}>
                     <input type="checkbox" readOnly checked={getCheckedReg(trab.value)}/>
                     <span className={editBottom?styles.checkmark:styles.checkmark_disabled}></span>
                     <span className={editBottom?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.label}</span>
@@ -256,6 +311,7 @@ const Personal = (props) => {
         else if(selectedProf.length>0 && selectedReg.length>0){
             if((radioSelected===1 && entityName.length>1)||radioSelected===0){
                 setEditBottom(false)
+                setListValue('')
                 setLoadingBottom(true)
                 axios.post(`${api_url}/worker/update_selected`, {
                     user_id : user._id,
@@ -680,16 +736,6 @@ const Personal = (props) => {
                         <div className={styles.top_right_flex}>
                             <div className={styles.top_right}>
                                 <div className={edit?styles.input_flex_edit:styles.input_flex}>
-                                    {
-                                        !edit?
-                                            <span className={user?.type===0?styles.edit_top:styles.edit_top_worker}  onClick={() => setEdit(true)}>
-                                                EDITAR
-                                            </span>
-                                            :
-                                            <span className={user?.type===0?styles.save_top:styles.save_top_worker} onClick={() => editDoneHandler()}>
-                                                GUARDAR
-                                            </span>
-                                    }
                                     <div className={styles.input_div_top}>
                                         <div className={styles.input_div}>
                                             <span className={styles.input_title}>Nome</span>
@@ -749,6 +795,16 @@ const Personal = (props) => {
                                                         disabled={!edit}>
                                                 </input>
                                             </div>
+                                            {
+                                                !edit?
+                                                    <span className={user?.type===0?styles.edit_top:styles.edit_top_worker}  onClick={() => setEdit(true)}>
+                                                        EDITAR
+                                                    </span>
+                                                    :
+                                                    <span className={user?.type===0?styles.save_top:styles.save_top_worker} onClick={() => editDoneHandler()}>
+                                                        GUARDAR
+                                                    </span>
+                                            }
                                         </div>
                                         <div className={styles.edit_area_left}>
                                             {
@@ -846,7 +902,7 @@ const Personal = (props) => {
                                 </div>
                                 {   
                                     !editBottom?
-                                    <span className={styles.edit} onClick={() => setEditBottom(true)}>
+                                    <span className={styles.edit} onClick={() => setEditBottom(true)&&setListValue('')}>
                                         EDITAR
                                     </span>
                                     :
@@ -855,8 +911,9 @@ const Personal = (props) => {
                                     </span>
                                 }
                             </div>
-                            <Loader loading={loadingBottom}/>                            
+                            <Loader loading={loadingBottom}/>
                             <div className={styles.flex_bottom}>
+                                
                                 <div className={styles.flex_left}>
                                     <span className={styles.flex_title}>Tarefas que exerço</span>
                                     <span className={editBottom?styles.divider_active:styles.divider}></span>
@@ -865,9 +922,15 @@ const Personal = (props) => {
                                         <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um tipo de tarefa!</span>
                                         :null
                                     }
+                                    
+                                    <div className={styles.input_wrapper}>
+                                        <input onChange={e => setListValue(e.target.value)} placeholder='Pesquisar tarefas...' value={listValue} className={styles.input_list} disabled={!editBottom} maxLength={20}/>
+                                    </div>
                                     <div className={styles.flex_select_div}>
                                         {mapTrabalhos()}
                                     </div>
+                                    
+                                    
                                 </div>
                                 <div className={styles.flex_left}>
                                     <span className={styles.flex_title}>Distritos ou regiões onde trabalho</span>

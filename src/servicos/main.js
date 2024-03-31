@@ -427,15 +427,18 @@ const Main = (props) => {
                         </div>
                         <div className={styles.search_filter_div_wrapper}>
                             <div className={styles.search_filter_div}>
-                                <SelectPublications
-                                        type="worker"
-                                        trabalho={true}
-                                        option={params.work}
-                                        selected={selectedType}
-                                        valueChanged={val => {
-                                            params.region&&setSearchParams({'work': val, 'region': params.region})
-                                            !params.region&&setSearchParams({'work': val})
-                                            setParams({work: val, region: params.region})}}/>
+                                <div className={styles.search_filter_div_right}>
+                                    <SelectPublications
+                                            type="worker"
+                                            trabalho={true}
+                                            option={params.work}
+                                            selected={selectedType}
+                                            valueChanged={val => {
+                                                params.region&&setSearchParams({'work': val, 'region': params.region})
+                                                !params.region&&setSearchParams({'work': val})
+                                                setParams({work: val, region: params.region})}}/>
+                                </div>
+                                
                                 
                                 <div className={styles.search_filter_div_left}>
                                     <SelectPublications 
@@ -508,7 +511,7 @@ const Main = (props) => {
                         </div>
                     </div>
                     {
-                    items?.data?.length>0?
+                    items?.data?.length>0||loading?
                     <div>
                         <div className={listAnim?styles.animList:styles.list} 
                                     onAnimationEnd={() =>{
@@ -516,29 +519,27 @@ const Main = (props) => {
                                     }}>
                             {
                                 selectedType==="trabalhos"?
-                                !loading?  
-                                    items?.type==="trabalhos"?
-                                    mapRowsToDisplay()
-                                    :null
-                                :
-                                <div>
-                                    <div className={styles.loading_skeleton}/>
-                                    <div className={styles.loading_skeleton}/>
-                                    <div className={styles.loading_skeleton}/>
-                                    <div className={styles.loading_skeleton}/>
-                                    <div className={styles.loading_skeleton}/>
-                                </div>
+                                    !loading?  
+                                        items?.type==="trabalhos"?
+                                        mapRowsToDisplay()
+                                        :null
+                                    :
+                                    <div>
+                                        <div className={styles.loading_skeleton}/>
+                                        <div className={styles.loading_skeleton}/>
+                                        <div className={styles.loading_skeleton}/>
+                                        <div className={styles.loading_skeleton}/>
+                                        <div className={styles.loading_skeleton}/>
+                                    </div>
                                 :
                                 !loading?
-                                <div style={{gridTemplateRows: `repeat(${Math.ceil(items?.data?.length/2+1)}, 180px)`}} 
-                                        className={styles.grid}
-                            
-                                >
-                                {
-                                    items?.type==="profissionais"?
-                                    mapBoxesToDisplay()
-                                    :null
-                                }
+                                <div style={{gridTemplateRows: `repeat(${Math.ceil(items?.data?.length/2+1)})`}} 
+                                        className={styles.grid}>
+                                    {
+                                        items?.type==="profissionais"?
+                                        mapBoxesToDisplay()
+                                        :null
+                                    }
                                 </div>
                                 :
                                 <div className={styles.grid}>
@@ -565,7 +566,7 @@ const Main = (props) => {
                     {
                         currDisplay === "solo"?
                         <div className={styles.num_flex}>
-                            <div className={styles.num_flex_content}>
+                            <div className={styles.num_flex_content} style={{borderTopColor:selectedType==="trabalhos"?'#0358e5':'#FF785A'}}>
                                 <span style={{color:"white"}}>_</span>
                                 <span style={{color:"white"}}>_</span>
                                 <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
@@ -575,7 +576,7 @@ const Main = (props) => {
                         </div>
                         :currDisplay === "init"?
                         <div className={styles.num_flex}>
-                            <div className={styles.num_flex_content}>
+                            <div className={styles.num_flex_content} style={{borderTopColor:selectedType==="trabalhos"?'#0358e5':'#FF785A'}}>
                                 <span style={{color:"white"}}>_</span>
                                 <span style={{color:"white"}}>_</span>
                                 <span className={styles.num_style} style={{textDecoration:"underline"}}>{currPage}</span>
@@ -587,7 +588,7 @@ const Main = (props) => {
                         </div>
                         :currDisplay === "middle"?
                         <div className={styles.num_flex}>
-                            <div className={styles.num_flex_content}>
+                            <div className={styles.num_flex_content} style={{borderTopColor:selectedType==="trabalhos"?'#0358e5':'#FF785A'}}>
                                 <ArrowBackIosNewIcon className={styles.arrow}
                                             onClick={() => arrowClick(-1)}/>
                                 <span className={styles.num_style_side} onClick={() => arrowClick(-1)}>{currPage - 1}</span>

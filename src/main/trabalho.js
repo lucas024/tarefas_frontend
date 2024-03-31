@@ -35,6 +35,7 @@ import marker from '../assets/map_marker.png'
 import ExploreOffIcon from '@mui/icons-material/ExploreOff';
 import SignpostIcon from '@mui/icons-material/Signpost';
 import { regioesOptions } from '../general/util';
+import ChatIcon from '@mui/icons-material/Chat';
 
 const ObjectID = require("bson-objectid");
 
@@ -458,7 +459,7 @@ const Trabalho = (props) => {
                         location.state&&location.state.fromUserPage&&userView?
                         <div className={styles.previous_voltar} style={{borderBottom:`3px solid #0358e5`}} onClick={() => backHandler()}>
                             <ArrowBackIcon className={styles.previous_symbol}/>
-                            <span className={styles.previous_voltar_text}>VOLTAR AOS <span style={{color:"#0358e5"}}>MINHAS TAREFAS</span></span>
+                            <span className={styles.previous_voltar_text}>VOLTAR ÀS <span style={{color:"#0358e5"}}>MINHAS TAREFAS</span></span>
                         </div>
                         :
                         <div>
@@ -585,12 +586,15 @@ const Trabalho = (props) => {
                             <div className={styles.top_right}>
                                 {
                                     !userView&&loaded?
+                                    <div>
                                     <span className={styles.top_right_message} onClick={() => {
                                         if(showFull) messageAreaRef.current.focus()
                                         messageRef.current.scrollIntoView()
                                     }}>
                                         Enviar Mensagem
                                     </span>
+                                    <ChatIcon className={styles.top_message_icon}/>
+                                    </div>
                                     :userView?
                                     null
                                     :<span className={`${styles.top_right_message} ${styles.skeleton}`} style={{height:"40px", width:"150px"}}></span>
@@ -612,7 +616,7 @@ const Trabalho = (props) => {
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
                                                 <div className={styles.market_background}>
-                                                    <span className={styles.market_text}>Gostava de contacar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>?</span>
+                                                    <span className={styles.market_text}>Gostavas de contacar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>?</span>
                                                     <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Tornar-me Profissional</span>
                                                 </div>
                                             </div>
@@ -724,10 +728,12 @@ const Trabalho = (props) => {
                             <span className={styles.top_right_user}>Fotografias</span>
                             {
                                 images?.length>0?
-                                <ImageGallery 
-                                items={images} 
-                                infinite={false} 
-                                showPlayButton={false}/>
+                                <div className={styles.image_gallery_wrapper}>
+                                    <ImageGallery 
+                                    items={images} 
+                                    infinite={false} 
+                                    showPlayButton={false}/>
+                                </div>
                                 :<NoPhotographyIcon className={styles.no_photos}/>
                             }
                             
@@ -754,10 +760,10 @@ const Trabalho = (props) => {
                                             placeholder="Escrever mensagem..."
                                         />
                                         <div className={styles.frontdrop}>
-                                            <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"#161F28", textTransform:"capitalize", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>,</span>
+                                            <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"#0358e5", textTransform:"capitalize", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>,</span>
                                             {
                                                 noAccountView?
-                                                <span className={styles.frontdrop_text}>crie uma conta de profissional</span>
+                                                <span className={styles.frontdrop_text}>crie uma conta de profissional.</span>
                                                 :noneView?
                                                 <span className={styles.frontdrop_text}>complete o teu <span style={{color:"white"}}>perfil</span> e <span style={{color:"white"}}>subscrição</span>.</span>
                                                 :noSubView?

@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import styles from '../user/publicar.module.css'
-import BorderColorIcon from '@mui/icons-material/BorderColor';
 import HideImageIcon from '@mui/icons-material/HideImage';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import StarIcon from '@mui/icons-material/Star';
-import DoneIcon from '@mui/icons-material/Done';
 
 const PublicarPhoto = props => {
 

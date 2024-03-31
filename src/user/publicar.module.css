@@ -1087,6 +1087,7 @@ input::placeholder{
     max-width: 1000px;
     margin: 0 auto;
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 .login_button{
     width: 100%;
@@ -1587,6 +1588,10 @@ input::placeholder{
     .top_input_short{
         width: 100%;
         min-width: 10px;
+        font-size: 0.8rem;
+    }
+    .description{
+        font-size: 0.8rem;
     }
     .bot_address_flex{
         flex-direction: column;
@@ -1620,6 +1625,69 @@ input::placeholder{
     .top_left{
         width: 100%;
         justify-content: flex-start;
+    }
+    .reservar_upper_title{
+        font-size: 2rem;
+    }
+    .reservar_upper_desc{
+        font-size: 0.8rem;
+    }
+    .login_button{
+        height: 40px;
+    }
+    .login_button_disabled{
+        height: 40px;
+    }
+    .login_text{
+        font-size: 1rem;
+    }
+    .left_img_qm{
+        width: 40px !important;
+        height: 40px !important;
+        margin-left: 10px;
+        margin-top: 10px;
+    }
+    .flex{
+        height: calc(100vh - 41px);
+    }
+    .foto_img_wrapper{
+        width: 70px !important;
+        height: 170px !important;
+    }
+    .options_text{
+        font-size: 0.7rem;
+    }
+    .options_icon{
+        width: 15px !important;
+        height: 15px !important;
+    }
+    .options_title_text{
+        font-size: 0.9rem;
+    }
+    .login_button_voltar{
+        height: 40px;
+    }
+    .zone_title{
+        font-size: 0.9rem;
+    }
+    .zone_service_icon{
+        width: 20px !important;
+        height: 20px !important;
+    }
+    .zone_service_text{
+        font-size: 0.9rem;
+    }
+    .zone_label{
+        font-size: 0.8rem;
+    }
+    .zone_label_value{
+        font-size: 0.8rem;
+    }
+    .zone_label_div{
+        flex-direction: column;
+    }
+    .carousel_div{
+        margin-top: 15px;
     }
 }
 

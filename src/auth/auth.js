@@ -34,6 +34,8 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao'
 import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
 import TosBanner from '../general/tosBanner'
+import logo_text from '../assets/logo_png_white_background.png'
+
 
 const Auth = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -649,6 +651,9 @@ const Auth = (props) => {
                     {
                         selectedAuth!==2?
                         <div className={styles.area_top}>
+                            <div className={styles.text_brand_wrapper}>
+                                <img className={styles.text_brand} src={logo_text}/>
+                            </div>
                             <ul>
                                 <li onClick={() => setSelectedAuth(1)} className={selectedAuth?styles.li_active:""}>
                                     <span className={selectedAuth?styles.li_text_active:styles.li_text}>Login</span>
@@ -847,15 +852,26 @@ const Auth = (props) => {
                     :
                     null
                 }
-                <div className={styles.split_wrapper}>
-                    <span className={styles.split}/>
-                    <div className={styles.split_text_wrapper} style={{backgroundColor:"#161F28"}}>
-                        <span className={styles.split_text}>OU</span>
+
+                {
+                    selectedAuth===2?
+                    null
+                    :
+                    <div className={styles.split_wrapper}>
+                        <span className={styles.split}/>
+                        <div className={styles.split_text_wrapper} style={{backgroundColor:"#161F28"}}>
+                            <span className={styles.split_text}>OU</span>
+                        </div>
                     </div>
-                </div>
-                <div className={styles.button_area}>
+                }
+                {
+                    selectedAuth===2?
+                    null
+                    :
+                    <div className={styles.button_area}>
                         <span className={styles.worker_button} onClick={() => navigate('/authentication/worker?type=1')}>Área Profissional</span>
                     </div>
+                }
             </div>
         </div>
     )

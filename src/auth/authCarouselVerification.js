@@ -20,9 +20,9 @@ const AuthCarouselVerification = props => {
     const [newCodeSent, setNewCodeSent] = useState(false)
 
     const updateVerification = async () => {
-        await auth.currentUser.reload()
+        await auth.currentUser?.reload()
         //phone
-        if(auth?.currentUser.phoneNumber != null) dispatch(user_update_phone_verified(true))
+        if(auth?.currentUser?.phoneNumber != null) dispatch(user_update_phone_verified(true))
         else dispatch(user_update_phone_verified(false))
         //email
         if(auth?.currentUser?.emailVerified === true) dispatch(user_update_email_verified(true))

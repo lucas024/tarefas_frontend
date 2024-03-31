@@ -517,14 +517,14 @@
         margin-top: 0;
         min-width: 450px;
     }
-}
-@media (max-width: 768px){
-    .top_message_icon{
-        display: block !important;
-    }
     .top_message_text{
         display: none;
     }
+    .top_message_icon{
+        display: block !important;
+    }
+}
+@media (max-width: 768px){
     .top_message{
         padding: 5px;
     }
@@ -536,17 +536,15 @@
 
 @media (max-width: 768px){
     .description_wrapper{
-        min-width: 10px;
-        max-width: 150px;
+        width: 100%;
     }
     .description{
         font-size: 0.7rem;
+        width: max-content;
+        max-width: 250px;
     }
     .description_title{
         font-size: 0.7rem;
-    }
-    .left_div_wrapper{
-        max-width: 100px;
     }
     .left_div_inner{
         flex-direction: column;
@@ -555,7 +553,7 @@
         min-width: 10px;
     }
     .description_title{
-        width: min-content;
+        width: max-content;
         font-size: 0.7rem;
     }
     .left_name{
@@ -564,5 +562,111 @@
     .middle_images{
         margin-left: 0;
         margin-top: 0;
+        max-width: 200px;
+        border-radius: 0;
+        overflow-x: auto;
+        padding-left: 5px;
+    }
+    .left_img{
+        width: 90px !important;
+        height: 90px !important;
     }
 }
+
+@media (max-width: 500px){
+    .worker{
+        height: calc(100vh - 38px);
+    }
+    .reservar_upper_title{
+        font-size: 2rem;
+    }
+    .normal_back_left_symbol{
+        font-size: 0.9rem !important;
+    }
+    .normal_back_left_text{
+        font-size: 0.8rem;
+    }
+    .main_top{
+        margin-top: 20px;
+    }
+    .normal_back_right{
+        padding: 3px 8px;
+    }
+    .normal_back_right_dir{
+        font-size: 0.6rem;
+    }
+    .left_img{
+        width: 70px !important;
+        height: 70px !important;
+    }
+    .left_name{
+        font-size: 0.7rem;
+    }
+    .top_image_div{
+        width: 10px !important;
+        height: 10px !important;
+        padding: 5px 10px;
+    }
+    .top_image_div_selected{
+        width: 10px !important;
+        height: 10px !important;
+        padding: 5px 10px;
+    }
+    .middle_images{
+        max-width: 120px;
+        padding: 5px 0;
+        padding-left: 2px;
+    }
+    .description{
+        width: 90%;
+    }
+    .bottom_title{
+        font-size: 0.8rem;
+    }
+    .bottom_right_title{
+        font-size: 0.8rem;
+    }
+    .bottom_contact{
+        font-size: 0.7rem;
+    }
+    .bottom_icon{
+        padding: 3px;
+        font-size: 0.9rem !important;
+    }
+    .bottom_contact_wrapper{
+        margin: 5px 0;
+    }
+    .list_el{
+        font-size: 0.7rem;
+    }
+    .list_el_active{
+        font-size: 0.8rem;
+    }
+    .message_left_user_name{
+        font-size: 0.8rem;
+    }
+    .message_img{
+        width: 30px;
+        height: 30px;
+    }
+    .user_info_number{
+        font-size: 0.8rem;
+    }
+    .frontdrop_text{
+        font-size: 0.7rem;
+    }
+    .frontdrop_text_action{
+        padding: 7px;
+        font-size: 0.8rem;
+    }
+    .message_enviar{
+        padding: 7px;
+        font-size: 0.8rem;
+    }
+    .message_enviar_disabled{
+        padding: 7px;
+        font-size: 0.8rem;
+    }
+}
+
+

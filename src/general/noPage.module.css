@@ -62,3 +62,14 @@
 .blank_request_click:hover{
     opacity: 0.6;
 }
+
+
+@media (max-width: 500px){
+    .blank_text{
+        font-size: 0.8rem;
+    }
+    .button{
+        padding: 10px;
+        font-size: 0.7rem;
+    }
+}

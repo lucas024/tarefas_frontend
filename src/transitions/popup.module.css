@@ -372,3 +372,32 @@
 .remove:hover{
     opacity: 0.7;
 }
+
+@media (max-width: 500px){
+    .popup{
+        width: 100%;
+        left: 0;
+    }
+    .value{
+        font-size: 0.9rem;
+    }
+    .center_text_div{
+        margin: 10px auto;
+    }
+    .center_text{
+        font-size: 0.8rem;
+        text-align: center;
+    }
+    .button_eliminate{
+        font-size: 0.9rem;
+        border-width: 1px;
+        margin-top: 10px;
+    }
+    .button_cancel{
+        font-size: 0.8rem;
+    }
+    .confirm_button{
+        padding: 7px 0;
+        font-size: 0.8rem;
+    }
+}

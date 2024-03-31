@@ -41,7 +41,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    background-image: url('../assets/to_repeat2.png');
+    background-image: url('../assets/to_repeat4.png');
     background-position: left 120px top 0px; 
 }
 .auth_main_worker_frontdrop{
@@ -142,6 +142,16 @@
     padding: 10px 10px;
     margin-top: 20px;
 }
+.text_brand_wrapper{
+    display: flex;
+    justify-content: center;
+    /* border-bottom: 1px solid #ccc; */
+}
+.text_brand{
+    width: 120px;
+    margin: 0 auto;
+    
+}
 .area_bot_title{
     text-align: center;
     font-weight: 600;
@@ -221,6 +231,7 @@
     display: flex;
     padding: 10px 0px;
     justify-content: center;
+    align-items: center;
     border: 3px solid var(--brand);
     border-radius: 10px;
     width: 100%;
@@ -326,6 +337,29 @@
     border-radius: 5px;
     height: 50px;
     background-color: var(--neutral);
+}
+.subcontainer{
+    margin-left: 20px;
+}
+.input_wrapper_list{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid var(--brand);
+    padding: 0 5px;
+    border-radius: 5px;
+    height: 40px;
+    background-color: var(--neutral);
+    margin-top: 5px;
+}
+.input_list{
+    border: none;
+    outline: none;
+    font-size: 1.1rem;
+    color: var(--brand);
+}
+.input_list::placeholder{
+    font-style: normal;
 }
 .login_input_new{
     border: none;
@@ -497,6 +531,7 @@
     text-transform: uppercase;
     margin-top: 5px;
     font-weight: 600;
+    margin-bottom: 20px;
 }
 .user_button:hover{
     cursor: pointer;
@@ -518,6 +553,7 @@
     text-align: center;
     text-transform: uppercase;
     margin-top: 5px;
+    margin-bottom: 20px;
 }
 .worker_button:hover{
     cursor: pointer;
@@ -749,6 +785,7 @@
     height: 0;
     width: 0;
 }
+
 /* Create a custom checkbox */
 .checkmark {
     position: absolute;
@@ -774,14 +811,31 @@
     margin-bottom: -5px;
     margin-top: 3px;
 }
+.checkbox_text_disabled{
+    color: var(--grey);
+    font-size: 1rem;
+    width: max-content;
+    display: block;
+}
 .checkbox_image{
     width: 20px !important;
     height: 20px !important;
     margin-right: 5px;
 }
+.checkbox_image_disabled{
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 5px;
+    opacity: 0.4;
+}
+.checkbox_submap{
+    color: var(--brand);
+    font-size: 1rem;
+    width: max-content;
+    display: block;
+}
 .map_div{
     width: 100%;
-    margin-top: 10px;
     height: min-content;
     max-height: 320px;
     overflow-y: auto;
@@ -821,7 +875,59 @@ transform: rotate(45deg);
     
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark_disabled {
-background-color: #0358e590;
+background-color: #ffffff;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark_disabled:after {
+content: "";
+position: absolute;
+display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark_disabled:after {
+display: block;
+}
+
+.shake{
+    animation: shake 1s infinite;
+}
+
+@keyframes shake {
+    10%, 90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    
+    20%, 80% {
+      transform: translate3d(2px, 0, 0);
+    }
+  
+    30%, 50%, 70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+  
+    40%, 60% {
+      transform: translate3d(4px, 0, 0);
+    }
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark_disabled:after {
+left: 9px;
+top: 5px;
+width: 5px;
+height: 10px;
+border: solid white;
+border-width: 0 3px 3px 0;
+-webkit-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+transform: rotate(45deg);
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark_disabled {
+    background-color: #FF785A;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -848,10 +954,12 @@ border-width: 0 3px 3px 0;
 -ms-transform: rotate(45deg);
 transform: rotate(45deg);
 }
+    
 
 .radio_div{
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .input_div_wrapper_editable{
@@ -1016,4 +1124,183 @@ transform: rotate(45deg);
     font-weight: 600;
     font-size: 1.1rem;
     color: white;
+}
+
+@media (max-width: 500px){
+    .area{
+        width: 100%;
+        border-radius: 5px;
+    }
+    .split_wrapper{
+        width: 90%;
+    }
+    .button_area{
+        width: 100%;
+    }
+    .area_bot_title{
+        font-size: 0.7rem;
+    }
+    .li_text_active{
+        font-size: 0.8rem;
+    }
+    .li_text_active_worker{
+        font-size: 0.8rem;
+    }
+    .li_text{
+        font-size: 0.8rem;
+    }
+    .area_bot_title_helper{
+        font-size: 0.8rem;
+    }
+    .area_bot_title_helper_mini{
+        font-size: 0.7rem;
+    }
+    .register_title{
+        font-size: 0.7rem;
+    }
+    .login_input{
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+    .login_text{
+        font-size: 0.9rem;
+    }
+    .login_button{
+        height: 40px;
+    }
+    .login_button_worker{
+        height: 40px;
+    }
+    .login_button_disabled{
+        height: 40px;
+    }
+    .split_text{
+        font-size: 0.9rem;
+    }
+    .area_bot_intro_strong_two{
+        font-size: 0.8rem;
+    }
+    .area_bot_intro_strong{
+        font-size: 0.8rem;
+    }
+    .login_input_new{
+        font-size: 0.8rem;
+    }
+    .input_wrapper{
+        height: 40px;
+    }
+    .flag{
+        width: 20px !important;
+        height: 20px !important;
+    }
+    .area_bot_intro{
+        font-size: 0.8rem;
+    }
+    .checkbox_text{
+        font-size: 0.7rem;
+    }
+    .login_button_voltar{
+        height: 40px;
+    }
+    .field_error{
+        font-size: 0.7rem;
+    }
+    .area_password_min{
+        font-size: 0.6rem;
+    }
+    .area_password_min_icon{
+        width: 10px !important;
+        height: 10px !important;
+    }
+    .selected_number{
+        font-size: 0.8rem;
+    }
+    .input_wrapper_list{
+        height: 30px;
+        font-size: 0.8rem;
+    }
+    .input_list::placeholder{
+        font-size: 0.8rem;
+    }
+    .input_list{
+        font-size: 0.8rem;
+    }
+    .bottom_title{
+        font-size: 0.8rem;
+    }
+    .list_el{
+        font-size: 0.7rem;
+    }
+    .user_button{
+        width: 90%;
+        margin-right: 0px;
+        padding: 10px 0;
+        font-size: 0.9rem;
+    }
+    .bottom_switch{
+        font-size: 0.8rem;
+    }
+    .bottom_switch_button{
+        font-size: 0.8rem;
+    }
+    .worker_button{
+        width: 90%;
+        margin-right: 0px;
+        padding: 10px 0;
+        font-size: 0.9rem;
+    }
+    .area{
+        margin-top: 0px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+    .o2_button{
+        padding: 8px 0;
+    }
+    .o2_img{
+        height: 15px;
+        width: 15px;
+    }
+    .o2_text{
+        font-size: 0.9rem;
+    }
+    .ou{
+        font-size: 0.8rem;
+        bottom: -18px;
+    }
+    .auth_main{
+        min-height: calc(100vh - 38px);
+    }
+    .auth_main_worker{
+        width: 100%;
+        min-height: calc(100vh - 41px);
+    }
+    .verification_title_helper{
+        font-size: 0.6rem;
+    }
+    .verification_title{
+        font-size: 1rem;
+    }
+    .verification_desc{
+        font-size: 0.8rem;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .verification_button{
+        height: 40px;
+        font-size: 0.8rem;
+    }
+    .verification_button_helper_or{
+        font-size: 0.7rem;
+    }
+    .verification_button_helper{
+        font-size: 0.7rem;
+    }
+    .worker_carousel_verification{
+        padding-bottom: 20px;
+    }
+    .verification_backdrop{
+        border-radius: 0px;
+    }
 }

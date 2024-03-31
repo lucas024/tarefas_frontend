@@ -50,9 +50,19 @@ const WorkerBanner = (props) => {
                     <span className={styles.line_text}>Criação do teu <span className={styles.action}>perfil de profissional</span>, que será acessível a todos utilizadores do Tarefas. <span className={styles.bold}>Maior exposição</span> ao teu negócio!</span>
                 </div>
                 <span className={styles.confirm_button} onClick={() => props.confirm()}>
-                    REGISTAR-ME COMO PROFISSIONAL
+                    {
+                        props.authPage?
+                        'CONTINUAR PARA CRIAÇÃO DE CONTA'
+                        :
+                        'REGISTAR-ME COMO PROFISSIONAL'
+                    }
+                    
                 </span>
-                <span className={styles.cancel} onClick={() => props.cancel()}>cancelar</span>
+                {
+                    !props.authPage?
+                    <span className={styles.cancel} onClick={() => props.cancel()}>cancelar</span>
+                    :null
+                }
             </div>
             </CSSTransition>
         </div>

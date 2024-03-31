@@ -25,7 +25,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: -150px;
+    margin-top: -300px;
+    width: 100%;
 }
 .sub_main{
     display: flex;
@@ -60,9 +61,15 @@
     text-align: center;
     font-weight: 500;
 }
-.sub_title_special{
-    color: var(--neutral);
-    font-weight: 600;
+.sub_title_special_job{
+    color: var(--job);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1.2rem !important;
+}
+.sub_title_special_action{
+    color: var(--action);
+    font-weight: 700;
     text-transform: uppercase;
 }
 .sub_title_separator{
@@ -90,6 +97,7 @@
     text-align: center;
     font-size: 1.1rem;
     transition: 150ms all;
+    margin: auto;
 }
 .button:hover{
     background-color: var(--neutral);
@@ -107,6 +115,80 @@
 .button_wrapper{
     height: 30px;
     margin: auto;
-    margin-top: 300px;
+    margin-top: 150px;
     transition: 150ms all;
+    width: 100%;
+}
+.button_text{
+    text-transform: uppercase;
+}
+.button_worker{
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: var(--action);
+    font-weight: 600;
+    cursor: pointer;
+    transition: 150ms all;
+    width: max-content;
+    font-weight: 600;
+    color: var(--neutral);
+    text-align: center;
+    font-size: 1.1rem;
+    transition: 150ms all;
+    margin: auto;
+}
+.button_worker:hover{
+    background-color: var(--neutral);
+    color: var(--action);
+}
+.button_separator{
+    width: 100%;
+    height: 1px;
+    background-color: var(--neutral);
+    opacity: 0.5;
+    margin: 70px 0;
+}
+
+@media (max-width: 600px){
+    .welcome{
+        height: 100vh;
+    }
+    .button{
+        width: 100%;
+        padding: 8px 0;
+        border-radius: 0px;
+    }
+    .button_worker{
+        width: 100%;
+        padding: 8px 0;
+        border-radius: 0px;
+    }
+    .button_separator{
+        margin: 50px 0;
+    }
+    .sub_sub_main{
+        width: 80%;
+        text-align: center;
+    }
+    .sub_title{
+        font-size: 0.9rem;
+    }
+    .sub_title_special_job{
+        font-size: 0.8rem !important;
+    }
+    .sub_title_special_action{
+        font-size: 0.8rem !important;
+    }
+    .button_text{
+        font-size: 0.8rem;
+    }
+    .text_brand{
+        width: 200px;
+    }
+    .sub_title_separator{
+        font-size: 0.7rem;
+    }
+    .main{
+        margin-top: -200px;
+    }
 }

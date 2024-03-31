@@ -34,14 +34,16 @@ const SelectPublications = (props) => {
             fontFamily: "inherit",
             fontWeight: "400",
             color: "#FF785A",
-            width:"250px",
+            width:"100%",
             transition: "0.2s all ease-in-out",
             borderRadius: "5px",
             border: state.isSelected? "1px solid white": 0,
             boxShadow: "white",
-            height: "40px",
+            height: "100%",
+            minHeight: '20px',
             padding: "0 5px",
             color: "#ccc",
+            height: '100%',
             "&:hover": {
                 cursor: "pointer",
             }
@@ -57,7 +59,7 @@ const SelectPublications = (props) => {
         menu: base => ({
             ...base,
             textTransform: "uppercase",
-            width:"200px",
+            width:"100%",
             margin: "auto",
             cursor: "pointer",
             borderRadius: 0,

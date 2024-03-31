@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import styles from './welcome.module.css'
 import logo_text from '../assets/logo_text.png'
 import {CSSTransition}  from 'react-transition-group';
+import { useNavigate } from 'react-router-dom';
 
 const Welcome = (props) => {
+
+    const navigate = useNavigate()
 
     const [finalTrigger, setFinalTrigger] = useState(false)
 
@@ -22,17 +25,17 @@ const Welcome = (props) => {
                             unmountOnExit
                             >
                             <div className={styles.sub_main}>
-                                <span className={styles.sub_title_separator}>O lugar ideal para</span>
+                                {/* <span className={styles.sub_title_separator}>O lugar ideal para</span> */}
                                 <div className={styles.sub_sub_main}>
                                     <span className={styles.sub_title}>
-                                        <span className={styles.sub_title_special} style={{color:"#0358e5"}}> publicar </span>
-                                        a tua tarefa e receber contacto dos profissionais.
+                                        <span className={styles.sub_title_special_job}> publica </span>
+                                        a tua tarefa e recebe contacto dos profissionais.
                                     </span>
                                 </div>
                                 <span className={styles.sub_title_separator}>OU</span>
                                 <div className={styles.sub_sub_main}>
                                     <span className={styles.sub_title}>
-                                        <span className={styles.sub_title_special} style={{color:"#FF785A"}}> encontrar profissionais </span> 
+                                        <span className={styles.sub_title_special_action}> encontra profissionais </span> 
                                         para realizar a tua tarefa.
                                     </span>
                                 </div>
@@ -49,9 +52,16 @@ const Welcome = (props) => {
                                 classNames="fade"
                                 unmountOnExit
                                 >
-                            <span className={styles.button} onClick={() => props.closeWelcome()}>
-                                <span className={styles.button_text}>CONTINUAR PARA A PÁGINA INICIAL</span>
-                            </span>
+                            <div className=''>
+                                <div className={styles.button} onClick={() => props.closeWelcome()}>
+                                    <span className={styles.button_text}>CONTINUAR PARA A PÁGINA INICIAL</span>
+                                </div>
+                                <div className={styles.button_separator}/>
+                                <div className={styles.button_worker} onClick={() => navigate('/authentication/worker?type=0&landing=1')&&props.closeWelcome()}>
+                                    <span className={styles.button_text}>tornar-me um profissional</span>
+                                </div>
+                            </div>
+                            
                         </CSSTransition>
                     </div>                    
                 </div>
