@@ -550,7 +550,7 @@ const Subscription = props => {
                                         {
                                             isCanceled?
                                             <div className={styles.future_end}>
-                                                Fim da subscrição a <span style={{fontWeight:700}}>{endDate&&getDateToString(endDate/1000)}</span>
+                                                Os teus previlégios terminam a <span style={{fontWeight:700}}>{endDate&&getDateToString(endDate/1000)}</span>
                                             </div>
                                             :null
                                         }
@@ -606,7 +606,7 @@ const Subscription = props => {
                                                         <span className={styles.helper_text}>Mensagens</span>
                                                     </div>
                                                     <span className={styles.connector}/>
-                                                    <span className={styles.line_text}>Acesso à <strong>plataforma de mensagens</strong>, onde pode contactar os seus clientes de forma fácil e direta.</span>
+                                                    <span className={styles.line_text}>Acesso à <strong>plataforma de mensagens</strong>, onde podes contactar os teus clientes de forma fácil e direta.</span>
                                                 </div>
                                                 <div className={styles.line}>
                                                     <div className={styles.line_left}>
@@ -690,8 +690,7 @@ const Subscription = props => {
                                         <span className={styles.subtitle}>Plano</span>
                                         <div className={styles.divider}/>
                                         <div>
-                                            <div style={{display:"flex", margin:"10px 0", alignItems:"center"}}>
-                                                <span className={styles.subtitle_sub} style={{margin:"0"}}><span style={{fontWeight:"500"}}>Plano Atual - </span></span>
+                                            <div className={styles.subtitle_sub}>
                                                 {
                                                     trialActive?
                                                     <span className={styles.ya} style={{color:daysTillCharge?"#0358e5":"#fdd835"}}>GRATUÍTO</span>
@@ -816,7 +815,7 @@ const Subscription = props => {
                                                                     </div>
                                                                 </div>
                                                                 <div style={{display:'flex', justifyContent:'center', marginTop:'20px'}}>
-                                                                    <span className={styles.info_text_helper_date} style={{width:'fit-content'}}>{trialActive?'Fim da subscrição experimental':!isCanceled?'Próxima cobrança':'Data de termínio efetivo da Subscrição'}</span>
+                                                                    <span className={styles.info_text_helper_date} style={{width:'fit-content'}}>{trialActive?'Fim da subscrição experimental':!isCanceled?'Próxima cobrança':'Data de término efetivo da Subscrição'}</span>
                                                                 </div>
                                                                 <div className={styles.info_div_pay}>
                                                                     {
@@ -836,7 +835,7 @@ const Subscription = props => {
                                                                     !isCanceled?
                                                                     <p className={styles.selected_plan_value_information}>O cancelamento da subscrição pode ser feito a qualquer altura.</p>
                                                                     :
-                                                                    <p className={styles.selected_plan_value_information}>Poderá fazer uma nova subscrição no momento de termínio da atual.</p>
+                                                                    <p className={styles.selected_plan_value_information}>Poderás fazer uma nova subscrição no momento de término efetivo da atual.</p>
                                                                 }
                                                                 
                                                             </div>
@@ -865,7 +864,7 @@ const Subscription = props => {
                                         </div>
                                         {
                                             !isCanceled&&schedule?
-                                            <div>
+                                            <div className={styles.post_pay}>
                                                 <span className={styles.subtitle}>Método de Pagamento</span>
                                                 <div className={styles.divider}/>
                                                 <span className={styles.subtitle_sub}><span style={{fontWeight:"500"}}>Cartão</span> <span style={{marginLeft:"5px"}}>-</span> <span style={{color:subscriptionStatus==="active"?"#0358e5":"#fdd835", marginLeft:"5px"}}>{subscriptionStatus==="active"?<span style={{display:"flex", alignItems:"center"}}>ATIVO</span>:<span style={{display:"flex", alignItems:"center"}}>ERRO</span>}</span></span>
@@ -1304,8 +1303,8 @@ const Subscription = props => {
                                                                 <span className={styles.right_helper}>Válido até</span>
                                                                 <CardExpiryElement onChange={e => dateValidHanlder(e)} className={styles.right_input_short} options={{style:{base:{color:"#fff"}}}}/>
                                                             </div>
-                                                            <div className={styles.right_section_short}>
-                                                                <span className={styles.right_helper}>CVV</span>
+                                                            <div className={`${styles.right_section_short} ${styles.right_Section_short_helper}`}>
+                                                                <span className={styles.right_helper}>CVC</span>
                                                                 <CardCvcElement onChange={e => cvcValidHanlder(e)} className={styles.right_input_short} options={{style:{base:{color:"#fff"}}}}/>
                                                             </div>
                                                         </div>
@@ -1338,13 +1337,13 @@ const Subscription = props => {
                                                                             :<span>€12.99</span>
                                                                         }
                                                                     </span>
-                                                                    <span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>6.49</span>:'12.99'}/mês)</span>
+                                                                    <span className={styles.equivalente} style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>6.49</span>:'12.99'}/mês)</span>
                                                                 </div>
                                                             </div>
                                                             <div className={styles.info_div}>
                                                                 <div className={styles.info_subdiv}>
                                                                     <span className={styles.info_text_helper}>Modelo:</span>
-                                                                    <span className={styles.info_text}>Cobranças mensais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}>(a cada mês)</span></span>
+                                                                    <span className={styles.info_text}>Cobranças mensais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}} className={styles.equivalente}>(a cada mês)</span></span>
                                                                 </div>
                                                             </div>
                                                             <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
@@ -1372,13 +1371,13 @@ const Subscription = props => {
                                                                             :<span>€68.89</span>
                                                                         }
                                                                     </span>
-                                                                    <span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>5.75</span>:'11.49'}/mês)</span>
+                                                                    <span className={styles.equivalente} style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>5.75</span>:'11.49'}/mês)</span>
                                                                 </div>
                                                             </div>
                                                             <div className={styles.info_div}>
                                                                 <div className={styles.info_subdiv}>
                                                                     <span className={styles.info_text_helper}>Modelo:</span>
-                                                                    <span className={styles.info_text}>Cobranças semestrais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}>(a cada 6 meses)</span></span>
+                                                                    <span className={styles.info_text}>Cobranças semestrais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}} className={styles.equivalente}>(a cada 6 meses)</span></span>
                                                                 </div>
                                                             </div>
                                                             <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
@@ -1406,13 +1405,13 @@ const Subscription = props => {
                                                                             :<span>€119.89</span>
                                                                         }
                                                                     </span>
-                                                                    <span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>4.99</span>:'9.99'}/mês)</span>
+                                                                    <span className={styles.equivalente} style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>4.99</span>:'9.99'}/mês)</span>
                                                                 </div>
                                                             </div>
                                                             <div className={styles.info_div}>
                                                                 <div className={styles.info_subdiv}>
                                                                     <span className={styles.info_text_helper}>Modelo:</span>
-                                                                    <span className={styles.info_text}>Cobranças anuais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}>(a cada 12 meses)</span></span>
+                                                                    <span className={styles.info_text}>Cobranças anuais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}} className={styles.equivalente}>(a cada 12 meses)</span></span>
                                                                 </div>
                                                             </div>
                                                             {
@@ -1626,7 +1625,9 @@ const Subscription = props => {
                                             <div className={styles.alterar_plano_wrap}>
                                                 <span className={styles.alterar_plano}>A alteração do plano ficará suspensa, sendo que o novo plano <span style={{fontWeight:"600"}}>apenas terá início na data da próxima cobrança do plano atual</span>, sendo cobrado o valor do novo plano selecionado. </span>
                                                 <span className={styles.alterar_plano}>A alteração do plano poderá ser cancelada até à data da proxíma cobrança. </span>
-                                                <p className={styles.alterar_plano} style={{marginTop:'20px'}}>Data da próxima cobrança do plano atual: <span className={styles.alterar_plano_date}>{extenseDate(endDate/1000)}</span> <span className={styles.info_text_days_charge} style={{color:"#0358e5", fontWeight:700}}>({daysTillCharge} dias)</span></p>
+                                                <p className={styles.alterar_plano} style={{marginTop:'20px'}}>Data da próxima cobrança do plano atual: 
+                                                    <div style={{display:'flex', alignItems:'center', marginTop:'5px'}}><p className={styles.alterar_plano_date}>{extenseDate(endDate/1000)}</p> <span className={styles.info_text_days_charge} style={{color:"#0358e5", fontWeight:700, marginLeft:'5px'}}>({daysTillCharge} dias)</span></div>
+                                                </p>
                                             </div>
                                             <div className={styles.buttons}>
                                                 <span className={

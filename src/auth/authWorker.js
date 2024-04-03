@@ -115,8 +115,7 @@ const AuthWorker = (props) => {
         console.log(paramsAux)
         if(paramsAux)
         {
-            // setSelectedAuth(parseInt(paramsAux.type))
-            setSelectedAuth(2)
+            setSelectedAuth(parseInt(paramsAux.type))
             if(parseInt(paramsAux.landing)===1)
                 setShowLanding(true)
         }

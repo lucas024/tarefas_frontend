@@ -129,15 +129,18 @@ Para que a tua tarefa possa ser aprovada, altere os seguintes campos:`)
                     unmountOnExit
                     >
                     <div className={styles.popup}>
-                            <span className={styles.value}>Cancelar Subscrição</span>
+                            <span className={styles.value} style={{color:"#FF785A"}}>Cancelar Subscrição</span>
                             <div className={styles.divider}></div>
                             <div className={styles.help_text}>
                                     <p className={styles.help_text_val}>
-                                        O cancelamento da subscrição terá efeito imediato, mas manterá os privilégios de conta ativa até <span style={{color:"#FF785A"}}>{props.date}</span>.
+                                        O cancelamento da subscrição terá efeito imediato, mas manterá todos os seu previlégios até <span style={{color:"#FF785A"}}>{props.date}</span>.
                                     </p>
                             </div>
                             <span className={styles.confirm_button} onClick={() => props.confirm()}>
-                                CONFIRMAR
+                                CONFIRMAR CANCELAMENTO
+                            </span>
+                            <span className={styles.cancel} onClick={() => props.cancelHandler()}>
+                                CANCELAR
                             </span>
                     </div>
                 </CSSTransition>

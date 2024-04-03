@@ -39,6 +39,15 @@
     background: linear-gradient(270deg, rgba(3,88,229,1) 0%, rgba(253,216,53,1) 100%);
     transition: 150ms;
 }
+
+.selected_number{
+    font-size: 0.9rem;
+    font-weight: 400;
+    font-family: 'Roboto Mono', monospace;
+    color: var(--neutral);
+}
+
+
 .top_separator_complete{
     border-radius: 20px;
     height: 2px;
@@ -323,12 +332,11 @@ input[type=file]{
     border-bottom: 1px solid var(--grey);
     color: var(--grey);
     width: 450px;
-    height: 80px;
+    height: 150px;
     padding: 5px;
     font-size: 1rem;
     font-weight: 400;
     font-family: 'Montserrat', sans-serif;
-    border-radius: 5px;
     background-color: var(--grey)ccc10;
 }
 .textarea_input_edit{
@@ -336,7 +344,7 @@ input[type=file]{
     border-bottom: 1px solid var(--grey);
     color: var(--brand);
     width: 450px;
-    height: 80px;
+    height: 150px;
     padding-left: 5px;
     font-size: 1rem;
     font-weight: 400;
@@ -410,6 +418,7 @@ input[type=file]{
     text-transform: uppercase;
     width: 110px;
     color: var(--neutral);
+    width: max-content;
 }
 .input_email{
     font-weight: 400;
@@ -1037,6 +1046,9 @@ transform: rotate(45deg);
         margin-top: 10px;
         font-size: 0.9rem;
     }
+    .worker_area{
+        margin-top: 330px;
+    }
 }
 
 @media (max-width: 500px){
@@ -1055,5 +1067,140 @@ transform: rotate(45deg);
     .input_icon{
         width: 18px !important;
         height: 18px !important;
+    }
+    .status_div_title{
+        font-size: 0.6rem;
+    }
+    .status_div_flex_title{
+        font-size: 0.9rem;
+    }
+    .top_complete{
+        font-size: 0.7rem;
+    }
+    .top_complete_arrow{
+        width: 12px !important;
+        height: 12px !important;
+    }
+    .line_icon{
+        width: 12px !important;
+        height: 12px !important;
+    }
+    .line_text{
+        font-size: 0.6rem;
+    }
+    .line_text_complete{
+        font-size: 0.6rem;
+    }
+    .line_val_complete{
+        width: 15px !important;
+        height: 15px !important;
+    }
+    .input_title{
+        font-size: 0.7rem;
+        width: max-content;
+    }
+    .personal_subtitle{
+        font-size: 0.7rem;
+    }
+    .edit_top_worker{
+        font-size: 0.9rem;
+        padding: 7px 12px;
+    }
+    .worker_area{
+        margin-top: 180px;
+    }
+    .flex{
+        height: max-content;
+    }
+    .top_edit_area{
+        height: max-content;
+    }
+    .edit{
+        font-size: 0.9rem;
+        padding: 7px 12px;
+    }
+    .save{
+        font-size: 0.9rem;
+        padding: 7px 12px;
+    }
+    .save_top{
+        font-size: 0.9rem;
+        padding: 7px 12px;
+    }
+    .save_top_worker{
+        font-size: 0.9rem;
+        padding: 7px 12px;
+    }
+    .flex_title{
+        font-size: 0.7rem;
+    }
+    .checkbox_text{
+        font-size: 0.8rem;
+    }
+    .checkbox_text_disabled{
+        font-size: 0.8rem;
+    }
+    .checkmark_image_disabled{
+        width: 20px !important;
+        height: 20px !important;
+    }
+    .checkmark_image{
+        width: 20px !important;
+        height: 20px !important;
+    }
+    .flex_bottom{
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .flex_left{
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .divider{
+        height: 1px;
+        margin: 5px 0;
+    }
+    .divider_active{
+        height: 1px;
+        margin: 5px 0;
+    }
+    .flex_select_div{
+        max-height: 400px;
+        border: 1px solid #ffffff50;
+        border-top: none;
+        padding: 5px;
+        box-sizing: border-box;
+        border-radius: 5px;
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
+    }
+    .input_list{
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .flex_left_mobile{
+        margin-bottom: 150px;
+    }
+    .textarea_input{
+        font-size: 0.8rem;
+    }
+    .textarea_input::placeholder{
+        font-size: 0.8rem;
+    }
+    .image_wrapper{
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .input_flex_edit{
+        padding-left: 0px;
+    }
+    .textarea_input_edit{
+        font-size: 0.8rem;
+    }
+    .textarea_input_edit::placeholder{
+        font-size: 0.8rem;
+    }
+    .input_div_button_text{
+        font-size: 0.7rem;
     }
 }

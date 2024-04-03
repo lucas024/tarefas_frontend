@@ -183,17 +183,19 @@
     justify-content: space-between;
 }
 .subtitle{
-    margin: 20px 0 10px 0;
+    margin: 10px auto 5px auto;
     font-size: 1.3rem;
-    display: inline-block;
+    display: block;
     text-transform: uppercase;
     font-weight: 600;
     color: white;
+    width: max-content;
 }
 .ya{
     font-size: 0.9rem;
     color: var(--job);
     margin-left: 5px;
+    font-weight: 600;
 }
 .subtitle_sub{
     margin: 10px auto;
@@ -203,6 +205,8 @@
     font-weight: 500;
     color: var(--grey);
     display: flex;
+    justify-content: center;
+    flex-direction: column;
     align-items: center;
 }
 .divider{
@@ -389,7 +393,7 @@
     background: #0358e590;
     padding: 10px 20px;
     border-radius: 5px;
-    width: min-content;
+    width: max-content;
     text-align: center;
     box-sizing: border-box;
 }
@@ -423,9 +427,9 @@
     align-items: center;
 }
 .future_end{
-    color: var(--brand);
+    color: var(--neutral);
     font-size: 0.6rem;
-    font-weight: 700;
+    font-weight: 300;
     margin-top: 5px;
 }
 .info_text_helper{
@@ -870,6 +874,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     width: 20%;
     cursor: pointer;
     position: relative;
+    min-width: max-content;
 }
 .indicator{
     height: 3px;
@@ -1250,7 +1255,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
 }
 .alterar_plano_wrap{
     width: 100%;
-    margin-top: 80px;
+    margin-top: 100px;
     margin-bottom: -50px;
 }
 .alterar_plano{
@@ -1264,6 +1269,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     background-color: var(--job);
     border-radius: 5px;
     padding: 5px;
+    width: max-content;
 }
 .arrow{
     margin: 0px 5px;
@@ -1317,5 +1323,214 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     }
     .sub_info_bottom{
         width: 600px;
+    }
+    .mid_content{
+        width: 550px;
+    }
+}
+
+@media (max-width: 768px){
+    .top_title{
+        font-size: 1.1rem;
+    }
+    .mid_content{
+        width: 100%;
+    }
+    .alterar_plano_wrap{
+        padding: 0 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .selected_plan_value_information{
+        margin-left: 5px;
+    }
+}
+
+
+@media (max-width: 500px){
+    .top_title{
+        font-size: 1rem;
+    }
+    .subscription_title{
+        height: 50px;
+    }
+    .user_desc_top{
+        font-size: 0.6rem;
+    }
+    .user_desc{
+        font-size: 0.9rem;
+    }
+    .subtitle{
+        margin: auto;
+        width: max-content;
+        display: block;
+        font-size: 1rem;
+    }
+    .subtitle_sub{
+        font-size: 0.8rem;
+        justify-content: center;
+        align-items: center;
+    }
+    .ya{
+        font-size: 0.8rem;
+    }
+    .sub_info_title{
+        font-size: 1rem;
+        margin-top: 15px;
+    }
+    .subtitle_sub{
+        font-size: 0.6rem;
+    }
+    .indicator_text{
+        font-size: 0.6rem;
+    }
+    .plans_title{
+        width: max-content;
+        margin: 30px auto 0 auto;
+        font-size: 0.9rem;
+    }
+    .section_img{
+        width: 30px !important;
+        height: 30px !important;
+    }
+    .section_type{
+        font-size: 1rem;
+    }
+    .section_type_desc{
+        font-size: 0.55rem;
+    }
+    .section_valor_top_symbol{
+        width: 12px !important;
+        height: 12px !important;
+    }
+    .section_valor_top_number{
+        font-size: 1.4rem;
+    }
+    .section_valor_top_number_decimal{
+        font-size: 0.8rem;
+    }
+    .section_desc_of_pay{
+        font-size: 0.5rem;
+        text-align: center;
+    }
+    .selected_plan_title{
+        margin-top: 10px;
+    }
+    .selected_plan_no_value{
+        margin-top: 10px;
+        font-size: 0.7rem;
+        width: max-content;
+    }
+    .sub_val_wrap_image{
+        width: 20px !important;
+        height: 20px !important;
+    }
+    .section_img_small{
+        width: 20px !important;
+        height: 20px !important;
+    }
+    .sub_val_date{
+        font-size: 0.9rem;
+    }
+    .selected_plan_value{
+        font-size: 0.7rem;
+    }
+    .selected_plan_discount_wrap{
+        text-align: center;
+        display: flex;
+        justify-content: center;
+    }
+    .selected_plan_value_normal{
+        font-size: 0.7rem;
+    }
+    .selected_plan_value_information{
+        font-size: 0.6rem;
+        margin-left: 0px;
+    }
+    .buttons{
+        flex-direction: column;
+    }
+    .button_add{
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 0px;
+    }
+    .button_cancel{
+        margin-left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 5px 10px;
+        margin-top: 5px;
+        border-radius: 0px;
+    }
+    .subscription{
+        height: 100%;
+    }
+    .button_add_disabled{
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 0px;
+    }
+    .info_text_helper{
+        font-size: 0.7rem;
+    }
+    .info_text{
+        font-size: 0.8rem;
+        width: max-content;
+    }
+    .info_text_helper_date{
+        font-size: 0.7rem;
+    }
+    .info_text_days_charge{
+        font-size: 0.6rem;
+    }
+    .card_right_button{
+        padding: 10px;
+        font-size: 0.9rem;
+        border-radius: 0px;
+    }
+    .equivalente{
+        font-size: 0.5rem !important;
+        width: max-content;
+        display: none !important;
+    }
+    .details_title{
+        align-self: center;
+        font-size: 0.9rem;
+    }
+    .right_input{
+        font-size: 0.8rem;
+        width: 100%;
+    }
+    .right_input::placeholder{
+        font-size: 0.8rem;
+    }
+    .card{
+        /* display: none; */
+    }
+    .details_right{
+        width: 100%;
+        box-sizing: border-box;
+        margin-left: 0;
+        padding: 0 10px;
+    }
+    .right_section_short_div{
+        justify-content: flex-start;
+    }
+    .right_input_short{
+        width: 100px;
+    }
+    .right_Section_short_helper{
+        margin-top: 2px;
+        margin-left: 10px;
+    }
+    .card_right_button_remove{
+        border-radius: 0px;
+    }
+    .post_pay{
+        margin-top: 20px;
+    }
+    .canceled_title{
+        font-size: 0.8rem;
     }
 }

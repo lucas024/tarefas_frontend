@@ -67,6 +67,8 @@ const Personal = (props) => {
     const [entityName, setEntityName] = useState("")
     const [entityWrong, setEntityWrong] = useState(false)
     const [listValue, setListValue] = useState('')
+    const [shakeTarefas, setShakeTarefas] = useState(false)
+    const [fullList, setFullList] = useState(false)
 
     const [verifyPhone, setVerifyPhone] = useState(0)
     const [verifyEmail, setVerifyEmail] = useState(0)
@@ -144,12 +146,20 @@ const Personal = (props) => {
             let arr = [...selectedProf]
             if(selectedProf.includes(trab)){
                 arr.splice(arr.indexOf(trab), 1) 
+                setFullList(false)
             }
-            else{
+            else if(arr.length<=8){
+                if(arr.length===8) setFullList(true)
                 arr.push(trab)
             }
+    
+            else if(arr.length===9)
+            {
+                console.log('yo')
+                setShakeTarefas(true)
+                setTimeout(() => setShakeTarefas(false), 1000)
+            } 
             setSelectedProf(arr)
-            // setListValue('')
         }
     }
 
@@ -184,12 +194,12 @@ const Personal = (props) => {
         return options?.map((trab, i) => {
             return (
                 listValue.length===0||trab.value.toLowerCase().includes(listValue.toLowerCase())?
-                <div key={i} style={{cursor:editBottom?"pointer":"default"}} className={`${styles.container} ${styles.subcontainer}`} onClick={() => setCheckedProf(trab.value)}>
+                <div key={i} style={{cursor:(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?"pointer":"default"}} className={`${styles.container} ${styles.subcontainer}`} onClick={() => setCheckedProf(trab.value)}>
                     <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
-                    <span className={editBottom?styles.checkmark:styles.checkmark_disabled}></span>
+                    <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkmark:styles.checkmark_disabled}></span>
                     <div style={{display:'flex', alignItems:'center'}}>
-                        <img src={trab.img} className={editBottom?styles.checkmark_image:styles.checkmark_image_disabled}/>
-                        <span className={editBottom?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.label}</span>
+                        <img src={trab.img} className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkmark_image:styles.checkmark_image_disabled}/>
+                        <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.label}</span>
                     </div>
                 </div>
                 :null
@@ -203,12 +213,12 @@ const Personal = (props) => {
             return (
                 trab.label==='no-label'?
                     listValue.length===0||trab.options[0].value.toLowerCase().includes(listValue.toLowerCase())?
-                    <div key={i} style={{cursor:editBottom?"pointer":"default"}} className={styles.container} onClick={() => setCheckedProf(trab.options[0].value)}>
+                    <div key={i} style={{cursor:(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.options[0].value)?"pointer":"default"}} className={styles.container} onClick={() => setCheckedProf(trab.options[0].value)}>
                         <input type="checkbox" readOnly checked={getCheckedProf(trab.options[0].value)}/>
-                        <span className={editBottom?styles.checkmark:styles.checkmark_disabled}></span>
+                        <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.options[0].value)?styles.checkmark:styles.checkmark_disabled}></span>
                         <div style={{display:'flex', alignItems:'center'}}>
-                            <img src={trab.options[0].img} className={editBottom?styles.checkmark_image:styles.checkmark_image_disabled}/>
-                            <span className={editBottom?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.options[0].label}</span>
+                            <img src={trab.options[0].img} className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.options[0].value)?styles.checkmark_image:styles.checkmark_image_disabled}/>
+                            <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.options[0].value)?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.options[0].label}</span>
                         </div>
                     </div>
                     :null
@@ -217,8 +227,8 @@ const Personal = (props) => {
                     {
                         checkExistsInSearch(trab.options)?
                         <div style={{display:'flex', alignItems:'center', marginBottom:'10px'}}>
-                            <img src={trab.img} className={editBottom?styles.checkmark_image:styles.checkmark_image_disabled} style={{marginLeft:0}}/>
-                            <span className={editBottom?styles.checkbox_submap:styles.checkbox_submap_disabled}>{trab.label}</span>
+                            <img src={trab.img} className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkmark_image:styles.checkmark_image_disabled} style={{marginLeft:0}}/>
+                            <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkbox_submap:styles.checkbox_submap_disabled}>{trab.label}</span>
                         </div>
                         :null
                     }
@@ -295,6 +305,9 @@ const Personal = (props) => {
                                 ]
                             )
                         )
+                        dispatch(user_update_phone_verified(false))
+                        if(auth.currentUser.phoneNumber!=null)
+                            unlink(auth.currentUser, "phone")
                         setLoadingRight(false)
                         setRightPop(true)
                         setTimeout(() => setRightPop(false), 4000)
@@ -528,7 +541,7 @@ const Personal = (props) => {
                     >
                     {
                         user?.type===1?
-                        <Sessao text={"Número de telefone e descrição atualizados com sucesso!"}/>
+                        <Sessao text={"Número de telefone e/ou descrição atualizados com sucesso!"}/>
                         :
                         <Sessao text={"Número de telefone atualizado com sucesso! Por-favor, volta a verificar."}/>
                     }
@@ -768,7 +781,7 @@ const Personal = (props) => {
                                             </div>
                                         </div>
                                         {/* novo phone input */}
-                                        <div className={styles.input_div} style={{marginTop:'10px'}} onClick={() => !edit&&setVerifyPhone(1)}> 
+                                        <div className={styles.input_div} style={{marginTop:'10px'}}> 
                                             {
                                                 !user_phone_verified?
                                                 <div className={styles.input_div_button} onClick={() => !edit&&setVerifyPhone(1)}>
@@ -855,7 +868,7 @@ const Personal = (props) => {
                     </div>
                     {
                         user?.type===1?
-                        <div>
+                        <div className={styles.worker_area}>
                             <div className={styles.title_flex}>
                                 <div>
                                     <span className={styles.personal_subtitle}>Detalhes Profissional</span>
@@ -915,7 +928,7 @@ const Personal = (props) => {
                             <div className={styles.flex_bottom}>
                                 
                                 <div className={styles.flex_left}>
-                                    <span className={styles.flex_title}>Tarefas que exerço</span>
+                                    <span className={styles.flex_title}>Tarefas que exerço <span className={shakeTarefas?`${styles.selected_number} ${styles.shake}`:styles.selected_number}>({selectedProf?.length}/9)</span></span>
                                     <span className={editBottom?styles.divider_active:styles.divider}></span>
                                     {
                                         editBottom&&selectedProf.length===0?
@@ -932,7 +945,7 @@ const Personal = (props) => {
                                     
                                     
                                 </div>
-                                <div className={styles.flex_left}>
+                                <div className={`${styles.flex_left} ${styles.flex_left_mobile}`}>
                                     <span className={styles.flex_title}>Distritos ou regiões onde trabalho</span>
                                     <span className={editBottom?styles.divider_active:styles.divider}></span>
                                     {

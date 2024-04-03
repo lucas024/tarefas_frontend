@@ -51,7 +51,6 @@ const slice = createSlice({
       }
     },
     user_update_field: (state, action) => {
-      console.log(action.p)
       for(let el of action.payload)
       {
         state.user[el.field] = el.value

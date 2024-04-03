@@ -66,7 +66,6 @@ const SubscriptionAlterar = props => {
                         :
                         <p className={styles.sub_val_date} style={{marginTop:'3px', fontSize:'0.9rem'}}>{props.subscriptionPlanObj?.type}</p>
                     }
-                    <p className={styles.sub_val_date} style={{marginTop:'3px', fontSize:'0.9rem'}}>{props.subscriptionPlanObj?.type}</p>
                     <div className={styles.selected_plan_value_wrap}>
                         <div className={styles.info_div} style={{marginTop:'10px'}}>
                             <div className={styles.info_subdiv}>
@@ -119,7 +118,7 @@ const SubscriptionAlterar = props => {
                                 <div className={styles.info_subdiv}>
                                     <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>VALOR:</span>
                                     <span className={styles.info_text} style={{fontSize:'0.8rem', color:props.discountSubscriber?"#FF785A":"#ffffff"}}>€{planPricingArray[props.nextPlan?props.nextPlan:props.selectedPlan-1]?.total}</span>
-                                    <span className={styles.info_text} style={{fontSize:'0.7rem', fontWeight:400, marginLeft:'5px'}}>(€{planPricingArray[props.nextPlan?props.nextPlan:props.selectedPlan-1]?.monthly}/mês)</span>
+                                    <span className={`${styles.info_text} ${styles.equivalente}`} style={{fontSize:'0.7rem', fontWeight:400, marginLeft:'5px'}}>(€{planPricingArray[props.nextPlan?props.nextPlan:props.selectedPlan-1]?.monthly}/mês)</span>
                                 </div>
                             </div>
                             <div className={styles.info_div}>
@@ -131,7 +130,7 @@ const SubscriptionAlterar = props => {
                         </div>
                     </div>
                 </div>
-                :<span className={styles.selected_plan_no_value} style={{flex:1, padding:"10px 0"}}>Selecione um plano diferente do atual</span>
+                :<span className={styles.selected_plan_no_value} style={{flex:1, padding:"10px 0", backgroundColor:"#FF785A90"}}>Selecione um plano diferente do atual</span>
             }
         </div>
     )

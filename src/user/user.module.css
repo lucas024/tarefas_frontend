@@ -65,8 +65,15 @@
     }
 }
 
-@media (max-width: 768px) {
+
+@media (max-width: 500px) {
+    .status_div_title{
+        font-size: 0.6rem;
+    }
     .flex{
+        height: calc(100vh - 41px);
+    }
+    .area{
         height: calc(100vh - 41px);
     }
 }

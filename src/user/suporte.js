@@ -409,7 +409,7 @@ const Suporte = (props) => {
                     <div className={styles.top}>
                         <div className={styles.top_left_flex}>
                             {/* <span className={styles.top_left_indicator} style={{backgroundColor:adminOn?"#6EB241":"#F40009"}}></span> */}
-                            <SupportAgentIcon className={styles.top_left_name}/>
+                            <SupportAgentIcon className={styles.top_left_name_icon}/>
                             <span className={styles.top_left_name} style={{margin:"0px 5px 0 10px", color:"#fdd835"}}>Cristina</span>
                             <span className={styles.top_left_name_indicator} style={{color:"#ffffff"}}>(Suporte)</span>
 

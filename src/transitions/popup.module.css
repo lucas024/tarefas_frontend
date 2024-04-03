@@ -155,9 +155,10 @@
     margin-left: 5px;
 }
 .help_text_val{
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     text-align: center;
     margin: 20px auto;
+    font-weight: 600;
 }
 .help_text_bottom{
     font-size: 1rem;
@@ -191,7 +192,7 @@
     border: 2px solid var(--action);
     padding: 10px 0;
     text-align: center;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
     font-weight: 600;
     align-items: center;
@@ -398,6 +399,12 @@
     }
     .confirm_button{
         padding: 7px 0;
+        font-size: 0.8rem;
+    }
+    .help_text_val{
+        font-size: 0.9rem;
+    }
+    .cancel{
         font-size: 0.8rem;
     }
 }

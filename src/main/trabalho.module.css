@@ -1027,7 +1027,7 @@
         height: 50px;
     }
     .top_top{
-        margin-top: 60px !important;
+        margin-top: 10px !important;
     }
     .separator{
         margin: 30px auto;
@@ -1045,5 +1045,8 @@
     .delete{
         padding: 8px;
         font-size: 0.8rem;
+    }
+    .message_textarea{
+        font-size: 0.7rem;
     }
 }

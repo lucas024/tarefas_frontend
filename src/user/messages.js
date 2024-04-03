@@ -504,6 +504,7 @@ const AdminMessages = (props) => {
                         updateReadDatabaseAndNavigate(item.chat_id, 1)
                         updateReadLocal(item.chat_id, 1)
                         setChatDisplayInformation(item)
+                        setAllLoaded(false)
                         triggerChatLoad(item.chat_id, true)
                     }
                     }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
@@ -553,6 +554,7 @@ const AdminMessages = (props) => {
                         updateReadDatabaseAndNavigate(item.chat_id, 0)
                         updateReadLocal(item.chat_id, 0)
                         setChatDisplayInformation(item)
+                        setAllLoaded(false)
                         triggerChatLoad(item.chat_id, true)
                     }
                     }} key={i} className={
@@ -605,59 +607,75 @@ const AdminMessages = (props) => {
         return false
     }
 
-    const triggerChatLoad = (chat_id, new_load) => {
-
-        // const paramsAux = Object.fromEntries([...searchParams])
-        let local_all_loaded = false
-        setDisplayLoadingNew(true)
-        axios.get(`${api_url}/chats/get_chat`, { params: {chat_id: chat_id, skip: skip*limit, limit: limit} })
-        .then(res => {
-            if(res.data!==''){
-                setSelectedChat(res.data)
-                if(skip === 0)
-                {
-                    setSelectedChatTexts(res.data.texts.reverse())
-                }
-                else
-                {
-                    let newItems = res.data.texts.reverse().concat([...selectedChatTexts])
-                    if(newItems.length===[...selectedChatTexts].length)
+    const triggerChatLoad = (chat_id, new_load, skip_aux) => {
+        console.log('triggeredChatLoading')
+        console.log(skip)
+        if(displayLoadingNew===false)
+        {
+            setDisplayLoadingNew(true)
+            axios.get(`${api_url}/chats/get_chat`, { params: {chat_id: chat_id, skip: new_load?0:skip*limit, limit: limit} })
+            .then(res => {
+                if(res.data!==''){
+                    setSelectedChat(res.data)
+                    console.log(res.data)
+                    if(new_load)
                     {
-                        setAllLoaded(true)
-                        local_all_loaded = true
+                        setSelectedChatTexts(res.data.texts.reverse())
+                        if(res.data.texts.length<15)
+                        {
+                            onLoadBubbleRef.current?.scrollIntoView({behavior: 'instant', block: 'start', inline: 'nearest'})
+                            setAllLoaded(true)
+                        }
                     }
                     else
                     {
+                        let newItems = res.data.texts.reverse().concat([...selectedChatTexts])
                         setSelectedChatTexts(newItems)
+                        if(res.data.texts.length<15)
+                        {
+                            setAllLoaded(true)
+                            
+                        }
+                        else
+                        {
+                            onLoadBubbleRef.current?.scrollIntoView({behavior: 'instant', block: 'start', inline: 'nearest'})
+                        }
+
                     }
-                }
-
-                if(skip===1)
-                {
                     scrollToBottom()
-                }
-                else if(!local_all_loaded){
-                    onLoadBubbleRef.current?.scrollIntoView({behavior: 'instant', block: 'start', inline: 'nearest'})
-                } 
-                if(new_load)
-                    setSkip(0)
-                else
-                    setSkip(skip+1)
+                    if(new_load) setSkip(0)
+                    else setSkip(skip+1)
 
-                setDisplayLoadingNew(false)
-            }
-        })
+                    setTimeout(() => {
+                        setDisplayLoadingNew(false)
+                    }, [2000])
+                    
+                }
+            })
+        }
     }
 
     const Content = () => {
         const [sticky] = useAtStart()
-
+        const [atEnd] = useAtEnd()
+        
+        
         useEffect(() => {
             if(sticky)
             {
-                selectedChatTexts.length>10&&!allLoaded&&selectedChatId&&triggerChatLoad(selectedChatId, false)
+                console.log('top')
+                if(selectedChatTexts.length>14&&!allLoaded&&selectedChatId&&skip>0)
+                {
+                    triggerChatLoad(selectedChatId, false)
+                }
+                    
             }
-        }, [sticky])
+            if(atEnd)
+            {
+                if(skip===0)
+                    setSkip(1)
+            }
+        }, [sticky, atEnd])
     
 
         return(
@@ -680,6 +698,9 @@ const AdminMessages = (props) => {
                             <div className={styles.top_title_wrap}>
                                 <p className={styles.top_title}>
                                     MENSAGENS
+                                </p>
+                                <p className={styles.top_title_short}>
+                                    M
                                 </p>
                             </div>
                             <Loader loading={loadingChats}/>
