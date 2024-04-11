@@ -18,7 +18,7 @@ import BackHandIcon from '@mui/icons-material/BackHand';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TitleIcon from '@mui/icons-material/Title';
 import { useDispatch, useSelector } from 'react-redux';
-import { search_scroll_save } from '../store';
+import { search_scroll_save, user_sort_chats } from '../store';
 import Welcome from './welcome'
 
 import logo_text from '../assets/logo_text.png'
@@ -79,6 +79,8 @@ const Home = (props) => {
         dispatch(search_scroll_save(null))
         // Tooltip.rebuild()
     }, [location, user, loaded])
+
+    
 
     useEffect(() => {
         props.userLoadAttempt&&setLoaded(true)

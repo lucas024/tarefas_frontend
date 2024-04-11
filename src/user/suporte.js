@@ -2,8 +2,6 @@ import React, {useEffect, useRef, useState} from 'react'
 import styles from '../admin/messages.module.css'
 import axios from 'axios';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import ClipLoader from "react-spinners/BounceLoader";
-import { css } from "@emotion/react";
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import FaceIcon from '@mui/icons-material/Face';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +13,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useSelector } from 'react-redux'
 import { TextareaAutosize } from '@mui/material';
+import Loader from '../general/loader';
 
 const Suporte = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -24,6 +23,7 @@ const Suporte = (props) => {
     const [currentText, setCurrentText] = useState("")
     const [loading, setLoading] = useState(true)
     const [chat, setChat] = useState(null)
+    const [firstLoad, setFirstLoad] = useState(true)
 
     const [reservations, setReservations] = useState([])
 
@@ -41,24 +41,36 @@ const Suporte = (props) => {
 
     const ObjectID = require("bson-objectid");
 
-    const override = css`
-    display: block;
-    margin: 0 auto;
-    border-color: red;
-    position: absolute;
-    z-index: 11;
-    left: calc(50% - 75px);
-    top: calc(50% - 75px);
-    `;
-
     useEffect(() => {      
-        setLoading(true)
-        if(user && user.admin_chat){
-            console.log("yes")
+        if(firstLoad)
+        {
+            setLoading(true)
+            getChats(true)
+        }
+        const interval = setInterval(() => {
+            let date = new Date()
+            if(date.getSeconds()===29 || date.getSeconds()===59)
+            {
+                setLoading(true)
+                getChats(false)
+            }
+        }, 1000)
+
+        return () => clearInterval(interval)
+
+    }, [user])
+
+    const getChats = (first) => {
+        console.log(first)
+        if(user && user.admin_chat)
+        {
             axios.get(`${api_url}/admin_chats/get_chat`, { params: {chat_id: user.admin_chat} })
-                .then(chat => {
+            .then(chat => {
+                console.log(chat.data.texts?.length, messages?.length)
+                if(chat.data.texts?.length > messages?.length || messages === undefined || first)
+                {
+                    console.log('teste')
                     if(chat.data != null){
-                        console.log('sim')
                         setChat(chat.data)
                         setMessages(chat.data.texts)
                         checkForRefusalsNoRepetitive(chat.data.texts)
@@ -71,33 +83,25 @@ const Suporte = (props) => {
                     }
                                 
                     setLoading(false)
-                })
-
+                }
+                else{
+                    setLoading(false)
+                }
+            })
+            setFirstLoad(false)
         }
-        else{
-            setLoading(false)
-        }
 
-        if(user){
-            const newSocket = io(
-                'https://socket-dot-vender-344408.ew.r.appspot.com/',
-                { query: {id: user._id} }
-            )
-            setS(newSocket)
-        }
-        return () => s&&s.close()
+    }
 
-    }, [user])
+    // useEffect(() => {
+    //     if(!s) return
 
-    useEffect(() => {
-        if(!s) return
+    //     s.on('receive-message', data => {
+    //         handleReceiveSocketMessageUpdate(data)
+    //     })
 
-        s.on('receive-message', data => {
-            handleReceiveSocketMessageUpdate(data)
-        })
-
-        return () => s.off('receive-message')
-    }, [s])
+    //     return () => s.off('receive-message')
+    // }, [s])
 
     const checkForRefusalsNoRepetitive = messages_aux => {
         const alreadyChecked = []
@@ -196,13 +200,13 @@ const Suporte = (props) => {
 
             scrollToBottom()
 
-            s.emit("send-message", {
-                recipient: chat?.admin_id,
-                text: currentText,
-                time: time,
-                chat_id: user.admin_chat || chatId,
-                type: user.type
-            }) 
+            // s.emit("send-message", {
+            //     recipient: chat?.admin_id,
+            //     text: currentText,
+            //     time: time,
+            //     chat_id: user.admin_chat || chatId,
+            //     type: user.type
+            // }) 
         }
     }
 
@@ -394,17 +398,8 @@ const Suporte = (props) => {
 
     return (
         <div className={styles.suporte}>
-
-            {/* <div className={styles.suporte_title}>
-                <span className={styles.top_title}>Suporte</span>
-            </div> */}
+            <Loader color={"#FF785A"} loading={loading} size={150} />
             <div className={styles.chat}>
-                <ClipLoader color={"#FF785A"} css={override} loading={loading} size={150} />
-                    {
-                    loading?
-                    <div className="frontdrop"></div>
-                    :null
-                }
                 <div className={styles.chat_wrapper}>
                     <div className={styles.top}>
                         <div className={styles.top_left_flex}>

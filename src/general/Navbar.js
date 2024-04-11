@@ -28,6 +28,7 @@ const Navbar = (props) => {
     const user_email_verified = useSelector(state => {return state.user_email_verified})
     const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
     const user = useSelector(state => {return state.user})
+    const chats = useSelector(state => {return state.chats})
     const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
     const navigate = useNavigate()
@@ -44,9 +45,11 @@ const Navbar = (props) => {
     }, [props.userLoadAttempt])
 
     useEffect(() => {
-        if(user?.chats?.length>0){
+        console.log(chats)
+        if(chats?.length>0){
+            console.log(chats)
             let clear = true
-            for(const el of user?.chats){
+            for(const el of chats){
                 //user
                 if(user?.type===0&&!el.user_read){
                     setHasUnreadTexts(true)
@@ -62,7 +65,7 @@ const Navbar = (props) => {
             }
             if(clear) setHasUnreadTexts(false)
         }
-    }, [user])
+    }, [user, chats])
 
     const logoutHandler = () => {
         setDropdown(false)

@@ -13,6 +13,7 @@ const slice = createSlice({
     worker_is_subscribed: false,
     user_subscription_active: false,
     user_admin_verified: false,
+    chats: [],
     // api_url: "http://localhost:5200",
     api_url: "https://vender-344408.ew.r.appspot.com",
   },
@@ -33,22 +34,11 @@ const slice = createSlice({
     user_update_phone: (state, action) => {
       state.user.phone = action.payload.phone
     },
-
     set_socket : (state, action) => {
       state.socket = action.payload.socket
     },
-    user_update_chats: (state, action) => {
-      state.user.chats = action.payload
-    },
     user_update_single_read: (state, action) => {
-      if(action.payload.type===1)
-      {
-        state.user.chats[action.payload.index].worker_read = true
-      }
-      else
-      {
-        state.user.chats[action.payload.index].user_read = true
-      }
+      state.user.chats = action.payload
     },
     user_update_field: (state, action) => {
       for(let el of action.payload)
@@ -94,7 +84,7 @@ export const {
     user_reset, 
     user_update_phone, 
     set_socket, 
-    user_update_chats,
+    user_sort_chats,
     user_update_single_read,
     user_update_field,
     search_save,

@@ -524,6 +524,8 @@
     height: 15px;
     color: #ffffff40;
     font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
 }
 
 @media (max-width: 1024px){
@@ -660,8 +662,6 @@
         height: 10px;
         top: 0px;
         width: 120px;
-        display: flex;
-        justify-content: center;
     }
     .chatbox_user_img{
         width: 15px !important;
