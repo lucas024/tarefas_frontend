@@ -218,6 +218,18 @@
     z-index: 1;
     background-color: transparent;
 }
+.phone_input_word{
+    outline: none;
+    border: none;
+    color: var(--neutral);
+    letter-spacing: 20px;
+    font-size: 1.3rem;
+    font-family: 'Roboto Mono', monospace;
+    caret-color: var(--red);
+    overflow: hidden;
+    z-index: 1;
+    background-color: transparent;
+}
 .wrong_code_div{
     display: flex;
     justify-content: center;
@@ -234,6 +246,70 @@
     margin-top: 110px;
 }
 
+.email{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.email_flex{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    margin-left: 10%;
+}
+.email_input_icon{
+    color: white;
+    margin-right: 5px;
+}
+.email_input{
+    padding: 10px;
+    outline: none;
+    font-size: 1rem;
+    margin-top: 5px;
+    width: 80%;
+    box-sizing: border-box;
+}
+.email_input:disabled{
+    font-style: italic;
+    margin-top: 10px;
+}
+.email_input::placeholder{
+    font-style: normal;
+}
+.email_error{
+    color: var(--red);
+    margin-left: 50px;
+    margin-top: 5px;
+}
+.o2_button{
+    display: flex;
+    padding: 10px 0px;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid var(--brand);
+    border-radius: 10px;
+    width: 90%;
+    margin: auto;
+    cursor: pointer;
+    background-color: white;
+    margin-top: 20px;
+}
+.o2_button:hover{
+    opacity: 0.7;
+    transition: 150ms all;
+}
+.o2_img{
+    height: 25px;
+    width: 25px;
+}
+.o2_text{
+    font-weight: 600;
+    width: 200px;
+    margin-left: 10px;
+    font-size: 1.1rem;
+}
 @media (max-width: 500px){
     .main{
         width: 80%;

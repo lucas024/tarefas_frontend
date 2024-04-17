@@ -32,10 +32,12 @@ import AuthCarousel from './authCarousel'
 import AuthCarouselVerification from './authCarouselVerification'
 import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao'
-import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
+import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, sendPasswordResetEmail } from 'firebase/auth';
 import TosBanner from '../general/tosBanner'
 import logo_text from '../assets/logo_png_white_background.png'
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Lottie from "lottie-react";
+import * as sendEmail from '../assets/lotties/plane-email.json'
 
 const Auth = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -49,6 +51,11 @@ const Auth = (props) => {
     const [emailLoginWrong, setEmailLoginWrong] = useState(false)
     const [passwordLogin, setPasswordLogin] = useState("")
     const [loginError, setLoginError] = useState(null)
+
+    const [emailRecover, setEmailRecover] = useState("")
+    const [emailRecoverWrong, setEmailRecoverWrong] = useState(false)
+    const [recoverEmailError, setRecoverEmailError] = useState(0)
+    const [emailRecoverSent, setEmailRecoverSent] = useState(false)
 
     // email
     const [email, setEmail] = useState("")
@@ -67,6 +74,7 @@ const Auth = (props) => {
     const [phoneVisual, setPhoneVisual] = useState('')
     const [phoneWrong, setPhoneWrong] = useState(null)
 
+    const [loginTab, setLoginTab] = useState(0)
     const [registarTab, setRegistarTab] = useState(0)
 
     const [loading, setLoading] = useState(false)
@@ -257,6 +265,13 @@ const Auth = (props) => {
         }
     }
 
+    const handleKeyDownRecover = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault()
+            
+        }
+    }
+
     const handleKeyDownRegister = (from, event) => {
         console.log(from, event)
         if (event.key === 'Enter') {
@@ -387,7 +402,6 @@ const Auth = (props) => {
     }
 
     const registerHandler = async () => {
-        console.log('hmm')
         let val = name.split(' ')
         if(validator.isMobilePhone(phone, "pt-PT")
             && val[0].length>1&&val.length===2&&val[1]?.length>0
@@ -456,11 +470,20 @@ const Auth = (props) => {
                     photoURL: res.user.photoURL
                 }
                 await registerHelper(res.user.uid, from_signup)
+                navigate('/', {
+                    state: {
+                        carry: 'login'
+                    }
+                })
                 setLoading(false)
             }
             else{
                 //conta existe
-                navigate('/')
+                navigate('/', {
+                    state: {
+                        carry: 'login'
+                    }
+                })
                 setLoading(false)
             }
         }
@@ -624,6 +647,35 @@ const Auth = (props) => {
         }
     }
 
+    const handleRecoverPassword = async () => {
+        setEmailRecoverWrong(false)
+        setLoading(true)
+
+        if(validator.isEmail(emailRecover)){
+            sendPasswordResetEmail(auth, emailRecover)
+            .then(res => {
+                setEmailRecoverSent(true)
+                setLoading(false)
+            })
+            .catch(err => {
+
+                if(err.code === 'auth/user-not-found')
+                    setRecoverEmailError('Este e-mail não se encontra associado a uma conta no Tarefas.')
+                setLoading(false)
+            })
+           
+        } else {
+            if(emailRecover.length===0){
+                setRecoverEmailError('Por favor, insira o e-mail.')
+            }
+            else{
+                setRecoverEmailError('Este e-mail não é válido.')
+            }
+            setEmailRecoverWrong(true)
+            setLoading(false)
+        }
+    }
+
     return (
         <div className={styles.auth}>
             <CSSTransition 
@@ -654,32 +706,38 @@ const Auth = (props) => {
                             <div className={styles.text_brand_wrapper}>
                                 <img className={styles.text_brand} src={logo_text}/>
                             </div>
-                            <ul>
-                                <li onClick={() => setSelectedAuth(1)} className={selectedAuth?styles.li_active:""}>
-                                    <span className={selectedAuth?styles.li_text_active:styles.li_text}>Login</span>
-                                </li>
-                                <li onClick={() => setSelectedAuth(0)} className={!selectedAuth?styles.li_active:""}>
-                                    <span className={!selectedAuth?styles.li_text_active:styles.li_text}>Registar</span>
-                                </li>
-                            </ul>
+                            {
+                                loginTab===0?
+                                <ul>
+                                    <li onClick={() => setSelectedAuth(1)} className={selectedAuth?styles.li_active:""}>
+                                        <span className={selectedAuth?styles.li_text_active:styles.li_text}>Login</span>
+                                    </li>
+                                    <li onClick={() => setSelectedAuth(0)} className={!selectedAuth?styles.li_active:""}>
+                                        <span className={!selectedAuth?styles.li_text_active:styles.li_text}>Registar</span>
+                                    </li>
+                                </ul>
+                                :null
+                            }
+                            
                         </div>
                         :null
                     }
                     {
                         selectedAuth===1?
+                        loginTab===0?
                         <div className={styles.area_bot}>
                             {
                                 loading&&<div className={styles.verification_backdrop}/>
                             }
                             <Loader radius={true} loading={loading}/>
                             <div className={styles.area_o2}>
-                                <div className={styles.o2_button} onClick={() => signInWithPopupHandler("facebook")}>
+                                {/* <div className={styles.o2_button} onClick={() => signInWithPopupHandler("facebook")}>
                                     <img src={facebook} className={styles.o2_img}></img>
                                     <span className={styles.align_vert}>
                                         <span className={styles.o2_text}>Entrar com Facebook</span>
                                     </span>
-                                </div>
-                                <div className={styles.o2_button} style={{marginTop:"5px"}}  onClick={() => signInWithPopupHandler("google")}>
+                                </div> */}
+                                <div className={styles.o2_button} style={{marginTop:"0px"}}  onClick={() => signInWithPopupHandler("google")}>
                                     <img src={google} className={styles.o2_img}></img>
                                     <span className={styles.align_vert}>
                                         <span className={styles.o2_text}>Entrar com Google</span>
@@ -728,7 +786,7 @@ const Auth = (props) => {
                                 :null
                             }
                             <div style={{marginTop:"20px"}}>
-                                <span className={styles.recup_password}>Recuperar palavra-passe</span>
+                                <span className={styles.recup_password} onClick={() => setLoginTab(1)}>Recuperar palavra-passe</span>
                             </div>
                             <div className={!loading?styles.login_button:styles.login_button_disabled} onClick={() => {
                                 if(!loading) loginHandler()}}>
@@ -737,6 +795,88 @@ const Auth = (props) => {
                             <div className={styles.bottom_switch}>
                                 <span className={styles.bottom_switch_text}>Não tens conta? </span>
                                 <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Registar</span>
+                            </div>
+                        </div>
+                        :
+                        <div className={styles.area_bot}>
+                            {
+                                loading&&<div className={styles.verification_backdrop}/>
+                            }
+                            <Loader radius={true} loading={loading}/>
+                            <div className={styles.back_icon_wrapper} onClick={() => {
+                                setRecoverEmailError(null)
+                                setEmailRecoverWrong(null)
+                                setEmailRecover('')
+                                setLoginTab(0)}}>
+                                <ArrowBackIcon className={styles.back_icon}/>
+                                {/* <span className={styles.back_icon_text}>Voltar ao login</span> */}
+                            </div>
+                            <div className={styles.recover_flex}>
+                                <span className={styles.recover_title}>Recuperar palava-passe</span>
+                                {
+                                    emailRecoverSent?
+                                    <span className={styles.recover_info}>E-mail de recuperação enviado para o <span style={{fontWeight:'700'}}>{emailRecover}</span>. Por-favor segue as instruções descritas lá.</span>
+                                    :
+                                    <span className={styles.recover_info}>Porfavor indica-nos o e-mail associado a tua conta</span>
+                                }
+                            </div>
+                            {
+                                emailRecoverSent?
+                                <Lottie 
+                                    animationData={JSON.parse(JSON.stringify(sendEmail))}
+                                    loop={false}
+                                    autoplay={emailRecoverSent===true}
+                                    rendererSettings={{preserveAspectRatio: 'xMidYMid slice'}}
+                                    style={{
+                                        width:'150px',
+                                        height:'150px',
+                                        margin:'auto',
+                                        marginTop:'30px',
+                                        marginBottom:'30px'
+                                    }}
+                                />
+                                :null
+                            }
+                            {
+                                emailRecoverSent?
+                                null:
+                                <div className={styles.login_div} style={{marginTop:'30px'}}>
+                                    <div className={styles.login}>
+                                        {/* <p className={styles.login_title}>E-mail</p> */}
+                                        <input
+                                            onKeyDown={handleKeyDownRecover}
+                                            style={{borderBottom:emailRecoverWrong?"2PX solid red":"", backgroundColor:"#00000010"}}
+                                            className={styles.login_input} 
+                                            placeholder="E-mail"
+                                            value={emailRecover}
+                                            onChange={e => {
+                                                setEmailRecover(e.target.value)
+                                                if(validator.isEmail(e.target.value)){
+                                                    setEmailRecoverWrong(false)
+                                                    setRecoverEmailError(null)
+                                                }
+                                                }}></input>
+                                    </div>
+                                </div>
+                            }
+                            
+                            {
+                                recoverEmailError?
+                                <span className={styles.recover_wrong}>{recoverEmailError}</span>
+                                :
+                                null
+                            }
+                            <div className={styles.recover_flex}>
+                                {
+                                    emailRecoverSent?
+                                    null:
+                                    <span className={styles.recover_button} onClick={() => handleRecoverPassword()}>Enviar</span>
+                                }
+                                <span className={emailRecoverSent?styles.recover_button:styles.recover_button_back} onClick={() => {
+                                        setRecoverEmailError(null)
+                                        setEmailRecoverWrong(null)
+                                        setEmailRecover('')
+                                        setLoginTab(0)}}>voltar ao login</span>
                             </div>
                         </div>
                         :selectedAuth===0?
@@ -854,7 +994,7 @@ const Auth = (props) => {
                 }
 
                 {
-                    selectedAuth===2?
+                    selectedAuth===2 || loginTab===1?
                     null
                     :
                     <div className={styles.split_wrapper}>
@@ -865,7 +1005,7 @@ const Auth = (props) => {
                     </div>
                 }
                 {
-                    selectedAuth===2?
+                    selectedAuth===2 || loginTab===1?
                     null
                     :
                     <div className={styles.button_area}>

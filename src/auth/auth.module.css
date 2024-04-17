@@ -752,7 +752,72 @@
     z-index: 1;
     background-color: transparent;
 }
-
+.back_icon_wrapper{
+    padding: 0 0px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 15px;
+}
+.back_icon_wrapper:hover{
+    opacity: 0.8;
+    transition: all 150ms;
+}
+.back_icon{
+    height: 22px !important;
+    width: 22px !important;
+}
+.back_icon_text{
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    margin-left: 3px;
+    font-weight: 600;
+    margin-top: 1px;
+}
+.recover_flex{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.recover_title{
+    font-weight: 500;
+    margin-top: 20px;
+}
+.recover_info{
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+.recover_button{
+    width: 100%;
+    border-radius: 5px;
+    margin-top: 10px;
+    background-color: var(--job);
+    cursor: pointer;
+    color: var(--neutral);
+    height: 50px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+.recover_button_back{
+    margin-top: 10px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.recover_button_back:hover{
+    text-decoration: underline;
+}
+.recover_wrong{
+    font-size: 0.9rem;
+    color: var(--red);
+    margin-bottom: 10px;
+}
 .selected_number{
     align-self: flex-start;
     font-size: 0.9rem;

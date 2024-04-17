@@ -18,13 +18,14 @@ import { useSelector } from 'react-redux';
 
 const Messages = (props) => {
     const user = useSelector(state => {return state.user})
+    const api_url = useSelector(state => {return state.api_url})
     
     const [currentText, setCurrentText] = useState("")
     const [adminOn, setAdminOn] = useState(false)
     const [loading, setLoading] = useState(false)
     const [chats, setChats] = useState([])
     const [selectedChat, setSelectedChat] = useState()
-    const [selectedChatId, setSelectedChatId] = useState()
+    const [selectedChatId, setSelectedChatId] = useState(null)
     const [selectedChatTexts, setSelectedChatTexts] = useState()
     const [onlineUsers, setOnlineUsers] = useState([])
     const [loadingChats, setLoadingChats] = useState(false)
@@ -48,24 +49,49 @@ const Messages = (props) => {
 
 
     useEffect(() => {
-        setLoadingChatBox(true)
         const paramsAux = Object.fromEntries([...searchParams])
-        axios.get(`${props.api_url}/admin_chats/get_chat`, { params: {chat_id: paramsAux.id} })
-            .then(chat => {
+        setSelectedChatId(paramsAux.id)
+        setLoadingChatBox(true)
+        getChats(true, paramsAux.id)
+        const interval = setInterval(() => {
+            let date = new Date()
+            if(date.getSeconds()===29 || date.getSeconds()===59)
+            {
+                setLoadingChatBox(true)
+                getChats(false)
+            }
+        }, 1000)
+
+        return () => clearInterval(interval)
+
+    }, [user, searchParams])
+
+
+    const getChats = (first, id) => {
+        axios.get(`${api_url}/admin_chats/get_chat`, { params: {chat_id: id || selectedChatId} })
+        .then(chat => {
+            if(chat.data.texts?.length > selectedChatTexts?.length || selectedChatTexts === undefined || first)
+            {
+                console.log('yes')
                 if(chat.data!==''){
                     setSelectedChat(chat.data)
                     setSelectedChatTexts(chat.data.texts)
-                    scrollToBottom()
+                    if(first)
+                        scrollToBottom()
                 }
                 setLoadingChatBox(false)
-                setSelectedChatId(paramsAux.id)
-            })
-    }, [searchParams])
+            }
+            else{
+                console.log('no')
+                setLoadingChatBox(false)
+            }
+        })
+    }
 
     useEffect(() => {
-        axios.get(`${props.api_url}/admin_chats/chats`)
+        axios.get(`${api_url}/admin_chats/chats`)
             .then(chats => {
-                console.log(chats);
+                console.log(chats)
                 setChats(chats.data)
                 setIsLoaded(true)
             })
@@ -76,27 +102,27 @@ const Messages = (props) => {
         return a.last_text.timestamp < b.last_text.timestamp ? 1 : -1
     }
 
-    useEffect(() => {
-        if(user){
-            const newSocket = io(
-                'https://socket-dot-vender-344408.ew.r.appspot.com/',
-                { query: {id: user._id} }
-            )
-            setS(newSocket)
-        }
-        return () => s&&s.close()
+    // useEffect(() => {
+    //     if(user){
+    //         const newSocket = io(
+    //             'https://socket-dot-vender-344408.ew.r.appspot.com/',
+    //             { query: {id: user._id} }
+    //         )
+    //         setS(newSocket)
+    //     }
+    //     return () => s&&s.close()
         
-    }, [user])
+    // }, [user])
 
-    useEffect(() => {
-        if(!s) return
+    // useEffect(() => {
+    //     if(!s) return
 
-        s.on('receive-message', data => {
-            handleReceiveSocketMessageUpdate(data, selectedChatId, selectedChatTexts, chats)
-        })
+    //     s.on('receive-message', data => {
+    //         handleReceiveSocketMessageUpdate(data, selectedChatId, selectedChatTexts, chats)
+    //     })
 
-        return () => s.off('receive-message')
-    }, [s, selectedChatId, selectedChatTexts, chats])
+    //     return () => s.off('receive-message')
+    // }, [s, selectedChatId, selectedChatTexts, chats])
     
 
     const sendSynchronousAndUpdateDatabaseHandler = async (new_text) => {
@@ -122,14 +148,13 @@ const Messages = (props) => {
             chat_id: userWithAdminChat?.data?.admin_chat || workerWithAdminChat?.data?.admin_chat || chatId
             })
 
-        console.log(selectedChat);
-        s.emit("send-message", {
-            recipient: selectedChat.user_id,
-            text: new_text,
-            time: time,
-            chat_id: selectedChatId,
-            type: 4
-        })        
+        // s.emit("send-message", {
+        //     recipient: selectedChat.user_id,
+        //     text: new_text,
+        //     time: time,
+        //     chat_id: selectedChatId,
+        //     type: 4
+        // })        
     }
 
     const extenseDate = timestamp => {
@@ -294,7 +319,7 @@ const Messages = (props) => {
                                     <p onClick={() => navigate(`/main/publications/publication?id=${msg.reservation_id}`)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Carregua aqui para editares a tarefa.</p>
                                 </div>
                                 :
-                                <div className={msg.origin_type===4?styles.chatbox_text_send:styles.chatbox_text_receive}>
+                                <div className={msg.origin_type===4?styles.chatbox_text_receive:styles.chatbox_text_send}>
                                     <span className={styles.chatbox_text_value}>{msg.text}</span>
                                 </div>
                             }

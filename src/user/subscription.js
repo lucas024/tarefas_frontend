@@ -47,6 +47,8 @@ const Subscription = props => {
     const user_phone_verified = useSelector(state => {return state.user_phone_verified})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
 
+    const scrolltopref = useRef(null)
+
     const dispatch = useDispatch()
 
     const [cardName, setCardName] = useState("")
@@ -58,7 +60,6 @@ const Subscription = props => {
     const [alterarPlano, setAlterarPlano] = useState(false)
     const [loading, setLoading] = useState(false)
     const [cancelSubscriptionPopin, setCancelSubscriptionPopin] = useState(false)
-    const [cancelSubscriptionPopinFail, setCancelSubscriptionPopinFail] = useState(false)
     const [successPopin, setSuccessPopin] = useState(false)
     const [failPopin, setFailPopin] = useState(false)
     const [successPlanPopin, setSuccessPlanPopin] = useState(false)
@@ -582,11 +583,12 @@ const Subscription = props => {
                         {
                             display===4||display===1?
                             <div className={styles.sub_info_main}>
+                                <span ref={scrolltopref}/>
                                 <div className={styles.sub_info_wrap}>
                                     <div className={styles.sub_info}>
                                         <span className={styles.sub_info_title}>Profissional no Tarefas</span>
                                         {display===1 && applyDiscount?
-                                            <p className={styles.sub_info_title_discount}>SUBSCRIÇÃO EXCLUSICA FUNDADOR</p>
+                                            <p className={styles.sub_info_title_discount}>SUBSCRIÇÃO EXCLUSIVA FUNDADOR</p>
                                             :null
                                         }
                                         {
@@ -631,30 +633,89 @@ const Subscription = props => {
                                                 <div>
                                                     <div className={styles.info_bottom_text_wrapper}>
                                                         <div className={styles.info_bottom_text}>
-                                                            <p>Ativa a tua conta durante <strong>100 dias de forma gratuita</strong>.</p>
-                                                            <p style={{fontWeight:300}}>Depois continua a usar a tua conta com um plano regular.</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className={styles.trial_button} onClick={() => setConfirmFreeBanner(true)}>
-                                                        {/* <span className={styles.trial_button_banner}>GRATUITO</span> */}
-                                                        <span className={styles.trial_button_text}>ATIVAR SUBSCRIÇÃO 100 DIAS</span>
-                                                    </div>
-                                                    <p className={styles.info_bottom_or}>OU</p>
-                                                    <div className={styles.info_bottom_text_wrapper}>
-                                                        <div className={styles.info_bottom_text}>
-                                                            <p>Ativa a tua conta com um <strong>desconto de 50% </strong> sobre qualquer plano, para sempre.</p>
-                                                            <p style={{fontWeight:300}}>Aproveita o desconto vitalício e exclusivo de
+                                                            <p style={{textAlign:'center'}}>Ativa a tua subcrição com um <strong style={{color:"#FF785A"}}>desconto de 80% </strong> sobre qualquer plano, para sempre.</p>
+                                                            <p style={{fontWeight:300, marginTop:'3px'}}>Aproveita o desconto vitalício e exclusivo de
                                                             primeira ativação de conta.</p>
                                                         </div>
+                                                    </div>
+                                                    <div className={styles.options}>
+                                                        <div className={styles.options_card}>
+                                                            <span className={styles.discount}>-80%</span>
+                                                            <img className={styles.options_card_img} src={basic}/>
+                                                            <p className={styles.options_card_title}>Mensal</p>
+                                                            <div className={styles.options_price_flex}>
+                                                                <div className={styles.options_price_flex_flex}>
+                                                                    <EuroSymbolIcon className={styles.price_euro}/>
+                                                                    <p className={styles.options_price_value}>12</p>
+                                                                    <p className={styles.options_price_decimal}>.99</p>
+                                                                </div>
+                                                                <ArrowRightIcon className={styles.price_arrow}/>
+                                                                <div className={styles.options_price_flex_flex} style={{color:"#FF785A", fontWeight:'700'}}>
+                                                                    <EuroSymbolIcon className={styles.price_euro}/>
+                                                                    <p className={styles.options_price_value_new}>6</p>
+                                                                    <p className={styles.options_price_decimal_new}>.49</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className={styles.options_card}>
+                                                            <span className={styles.discount}>-80%</span>
+                                                            <img className={styles.options_card_img} src={medium}/>
+                                                            <p className={styles.options_card_title}>Semestral</p>
+                                                            <div className={styles.options_price_flex}>
+                                                                <div className={styles.options_price_flex_flex}>
+                                                                    <EuroSymbolIcon className={styles.price_euro}/>
+                                                                    <p className={styles.options_price_value}>68</p>
+                                                                    <p className={styles.options_price_decimal}>.89</p>
+                                                                </div>
+                                                                <ArrowRightIcon className={styles.price_arrow}/>
+                                                                <div className={styles.options_price_flex_flex} style={{color:"#FF785A", fontWeight:'700'}}>
+                                                                    <EuroSymbolIcon className={styles.price_euro}/>
+                                                                    <p className={styles.options_price_value_new}>34</p>
+                                                                    <p className={styles.options_price_decimal_new}>.45</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className={styles.options_card}>
+                                                            <span className={styles.discount}>-80%</span>
+                                                            <img className={styles.options_card_img} src={pro}/>
+                                                            <p className={styles.options_card_title}>Anual</p>
+                                                            <div className={styles.options_price_flex}>
+                                                                <div className={styles.options_price_flex_flex}>
+                                                                    <EuroSymbolIcon className={styles.price_euro}/>
+                                                                    <p className={styles.options_price_value}>119</p>
+                                                                    <p className={styles.options_price_decimal}>.89</p>
+                                                                </div>
+                                                                <ArrowRightIcon className={styles.price_arrow}/>
+                                                                <div className={styles.options_price_flex_flex} style={{color:"#FF785A", fontWeight:'700'}}>
+                                                                    <EuroSymbolIcon className={styles.price_euro}/>
+                                                                    <p className={styles.options_price_value_new}>59</p>
+                                                                    <p className={styles.options_price_decimal_new}>.95</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    
                                                     </div>
                                                     <div className={styles.trial_button} style={{marginTop:'10px'}}
                                                         onClick={() => {
                                                             setApplyDiscount(true)
                                                             setDisplay(1)
+                                                            scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                         }}>
-                                                        <span className={styles.trial_button_banner}>DESCONTO FUNDADOR 50%</span>
-                                                        <span className={styles.trial_button_text}>VER PLANOS EXCLUSIVOS</span>
+                                                        <span className={styles.trial_button_banner}>DESCONTO FUNDADOR 80%</span>
+                                                        <span className={styles.trial_button_text}>VER E ATIVAR PLANOS EXCLUSIVOS</span>
                                                     </div>
+                                                    <p className={styles.info_bottom_or}>OU</p>
+                                                    <div className={styles.info_bottom_text_wrapper}>
+                                                        <div className={styles.info_bottom_text}>
+                                                            <p style={{textAlign:'center'}}>Ativa a tua subscrição durante <strong>100 dias de forma gratuita</strong>.</p>
+                                                            <p style={{fontWeight:300, marginTop:'3px'}}>Depois continua a usar a tua conta com um plano regular.</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className={styles.trial_button} onClick={() => setConfirmFreeBanner(true)}>
+                                                        {/* <span className={styles.trial_button_banner}>GRATUITO</span> */}
+                                                        <span className={styles.trial_button_text}>ATIVAR PLANO 100 DIAS GRÁTIS</span>
+                                                    </div>
+                                                    
                                                 </div>
                                                 :
                                                 <div>
@@ -739,7 +800,7 @@ const Subscription = props => {
                                                                         <span className={styles.info_text}>€{subscriptionPlanObj.value}</span>
                                                                         {
                                                                             discountSubscriber?
-                                                                            <span className={styles.discount_number}>-50%</span>
+                                                                            <span className={styles.discount_number}>-80%</span>
                                                                             :null
                                                                         }
                                                                     </div>
@@ -798,7 +859,7 @@ const Subscription = props => {
                                                                         }
                                                                         {
                                                                             discountSubscriber?
-                                                                            <span className={styles.discount_number} style={{backgroundColor:isCanceled?"#71848d":"#fff", color:isCanceled?"#161F28":"#fff"}}>-50%</span>
+                                                                            <span className={styles.discount_number} style={{backgroundColor:isCanceled?"#71848d":"#fff", color:isCanceled?"#161F28":"#fff"}}>-80%</span>
                                                                             :null
                                                                         }
                                                                     </div>
@@ -969,7 +1030,7 @@ const Subscription = props => {
                                                     <div className={selectedPlan===1?styles.section_selected:styles.section} onClick={() => setSelectedPlan(1)}>
                                                         {
                                                             applyDiscount?
-                                                            <span className={styles.discount}>-50%</span>
+                                                            <span className={styles.discount}>-80%</span>
                                                             :null
                                                         }
                                                         <img src={basic} className={styles.section_img}/>                                         
@@ -1023,7 +1084,7 @@ const Subscription = props => {
                                                     <div className={selectedPlan===2?styles.section_selected:styles.section} onClick={() => setSelectedPlan(2)}>
                                                         {
                                                             applyDiscount?
-                                                            <span className={styles.discount}>-50%</span>
+                                                            <span className={styles.discount}>-80%</span>
                                                             :null
                                                         }
                                                         <img src={medium} className={styles.section_img}/>
@@ -1075,7 +1136,7 @@ const Subscription = props => {
                                                     <div className={selectedPlan===3?styles.section_selected:styles.section} onClick={() => setSelectedPlan(3)}>
                                                         {
                                                             applyDiscount?
-                                                            <span className={styles.discount}>-50%</span>
+                                                            <span className={styles.discount}>-80%</span>
                                                             :null
                                                         }
                                                         <img src={pro} className={styles.section_img}/>
@@ -1228,6 +1289,7 @@ const Subscription = props => {
                                                     style={{width:isCanceled?'70%':'100%'}}
                                                 onClick={() => {
                                                     selectedPlan&&setSelectedMenu(1)
+                                                    scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                     }}>Continuar</span>
                                                     <span className={styles.button_cancel} onClick={() => {
                                                         if(trialActive) setDisplay(0)
@@ -1235,6 +1297,7 @@ const Subscription = props => {
                                                         setSelectedMenu(0)
                                                         setSelectedPlan(null)
                                                         setApplyDiscount(false)
+                                                        scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                         }}>CANCELAR</span>
                                             </div>
                                         </div>
@@ -1445,6 +1508,7 @@ const Subscription = props => {
                                                     :
                                                     <span className={styles.button_cancel} onClick={() => {
                                                         setSelectedMenu(0)
+                                                        scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                         }}>VOLTAR</span>
                                                 }
                                             </div>

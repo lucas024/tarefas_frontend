@@ -18,7 +18,7 @@ import BackHandIcon from '@mui/icons-material/BackHand';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TitleIcon from '@mui/icons-material/Title';
 import { useDispatch, useSelector } from 'react-redux';
-import { search_scroll_save, user_sort_chats } from '../store';
+import { search_scroll_save, user_sort_chats, user_update_chats } from '../store';
 import Welcome from './welcome'
 
 import logo_text from '../assets/logo_text.png'
@@ -36,6 +36,7 @@ const firstOptions = [
 const Home = (props) => {
     const dispatch = useDispatch()
     const user = useSelector(state => {return state.user})
+    const chats = useSelector(state => {return state.chats})
 
     const [workerBanner, setWorkerBanner] = useState(false)
     const [tosBanner, setTosBanner] = useState(false)
@@ -77,6 +78,12 @@ const Home = (props) => {
             setTimeout(() => setLoginPopup(false), 4000)
         }
         dispatch(search_scroll_save(null))
+        console.log(chats)
+        if(chats?.length===0 || chats === undefined)
+        {
+            dispatch(user_update_chats(user?.chats))
+        }
+        
         // Tooltip.rebuild()
     }, [location, user, loaded])
 

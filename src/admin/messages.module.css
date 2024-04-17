@@ -35,14 +35,6 @@
     width: 200px;
     background-color: white;
 }
-.chat_loader{
-    margin: 0 auto;
-    border-color: red;
-    position: absolute;
-    z-index: 11;
-    left: calc(50% - 75px);
-    top: calc(50% - 75px);
-}
 .chat{
     flex-grow: 1;
     height: calc(100%);
@@ -204,7 +196,6 @@
     color: white;
 
 }
-  
 .chatbox_user_timestamp{
     font-size: 0.9rem;
     color: white;

@@ -128,8 +128,8 @@
     position: relative;
 }
 .trial_button:hover{
-    transform: scale(1.02);
-    transition: 50ms;
+    opacity: 0.6;
+    transition: 150ms;
     cursor: pointer;
 }
 .trial_button_banner{
@@ -140,10 +140,10 @@
     background-color: var(--brand);
     color: var(--neutral);
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: 0.6rem;
     border-radius: 5px;
     border: 1px solid #ffffff30;
-    box-shadow: rgba(255, 255, 255, 0.35) 0px 6px 12px -2px, rgba(255, 255, 255, 0.3) 0px 3px 7px -3px;
+    box-shadow: rgba(255, 255, 255, 0.10) 0px 6px 12px -2px, rgba(255, 255, 255, 0.3) 0px 2px 3px -2px;
 }
 .trial_button_text{
     color: #ffffff;
@@ -1286,6 +1286,69 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     align-items: center;
     margin-top: 5px;
 }
+.options{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 40px;
+}
+.options_card{
+    background-color: #0358e590;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    border-radius: 5px;
+    padding: 20px 0px 10px 0;
+    position: relative;
+    border: 2px solid var(--job);
+}
+.options_card_discount{
+
+}
+.options_card_discount{
+
+}
+.options_card_title{
+    font-weight: 600;
+    color: var(--neutral);
+    margin: 5px 0;
+}
+.options_card_img{
+    width: 35px !important;
+    height: 35px !important;
+}
+.options_price_flex{
+    display: flex;
+    align-items: center;
+}
+.options_price_flex_flex{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    color: var(--grey);
+}
+.price_euro{
+    width: 15px !important;
+    height: 15px !important;
+}
+.options_price_value{
+    font-size: 1rem;
+    text-decoration: line-through;
+}
+.options_price_decimal{
+    font-size: 0.5rem;
+    text-decoration: line-through;
+}
+.options_price_value_new{
+    font-size: 1.1rem;
+}
+.options_price_decimal_new{
+    font-size: 0.6rem;
+}
+.price_arrow{
+    color: var(--action);
+}
 
 @media (min-width: 1440px){
     .sub_info_title{
@@ -1307,7 +1370,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         font-size: 1.1rem;
     }
     .trial_button_banner{
-        font-size: 0.9rem;
+        font-size: 0.7rem;
     }
     .sub_info_bottom{
         width: 900px;
@@ -1325,7 +1388,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         width: 600px;
     }
     .mid_content{
-        width: 550px;
+        width: 600px;
     }
 }
 
@@ -1344,10 +1407,196 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     .selected_plan_value_information{
         margin-left: 5px;
     }
+    .line_left{
+        min-width: 100px;
+        padding: 7px 0;
+    }
+    .helper_text{
+        font-size: 0.7rem;
+    }
+    .line_text{
+        font-size: 0.6rem;
+        max-width: 300px;
+    }
+    .sub_info_bottom{
+        width: 450px;
+    }
+    .section_valor_top_number{
+        font-size: 1.4rem;
+    }
+    .section_valor_top_number_discount{
+        font-size: 1.3rem;
+    }
+    .section_valor_top_number_decimal{
+        font-size: 0.8rem;
+    }
+    .section_valor_top_number_decimal_discount{
+        font-size: 0.6rem;
+    }
+    .discount_arrow{
+        width: 15px !important;
+        height: 15px !important;
+    }
+    .discount_arrow_small{
+        width: 10px !important;
+        height: 10px !important;
+    }
+    .section_desc_of_pay_discount{
+        font-size: 0.6rem;
+    }
+    .section_desc_of_pay_discount_new{
+        font-size: 0.6rem;
+    }
+    .section_img{
+        width: 30px !important;
+        height: 30px !important;
+    }
+    .section_type{
+        font-size: 1.1rem;
+    }
+    .section_type_desc{
+        font-size: 0.55rem;
+    }
+    .section_valor_div{
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+    .discount{
+        padding: 5px 7px;
+        font-size: 0.7rem;
+    }
 }
 
 
 @media (max-width: 500px){
+    .options_card_title{
+        font-size: 0.8rem;
+    }
+    .options_card_img{
+        width: 25px !important;
+        height: 25px !important;
+    }
+    .price_euro{
+        width: 12px !important;
+        height: 12px !important;
+    }
+    .options_price_value{
+        font-size: 0.8rem;
+        text-decoration: line-through;
+    }
+    .options_price_decimal{
+        font-size: 0.4rem;
+        text-decoration: line-through;
+    }
+    .options_price_value_new{
+        font-size: 0.9rem;
+    }
+    .options_price_decimal_new{
+        font-size: 0.4rem;
+    }
+    .price_arrow{
+        color: var(--action);
+        width: 15px !important;
+        height: 15px !important;
+    }
+    .section_valor_div{
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+    .section_discount{
+        justify-content: center;
+    }
+    .section_valor_top{
+        width: max-content;
+    }
+    .discount_arrow{
+        width: 15px !important;
+        height: 15px !important;
+    }
+    .discount_arrow_small{
+        display: none !important;
+    }
+    .section_desc_of_pay_discount{
+        font-size: 0.5rem;
+        display: none;
+    }
+    .section_desc_of_pay_discount_new{
+        font-size: 0.5rem;
+    }
+    .sub_info_title_discount{
+        font-size: 0.6rem;
+    }
+    .info_bottom_text{
+        font-size: 0.6rem;
+    }
+    .sub_info{
+        width: 100%;
+    }
+    .line_left{
+        background-color: transparent;
+        border: none;
+    }
+    .connector{
+        display: none;
+    }
+    .line{
+        width: 100%;
+        flex-direction: column;
+    }
+    .line_text{
+        width: 100%;
+        max-width: none;
+        box-sizing: border-box;
+        border-radius: 0px;
+        border-width: 2px;
+        border-left: none;
+        border-right: none;
+        font-size: 0.6rem;
+    }
+    .info_bottom_or{
+        margin: 30px auto;
+        font-size: 0.8rem;
+    }
+    .line_circle{
+        display: none !important;
+    }
+    .helper_text{
+        color: var(--neutral);
+        font-size: 0.6rem;
+    }
+    .sub_info_bottom{
+        width: 100%;
+    }
+    .trial_button{
+        padding: 7px;
+    }
+    .trial_button_text{
+        font-size: 0.7rem;
+    }
+    .trial_button_banner{
+        font-size: 0.6rem;
+        right: -30px;
+        top: -18px;
+    }
+    .section_desc_of_pay_discount_bottom{
+        font-size: 0.6rem;
+    }
+    .discount_arrow_small_bottom{
+        width: 15px !important;
+        height: 15px !important;
+    }
+    .section_desc_of_pay_discount_new_bottom{
+        font-size: 0.7rem;
+    }
+    .discount{
+        padding: 5px 5px;
+        font-size: 0.5rem;
+    }
+    .sub_val_date_discount{
+        font-size: 0.6rem;
+    }
     .top_title{
         font-size: 1rem;
     }
@@ -1404,10 +1653,16 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         height: 12px !important;
     }
     .section_valor_top_number{
-        font-size: 1.4rem;
+        font-size: 1rem;
     }
     .section_valor_top_number_decimal{
-        font-size: 0.8rem;
+        font-size: 0.6rem;
+    }
+    .section_valor_top_number_discount{
+        font-size: 0.7rem;
+    }
+    .section_valor_top_number_decimal_discount{
+        font-size: 0.4rem;
     }
     .section_desc_of_pay{
         font-size: 0.5rem;
@@ -1433,7 +1688,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         font-size: 0.9rem;
     }
     .selected_plan_value{
-        font-size: 0.7rem;
+        font-size: 0.6rem;
     }
     .selected_plan_discount_wrap{
         text-align: center;
@@ -1454,6 +1709,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         width: 100%;
         box-sizing: border-box;
         border-radius: 0px;
+        font-size: 0.8rem;
     }
     .button_cancel{
         margin-left: 0;
@@ -1462,6 +1718,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         padding: 5px 10px;
         margin-top: 5px;
         border-radius: 0px;
+        font-size: 0.8rem;
     }
     .subscription{
         height: 100%;
@@ -1470,6 +1727,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         width: 100%;
         box-sizing: border-box;
         border-radius: 0px;
+        font-size: 0.8rem;
     }
     .info_text_helper{
         font-size: 0.7rem;

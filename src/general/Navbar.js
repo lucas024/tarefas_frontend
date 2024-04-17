@@ -57,11 +57,11 @@ const Navbar = (props) => {
                     break
                 }
                 //worker
-                // else if(user?.type===1&&!el.worker_read){
-                //     setHasUnreadTexts(true)
-                //     clear = false
-                //     break
-                // }
+                else if(user?.type===1&&!el.worker_read){
+                    setHasUnreadTexts(true)
+                    clear = false
+                    break
+                }
             }
             if(clear) setHasUnreadTexts(false)
         }
@@ -133,7 +133,7 @@ const Navbar = (props) => {
                                             onMouseMove={() => setDropdown(true)} 
                                             >
  
-                                        <div className={styles.user}>
+                                        <div className={styles.user} onMouseMove={() => setDropdown(true)} >
                                             {
                                                 (user?.type&&!worker_is_subscribed || user?.type&&!worker_profile_complete)?
                                                 <div>
@@ -162,7 +162,7 @@ const Navbar = (props) => {
                                             
                                             
                                         </div>
-                                        <div hidden={!dropdown}>
+                                        <div hidden={!dropdown} onMouseMove={() => setDropdown(true)} >
                                             <div className={styles.dropdown_invis}>
                                             
                                             </div>

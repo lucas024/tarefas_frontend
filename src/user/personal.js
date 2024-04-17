@@ -6,6 +6,7 @@ import validator from 'validator'
 import CheckIcon from '@mui/icons-material/Check';
 import { storage } from '../firebase/firebase'
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ClearIcon from '@mui/icons-material/Clear';
 import HandymanIcon from '@mui/icons-material/Handyman';
@@ -25,14 +26,17 @@ import PhoneUnverified from '@mui/icons-material/PhonelinkErase';
 import VerificationBannerPhone from '../general/verificationBannerPhone';
 import SelectWorker from '../selects/selectWorker';
 import { useSelector, useDispatch } from 'react-redux'
-import { user_update_field, user_update_phone_verified, user_update_email_verified, worker_update_profile_complete } from '../store';
-import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
+import { user_update_field, user_update_phone_verified, user_update_email_verified, worker_update_profile_complete, user_reset } from '../store';
+import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink, getAuth, deleteUser } from 'firebase/auth';
 import { auth } from '../firebase/firebase'
 import VerificationBannerEmail from '../general/verificationBannerEmail';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
+import DeleteBanner from '../general/deleteBanner';
 
 const Personal = (props) => {
+
+    const navigate = useNavigate()
 
     const api_url = useSelector(state => {return state.api_url})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
@@ -69,6 +73,8 @@ const Personal = (props) => {
     const [listValue, setListValue] = useState('')
     const [shakeTarefas, setShakeTarefas] = useState(false)
     const [fullList, setFullList] = useState(false)
+    const [deleteBanner, setDeleteBanner] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const [verifyPhone, setVerifyPhone] = useState(0)
     const [verifyEmail, setVerifyEmail] = useState(0)
@@ -131,6 +137,9 @@ const Personal = (props) => {
                 setPhoneWrong(false)
                 setPhoneCorrect(true)
             }
+        }
+        else{
+            setPhoneVisual('')
         }
 
     }, [phone])
@@ -256,7 +265,11 @@ const Personal = (props) => {
     }
 
     const setPhoneHandler = (val) => {
-        let phone = val.replace(/\s/g, '')
+        console.log(val)
+        let phone = val
+        if(val.length>0)
+            phone = val.replace(/\s/g, '')
+
         setPhone(phone)
     }
 
@@ -509,9 +522,32 @@ const Personal = (props) => {
         }
     }
 
+    const getAmountPay = plan => {
+        if(plan===1)
+        {
+            return "price_1O694XKC1aov6F9prK2XmPWr"
+            // return discountSubscriber||applyDiscount?"price_1O694XKC1aov6F9prK2XmPWr":"price_1LKQUSKC1aov6F9p9gL1euLW"
+        }
+        else if(plan===2)
+        {
+            return "price_1O696AKC1aov6F9pH03uvMvy"
+            // return discountSubscriber||applyDiscount?"price_1O696AKC1aov6F9pH03uvMvy":"price_1LKQUyKC1aov6F9pTpM3gn0l"
+        }
+        else{
+            return "price_1O696sKC1aov6F9pgfNrXs5i"
+            // return discountSubscriber||applyDiscount?"price_1O696sKC1aov6F9pgfNrXs5i":"price_1LKQVEKC1aov6F9p4RgyXAqj"
+        }
+    }
+
     return (
         <div className={styles.personal}>
-            <Loader loading={false}/>
+            {
+                loading?
+                <div className={styles.backdrop}/>
+                :null
+            }
+            
+            <Loader loading={loading}/>
             {/* !props.loaded em vez de false */}
             {
                 props.loaded?
@@ -617,6 +653,46 @@ const Personal = (props) => {
                         codeStatus={codeStatus}
                         clearCodeStatus={() => setCodeStatus(null)}
                         sendingError={sendingError}
+                        />
+                </CSSTransition>
+
+                <CSSTransition
+                    in={deleteBanner?true:false}
+                    timeout={1000}
+                    classNames="transition"
+                    unmountOnExit
+                    >
+                    <DeleteBanner 
+                        type={user?.type}
+                        cancel={() => {
+                            setDeleteBanner(false)
+                        }}
+                        confirmDelete={() => {
+                            setLoading(true)
+                            if(user?.type===1&&user?.subscription?.plan!==null)
+                            {
+                                axios.post(`${api_url}/cancel-subscription`, {
+                                    subscription: user.subscription,
+                                    current_amount: getAmountPay(user.subscription.plan),
+                                })
+                            }
+                            axios.post(`${api_url}/general/delete_user`, {
+                                user_id : user._id,
+                                type: user.type
+                            }).then(() => {
+                                deleteUser(auth.currentUser)
+                                .then(() => {
+                                    let type = user.type
+                                    dispatch(user_reset())
+                                    window.localStorage.setItem('loggedIn', 0)
+                                    setLoading(false)
+                                    if(type===0) navigate(`/authentication?type=${1}`)
+                                    else navigate(`/authentication/worker?type=${1}`)
+                                })
+                                .catch(err => console.log(err))
+                            })
+                            setDeleteBanner(false)
+                        }}
                         />
                 </CSSTransition>
                 <div className={styles.mid}>
@@ -736,7 +812,7 @@ const Personal = (props) => {
                             <Loader loading={loadingPhoto}/>
                                 {
                                     user&&photo!==""?
-                                    <img className={styles.image} src={photo}/>
+                                    <img className={styles.image} src={photo} alt='photo_google'/>
                                     :<FaceIcon style={{color:user.type===1?"#ffffff":""}} className={styles.image_tbd}/>
                                 }
                                 <div className={styles.image_input_wrapper}>
@@ -783,7 +859,7 @@ const Personal = (props) => {
                                         {/* novo phone input */}
                                         <div className={styles.input_div} style={{marginTop:'10px'}}> 
                                             {
-                                                !user_phone_verified?
+                                                !user_phone_verified&&!edit?
                                                 <div className={styles.input_div_button} onClick={() => !edit&&setVerifyPhone(1)}>
                                                     <span className={styles.input_div_button_text} style={{textTransform:'uppercase', backgroundColor:edit?"#71848d":""}}>Verificar</span>
                                                 </div>
@@ -961,12 +1037,21 @@ const Personal = (props) => {
                         </div>
                         :null
                     }
+                    {
+                        user?.type===1?
+                        <div className={styles.delete_account_divider_always}/>
+                        :
+                        <div className={styles.delete_account_divider}/>
+                    }
+                    
+                    <div className={styles.delete_account_wrapper} onClick={() => setDeleteBanner(true)}>
+                        <span className={styles.delete_account_button}>Eliminar Conta</span>
+                    </div>
                 </div>
                 </div>
                 :null
 
             }
-            
         </div>
     )
 }

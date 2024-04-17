@@ -144,7 +144,7 @@ const AuthCarousel = props => {
                 
 
                 <div style={{cursor:"pointer"}} className={styles.container} onClick={() => props.setTosAccepted(!props.tosAccepted)}>
-                    <input type="checkbox" readOnly checked={props.tosAccepted}/>
+                    <input tabindex={'-1'} type="checkbox" readOnly checked={props.tosAccepted}/>
                     <span className={styles.checkmark}></span>
                     <span className={styles.checkbox_text}>Li e aceito os <span onClick={e => {
                         props.setTosBanner()

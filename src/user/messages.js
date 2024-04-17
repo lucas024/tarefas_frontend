@@ -17,13 +17,14 @@ import letter_t from '../assets/letter-t.png'
 import BackHandIcon from '@mui/icons-material/BackHand';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useSelector, useDispatch } from 'react-redux'
-import {user_update_single_read, user_sort_chats} from '../store'
+import {user_update_chats} from '../store'
 import Timer from '../general/timer';
 
 
 const AdminMessages = (props) => {
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
+    const chatsStore = useSelector(state => {return state.chats})
 
     const dispatch = useDispatch()
 
@@ -76,31 +77,11 @@ const AdminMessages = (props) => {
             setSelectedChatId(paramsAux.id)
             if(landingLoad)
             {
-                triggerChatLoad(paramsAux.id, true, true)
+                triggerChatLoad(paramsAux.id, true, true, true)
                 setLandingLoad(false)
             }
         }
-        // axios.get(`${api_url}/user/get_chats`, { params: {_id: user._id} })
-        // .then(res => {
-        //     if(res.data !== null)
-        //     {
-        //         console.log(res.data)
-        //     }
-        // })
-
-        // if(user.chats?.length>0)
-        // {
-
-        //     setChats(JSON.parse(JSON.stringify(([...user.chats].sort(sortByTimestamp)))))
-        //     for(let el of user.chats)
-        //     {
-        //         if(el.chat_id === paramsAux.id)
-        //         {
-        //             setChatDisplayInformation(el)
-        //         }
-        //     }
-        // }
-        
+       
     }, [searchParams, user])
 
     
@@ -126,7 +107,7 @@ const AdminMessages = (props) => {
                                 }
                                 if(aux.length===10)
                                 {
-                                    triggerChatLoad(selectedChatId, true)
+                                    triggerChatLoad(selectedChatId, true, false, false)
                                 }
                                 else if(aux.length>0)
                                 {
@@ -146,11 +127,8 @@ const AdminMessages = (props) => {
                 {
                     setLoading(false)
                 }
-
             }
-
             setStop(false)
-
             //update chats agora escolhidos e last updated de todos os outros e desse mesmo tambem
         }, 1000);
 
@@ -194,7 +172,7 @@ const AdminMessages = (props) => {
                         setIsLoaded(true)
                         setLoadingChats(false)
                         setLoading(false)
-                        if(res.data?.chats.length>0)
+                        if(res.data?.chats?.length>0)
                         {
                             setChats(JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp)))))
                             for(let el of res.data.chats)
@@ -286,12 +264,13 @@ const AdminMessages = (props) => {
 
     const updateReadLocal = (selected_chat_id, type, last_text) => {
         let arr = [...chats]
+        console.log(arr)
         for(let el of arr)
         {
           if(el.chat_id===selected_chat_id)
           {
             console.log(selected_chat_id, type, last_text)
-            el.worker_read = type===0?false:true
+            el.worker_read = type===1?false:true
             el.user_read = type===0?true:false
             if(last_text !== null)
                 el.last_text = last_text
@@ -300,7 +279,21 @@ const AdminMessages = (props) => {
         }
         setChats(arr.sort(sortByTimestamp))
 
-        // dispatch(user_update_single_read(arr))
+        let aux2 = JSON.parse(JSON.stringify(([...chatsStore])))
+        for(let el of aux2)
+        {
+          if(el.chat_id===selected_chat_id)
+          {
+            console.log(selected_chat_id, type, last_text)
+            el.worker_read = type===1?false:true
+            el.user_read = type===0?true:false
+            if(last_text !== null)
+                el.last_text = last_text
+            break
+          }
+        }
+
+        dispatch(user_update_chats(aux2))
     }
 
     const messageHandler = () => {
@@ -566,7 +559,7 @@ const AdminMessages = (props) => {
                         updateReadLocal(item.chat_id, 1, null)
                         setChatDisplayInformation(item)
                         setAllLoaded(false)
-                        triggerChatLoad(item.chat_id, true)
+                        triggerChatLoad(item.chat_id, true, false, true)
                     }
                     }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
                     {
@@ -616,7 +609,7 @@ const AdminMessages = (props) => {
                         updateReadLocal(item.chat_id, 0, null)
                         setChatDisplayInformation(item)
                         setAllLoaded(false)
-                        triggerChatLoad(item.chat_id, true)
+                        triggerChatLoad(item.chat_id, true, false, true)
                     }
                     }} key={i} className={
                         selectedChatId===item.chat_id?chatInformation.reservation_title?styles.row_selected:styles.row_selected_just_worker:item.reservation_title?styles.row:styles.row_just_worker}>
@@ -668,8 +661,8 @@ const AdminMessages = (props) => {
         return false
     }
 
-    const triggerChatLoad = (chat_id, new_load, display_timing) => {
-        if(display_timing===true || stop===false)
+    const triggerChatLoad = (chat_id, new_load, display_timing, new_trigger) => {
+        if(display_timing===true || stop===false || new_trigger)
         {
             setDisplayLoadingNew(true)
             console.log('triggering actual')
@@ -736,10 +729,9 @@ const AdminMessages = (props) => {
         useEffect(() => {
             if(sticky)
             {
-                console.log('top')
                 if(selectedChatTexts.length>(limit-1)&&!allLoaded&&selectedChatId&&skip>0&&displayLoadingNew===false&&stop===false)
                 {
-                    triggerChatLoad(selectedChatId, false, false)
+                    triggerChatLoad(selectedChatId, false, false, false)
                     setStop(true)
                 }
                     

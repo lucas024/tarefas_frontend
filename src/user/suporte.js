@@ -66,7 +66,6 @@ const Suporte = (props) => {
         {
             axios.get(`${api_url}/admin_chats/get_chat`, { params: {chat_id: user.admin_chat} })
             .then(chat => {
-                console.log(chat.data.texts?.length, messages?.length)
                 if(chat.data.texts?.length > messages?.length || messages === undefined || first)
                 {
                     console.log('teste')
@@ -74,7 +73,8 @@ const Suporte = (props) => {
                         setChat(chat.data)
                         setMessages(chat.data.texts)
                         checkForRefusalsNoRepetitive(chat.data.texts)
-                        scrollToBottom()
+                        if(first)
+                            scrollToBottom()
                     }
                     let reservs = axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} })
                     if(reservs)

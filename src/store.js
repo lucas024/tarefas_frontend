@@ -37,8 +37,24 @@ const slice = createSlice({
     set_socket : (state, action) => {
       state.socket = action.payload.socket
     },
-    user_update_single_read: (state, action) => {
-      state.user.chats = action.payload
+    // user_update_single_read: (state, action) => {
+    //   let aux = {...state.user}
+    //   let aux_chats = [...aux.chats]
+    //   aux_chats.map(chat => {
+    //     if(chat.chat_id === action.payload.chat_id)
+    //     {
+    //       return {
+    //         ...chat,
+    //         worker_read: action.payload.type===1?true:false,
+    //         user_read: action.payload.type===1?false:true,
+    //         last_text: action.payload.last_text!==null?action.payload.last_text:chat.last_text
+    //       }
+    //     }
+    //     return chat
+    //   })
+    // },
+    user_update_chats: (state, action) => {
+      state.chats = action.payload
     },
     user_update_field: (state, action) => {
       for(let el of action.payload)
@@ -86,6 +102,7 @@ export const {
     set_socket, 
     user_sort_chats,
     user_update_single_read,
+    user_update_chats,
     user_update_field,
     search_save,
     search_scroll_save,

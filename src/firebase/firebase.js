@@ -41,9 +41,10 @@ auth.languageCode = 'pt';
 const provider = new GoogleAuthProvider();
 provider.addScope('email')
 const providerFacebook = new FacebookAuthProvider();
+providerFacebook.addScope('email')
 
 const actionCodeSettings = {
-  url: "http://localhost:3000",
+  url: "http://pt-tarefas.pt/",
   // This must be true.
   handleCodeInApp: true
 };

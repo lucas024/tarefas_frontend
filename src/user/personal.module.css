@@ -181,7 +181,6 @@
     margin-top: 10px;
     padding-bottom: 40px;
     border-bottom: 1px solid white;
-    height: 350px;
 }
 .top_right_flex{
     display: flex;
@@ -551,7 +550,7 @@ input[type=file]{
     margin-top: 30px;
     justify-content: space-between;
     position: relative;
-    height: 100%;
+    height: 800px;
 }
 .radio_area{
     display: flex;
@@ -561,8 +560,6 @@ input[type=file]{
     width: 48%;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    margin-bottom: 280px;
 }
 .flex_title{
     font-size: 1rem;
@@ -923,6 +920,42 @@ transform: rotate(45deg);
     top: 0;
     left: 0;
 }
+
+.delete_account_wrapper{
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    background-color: var(--neutral);
+    padding: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 230px;
+}
+.delete_account_wrapper:hover{
+    opacity: 0.7;
+    transition: 150ms all;
+    background-color: var(--red);
+}
+.delete_account_button{
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--brand);
+}
+.delete_account_divider{
+    display: none;
+    height: 2px;
+    width: 100%;
+    background-color: var(--neutral);
+}
+.delete_account_divider_always{
+    height: 2px;
+    width: 100%;
+    background-color: var(--neutral);
+    margin: 10px 0 20px 0;
+}
 @keyframes rotation {
     from {
       transform: rotate(0deg);
@@ -1049,7 +1082,13 @@ transform: rotate(45deg);
     .worker_area{
         margin-top: 330px;
     }
+
+    .delete_account_divider{
+        display: block;
+        margin: 50px 0 30px 0;
+    }
 }
+
 
 @media (max-width: 500px){
     .top_title{
@@ -1151,6 +1190,7 @@ transform: rotate(45deg);
     .flex_bottom{
         flex-direction: column;
         justify-content: flex-start;
+        height: 950px;
     }
     .flex_left{
         width: 100%;
@@ -1203,4 +1243,12 @@ transform: rotate(45deg);
     .input_div_button_text{
         font-size: 0.7rem;
     }
+    .delete_account_divider{
+        display: block;
+        margin: 10px 0 30px 0;
+    }
+    .delete_account_wrapper{
+        margin-bottom: 140px;
+    }
+
 }

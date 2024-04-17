@@ -152,6 +152,7 @@
     background-color: transparent !important;
     width: calc(100% + 30px);
     margin-left: -40px;
+    margin-top: -8px;
 }
 .user{
     display: flex;
@@ -171,14 +172,14 @@
 .user_dropdown{
     position: relative;
     background-color: white;
-    width: calc(100% + 30px);
+    width: calc(100% + 40px);
     margin-left: -40px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     -webkit-box-shadow: 0px 4px 6px -3px rgba(0,0,0,0.67); 
     box-shadow: 0px 4px 6px -3px rgba(0,0,0,0.67);
     cursor: default;
-    z-index: 5;
+    z-index: 6;
     border: 1px solid #ccc;
 }
 
