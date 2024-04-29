@@ -121,7 +121,7 @@ const AuthCarouselWorker = props => {
     const mapRegioes = () => {
         return regioes.map((reg, i) => {
             return (
-                <div key={i} className={styles.container} onClick={() => setCheckedReg(reg.value)}>
+                <div key={i} className={styles.container} style={{borderBottom:reg.value==='online'?'1px dashed #ccc':'none', paddingBottom:reg.value==='online'?'10px':'none'}} onClick={() => setCheckedReg(reg.value)}>
                     <div className={styles.container_flex}>
                         <input type="checkbox" readOnly checked={getCheckedReg(reg.value)}/>
                         <span className={styles.checkmark}></span>

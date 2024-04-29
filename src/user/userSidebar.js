@@ -161,13 +161,13 @@ const UserSidebar = (props) => {
                     <div className={styles.status} style={{borderColor:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
                         <Loader loading={loadingSub}/>
                         <div className={styles.status_top}>
-                            <span className={styles.status_top_val} style={{color:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
+                            <p className={styles.status_top_val} style={{color:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
                                 {
                                     user.state!==2&&user_phone_verified&&user_email_verified&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?
                                     "CONTA ATIVADA"
                                     :"CONTA DESATIVADA"
                                 }
-                            </span>
+                            </p>
                         </div>
                         <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?"#0358e540":"#fdd83540"}}>
                             <AccountCircleIcon sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>

@@ -252,6 +252,30 @@
     margin-bottom: 10px;
 }
 
+.contact_title{
+    font-size: 0.9rem;
+    margin-top: 10px;
+    font-weight: 500;
+    font-style: italic;
+}
+.contact_center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 0;
+}
+.contact_icon{
+    color: var(--job);
+}
+.contact_text{
+    font-weight: 600;
+    margin-left: 5px;
+}
+.contact_text_top{
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
 @media (max-width: 500px){
     .value_brand{
         font-size: 0.8rem;
@@ -279,5 +303,18 @@
     }
     .cancel{
         font-size: 0.7rem;
+    }
+    .contact_text_top{
+        font-size: 0.7rem;
+    }
+    .contact_title{
+        font-size: 0.8rem;
+    }
+    .contact_text{
+        font-size: 0.9rem;
+    }
+    .contact_icon{
+        width: 20px !important;
+        height: 20px !important;
     }
 }

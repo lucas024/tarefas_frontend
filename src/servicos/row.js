@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './row.module.css'
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
+import ComputerIcon from '@mui/icons-material/Computer';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {regioesOptions, profissoesMap} from '../general/util'
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -92,8 +93,13 @@ const Row = (props) => {
                             <span className={styles.right_type} style={{color:props.workerActive?"#0358e5":"#71848d"}}>{profissoesMap[props.item.workerType]?.label}</span>
                         </div>
                         <div className={styles.right_flex}>
-                            <LocationOnIcon className={styles.right_type_icon} style={{color:props.locationActive?"#0358e5":"#71848d"}}/>
-                            <span className={styles.right_type} style={{color:props.locationActive?"#0358e5":"#71848d"}}>{regioesOptions[props.item.district]}</span>
+                            {
+                                props.item.district==='online'?
+                                <ComputerIcon className={styles.right_type_icon} style={{color:props.locationActive?"#0358e5":"#71848d"}}/>
+                                :
+                                <LocationOnIcon className={styles.right_type_icon} style={{color:props.locationActive?"#0358e5":"#71848d"}}/>
+                            }
+                            <span className={styles.right_type} style={{color:props.locationActive?"#0358e5":"#71848d"}}>{props.item.district==='online'?'Online':regioesOptions[props.item.district]}</span>
                         </div>
                     </div>
                     

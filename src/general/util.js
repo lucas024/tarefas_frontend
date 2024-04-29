@@ -1,4 +1,29 @@
 const regioes = [
+    { value: 'online', label: 'Online' },
+    { value: 'acores', label: 'Açores' },
+    { value: 'aveiro', label: 'Aveiro' },
+    { value: 'beja', label: 'Beja' },
+    { value: 'braga', label: 'Braga' },
+    { value: 'braganca', label: 'Bragança' },
+    { value: 'castelo_branco', label: 'Castelo Branco' },
+    { value: 'coimbra', label: 'Coimbra' },
+    { value: 'evora', label: 'Évora' },
+    { value: 'faro', label: 'Faro' },
+    { value: 'guarda', label: 'Guarda' },
+    { value: 'leiria', label: 'Leiria' },
+    { value: 'lisboa', label: 'Lisboa' },
+    { value: 'madeira', label: 'Madeira' },
+    { value: 'portalegre', label: 'Portalegre' },
+    { value: 'porto', label: 'Porto' },
+    { value: 'santarem', label: 'Santarém' },
+    { value: 'setubal', label: 'Setúbal' },
+    { value: 'viana_do_castelo', label: 'Viana do Castelo' },
+    { value: 'vila_real', label: 'Vila Real' },
+    { value: 'viseu', label: 'Viseu' }
+]
+
+const regioes_no_online = [
+    // { value: 'online', label: 'Online' },
     { value: 'acores', label: 'Açores' },
     { value: 'aveiro', label: 'Aveiro' },
     { value: 'beja', label: 'Beja' },
@@ -21,6 +46,7 @@ const regioes = [
     { value: 'viseu', label: 'Viseu' }
 ]
 const regioesMap = {
+    online: { value: 'online', label: 'Online' },
     acores: { value: 'acores', label: 'Açores' },
     aveiro: { value: 'aveiro', label: 'Aveiro' },
     beja: { value: 'beja', label: 'Beja' },
@@ -44,6 +70,7 @@ const regioesMap = {
 }
 
 const regioesOptions = {
+    online: 'Online',
     acores : 'Açores',
     aveiro : 'Aveiro',
     beja : 'Beja',
@@ -466,6 +493,7 @@ const profissoesGrouped = [
 
 module.exports = {
     regioes,
+    regioes_no_online,
     regioesOptions,
     regioesMap,
     profissoesGrouped,

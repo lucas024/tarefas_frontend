@@ -42,6 +42,8 @@ const Navbar = (props) => {
         setLoaded(props.userLoadAttempt)
         if(arr_pathname[1]==='confirm-email') setDisplay(false)
         else setDisplay(true)
+
+        console.log(user_email_verified&&user_phone_verified)
     }, [props.userLoadAttempt])
 
     useEffect(() => {
@@ -201,7 +203,7 @@ const Navbar = (props) => {
                                                                 <span className={styles.drop_div_text}>Perfil</span>
                                                             </div>
                                                             {
-                                                                user?.type&&worker_profile_complete?
+                                                                user?.type===1&&worker_profile_complete?
                                                                 <CheckCircleOutlineOutlinedIcon className={styles.on_icon}/>
                                                                 :
                                                                 user?.type===0&&user_email_verified&&user_phone_verified?

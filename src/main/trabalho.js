@@ -7,7 +7,9 @@ import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import ImageGallery from 'react-image-gallery';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import ComputerIcon from '@mui/icons-material/Computer';
 import Marker2 from './marker';
 import PopupElimination from '../transitions/popupElimination';
 import axios from 'axios';
@@ -36,6 +38,8 @@ import ExploreOffIcon from '@mui/icons-material/ExploreOff';
 import SignpostIcon from '@mui/icons-material/Signpost';
 import { regioesOptions } from '../general/util';
 import ChatIcon from '@mui/icons-material/Chat';
+import {Tooltip} from 'react-tooltip';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 const ObjectID = require("bson-objectid");
 
@@ -593,7 +597,10 @@ const Trabalho = (props) => {
                                     }}>
                                         Enviar Mensagem
                                     </span>
-                                    <ChatIcon className={styles.top_message_icon}/>
+                                    <div className={styles.top_message_icon_wrapper}>
+                                        <ChatIcon className={styles.top_message_icon}/>
+                                    </div>
+                                    
                                     </div>
                                     :userView?
                                     null
@@ -666,12 +673,36 @@ const Trabalho = (props) => {
                                     </div>                                    
                                 </div>
                                 <span className={styles.top_right_user} style={{marginTop:"40px"}}>Localização</span>
-                                <div className={styles.location_div}>
-                                    <SignpostIcon className={styles.location_pin}/>
+                                {
+                                    reservation.task_type===2?
+                                    null
+                                    :
+                                    <div className={styles.location_div}>
+                                        <LocationOnIcon className={styles.location_pin}/>
+                                        {
+                                            loaded&&(showFull||userView)?
+                                            reservation.task_type===2?
+                                            null
+                                            :
+                                            <span className={styles.location}>{regioesOptions[reservation.district]}</span>
+                                            :loaded&&(!showFull&&!userView)?
+                                            <span className={`${styles.location_blur} ${styles.unselectable}`}>Abcdefg ab Hijklmonpqrstuv</span> 
+                                            :<span className={styles.skeleton} style={{width:"490px", height:"20px", marginLeft:"10px", borderRadius:"5px"}}></span>
+                                            }
+                                    </div>
+                                }
+
+                                <div className={styles.location_div} style={{marginTop:reservation.task_type===2?'10px':'-5px'}}>
+                                    {
+                                        reservation.task_type===2?
+                                        <ComputerIcon className={styles.location_pin}/>
+                                        :
+                                        <SignpostIcon className={styles.location_pin}/>
+                                    }
                                     {
                                         loaded&&(showFull||userView)?
                                         reservation.task_type===2?
-                                        <span className={styles.location} style={{fontWeight:600}}>Tarefa Online</span>
+                                        <span className={styles.location} style={{fontWeight:600}}>Online</span>
                                         :
                                         <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}, ${reservation.andar}`}</span>
                                         :loaded&&(!showFull&&!userView)?
@@ -679,19 +710,23 @@ const Trabalho = (props) => {
                                         :<span className={styles.skeleton} style={{width:"490px", height:"20px", marginLeft:"10px", borderRadius:"5px"}}></span>
                                         }
                                 </div>
-                                <div className={styles.location_div} style={{marginTop:'-5px'}}>
-                                    <LocationOnIcon className={styles.location_pin}/>
-                                    {
-                                        loaded&&(showFull||userView)?
-                                        reservation.task_type===2?
-                                        null
-                                        :
-                                        <span className={styles.location}>{regioesOptions[reservation.district]}</span>
-                                        :loaded&&(!showFull&&!userView)?
-                                        <span className={`${styles.location_blur} ${styles.unselectable}`}>Abcdefg ab Hijklmonpqrstuv</span> 
-                                        :<span className={styles.skeleton} style={{width:"490px", height:"20px", marginLeft:"10px", borderRadius:"5px"}}></span>
-                                        }
-                                </div>
+
+                                {
+                                    loaded&&(showFull||userView)&&!reservation.availableToGo?
+                                    <div className={styles.location_div} style={{marginTop:'-5px'}}>
+                                        <DirectionsWalkIcon className={styles.location_pin} style={{color:"#0358e5", backgroundColor:"#fff"}}/>
+                                        <span className={styles.location} style={{fontWeight:600}}>Disponível para ir encontro do profissional</span>
+                                        <div 
+                                            className={styles.help_wrapper}
+                                            data-tooltip-id='help' 
+                                            data-tooltip-content="Disponível para se deslocar a uma oficina, escritório ou outro local perto da morada.">
+                                            <QuestionMarkIcon className={styles.help}/>
+                                        </div>
+                                    </div>
+                                    :null
+                                }
+                                
+
                                 {
                                     loaded&&(showFull||userView)?
                                     reservation.task_type===2?
@@ -843,7 +878,7 @@ const Trabalho = (props) => {
                 </div>
                 :reservation===null?<NoPage object="publicação"/>:null
             }
-            
+            <Tooltip className={styles.helper_tooltip} id={"help"} effect='solid' place='top'/>
         </div>
         
     )

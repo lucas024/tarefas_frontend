@@ -270,7 +270,7 @@ const AdminMessages = (props) => {
           if(el.chat_id===selected_chat_id)
           {
             console.log(selected_chat_id, type, last_text)
-            el.worker_read = type===1?false:true
+            el.worker_read = type===1?true:false
             el.user_read = type===0?true:false
             if(last_text !== null)
                 el.last_text = last_text
@@ -285,7 +285,7 @@ const AdminMessages = (props) => {
           if(el.chat_id===selected_chat_id)
           {
             console.log(selected_chat_id, type, last_text)
-            el.worker_read = type===1?false:true
+            el.worker_read = type===1?true:false
             el.user_read = type===0?true:false
             if(last_text !== null)
                 el.last_text = last_text

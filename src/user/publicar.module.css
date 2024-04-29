@@ -380,7 +380,7 @@ input::placeholder{
     align-items: center;
     margin-bottom: 5px;
     position: relative;
-    margin-top: 60px;
+    margin-top: 30px;
 }
 .diff_right_title{
     font-weight: 600;
@@ -397,6 +397,19 @@ input::placeholder{
     border-radius: 5px;
     color: white;
     font-size: 0.8rem;
+}
+.help_wrapper{
+    margin-left: 5px;
+    margin-top: 3px;
+    background-color: var(--brand);
+    border-radius: 50%;
+    padding: 0px 4px;
+}
+.help{
+    width: 15px !important;
+    height: 15px !important;
+    color: white;
+    margin-bottom: 0px;
 }
 .editar_tit{
     font-weight: 500;
@@ -742,10 +755,10 @@ input::placeholder{
     background-color: #fdd83590;
     border: 2px solid var(--yellow);
 }
-.verify_box_no:hover{
+/* .verify_box_no:hover{
     background-color: var(--yellow);
     cursor: pointer;
-}
+} */
 .verify_box_incomplete{
     width: 60px;
     height: 100%;
@@ -1353,6 +1366,7 @@ input::placeholder{
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    flex-direction: column;
 }
 .zone_label{
     font-size: 0.9rem;
@@ -1370,6 +1384,17 @@ input::placeholder{
     align-self: flex-start !important;
     white-space: pre-line;
     font-family: 'Chivo Mono', monospace;
+}
+.zone_label_value_small{
+    font-size: 0.8rem;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--neutral);
+    text-align: left;
+    align-self: flex-start !important;
+    white-space: pre-line;
+    /* font-family: 'Chivo Mono', monospace; */
+    margin-top: 5px;
 }
 .input_address_wrapper{
     position: absolute;
@@ -1505,6 +1530,128 @@ input::placeholder{
     margin-top: 15px;
     margin-bottom: 10px;
 }
+
+/* Customize the label (the container) */
+.container {
+    display: flex;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size: 1.2rem;
+    align-items: center;
+    height: 25px;
+    margin-top: 20px;
+}
+.checkmark_image{
+    width: 25px !important;
+    height: 25px !important;
+    margin-right: 5px;
+    margin-left: 30px;
+}
+.checkmark_image_disabled{
+    width: 25px !important;
+    height: 25px !important;
+    margin-right: 5px;
+    margin-left: 30px;
+    opacity: 0.4;
+}
+/* Hide the browser's default checkbox */
+.container input {
+position: absolute;
+opacity: 0;
+height: 0;
+width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+position: absolute;
+top: 0;
+left: 0;
+height: 25px;
+width: 25px;
+background-color: #161F2890;
+border-radius: 3px;
+}
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+background-color: var(--grey);
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+background-color: var(--job);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+content: "";
+position: absolute;
+display: none;
+}
+.checkmark_text{
+    margin-left: 30px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    text-align: left;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+left: 9px;
+top: 5px;
+width: 5px;
+height: 10px;
+border: solid white;
+border-width: 0 3px 3px 0;
+-webkit-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+transform: rotate(45deg);
+}
+
+    
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark_disabled {
+background-color: #FF785A90;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark_disabled:after {
+content: "";
+position: absolute;
+display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark_disabled:after {
+display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark_disabled:after {
+left: 9px;
+top: 5px;
+width: 5px;
+height: 10px;
+border: solid white;
+border-width: 0 3px 3px 0;
+-webkit-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+transform: rotate(45deg);
+}
+
+.helper_tooltip{
+    z-index: 2;
+}
+
 @media (max-width: 1200px){
     .foto_img_wrapper{
         width: 240px !important;
@@ -1571,16 +1718,34 @@ input::placeholder{
         width: 140px !important;
         height: 130px !important;
     }
+    .checkmark_text{
+        font-size: 0.8rem;
+    }
+    .helper_tooltip{
+        font-size: 0.6rem;
+    }
 }
 
 @media (max-width: 500px){
+    .help_wrapper{
+        padding: 0px 3px;
+    }
+    .help{
+        width: 14px !important;
+        height: 14px !important;
+        margin-bottom: 1px;
+    }
+    .helper_tooltip{
+        font-size: 0.35rem;
+    }
+    .container{
+        margin-top: 5px;
+    }
+    .checkmark_text{
+        font-size: 0.6rem;
+    }
     .online_task_button_side{
         font-size: 0.7rem;
-    }
-    .online_task_button_side_wrapper{
-    }
-    .online_task_button{
-        max-width: 250px;
     }
     .diff_right_title_container{
         /* width: min-content; */
@@ -1612,7 +1777,7 @@ input::placeholder{
         margin-left: 0;
     }
     .diff_right_title_container_bottom{
-        margin-top: 30px;
+        margin-top: 10px;
     }
     .left_select{
         width: 200px;
@@ -1683,11 +1848,14 @@ input::placeholder{
     .zone_label_value{
         font-size: 0.8rem;
     }
+    .zone_label_value_small{
+        font-size: 0.6rem;
+    }
     .zone_label_div{
         flex-direction: column;
     }
     .carousel_div{
-        margin-top: 15px;
+        margin-top: 35px;
     }
 }
 

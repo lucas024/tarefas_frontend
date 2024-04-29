@@ -3,7 +3,7 @@ import styles from '../user/publicar.module.css'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Geocode, { setLanguage } from "react-geocode";
 import dayjs from 'dayjs';
-import { regioes, regioesMap } from '../general/util';
+import { regioes_no_online, regioesMap } from '../general/util';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DoneIcon from '@mui/icons-material/Done';
 import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
@@ -15,7 +15,8 @@ import Loader from '../general/loader';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import SelectHome from '../selects/selectHome';
-
+import {Tooltip} from 'react-tooltip';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 Geocode.setApiKey("AIzaSyC_ZdkTNNpMrj39P_y8mQR2s_15TXP1XFk")
 Geocode.setRegion("pt");
@@ -109,7 +110,7 @@ const PublicarDetails = props => {
         let found = false
         if(capital!==null && capital!=="")
         {
-            for(let reg of regioes)
+            for(let reg of regioes_no_online)
             {
                 if(reg.label === capital)
                 {
@@ -138,7 +139,7 @@ const PublicarDetails = props => {
                 <div className={styles.contact_area} onClick={() => props.divRef?.current?.scrollIntoView({ behavior: 'smooth' })}>
                 <div className={styles.diff_right_title_container}>
                     <span className={styles.diff_right_title}>
-                        Localização da Tarefa<span className={styles.action}>*</span>
+                        Localização<span className={styles.action}>*</span>
                     </span>
                     <div className={styles.top_check} style={{backgroundColor:(props.correct_location||props.correct_location_online)?'#0358e5':"", top:0, right:0}}>
                         <DoneIcon className={styles.top_check_element}/>
@@ -180,7 +181,7 @@ const PublicarDetails = props => {
                                     <div className={styles.bot_input_div_search} style={{flex:1}}>
                                         <div className={styles.input_address_wrapper}>
                                             <input 
-                                                placeholder='Pesquisar morada da tarefa...' 
+                                                placeholder='Pesquisar a tua morada ou a morada da tarefa...' 
                                                 type="text" 
                                                 autoComplete='off' 
                                                 value={selectedAddress||address} 
@@ -204,8 +205,10 @@ const PublicarDetails = props => {
                                     </div>
                                     <div className={styles.bot_input_div_search_select}>
                                         <SelectHome 
+                                            menuOpen={() => {}}
+                                            menuClose={() => {}}
                                             publicar={true}
-                                            options={regioes}
+                                            options={regioes_no_online}
                                             option={props.district}
                                             changeOption={val => {
                                                 props.setDistrictHelper(val)}}
@@ -248,6 +251,19 @@ const PublicarDetails = props => {
                                         onChange={e => props.setAndar(e.target.value)} 
                                         value={props.andar} 
                                         className={styles.top_input_short}></input>
+                                </div>
+                            </div>
+                            <div className={styles.address_flex}>
+                                <div style={{cursor:"pointer"}} className={styles.container}>
+                                    <input type="checkbox" readOnly checked={props.availableToGo} onClick={() => props.setAvailableToGo(!props.availableToGo)}/>
+                                    <span className={styles.checkmark} onClick={() => props.setAvailableToGo(!props.availableToGo)}></span>
+                                    <p className={styles.checkmark_text} onClick={() => props.setAvailableToGo(!props.availableToGo)}>Estou disponível para ir ao encontro do profissional</p>
+                                    <div 
+                                        className={styles.help_wrapper}
+                                        data-tooltip-id='help' 
+                                        data-tooltip-content="Estarás disponível para te deslocar a uma oficina, escritório ou outro local perto da tua morada.">
+                                        <QuestionMarkIcon className={styles.help}/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -324,7 +340,8 @@ const PublicarDetails = props => {
                             :
                             props.expired?
                             <div className={props.phone.length!==9?styles.verify_box_incomplete:styles.verify_box_no}
-                                onClick={() => props.phone.length===9&&props.setVerifyPhone(1)}>
+                                // onClick={() => props.phone.length===9&&props.setVerifyPhone(1)}
+                                >
                                 <PhonelinkEraseIcon className={styles.verify_box_icon}/>
                             </div>
                             :
@@ -363,6 +380,7 @@ const PublicarDetails = props => {
                     </div>
                 </div>
             </div>
+            <Tooltip className={styles.helper_tooltip} id={"help"} effect='solid' place='top'/>
         </div>
     )
 }

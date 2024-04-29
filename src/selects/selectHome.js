@@ -34,6 +34,9 @@ const SelectHome = (props) => {
             fontSize:"0.8rem",
             fontWeight: state.isSelected? 800: 500,
             backgroundColor: state.isSelected? "#161F2840 ": state.isFocused? '#161F2810': "transparent",
+            "&:first-of-type": {
+                borderBottom: props.regioes?'1px dashed #ccc':'none',
+            }
         }),
         menu: base => ({
             ...base,
@@ -108,6 +111,7 @@ const SelectHome = (props) => {
     }
 
     const selectChange = (val) => {
+        console.log(val)
         props.changeOption(val)
     }
 
@@ -123,14 +127,14 @@ const SelectHome = (props) => {
 
     const formatOptionLabelAux = data => {
         return (
-            <div className={styles.label} style={{marginTop:data.solo?'-3px':''}}>
+            <div className={data.value==='online'?styles.label_online:styles.label} style={{marginTop:data.solo?'-3px':''}}>
                 {
                     data.img?
                     <img src={data.img} className={styles.label_img} style={{marginLeft:data.solo?'-7px':''}}/>
                     :null
                 }
                 
-                <p className={styles.label_label} style={{marginLeft:data.img?"5px":"0px"}}>{data.label}</p>
+                <p className={data.value==='online'?styles.label_label_online:styles.label_label} style={{marginLeft:data.img?"5px":"0px"}}>{data.label}</p>
             </div>
         )
     }
@@ -142,6 +146,8 @@ const SelectHome = (props) => {
             options={props.options}
             value={props.option}
             isSearchable={props.searcheable===false?false:true}
+            onMenuOpen={() => props.menuOpen()}
+            onBlur={() => props.menuClose()}
             formatGroupLabel={formatGroupLabelAux}
             formatOptionLabel={formatOptionLabelAux}
             // menuIsOpen={true}

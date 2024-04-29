@@ -255,7 +255,7 @@ const Personal = (props) => {
     const mapRegioes = () => {
         return regioes.map((trab, i) => {
             return (
-                <div key={i} style={{cursor:editBottom?"pointer":"default", paddingLeft:"35px"}} className={styles.container} onClick={() => setCheckedReg(trab.value)}>
+                <div key={i} style={{cursor:editBottom?"pointer":"default", paddingLeft:"35px", borderBottom:trab.value==='online'?'1px dashed #ccc':'none', paddingBottom:trab.value==='online'?'10px':'none'}} className={styles.container} onClick={() => setCheckedReg(trab.value)}>
                     <input type="checkbox" readOnly checked={getCheckedReg(trab.value)}/>
                     <span className={editBottom?styles.checkmark:styles.checkmark_disabled}></span>
                     <span className={editBottom?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.label}</span>
@@ -296,9 +296,9 @@ const Personal = (props) => {
                                 [{field: 'phone', value: phone}]
                             )
                         )
-                        dispatch(user_update_phone_verified(false))
-                        if(auth.currentUser.phoneNumber!=null)
-                            unlink(auth.currentUser, "phone")
+                        // dispatch(user_update_phone_verified(false))
+                        // if(auth.currentUser.phoneNumber!=null)
+                        //     unlink(auth.currentUser, "phone")
                         setLoadingRight(false)
                         setRightPop(true)
                         setTimeout(() => setRightPop(false), 4000)
@@ -318,9 +318,9 @@ const Personal = (props) => {
                                 ]
                             )
                         )
-                        dispatch(user_update_phone_verified(false))
-                        if(auth.currentUser.phoneNumber!=null)
-                            unlink(auth.currentUser, "phone")
+                        // dispatch(user_update_phone_verified(false))
+                        // if(auth.currentUser.phoneNumber!=null)
+                        //     unlink(auth.currentUser, "phone")
                         setLoadingRight(false)
                         setRightPop(true)
                         setTimeout(() => setRightPop(false), 4000)
@@ -420,18 +420,18 @@ const Personal = (props) => {
 
     const getPercentagem = () => {
         let val = 0
-        if(user_phone_verified&&!edit) val += 1
+        // if(user_phone_verified&&!edit) val += 1
         if(user_email_verified&&!editBottom) val += 1
         if(selectedProf?.length>0&&!editBottom) val += 1
         if(selectedReg?.length>0&&!editBottom) val += 1
         if(radioSelected!==null&&!editBottom) val += 1
-        return Math.ceil((val/5)*100)
+        return Math.ceil((val/4)*100)
     }
 
     const initiateEmailVerification = () => {
         setSendingError(null)
         var actionCodeSettings = {
-            url: 'https://localhost:3000/user',
+            url: 'https://pt-tarefas.pt/confirm-email',
             handleCodeInApp: false
         }
 
@@ -710,7 +710,7 @@ const Personal = (props) => {
                                 {
                                     displayTop?
                                     <div className={getPercentagem()<100?styles.top_wrap_incomplete:styles.top_wrap_complete}>
-                                        <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        <div className={styles.top_complete_line}>
                                             <EmailVerified className={user_email_verified?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 user_email_verified?
@@ -727,7 +727,7 @@ const Personal = (props) => {
 
                                             }
                                         </div>
-                                        <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        {/* <div className={styles.top_complete_line}>
                                             <PhoneVerified className={user_phone_verified?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 user_phone_verified?
@@ -743,8 +743,8 @@ const Personal = (props) => {
                                                 </div>
 
                                             }
-                                        </div>
-                                        <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        </div> */}
+                                        <div className={styles.top_complete_line}>
                                             <CorporateFareIcon className={radioSelected!==""&&!editBottom?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 radioSelected!==""&&!editBottom?
@@ -761,7 +761,7 @@ const Personal = (props) => {
 
                                             }
                                         </div>
-                                        <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        <div className={styles.top_complete_line}>
                                             <HandymanIcon className={selectedProf?.length>0&&!editBottom?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 selectedProf?.length>0&&!editBottom?
@@ -778,7 +778,7 @@ const Personal = (props) => {
 
                                             }
                                         </div>
-                                        <div className={styles.top_complete_line} style={{marginTop:"5px"}}>
+                                        <div className={styles.top_complete_line}>
                                             <LocationOnIcon className={selectedReg?.length>0&&!editBottom?styles.line_icon:styles.line_icon_complete}/>
                                             {
                                                 selectedReg?.length>0&&!editBottom?
@@ -858,13 +858,13 @@ const Personal = (props) => {
                                         </div>
                                         {/* novo phone input */}
                                         <div className={styles.input_div} style={{marginTop:'10px'}}> 
-                                            {
+                                            {/* {
                                                 !user_phone_verified&&!edit?
                                                 <div className={styles.input_div_button} onClick={() => !edit&&setVerifyPhone(1)}>
                                                     <span className={styles.input_div_button_text} style={{textTransform:'uppercase', backgroundColor:edit?"#71848d":""}}>Verificar</span>
                                                 </div>
                                                 :null
-                                            }
+                                            } */}
                                             
                                             <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#FF785A':!user_phone_verified?'#fdd835':'#0358e5', borderTopRightRadius:!user_phone_verified?'0px':'3px'}}>
                                                 <div className={styles.input_icon_div}>

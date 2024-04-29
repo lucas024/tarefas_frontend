@@ -103,6 +103,42 @@ const Subscription = props => {
     //display 1 - ativar
     //display 0 - atual
 
+    const discount_mensal_d = '2.59'
+    const discount_mensal_d_euro = '2'
+    const discount_mensal_d_centimo = '59'
+    const discount_mensal = '259'
+    const discount_mensal_monthly = '259'
+
+    const discount_semestral_d = '13.78'
+    const discount_semestral_d_euro = '13'
+    const discount_semestral_d_centimo = '78'
+    const discount_semestral = '1378'
+    const discount_semestral_monthly = '2.39'
+
+    const discount_anual_d = '23.98'
+    const discount_anual_d_euro = '23'
+    const discount_anual_d_centimo = '98'
+    const discount_anual = '2398'
+    const discount_anual_monthly = '1.99'
+
+    const mensal_d = '12.99'
+    const mensal_d_euro = '12'
+    const mensal_d_centimo = '99'
+    const mensal = '1299'
+    const mensal_monthly = '12.99'
+    const semestral_d = '68.89'
+    const semestral_d_euro = '68'
+    const semestral_d_centimo = '89'
+    const semestral = '6889'
+    const semestral_monthly = '11.49'
+    const anual_d = '119.89'
+    const anual_d_euro = '119'
+    const anual_d_centimo = '89'
+    const anual = '11989'
+    const anual_monthly = '9.99'
+
+    const saver = 'Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura. Os previlégios de conta ativa mantêm-se até ao fim da data do plano escolhido. '
+
     useEffect(() => {
         setLoading(true)
         console.log(user)
@@ -136,8 +172,8 @@ const Subscription = props => {
                 console.log(res.data.subscription)
                 
                 let value_pay = res.data.subscription.plan.amount_decimal
-                let type = value_pay==='1299'||value_pay==='649'?1:value_pay==='6889'||value_pay==='3445'?2:3
-                if(value_pay==='649'||value_pay==='3445'||value_pay==='5995')
+                let type = value_pay===mensal||value_pay===discount_mensal?1:value_pay===semestral||value_pay===discount_semestral?2:3
+                if(value_pay===discount_mensal||value_pay===discount_semestral||value_pay===discount_anual)
                 {
                     setDiscountSubscriber(true)
                 }
@@ -155,7 +191,7 @@ const Subscription = props => {
                 setSubscriptionPlanObj({
                     value: value_pay_read,
                     type: type===1?"Mensal":type===2?"Semestral":"Anual",
-                    monthly: type===1?!discountSubscriber?"12.99":"6.49":type===2?!discountSubscriber?"11.49":"5.75":!discountSubscriber?"9.99":"4.99",
+                    monthly: type===1?!discountSubscriber?mensal_d:discount_mensal_d:type===2?!discountSubscriber?semestral_monthly:discount_semestral_monthly:!discountSubscriber?anual_monthly:discount_anual_monthly,
                     a_cada: type===1?"mês":type===2?"6 meses":"12 meses",
                     cobrancas: type===1?"mensais":type===2?"semestrais":"anuais",
                     image: type===1?basic:type===2?medium:pro,
@@ -255,22 +291,22 @@ const Subscription = props => {
     }
 
     const getPlanFromPriceId = priceId => {
-        if(priceId === ("price_1LKQUyKC1aov6F9pTpM3gn0l"||"price_1O696AKC1aov6F9pH03uvMvy")) return 2
-        else if(priceId === ("price_1LKQVEKC1aov6F9p4RgyXAqj"||"price_1O696sKC1aov6F9pgfNrXs5i")) return 3
+        if(priceId === ("price_1LKQUyKC1aov6F9pTpM3gn0l"||"price_1P6rPWKC1aov6F9pIJWMdRNq")) return 2
+        else if(priceId === ("price_1LKQVEKC1aov6F9p4RgyXAqj"||"price_1P6rOpKC1aov6F9pQ9twSRv7")) return 3
         else return 1
     }
 
     const getAmountPay = plan => {
         if(plan===1)
         {
-            return discountSubscriber||applyDiscount?"price_1O694XKC1aov6F9prK2XmPWr":"price_1LKQUSKC1aov6F9p9gL1euLW"
+            return discountSubscriber||applyDiscount?"price_1P6rPxKC1aov6F9pVup1aLnE":"price_1LKQUSKC1aov6F9p9gL1euLW"
         }
         else if(plan===2)
         {
-            return discountSubscriber||applyDiscount?"price_1O696AKC1aov6F9pH03uvMvy":"price_1LKQUyKC1aov6F9pTpM3gn0l"
+            return discountSubscriber||applyDiscount?"price_1P6rPWKC1aov6F9pIJWMdRNq":"price_1LKQUyKC1aov6F9pTpM3gn0l"
         }
         else{
-            return discountSubscriber||applyDiscount?"price_1O696sKC1aov6F9pgfNrXs5i":"price_1LKQVEKC1aov6F9p4RgyXAqj"
+            return discountSubscriber||applyDiscount?"price_1P6rOpKC1aov6F9pQ9twSRv7":"price_1LKQVEKC1aov6F9p4RgyXAqj"
         }
     }
 
@@ -502,7 +538,7 @@ const Subscription = props => {
     return (
         <div className={styles.subscription}>
             <Loader loading={loading}/>
-            <div className={confirmFreeBanner||confirmBanner?styles.backdrop:null} onClick={() => setConfirmFreeBanner(false)&&setConfirmBanner(false)}/>
+            <div className={confirmFreeBanner||confirmBanner||loading?styles.backdrop:null} onClick={() => setConfirmFreeBanner(false)&&setConfirmBanner(false)}/>
             <CSSTransition 
                 in={confirmBanner}
                 timeout={1000}
@@ -583,10 +619,10 @@ const Subscription = props => {
                         {
                             display===4||display===1?
                             <div className={styles.sub_info_main}>
-                                <span ref={scrolltopref}/>
+                                {/* <span ref={scrolltopref}/> */}
                                 <div className={styles.sub_info_wrap}>
                                     <div className={styles.sub_info}>
-                                        <span className={styles.sub_info_title}>Profissional no Tarefas</span>
+                                        <span className={styles.sub_info_title} ref={scrolltopref}>Profissional no Tarefas</span>
                                         {display===1 && applyDiscount?
                                             <p className={styles.sub_info_title_discount}>SUBSCRIÇÃO EXCLUSIVA FUNDADOR</p>
                                             :null
@@ -646,14 +682,14 @@ const Subscription = props => {
                                                             <div className={styles.options_price_flex}>
                                                                 <div className={styles.options_price_flex_flex}>
                                                                     <EuroSymbolIcon className={styles.price_euro}/>
-                                                                    <p className={styles.options_price_value}>12</p>
-                                                                    <p className={styles.options_price_decimal}>.99</p>
+                                                                    <p className={styles.options_price_value}>{mensal_d_euro}</p>
+                                                                    <p className={styles.options_price_decimal}>.{mensal_d_centimo}</p>
                                                                 </div>
                                                                 <ArrowRightIcon className={styles.price_arrow}/>
                                                                 <div className={styles.options_price_flex_flex} style={{color:"#FF785A", fontWeight:'700'}}>
                                                                     <EuroSymbolIcon className={styles.price_euro}/>
-                                                                    <p className={styles.options_price_value_new}>6</p>
-                                                                    <p className={styles.options_price_decimal_new}>.49</p>
+                                                                    <p className={styles.options_price_value_new}>{discount_mensal_d_euro}</p>
+                                                                    <p className={styles.options_price_decimal_new}>.{discount_mensal_d_centimo}</p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -664,14 +700,14 @@ const Subscription = props => {
                                                             <div className={styles.options_price_flex}>
                                                                 <div className={styles.options_price_flex_flex}>
                                                                     <EuroSymbolIcon className={styles.price_euro}/>
-                                                                    <p className={styles.options_price_value}>68</p>
-                                                                    <p className={styles.options_price_decimal}>.89</p>
+                                                                    <p className={styles.options_price_value}>{semestral_d_euro}</p>
+                                                                    <p className={styles.options_price_decimal}>.{semestral_d_centimo}</p>
                                                                 </div>
                                                                 <ArrowRightIcon className={styles.price_arrow}/>
                                                                 <div className={styles.options_price_flex_flex} style={{color:"#FF785A", fontWeight:'700'}}>
                                                                     <EuroSymbolIcon className={styles.price_euro}/>
-                                                                    <p className={styles.options_price_value_new}>34</p>
-                                                                    <p className={styles.options_price_decimal_new}>.45</p>
+                                                                    <p className={styles.options_price_value_new}>{discount_semestral_d_euro}</p>
+                                                                    <p className={styles.options_price_decimal_new}>.{discount_semestral_d_centimo}</p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -682,14 +718,14 @@ const Subscription = props => {
                                                             <div className={styles.options_price_flex}>
                                                                 <div className={styles.options_price_flex_flex}>
                                                                     <EuroSymbolIcon className={styles.price_euro}/>
-                                                                    <p className={styles.options_price_value}>119</p>
-                                                                    <p className={styles.options_price_decimal}>.89</p>
+                                                                    <p className={styles.options_price_value}>{anual_d_euro}</p>
+                                                                    <p className={styles.options_price_decimal}>.{anual_d_centimo}</p>
                                                                 </div>
                                                                 <ArrowRightIcon className={styles.price_arrow}/>
                                                                 <div className={styles.options_price_flex_flex} style={{color:"#FF785A", fontWeight:'700'}}>
                                                                     <EuroSymbolIcon className={styles.price_euro}/>
-                                                                    <p className={styles.options_price_value_new}>59</p>
-                                                                    <p className={styles.options_price_decimal_new}>.95</p>
+                                                                    <p className={styles.options_price_value_new}>{discount_anual_d_euro}</p>
+                                                                    <p className={styles.options_price_decimal_new}>.{discount_anual_d_centimo}</p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -699,7 +735,7 @@ const Subscription = props => {
                                                         onClick={() => {
                                                             setApplyDiscount(true)
                                                             setDisplay(1)
-                                                            scrolltopref.current.scrollIntoView({behavior: 'smooth'})
+                                                            // scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                         }}>
                                                         <span className={styles.trial_button_banner}>DESCONTO FUNDADOR 80%</span>
                                                         <span className={styles.trial_button_text}>VER E ATIVAR PLANOS EXCLUSIVOS</span>
@@ -859,7 +895,7 @@ const Subscription = props => {
                                                                         }
                                                                         {
                                                                             discountSubscriber?
-                                                                            <span className={styles.discount_number} style={{backgroundColor:isCanceled?"#71848d":"#fff", color:isCanceled?"#161F28":"#fff"}}>-80%</span>
+                                                                            <span className={styles.discount_number} style={{backgroundColor:isCanceled?"#71848d":"#FF785A", color:isCanceled?"#161F28":"#fff"}}>-80%</span>
                                                                             :null
                                                                         }
                                                                     </div>
@@ -1042,32 +1078,32 @@ const Subscription = props => {
                                                                 <div className={styles.section_discount}>
                                                                     <div className={styles.section_valor_top}>
                                                                         <EuroSymbolIcon className={styles.section_valor_top_symbol_discount}/>
-                                                                        <span className={styles.section_valor_top_number_discount}>12</span>
-                                                                        <span className={styles.section_valor_top_number_decimal_discount}>.99</span>
+                                                                        <span className={styles.section_valor_top_number_discount}>{mensal_d_euro}</span>
+                                                                        <span className={styles.section_valor_top_number_decimal_discount}>.{mensal_d_centimo}</span>
                                                                     </div>
                                                                     <ArrowRightIcon className={styles.discount_arrow}/>
                                                                     <div className={styles.section_valor_top}>
                                                                         <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                                        <span className={styles.section_valor_top_number}>6</span>
-                                                                        <span className={styles.section_valor_top_number_decimal}>.49</span>
+                                                                        <span className={styles.section_valor_top_number}>{discount_mensal_d_euro}</span>
+                                                                        <span className={styles.section_valor_top_number_decimal}>.{discount_mensal_d_centimo}</span>
                                                                     </div>
                                                                 </div>
                                                                 :
                                                                 <div className={styles.section_valor_top}>
                                                                     <EuroSymbolIcon className={styles.section_valor_top_symbol} style={{color:"#fff"}}/>
-                                                                    <span className={styles.section_valor_top_number} style={{color:"#fff"}}>12</span>
-                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:"#fff"}}>.99</span>
+                                                                    <span className={styles.section_valor_top_number} style={{color:"#fff"}}>{mensal_d_euro}</span>
+                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:"#fff"}}>.{mensal_d_centimo}</span>
                                                                 </div>
                                                             }
                                                             {
                                                                 applyDiscount?
                                                                 <div style={{display:'flex', alignItems:'center'}}>
-                                                                    <span className={styles.section_desc_of_pay_discount}>12.99€/mês</span>
+                                                                    <span className={styles.section_desc_of_pay_discount}>{mensal_d}€/mês</span>
                                                                     <ArrowRightIcon className={styles.discount_arrow_small}/>
-                                                                    <span className={styles.section_desc_of_pay_discount_new}>6.49€/mês</span>
+                                                                    <span className={styles.section_desc_of_pay_discount_new}>{discount_mensal_d}€/mês</span>
                                                                 </div>
                                                                 :
-                                                                <span className={styles.section_desc_of_pay}>12.99€/mês</span>
+                                                                <span className={styles.section_desc_of_pay}>{mensal_d}€/mês</span>
                                                             }
                                                             
                                                         </div>
@@ -1096,32 +1132,32 @@ const Subscription = props => {
                                                                 <div className={styles.section_discount}>
                                                                     <div className={styles.section_valor_top}>
                                                                         <EuroSymbolIcon className={styles.section_valor_top_symbol_discount}/>
-                                                                        <span className={styles.section_valor_top_number_discount}>68</span>
-                                                                        <span className={styles.section_valor_top_number_decimal_discount}>.89</span>
+                                                                        <span className={styles.section_valor_top_number_discount}>{semestral_d_euro}</span>
+                                                                        <span className={styles.section_valor_top_number_decimal_discount}>.{semestral_d_centimo}</span>
                                                                     </div>
                                                                     <ArrowRightIcon className={styles.discount_arrow}/>
                                                                     <div className={styles.section_valor_top}>
                                                                         <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                                        <span className={styles.section_valor_top_number}>34</span>
-                                                                        <span className={styles.section_valor_top_number_decimal}>.45</span>
+                                                                        <span className={styles.section_valor_top_number}>{discount_semestral_d_euro}</span>
+                                                                        <span className={styles.section_valor_top_number_decimal}>.{discount_semestral_d_centimo}</span>
                                                                     </div>
                                                                 </div>
                                                                 :
                                                                 <div className={styles.section_valor_top}>
                                                                     <EuroSymbolIcon className={styles.section_valor_top_symbol} style={{color:"#fff"}}/>
-                                                                    <span className={styles.section_valor_top_number} style={{color:"#fff"}}>68</span>
-                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:"#fff"}}>.89</span>
+                                                                    <span className={styles.section_valor_top_number} style={{color:"#fff"}}>{semestral_d_euro}</span>
+                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:"#fff"}}>.{semestral_d_centimo}</span>
                                                                 </div>
                                                             }
                                                             {
                                                                 applyDiscount?
                                                                 <div style={{display:'flex', alignItems:'center'}}>
-                                                                    <span className={styles.section_desc_of_pay_discount}>11.49€/mês</span>
+                                                                    <span className={styles.section_desc_of_pay_discount}>{semestral_monthly}€/mês</span>
                                                                     <ArrowRightIcon className={styles.discount_arrow_small}/>
-                                                                    <span className={styles.section_desc_of_pay_discount_new}>5.75€/mês</span>
+                                                                    <span className={styles.section_desc_of_pay_discount_new}>{discount_semestral_monthly}€/mês</span>
                                                                 </div>
                                                                 :
-                                                                <span className={styles.section_desc_of_pay}>11.49€/mês</span>
+                                                                <span className={styles.section_desc_of_pay}>{semestral_monthly}€/mês</span>
                                                             }
                                                         </div>
                                                         {
@@ -1148,32 +1184,32 @@ const Subscription = props => {
                                                                 <div className={styles.section_discount}>
                                                                     <div className={styles.section_valor_top}>
                                                                         <EuroSymbolIcon className={styles.section_valor_top_symbol_discount}/>
-                                                                        <span className={styles.section_valor_top_number_discount}>119</span>
-                                                                        <span className={styles.section_valor_top_number_decimal_discount}>.89</span>
+                                                                        <span className={styles.section_valor_top_number_discount}>{anual_d_euro}</span>
+                                                                        <span className={styles.section_valor_top_number_decimal_discount}>.{anual_d_centimo}</span>
                                                                     </div>
                                                                     <ArrowRightIcon className={styles.discount_arrow}/>
                                                                     <div className={styles.section_valor_top}>
                                                                         <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                                        <span className={styles.section_valor_top_number}>59</span>
-                                                                        <span className={styles.section_valor_top_number_decimal}>.95</span>
+                                                                        <span className={styles.section_valor_top_number}>{discount_anual_d_euro}</span>
+                                                                        <span className={styles.section_valor_top_number_decimal}>.{discount_anual_d_centimo}</span>
                                                                     </div>
                                                                 </div>
                                                                 :
                                                                 <div className={styles.section_valor_top}>
                                                                     <EuroSymbolIcon className={styles.section_valor_top_symbol} style={{color:"#fff"}}/>
-                                                                    <span className={styles.section_valor_top_number} style={{color:"#fff"}}>119</span>
-                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:"#fff"}}>.89</span>
+                                                                    <span className={styles.section_valor_top_number} style={{color:"#fff"}}>{anual_d_euro}</span>
+                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:"#fff"}}>.{anual_d_centimo}</span>
                                                                 </div>
                                                             }
                                                             {
                                                                 applyDiscount?
                                                                 <div style={{display:'flex', alignItems:'center'}}>
-                                                                    <span className={styles.section_desc_of_pay_discount}>9.99€/mês</span>
+                                                                    <span className={styles.section_desc_of_pay_discount}>{anual_monthly}€/mês</span>
                                                                     <ArrowRightIcon className={styles.discount_arrow_small}/>
-                                                                    <span className={styles.section_desc_of_pay_discount_new}>4.99€/mês</span>
+                                                                    <span className={styles.section_desc_of_pay_discount_new}>{discount_anual_monthly}€/mês</span>
                                                                 </div>
                                                                 :
-                                                                <span className={styles.section_desc_of_pay}>9.99€/mês</span>
+                                                                <span className={styles.section_desc_of_pay}>{anual_monthly}€/mês</span>
                                                             }
                                                         </div>
                                                         {
@@ -1209,17 +1245,17 @@ const Subscription = props => {
                                                                 {
                                                                     applyDiscount?
                                                                     <span style={{display:'flex', alignItems:'center'}}>
-                                                                        <span className={styles.section_desc_of_pay_discount_bottom}>12.99€</span>
+                                                                        <span className={styles.section_desc_of_pay_discount_bottom}>{mensal_d}€</span>
                                                                         <ArrowRightIcon className={styles.discount_arrow_small_bottom}/>
-                                                                        <span className={styles.section_desc_of_pay_discount_new_bottom}>6.49€</span>
+                                                                        <span className={styles.section_desc_of_pay_discount_new_bottom}>{discount_mensal_d}€</span>
                                                                     </span>
                                                                     :
-                                                                    <span className={styles.selected_plan_value_normal}> 12.99€</span>
+                                                                    <span className={styles.selected_plan_value_normal}> {mensal_d}€</span>
                                                                 }
                                                                 <span className={styles.selected_plan_value}> a cada mês.</span>
                                                             </div>
                                                             
-                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
+                                                            <p className={styles.selected_plan_value_information}>{saver}</p>
                                                         </div>
                                                     </div>
                                                     :selectedPlan===2?
@@ -1239,16 +1275,16 @@ const Subscription = props => {
                                                                 {
                                                                     applyDiscount?
                                                                     <span style={{display:'flex', alignItems:'center'}}>
-                                                                        <span className={styles.section_desc_of_pay_discount_bottom}>68.89€</span>
+                                                                        <span className={styles.section_desc_of_pay_discount_bottom}>{semestral_d}€</span>
                                                                         <ArrowRightIcon className={styles.discount_arrow_small_bottom}/>
-                                                                        <span className={styles.section_desc_of_pay_discount_new_bottom}>34.45€</span>
+                                                                        <span className={styles.section_desc_of_pay_discount_new_bottom}>{discount_semestral_d}€</span>
                                                                     </span>
                                                                     :
-                                                                    <span className={styles.selected_plan_value_normal}> 68.89€</span>
+                                                                    <span className={styles.selected_plan_value_normal}> {semestral_d}€</span>
                                                                 }
                                                                 <span className={styles.selected_plan_value}> a cada 6 meses.</span>
                                                             </div>
-                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
+                                                            <p className={styles.selected_plan_value_information}>{saver}</p>
                                                         </div>
                                                     </div>
                                                     :selectedPlan===3?
@@ -1268,16 +1304,16 @@ const Subscription = props => {
                                                                 {
                                                                     applyDiscount?
                                                                     <span style={{display:'flex', alignItems:'center'}}>
-                                                                        <span className={styles.section_desc_of_pay_discount_bottom}>119.89€</span>
+                                                                        <span className={styles.section_desc_of_pay_discount_bottom}>{anual_d}€</span>
                                                                         <ArrowRightIcon className={styles.discount_arrow_small_bottom}/>
-                                                                        <span className={styles.section_desc_of_pay_discount_new_bottom}>59.95€</span>
+                                                                        <span className={styles.section_desc_of_pay_discount_new_bottom}>{discount_anual_d}€</span>
                                                                     </span>
                                                                     :
-                                                                    <span className={styles.selected_plan_value_normal}> 119.89€</span>
+                                                                    <span className={styles.selected_plan_value_normal}> {anual_d}€</span>
                                                                 }
                                                                 <span className={styles.selected_plan_value}> a cada 12 meses.</span>
                                                             </div>
-                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
+                                                            <p className={styles.selected_plan_value_information}>{saver}</p>
                                                         </div>
                                                     </div>
                                                     :<span className={styles.selected_plan_no_value}>Escolha um plano</span>
@@ -1289,7 +1325,7 @@ const Subscription = props => {
                                                     style={{width:isCanceled?'70%':'100%'}}
                                                 onClick={() => {
                                                     selectedPlan&&setSelectedMenu(1)
-                                                    scrolltopref.current.scrollIntoView({behavior: 'smooth'})
+                                                    // scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                     }}>Continuar</span>
                                                     <span className={styles.button_cancel} onClick={() => {
                                                         if(trialActive) setDisplay(0)
@@ -1297,7 +1333,7 @@ const Subscription = props => {
                                                         setSelectedMenu(0)
                                                         setSelectedPlan(null)
                                                         setApplyDiscount(false)
-                                                        scrolltopref.current.scrollIntoView({behavior: 'smooth'})
+                                                        // scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                         }}>CANCELAR</span>
                                             </div>
                                         </div>
@@ -1396,11 +1432,11 @@ const Subscription = props => {
                                                                     <span className={styles.info_text}>
                                                                         {
                                                                             applyDiscount?
-                                                                            <span style={{color:"#FF785A"}}>6.49€</span>
-                                                                            :<span>€12.99</span>
+                                                                            <span style={{color:"#FF785A"}}>{discount_mensal_d}€</span>
+                                                                            :<span>€{mensal_d}</span>
                                                                         }
                                                                     </span>
-                                                                    <span className={styles.equivalente} style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>6.49</span>:'12.99'}/mês)</span>
+                                                                    <span className={styles.equivalente} style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>{discount_mensal_d}</span>:mensal_d}/mês)</span>
                                                                 </div>
                                                             </div>
                                                             <div className={styles.info_div}>
@@ -1409,7 +1445,7 @@ const Subscription = props => {
                                                                     <span className={styles.info_text}>Cobranças mensais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}} className={styles.equivalente}>(a cada mês)</span></span>
                                                                 </div>
                                                             </div>
-                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
+                                                            <p className={styles.selected_plan_value_information}>{saver}</p>
                                                         </div>
                                                     </div>
                                                     :selectedPlan===2?
@@ -1430,11 +1466,11 @@ const Subscription = props => {
                                                                     <span className={styles.info_text}>
                                                                         {
                                                                             applyDiscount?
-                                                                            <span style={{color:"#FF785A"}}>€34.45</span>
-                                                                            :<span>€68.89</span>
+                                                                            <span style={{color:"#FF785A"}}>€{discount_semestral_d}</span>
+                                                                            :<span>€{semestral_d}</span>
                                                                         }
                                                                     </span>
-                                                                    <span className={styles.equivalente} style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>5.75</span>:'11.49'}/mês)</span>
+                                                                    <span className={styles.equivalente} style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>{discount_semestral_monthly}</span>:semestral_monthly}/mês)</span>
                                                                 </div>
                                                             </div>
                                                             <div className={styles.info_div}>
@@ -1443,7 +1479,7 @@ const Subscription = props => {
                                                                     <span className={styles.info_text}>Cobranças semestrais<span style={{marginLeft:"5px", fontSize:"0.7rem", color:"white", fontWeight:400}} className={styles.equivalente}>(a cada 6 meses)</span></span>
                                                                 </div>
                                                             </div>
-                                                            <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
+                                                            <p className={styles.selected_plan_value_information}>{saver}</p>
                                                         </div>
                                                     </div>
                                                     :selectedPlan===3?
@@ -1464,11 +1500,11 @@ const Subscription = props => {
                                                                     <span className={styles.info_text}>
                                                                         {
                                                                             applyDiscount?
-                                                                            <span style={{color:"#FF785A"}}>€59.95</span>
-                                                                            :<span>€119.89</span>
+                                                                            <span style={{color:"#FF785A"}}>€{discount_anual_d}</span>
+                                                                            :<span>€{anual_d}</span>
                                                                         }
                                                                     </span>
-                                                                    <span className={styles.equivalente} style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>4.99</span>:'9.99'}/mês)</span>
+                                                                    <span className={styles.equivalente} style={{marginLeft:"5px", fontSize:"0.7rem", color:"white"}}> (equivalente a €{applyDiscount?<span style={{color:"#FF785A", fontWeight:500}}>{discount_anual_monthly}</span>:anual_monthly}/mês)</span>
                                                                 </div>
                                                             </div>
                                                             <div className={styles.info_div}>
@@ -1481,7 +1517,7 @@ const Subscription = props => {
                                                                 isCanceled&&endDate>currentDate?
                                                                 <span className={styles.selected_plan_value_information}>Esta nova subscrição apenas será cobrada no fim da tua subscrição atual (<span style={{color:"#FF785A", fontWeight:"400"}}>{getDateToString(endDate/1000)}</span>)</span>
                                                                 :
-                                                                <p className={styles.selected_plan_value_information}>Sem qualquer tipo de vínculo, o cancelamento da subscrição pode ser feito a qualquer altura.</p>
+                                                                <p className={styles.selected_plan_value_information}>{saver}</p>
                                                             }
                                                         </div>
                                                     </div>
@@ -1489,7 +1525,7 @@ const Subscription = props => {
                                                 }
                                                 
                                             </div>
-                                            <div className={styles.buttons} style={{marginTop:"85px"}}>
+                                            <div className={styles.buttons} style={{marginTop:"105px"}}>
                                                 <span></span>
                                                 {
                                                     isCanceled&&endDate>currentDate?
@@ -1508,7 +1544,7 @@ const Subscription = props => {
                                                     :
                                                     <span className={styles.button_cancel} onClick={() => {
                                                         setSelectedMenu(0)
-                                                        scrolltopref.current.scrollIntoView({behavior: 'smooth'})
+                                                        // scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                         }}>VOLTAR</span>
                                                 }
                                             </div>
@@ -1549,20 +1585,20 @@ const Subscription = props => {
                                                                 discountSubscriber?
                                                                 <div className={styles.section_valor_top}>
                                                                     <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                                    <span className={styles.section_valor_top_number}>6</span>
-                                                                    <span className={styles.section_valor_top_number_decimal}>.49</span>
+                                                                    <span className={styles.section_valor_top_number}>{discount_mensal_d_euro}</span>
+                                                                    <span className={styles.section_valor_top_number_decimal}>.{discount_mensal_d_centimo}</span>
                                                                 </div>
                                                                 :
                                                                 <div className={styles.section_valor_top}>
                                                                     <EuroSymbolIcon className={styles.section_valor_top_symbol} style={{color:'#ffffff'}}/>
-                                                                    <span className={styles.section_valor_top_number} style={{color:'#ffffff'}}>12</span>
-                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:'#ffffff'}}>.99</span>
+                                                                    <span className={styles.section_valor_top_number} style={{color:'#ffffff'}}>{mensal_d_euro}</span>
+                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:'#ffffff'}}>.{mensal_d_centimo}</span>
                                                                 </div>
                                                             }
                                                             {
                                                                 discountSubscriber?
-                                                                <span className={styles.section_desc_of_pay}>6.49€/mês</span>
-                                                                :<span className={styles.section_desc_of_pay}>12.99€/mês</span>
+                                                                <span className={styles.section_desc_of_pay}>{discount_mensal_d}€/mês</span>
+                                                                :<span className={styles.section_desc_of_pay}>{mensal_d}€/mês</span>
                                                             }
                                                             
                                                         </div>
@@ -1600,19 +1636,19 @@ const Subscription = props => {
                                                                 <div className={styles.section_valor_top}>
                                                                     <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
                                                                     <span className={styles.section_valor_top_number}>35</span>
-                                                                    <span className={styles.section_valor_top_number_decimal}>.45</span>
+                                                                    <span className={styles.section_valor_top_number_decimal}>.{discount_semestral_d_centimo}</span>
                                                                 </div>
                                                                 :
                                                                 <div className={styles.section_valor_top}>
                                                                     <EuroSymbolIcon className={styles.section_valor_top_symbol} style={{color:'#ffffff'}}/>
-                                                                    <span className={styles.section_valor_top_number} style={{color:'#ffffff'}}>68</span>
-                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:'#ffffff'}}>.89</span>
+                                                                    <span className={styles.section_valor_top_number} style={{color:'#ffffff'}}>{semestral_d_euro}</span>
+                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:'#ffffff'}}>.{semestral_d_centimo}</span>
                                                                 </div>
                                                             }
                                                             {
                                                                 discountSubscriber?
-                                                                <span className={styles.section_desc_of_pay}>5.75€/mês</span>
-                                                                :<span className={styles.section_desc_of_pay}>11.49€/mês</span>
+                                                                <span className={styles.section_desc_of_pay}>{discount_semestral_monthly}€/mês</span>
+                                                                :<span className={styles.section_desc_of_pay}>{semestral_monthly}€/mês</span>
                                                             }
                                                         </div>
                                                         {
@@ -1648,20 +1684,20 @@ const Subscription = props => {
                                                                 discountSubscriber?
                                                                 <div className={styles.section_valor_top}>
                                                                     <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                                                                    <span className={styles.section_valor_top_number}>59</span>
-                                                                    <span className={styles.section_valor_top_number_decimal}>.95</span>
+                                                                    <span className={styles.section_valor_top_number}>{discount_anual_d_euro}</span>
+                                                                    <span className={styles.section_valor_top_number_decimal}>.{discount_anual_d_centimo}</span>
                                                                 </div>
                                                                 :
                                                                 <div className={styles.section_valor_top}>
                                                                     <EuroSymbolIcon className={styles.section_valor_top_symbol} style={{color:'#ffffff'}}/>
-                                                                    <span className={styles.section_valor_top_number} style={{color:'#ffffff'}}>119</span>
-                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:'#ffffff'}}>.89</span>
+                                                                    <span className={styles.section_valor_top_number} style={{color:'#ffffff'}}>{anual_d_euro}</span>
+                                                                    <span className={styles.section_valor_top_number_decimal} style={{color:'#ffffff'}}>.{anual_d_centimo}</span>
                                                                 </div>
                                                             }
                                                             {
                                                                 discountSubscriber?
-                                                                <span className={styles.section_desc_of_pay}>4.99€/mês</span>
-                                                                :<span className={styles.section_desc_of_pay}>9.99€/mês</span>
+                                                                <span className={styles.section_desc_of_pay}>{discount_anual_monthly}€/mês</span>
+                                                                :<span className={styles.section_desc_of_pay}>{anual_monthly}€/mês</span>
                                                             }
                                                         </div>
                                                         {

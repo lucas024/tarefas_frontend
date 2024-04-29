@@ -36,7 +36,7 @@ const AuthCarouselVerification = props => {
             showIndicators={false} 
             showThumbs={false}
             selectedItem={props.verificationTab}>
-            <div className={styles.verification_zone}>
+            {/* <div className={styles.verification_zone}>
                 <div className={styles.verification_zone_wrapper}>
                     <p className={styles.verification_title_helper}>Conta registada com sucesso.</p>
                     <p className={styles.verification_title} style={{marginBottom:'20px'}}>Verificar o telemóvel</p>
@@ -186,7 +186,7 @@ const AuthCarouselVerification = props => {
                         </div>
                     }
                 </div>
-            </div>
+            </div> */}
             {/* end phone verification */}
             <div className={styles.verification_zone}>
                 <div className={styles.verification_zone_wrapper}>
@@ -248,7 +248,8 @@ const AuthCarouselVerification = props => {
                                 navigate('/', {
                                     state: {
                                         carry: 'register',
-                                        skippedVerification: props.skippedVerification
+                                        // skippedVerification: props.skippedVerification CHANGE
+                                        skippedVerification: false
                                     }
                                 })}
                             }>

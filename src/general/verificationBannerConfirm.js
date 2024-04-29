@@ -40,13 +40,19 @@ const VerificationBannerConfirm = (props) => {
                                     rendererSettings= {
                                         {preserveAspectRatio: 'xMidYMid slice'}
                                     }
-                                    height={80}
-                                    width={80}
+                                    style={{
+                                        width:'80px',
+                                        height:'80px',
+                                        justifySelf:'center',
+                                        alignSelf:'center',
+                                        margin: 'auto'
+                                    }}
                                     // isStopped={this.state.isStopped}
                                     // isPaused={this.state.isPaused}
                                 />
+                                <p className={styles.phone_description} style={{marginTop:'30px'}}>Por-favor, não saias desta página.</p>
                             </div>
-                            :
+                            :props.publicationSent?
                             <div style={{marginTop:"20px"}}>
                                 <Lottie
                                     loop={false}
@@ -62,8 +68,6 @@ const VerificationBannerConfirm = (props) => {
                                         alignSelf:'center',
                                         margin: 'auto'
                                     }}
-                                    height={80}
-                                    width={80}
                                 />
                                 <p className={styles.phone_description}>Publicação enviada para análise pela equipa do Tarefas. Poderás seguir o processo de publicação na tua area pessoal.</p>
                                 <div style={{display:'flex', justifyContent:'center'}}>
@@ -76,6 +80,7 @@ const VerificationBannerConfirm = (props) => {
                                 </div>
                                
                             </div>
+                            :null
 
                         }
                         

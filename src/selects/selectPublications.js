@@ -55,6 +55,9 @@ const SelectPublications = (props) => {
             color: "#161F28",
             fontWeight: state.isSelected? 600: 400,
             backgroundColor: state.isSelected? "#0358e5": state.isFocused? '#0358e550': "transparent",
+            "&:first-of-type": {
+                borderBottom: props.regioes?'1px dashed #ccc':'none',
+            }
         }),
         menu: base => ({
             ...base,
@@ -102,7 +105,7 @@ const SelectPublications = (props) => {
         }),
         group: base => ({
             ...base,
-            padding: "0px 0px 0px 0",
+            padding: "0px 0px 0px 0px",
             borderBottom: '1px dashed #ccc',
             "&:last-child": {
                 borderBottom: 'none',

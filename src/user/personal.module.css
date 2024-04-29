@@ -124,7 +124,12 @@
 .top_complete_line{
     display: flex;
     align-items: center;
+    margin-top: 5px;
 }
+.top_complete_line:first-child{
+    margin-top: 0px;
+}
+
 .line_icon{
     width: 15px !important;
     height: 15px !important;
@@ -179,7 +184,7 @@
     display: flex;
     width: 100%;
     margin-top: 10px;
-    padding-bottom: 40px;
+    padding-bottom: 150px;
     border-bottom: 1px solid white;
 }
 .top_right_flex{
@@ -1062,6 +1067,7 @@ transform: rotate(45deg);
     .flex{
         flex-direction: column;
         border-bottom: none;
+        padding-bottom: 0px;
     }
     .top_right_flex{
         margin-left: 0px;
@@ -1080,7 +1086,7 @@ transform: rotate(45deg);
         font-size: 0.9rem;
     }
     .worker_area{
-        margin-top: 330px;
+        margin-top: 280px;
     }
 
     .delete_account_divider{

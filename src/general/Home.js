@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './home.module.css'
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import {useLocation, useNavigate} from 'react-router-dom'
@@ -25,6 +25,7 @@ import logo_text from '../assets/logo_text.png'
 import logo_text_worker from '../assets/logo_text_worker.png'
 import TosBanner from './tosBanner';
 import SuggestionBanner from './suggestionBanner';
+import ContactosBanner from './contactosBanner';
 
 
 const firstOptions = [
@@ -32,6 +33,13 @@ const firstOptions = [
     { value: 'trabalhos', label: 'Tarefas' },
 ]
 
+const getWindowDimensions = () => {
+    const { innerWidth: width, innerHeight: height } = window
+    return {
+      width,
+      height
+    }
+}
 
 const Home = (props) => {
     const dispatch = useDispatch()
@@ -41,6 +49,7 @@ const Home = (props) => {
     const [workerBanner, setWorkerBanner] = useState(false)
     const [tosBanner, setTosBanner] = useState(false)
     const [suggestionBanner, setSuggestionBanner] = useState(false)
+    const [contactosBanner, setContactosBanner] = useState(false)
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
     const [loginPopup, setLoginPopup] = useState(false)
@@ -56,6 +65,12 @@ const Home = (props) => {
 
     const location = useLocation()
     const navigate = useNavigate()
+
+    const select_profissionais = useRef(null)
+    const select_regioes = useRef(null)
+    const top = useRef(null)
+
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
 
     useEffect(() => {
         if(!parseInt(localStorage.getItem('firstAccessMade'))&&!showWelcomeTrigger)
@@ -78,7 +93,6 @@ const Home = (props) => {
             setTimeout(() => setLoginPopup(false), 4000)
         }
         dispatch(search_scroll_save(null))
-        console.log(chats)
         if(chats?.length===0 || chats === undefined)
         {
             dispatch(user_update_chats(user?.chats))
@@ -217,13 +231,21 @@ const Home = (props) => {
                     cancel={() => setSuggestionBanner(false)}/>
                 :null
             }
-            <div className={styles.home_back}>
-            {/* <img className={styles.text_brand} src={logo_text}/> */}
+            {
+                contactosBanner?
+                <ContactosBanner
+                    confirm={() => {
+                        setContactosBanner(false)
+                    }}
+                    cancel={() => setContactosBanner(false)}/>
+                :null
+            }
+            <div ref={top} className={styles.home_back}>
                 <div className={styles.home_back_top}>
                     <img className={styles.text_brand} src={logo_text} style={{opacity:first?.value==='trabalhos'?1:0}}/>
                     <img className={styles.text_brand} src={logo_text_worker} style={{opacity:first?.value==='profissionais'?1:0}}/>
                     
-                    <span className={styles.text_title}>O que procura?</span>
+                    <span className={styles.text_title}>O que procuras?</span>
                     {
                         loaded?
                         <div className={styles.main_wrapper}>
@@ -254,7 +276,7 @@ const Home = (props) => {
                                         {/* arrow */}
                                     </span>
                                 </div>
-                                <div className={styles.zone}>
+                                <div className={styles.zone} ref={select_profissionais}>
                                     <div className={styles.zone_img} style={{borderColor:second?.value?first?.value==="profissionais"?"#FF785A":"#0358e5":"#252d36",
                                                 backgroundColor:second?.value?'#161F28':'#252d36'}}>
                                         {
@@ -266,11 +288,23 @@ const Home = (props) => {
                                     </div>
                                     <div className={styles.zone_select}>
                                         <SelectHome 
+                                            menuOpen={() => {
+                                                if(windowDimensions.width <= 768)
+                                                    setTimeout(() => {
+                                                        select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
+                                                    }, 200)
+                                            }}
+                                            menuClose={() => {
+                                                if(windowDimensions.width <= 768)
+                                                    top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})}}
                                             home={true}
                                             options={profissoesGrouped}
                                             optionFirst={first} 
                                             option={second} 
-                                            changeOption={val => setSecond(val)}
+                                            changeOption={val => {
+                                                top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                setSecond(val)
+                                            }}
                                             placeholder={'Tarefa'}/>
                                     </div>
                                 </div>
@@ -282,23 +316,33 @@ const Home = (props) => {
                                         {/* arrow */}
                                     </span>
                                 </div>
-                                <div className={styles.zone}>
+                                <div className={styles.zone} ref={select_regioes}>
                                     <div className={styles.zone_img} style={{borderColor:third?first.value==="profissionais"?"#FF785A":"#0358e5":"#252d36",
                                                 backgroundColor:third?'#161F28':'#252d36'}}>
                                         {
                                             third? 
-                                            <span className={styles.zone_image_region}>{regioesOptions[third.value]}</span>
+                                            <span className={styles.zone_image_region} style={{color:third.value==='online'?'#398606':'#fff'}}>{regioesOptions[third.value]}</span>
                                             :
                                             <LocationOnIcon className={styles.zone_build_icon}/>
                                         }
                                     </div>
                                     <div className={styles.zone_select}>
                                         <SelectHome
+                                            menuOpen={() => {
+                                                if(windowDimensions.width <= 768)
+                                                    setTimeout(() => {
+                                                        select_regioes.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
+                                                    }, 200)
+                                            }}
+                                            menuClose={() => top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})}
                                             home={true}
+                                            regioes={true}
                                             options={regioes}
                                             optionFirst={first} 
                                             option={third} 
-                                            changeOption={val => setThird(val)}
+                                            changeOption={val => {
+                                                top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                setThird(val)}}
                                             placeholder={'Região'}/>
                                     </div>
                                 </div>
@@ -488,7 +532,7 @@ const Home = (props) => {
                     <div className={styles.footer_div}>
                         <div className={styles.footer_div_column}>
                             <p className={styles.footer_div_text} style={{color: '#71848d'}}>APP Tarefas (brevemente)</p>
-                            <p className={styles.footer_div_text}>Contactos</p>
+                            <p className={styles.footer_div_text} onClick={() => setContactosBanner(true)}>Contactos</p>
                             <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dê uma sugestão</p>
                             <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
                             <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>

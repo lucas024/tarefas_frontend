@@ -443,6 +443,7 @@ const Main = (props) => {
                                 <div className={styles.search_filter_div_left}>
                                     <SelectPublications 
                                         type="zona"
+                                        regioes={true}
                                         option={params.region}
                                         selected={selectedType}
                                         valueChanged={val => {

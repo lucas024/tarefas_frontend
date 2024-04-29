@@ -60,7 +60,8 @@ onAuthStateChanged(auth, (user_google) => {
 })
 
 const checkWorkerComplete = (worker, userGoogle) => {
-  if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.phoneNumber === null||userGoogle?.emailVerified === false)
+  // if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.phoneNumber === null||userGoogle?.emailVerified === false)
+  if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.emailVerified === false)
   {
     console.log('here')
     dispatch(worker_update_profile_complete(false))
@@ -79,7 +80,8 @@ const checkWorkerComplete = (worker, userGoogle) => {
 const checkUserComplete = (user_google) => {
   //phone
   if(user_google?.phoneNumber != null) dispatch(user_update_phone_verified(true))
-  else dispatch(user_update_phone_verified(false))
+  else dispatch(user_update_phone_verified(true))
+  // else dispatch(user_update_phone_verified(false))
   //email
   if(user_google?.emailVerified === true) dispatch(user_update_email_verified(true))
   else dispatch(user_update_email_verified(false))

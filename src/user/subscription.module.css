@@ -428,9 +428,9 @@
 }
 .future_end{
     color: var(--neutral);
-    font-size: 0.6rem;
-    font-weight: 300;
-    margin-top: 5px;
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin-top: 10px;
 }
 .info_text_helper{
     font-weight: 400;
@@ -805,8 +805,8 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 85px;
-    padding-bottom: 60px;
+    margin-top: 95px;
+    padding-bottom: 50px;
 }
 .buttons_plan{
 

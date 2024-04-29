@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { useSearchParams, useNavigate, useLocation, useBeforeUnload } from 'react-router-dom';
 import styles from './publicar.module.css'
 import {Tooltip} from 'react-tooltip';
-
+import validator from 'validator'
 import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao';
 import axios from 'axios'
@@ -81,6 +81,7 @@ const Publicar = () => {
     const [loading, setLoading] = useState(false)
     const [loadingConfirm, setLoadingConfirm] = useState(false)
     const [taskType, setTaskType] = useState(0)
+    const [availableToGo, setAvailableToGo] = useState(false)
 
     const [photoPrincipal, setPhotoPrincipal] = useState(null)
     const [expired, setExpired] = useState(true)
@@ -236,8 +237,7 @@ const Publicar = () => {
     }
 
     const confirmarPopupHandler = async () => {
-        // setLoadingConfirm(true)
-        // setPublicationSent(true)
+        setLoadingConfirm(true)
         let arr = []
         let postId = edit?editReservation._id:ObjectID()
         if(edit){
@@ -291,10 +291,12 @@ const Publicar = () => {
             lng: lng,
             photoUrl: user.photoUrl,
             timestamp: time.getTime(),
-            district: district?.value
+            district: taskType===2?'online':district?.value,
+            availableToGo: availableToGo
         }
         axios.post(`${api_url}/reservations/add`, reserva).then(() => {
             setLoadingConfirm(false)
+            setPublicationSent(true)
             if(user.phone === "" || user.phone !== phone){
                 axios.post(`${api_url}/user/update_phone`, {
                     user_id : user._id,
@@ -317,7 +319,7 @@ const Publicar = () => {
                 scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                 setConfirmationEditPopup(true)
             }
-            else if(res.data?.length<3){
+            else if(res.data?.length<5){
                 scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                 setConfirmationPopup(true)
             }
@@ -624,6 +626,7 @@ const Publicar = () => {
                             confirm={() => confirmarPopupHandler()}
                             cancel={() => setConfirmationPopup(false)}
                             loadingConfirm={loadingConfirm}
+                            publicationSent={publicationSent}
                             />
                     </CSSTransition>
                     <CSSTransition
@@ -791,7 +794,7 @@ const Publicar = () => {
                                     selectedTab={selectedTab}
                                     correct_location={checkAddressCorrect()&&porta.length>0}
                                     correct_location_online={checkAddressCorrect()}
-                                    correct_phone={user.phone===phone&&user_phone_verified}
+                                    correct_phone={user.phone===phone||validator.isMobilePhone(phone, "pt-PT")}
                                     correct_email={user_email_verified}
                                     setVerifyPhone={val => {
                                         scrolltopref.current.scrollIntoView({behavior: 'smooth'})
@@ -807,6 +810,8 @@ const Publicar = () => {
                                     taskType={taskType}
                                     setDistrictHelper={val => setDistrict(val)}
                                     district={district}
+                                    availableToGo={availableToGo}
+                                    setAvailableToGo={setAvailableToGo}
                                     />
                             </div>
                             <div className={styles.carousel_div}>
@@ -853,12 +858,17 @@ const Publicar = () => {
                                         <p className={styles.zone_title}>Detalhes</p>
                                         <div className={styles.zone_flex}>
                                             <div className={styles.zone_label_div}>
-                                                <p className={styles.zone_label}>Morada</p>
+                                                <p className={styles.zone_label}>Localização</p>
                                                 {
                                                     taskType===2?
                                                     <span className={styles.zone_label_value}>Tarefa Online</span>
                                                     :
                                                     <span className={styles.zone_label_value}>{address}, {porta}{andar?`, ${andar}`:null}</span>
+                                                }
+                                                {
+                                                    taskType!==2&&availableToGo?
+                                                    <span className={styles.zone_label_value_small}>Disponível para ir ao encontro do profissional</span>
+                                                    :null
                                                 }
                                             </div>
                                             <div className={styles.zone_label_div}>

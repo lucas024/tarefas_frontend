@@ -9,18 +9,52 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 
 const SubscriptionAlterar = props => {
 
+    const discount_mensal_d = '2.59'
+    const discount_mensal_d_euro = '2'
+    const discount_mensal_d_centimo = '59'
+    const discount_mensal = '259'
+    const discount_mensal_monthly = '259'
+
+    const discount_semestral_d = '13.78'
+    const discount_semestral_d_euro = '13'
+    const discount_semestral_d_centimo = '78'
+    const discount_semestral = '1378'
+    const discount_semestral_monthly = '2.39'
+
+    const discount_anual_d = '23.98'
+    const discount_anual_d_euro = '23'
+    const discount_anual_d_centimo = '98'
+    const discount_anual = '2398'
+    const discount_anual_monthly = '1.99'
+
+    const mensal_d = '12.99'
+    const mensal_d_euro = '12'
+    const mensal_d_centimo = '99'
+    const mensal = '1299'
+    const mensal_monthly = '12.99'
+    const semestral_d = '68.89'
+    const semestral_d_euro = '68'
+    const semestral_d_centimo = '89'
+    const semestral = '6889'
+    const semestral_monthly = '11.49'
+    const anual_d = '119.89'
+    const anual_d_euro = '119'
+    const anual_d_centimo = '89'
+    const anual = '11989'
+    const anual_monthly = '9.99'
+
     const planPricingArray = [
         {
-            total: props.discountSubscriber?'6.49':'12.99',
-            monthly: props.discountSubscriber?'6.49':'12.99',
+            total: props.discountSubscriber?discount_mensal_d:mensal_d,
+            monthly: props.discountSubscriber?discount_mensal_monthly:mensal_monthly,
         },
         {
-            total: props.discountSubscriber?'34.45':'68.89',
-            monthly: props.discountSubscriber?'5.75':'11.49',
+            total: props.discountSubscriber?discount_semestral_d:semestral_d,
+            monthly: props.discountSubscriber?discount_semestral_monthly:semestral_monthly,
         },
         {
-            total: props.discountSubscriber?'59.95':'119.89',
-            monthly: props.discountSubscriber?'4.99':'9.99',
+            total: props.discountSubscriber?discount_anual_d:anual_d,
+            monthly: props.discountSubscriber?discount_anual_monthly:anual_monthly,
         },
     ]
     const newObject = [
