@@ -44,7 +44,7 @@ const providerFacebook = new FacebookAuthProvider();
 providerFacebook.addScope('email')
 
 const actionCodeSettings = {
-  url: "http://pt-tarefas.pt/",
+  url: "https://pt-tarefas.pt/confirm-email",
   // This must be true.
   handleCodeInApp: true
 };

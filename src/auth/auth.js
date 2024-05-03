@@ -554,7 +554,7 @@ const Auth = (props) => {
         setSendingError(null)
         setEmailSent(null)
         var actionCodeSettings = {
-            url: 'https://localhost:3000/user',
+            url: 'https://pt-tarefas.pt/confirm-email',
             handleCodeInApp: false
         }
         console.log(auth.currentUser)

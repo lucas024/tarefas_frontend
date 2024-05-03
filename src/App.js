@@ -63,27 +63,41 @@ const checkWorkerComplete = (worker, userGoogle) => {
   // if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.phoneNumber === null||userGoogle?.emailVerified === false)
   if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.emailVerified === false)
   {
-    console.log('here')
     dispatch(worker_update_profile_complete(false))
     if(worker.state!==0)
         axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: worker._id})
   }
   else
   {
-    console.log('here2')
     dispatch(worker_update_profile_complete(true))
     if(worker.state!==1 && worker_is_subscribed)
         axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: worker._id})
   }
+
+  if(userGoogle?.emailVerified === true)
+  {
+    dispatch(user_update_email_verified(true))
+    if(worker.email_verified === false)
+    {
+      axios.post(`${api_url}/worker/verify_email`, {user_id: worker._id})
+    }
+  }
 }
 
-const checkUserComplete = (user_google) => {
+const checkUserComplete = (user_google, user_mongo) => {
   //phone
   if(user_google?.phoneNumber != null) dispatch(user_update_phone_verified(true))
   else dispatch(user_update_phone_verified(true))
   // else dispatch(user_update_phone_verified(false))
   //email
-  if(user_google?.emailVerified === true) dispatch(user_update_email_verified(true))
+  if(user_google?.emailVerified === true)
+  {
+    dispatch(user_update_email_verified(true))
+    if(user_mongo.email_verified === false)
+    {
+      axios.post(`${api_url}/user/verify_email`, {user_id: user_mongo._id})
+    }
+  }
   else dispatch(user_update_email_verified(false))
 }
 
@@ -94,7 +108,7 @@ useEffect(() => {
       if(res.data != null){
         dispatch(user_load(res.data))
         setIsAdmin(res.data.admin)
-        checkUserComplete(userGoogle)
+        checkUserComplete(userGoogle, res.data)
         setUserLoadAttempt(true)
         setLoading(false)
       }

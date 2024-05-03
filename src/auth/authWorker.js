@@ -392,7 +392,6 @@ const AuthWorker = (props) => {
                 phone: phone,
                 email: from_signup?from_signup.email:email.toLocaleLowerCase(),
                 google_uid: user_uid,
-                address: "",
                 photoUrl: from_signup?from_signup.photoURL:"",
                 regioes: [],
                 trabalhos: [],
@@ -556,7 +555,7 @@ const AuthWorker = (props) => {
         setSendingError(null)
         setEmailSent(null)
         var actionCodeSettings = {
-            url: 'https://localhost:3000/user',
+            url: 'https://pt-tarefas.pt/confirm-email',
             handleCodeInApp: false
         }
         console.log(auth.currentUser)

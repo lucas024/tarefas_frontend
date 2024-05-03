@@ -467,6 +467,7 @@ const Publicar = () => {
         {
             setEmailCodeStatus(true)
             dispatch(user_update_email_verified(true))
+            axios.post(`${api_url}/user/verify_email`, {user_id: user._id})
         }
         else
         {

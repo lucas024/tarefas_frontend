@@ -241,7 +241,22 @@ const Home = (props) => {
                 :null
             }
             <div ref={top} className={styles.home_back}>
+                {
+                    window.adsbygoogle&&false?
+                    <div className={styles.ad}>
+                        <ins class="adsbygoogle"
+                            className={styles.ad_inner}
+                            data-ad-client="ca-pub-1542751279392735"
+                            data-ad-slot="1"
+                            data-ad-format="auto"
+                            data-full-width-responsive="true"></ins>
+                    </div>
+                    :null
+                }
+           
                 <div className={styles.home_back_top}>
+
+                    
                     <img className={styles.text_brand} src={logo_text} style={{opacity:first?.value==='trabalhos'?1:0}}/>
                     <img className={styles.text_brand} src={logo_text_worker} style={{opacity:first?.value==='profissionais'?1:0}}/>
                     
@@ -261,6 +276,8 @@ const Home = (props) => {
                                     </div>
                                     <div className={styles.zone_select}>
                                         <SelectHome
+                                            menuOpen={() => {}}
+                                            menuClose={() => {}}
                                             searcheable={false}
                                             home={true}
                                             options={firstOptions} 

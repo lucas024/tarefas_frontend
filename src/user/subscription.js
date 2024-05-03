@@ -412,6 +412,7 @@ const Subscription = props => {
                 setLoading(false)
                 setCancelPlanPopin(true)
                 setTimeout(() => setCancelPlanPopin(false), 4000)
+                axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: user._id})
                 break;
   
         //     // case 'processing':
@@ -516,6 +517,10 @@ const Subscription = props => {
             start_date: start_date,
             end_date: end_date
         })
+        if(user_phone_verified&&user_email_verified&&user.regioes.length>0&&user.trabalhos.length>0)
+        {
+            axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: user._id})
+        }
         dispatch(worker_update_is_subscribed(true))
         dispatch(worker_update_trial({
             start_date: start_date,
