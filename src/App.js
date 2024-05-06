@@ -19,6 +19,9 @@ import AuthWorker from './auth/authWorker';
 import Profissional from './main/profissional';
 import Admin from './admin/admin';
 
+import {
+  InitializeGPT
+} from './adsense/google-publisher-tag';
 
 import { useDispatch, useSelector } from 'react-redux'
 import { 
@@ -31,6 +34,9 @@ import {
       } from './store';
 import ProtectedRoute from './protectedRoute';
 import ConfirmEmail from './general/confirmEmail';
+import Tos from './general/tos.js';
+import Pp from './general/pp.js';
+import Landing from './general/landing.js';
 
 
 function App() {
@@ -77,7 +83,7 @@ const checkWorkerComplete = (worker, userGoogle) => {
   if(userGoogle?.emailVerified === true)
   {
     dispatch(user_update_email_verified(true))
-    if(worker.email_verified === false)
+    if(worker?.email_verified === false)
     {
       axios.post(`${api_url}/worker/verify_email`, {user_id: worker._id})
     }
@@ -93,7 +99,7 @@ const checkUserComplete = (user_google, user_mongo) => {
   if(user_google?.emailVerified === true)
   {
     dispatch(user_update_email_verified(true))
-    if(user_mongo.email_verified === false)
+    if(user_mongo?.email_verified === false)
     {
       axios.post(`${api_url}/user/verify_email`, {user_id: user_mongo._id})
     }
@@ -115,7 +121,6 @@ useEffect(() => {
       else{
         axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle?.uid} }).then(res => {
           if(res.data !== null){
-            console.log(res.data)
             dispatch(user_load(res.data))
             checkUserComplete(userGoogle)
             if(res.data.subscription){
@@ -126,7 +131,6 @@ useEffect(() => {
               })
               .then(res2 => {
                   if(res2.data.schedule){
-                      console.log("1")
                       if(new Date().getTime() < new Date(res2.data.schedule.current_phase?.end_date*1000)){
                         dispatch(worker_update_is_subscribed(true))
                       }
@@ -140,7 +144,6 @@ useEffect(() => {
             }
             else if(new Date(res.data.trial?.end_date) > new Date())
             {
-              console.log("2")
               dispatch(worker_update_is_subscribed(true))
             }
             else
@@ -154,7 +157,6 @@ useEffect(() => {
             setLoading(false)
           }
           else{
-            console.log("3")
             dispatch(worker_update_is_subscribed(false))
             setLoading(false)
           }
@@ -184,7 +186,6 @@ const refreshWorker = () => {
         .then(res2 => {
             if(res2.data.schedule){
                 if(new Date().getTime() < new Date(res2.data.schedule.current_phase.end_date*1000)){
-                  console.log("4")
                   dispatch(worker_update_is_subscribed(true))
                 }
             }
@@ -192,7 +193,6 @@ const refreshWorker = () => {
       }
       else if(new Date(res.data.trial?.end_date) > new Date())
       {
-        console.log("5")
         dispatch(worker_update_is_subscribed(true))
       }
       else{
@@ -216,8 +216,14 @@ const refreshWorker = () => {
           <Navbar 
             userLoadAttempt={userLoadAttempt}/>
           <Routes>
+              <Route exact path="/landing" 
+                element={<Landing/>}
+              />
               <Route exact path="/confirm-email" 
                 element={<ConfirmEmail/>}
+              />
+              <Route exact path="/politica-privacidade" 
+                element={<Pp white={true}/>}
               />
               <Route exact path="/main/publications/publication" 
                 element={<Trabalho
@@ -312,7 +318,6 @@ const refreshWorker = () => {
               <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
-      
     </div>
   );
 }

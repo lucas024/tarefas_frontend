@@ -19,13 +19,19 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TitleIcon from '@mui/icons-material/Title';
 import { useDispatch, useSelector } from 'react-redux';
 import { search_scroll_save, user_sort_chats, user_update_chats } from '../store';
-import Welcome from './welcome'
 
 import logo_text from '../assets/logo_text.png'
 import logo_text_worker from '../assets/logo_text_worker.png'
 import TosBanner from './tosBanner';
 import SuggestionBanner from './suggestionBanner';
 import ContactosBanner from './contactosBanner';
+
+import {
+    DefineAdSlot,
+    RequestAds,
+    InitializeGPT
+  } from '../adsense/google-publisher-tag';
+import PpBanner from './ppBanner';
 
 
 const firstOptions = [
@@ -48,6 +54,7 @@ const Home = (props) => {
 
     const [workerBanner, setWorkerBanner] = useState(false)
     const [tosBanner, setTosBanner] = useState(false)
+    const [ppBanner, setPpBanner] = useState(false)
     const [suggestionBanner, setSuggestionBanner] = useState(false)
     const [contactosBanner, setContactosBanner] = useState(false)
 
@@ -59,9 +66,7 @@ const Home = (props) => {
     const [first, setFirst] = useState({ value: 'profissionais', label: 'Profissionais' })
     const [second, setSecond] = useState(null)
     const [third, setThird] = useState(null)
-
-    const [showWelcomeTrigger, setShowWelcomeTrigger] = useState(false)
-    const [showWelcomeTrigger1000, setShowWelcomeTrigger1000] = useState(false)
+    
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -73,8 +78,8 @@ const Home = (props) => {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
 
     useEffect(() => {
-        if(!parseInt(localStorage.getItem('firstAccessMade'))&&!showWelcomeTrigger)
-            setShowWelcomeTrigger(true)
+        if(!parseInt(localStorage.getItem('firstAccessMade')))
+            navigate('/landing')
             
         if(user?.type===1) setFirst({ value: 'trabalhos', label: 'Tarefas' })
         else if(location.state?.carry==="login"){
@@ -96,8 +101,7 @@ const Home = (props) => {
         if(chats?.length===0 || chats === undefined)
         {
             dispatch(user_update_chats(user?.chats))
-        }
-        
+        }        
         // Tooltip.rebuild()
     }, [location, user, loaded])
 
@@ -158,26 +162,9 @@ const Home = (props) => {
         setSecond(null)
         setThird(null)
     }
-
-    
-    const showWelcomeHandler = () => {
-        localStorage.setItem('firstAccessMade', 1)
-        setShowWelcomeTrigger(false)
-    }
     
     return(
         <div className={styles.home}>
-            <CSSTransition 
-                in={showWelcomeTrigger}
-                onEntered={() => setShowWelcomeTrigger1000(true)}
-                timeout={1000}
-                classNames="fade"
-                unmountOnExit
-                >
-                <Welcome showWelcomeTrigger1000={showWelcomeTrigger1000} closeWelcome={() => showWelcomeHandler()}/>
-            </CSSTransition>
-
-
             <CSSTransition 
                 in={loginPopup}
                 timeout={1000}
@@ -223,6 +210,15 @@ const Home = (props) => {
                 :null
             }
             {
+                ppBanner?
+                <PpBanner 
+                    confirm={() => {
+                        setPpBanner(false)
+                    }}
+                    cancel={() => setPpBanner(false)}/>
+                :null
+            }
+            {
                 suggestionBanner?
                 <SuggestionBanner
                     confirm={() => {
@@ -242,14 +238,19 @@ const Home = (props) => {
             }
             <div ref={top} className={styles.home_back}>
                 {
-                    window.adsbygoogle&&false?
-                    <div className={styles.ad}>
-                        <ins class="adsbygoogle"
-                            className={styles.ad_inner}
-                            data-ad-client="ca-pub-1542751279392735"
-                            data-ad-slot="1"
-                            data-ad-format="auto"
-                            data-full-width-responsive="true"></ins>
+                    window.adsbygoogle?
+                    <div>
+                        <div className={styles.ad}>
+                            <ins class="adsbygoogle"
+                                className={styles.ad_inner}
+                                data-ad-client="ca-pub-1542751279392735"
+                                data-ad-slot="1"
+                                data-ad-format="auto"
+                                data-full-width-responsive="true"></ins>
+                            
+                            <DefineAdSlot adUnit={0}/>
+                        </div>
+                        
                     </div>
                     :null
                 }
@@ -545,13 +546,14 @@ const Home = (props) => {
                     }
                 </div>
                     
-                <div className={styles.footer}>
+                <div className={styles.footer} style={{paddingBottom:window.adsbygoogle?"60px":"20px"}}>
                     <div className={styles.footer_div}>
                         <div className={styles.footer_div_column}>
                             <p className={styles.footer_div_text} style={{color: '#71848d'}}>APP Tarefas (brevemente)</p>
                             <p className={styles.footer_div_text} onClick={() => setContactosBanner(true)}>Contactos</p>
                             <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dê uma sugestão</p>
                             <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
+                            <p className={styles.footer_div_text} onClick={() => setPpBanner(true)}>Política de privacidade</p>
                             <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>
                         </div>
                         <div className={styles.footer_div_column}>
@@ -566,8 +568,8 @@ const Home = (props) => {
                 </div>
                 <Tooltip effect='solid' place='top' id="home"/>
             </div>
-            
-
+            <InitializeGPT />
+            <RequestAds/>
         </div>
     )
 }
