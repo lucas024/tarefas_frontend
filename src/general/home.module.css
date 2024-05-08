@@ -273,6 +273,7 @@
     bottom: 0;
     background-color: #ffffff20;
     margin-top: 200px;
+    z-index: 15;
 }
 .ad_inner{
     height: 100%;
@@ -371,11 +372,13 @@
 
 .auth{
     margin: auto;
-    margin-top: 15px;
+    margin-top: 5px;
     text-align: center;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 400;
     color: var(--neutral);
+    font-style: italic;
+    font-size: 0.8rem;
 }
 .auth_specific{
     color: var(--job);

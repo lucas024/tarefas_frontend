@@ -34,13 +34,16 @@ const PublicarDetails = props => {
     const [addressOptions, setAddressOptions] = useState([])
     const [addressOptionsText, setAddressOptionsText] = useState([])
     const [optionIndex, setOptionIndex] = useState(null)
-    const [loadingMore, setLoadingMore] = useState(null)
+    const [loadingMore, setLoadingMore] = useState(false)
     const [openTing, setOpenTing] = useState(true)
+    const [typed, setTyped] = useState(false)
 
     useEffect(() => {
         props.setDistrictHelper(null)
         props.setLat(null)
         props.setLng(null)
+        props.setPorta('')
+        props.setAndar('')
         setSelectedAddress(null)
 
         address.length>0&&setLoadingMore(true)
@@ -51,6 +54,11 @@ const PublicarDetails = props => {
     
         return () => clearTimeout(delayDebounceFn)
       }, [address])
+
+    useEffect(() => {
+        if(props.editAddress!==null)
+            setAddress(props.editAddress)
+    }, [props.editAddress])
 
 
 
@@ -185,6 +193,7 @@ const PublicarDetails = props => {
                                                 type="text" 
                                                 autoComplete='off' 
                                                 value={selectedAddress||address} 
+                                                onKeyDown={() => !typed&&setTyped(true)}
                                                 onChange={val => setAddress(val.target.value)&&props.setAddressParent(val.target.value)} 
                                                 className={styles.input_address}
                                                 style={{borderBottomColor:!props.wrongAddress&&optionIndex!==null?"#0358e5":""}}/>
@@ -196,7 +205,7 @@ const PublicarDetails = props => {
                                                 :null
                                             }
                                         </div>
-                                        <SelectAddress open={loadingMore===false&&addressOptionsText.length>0&&address.length>0&&openTing} options={addressOptionsText} optionIndex={optionIndex} changeOption={val => setAddressHandler(val)}/>
+                                        <SelectAddress open={loadingMore===false&&addressOptionsText.length>0&&address.length>0&&openTing&&typed} options={addressOptionsText} optionIndex={optionIndex} changeOption={val => setAddressHandler(val)}/>
                                         <span 
                                             style={{borderColor:props.badAddress||props.wrongAddress?"red":!props.badAddress&&!props.wrongAddress&&optionIndex!==null?"#0358e5":"", borderBottomRightRadius:'5px', padding:"2px 5px 0px 5px"}}
                                             className={styles.area_label_inverse}>
@@ -227,13 +236,13 @@ const PublicarDetails = props => {
                             <div className={styles.address_flex}>
                                 <div className={styles.bot_input_div}>
                                     <span 
-                                        style={{borderColor:props.porta.length>0?"#0358e5":""}} 
+                                        style={{borderColor:props.porta?.length>0?"#0358e5":""}} 
                                         className={styles.area_label_inverse}>
                                             Porta<span className={styles.asterisc}>*</span>
                                     </span>
                                     <input 
                                         tabindex={props.selectedTab===2?'1':'-1'}
-                                        style={{width:"100px", borderColor:props.porta.length>0?"#0358e5":"", fontSize:'0.9rem',}} 
+                                        style={{width:"100px", borderColor:props.porta?.length>0?"#0358e5":"", fontSize:'0.9rem',}} 
                                         maxLength={5} 
                                         onChange={e => props.setPorta(e.target.value)}
                                         value={props.porta} 
@@ -241,12 +250,12 @@ const PublicarDetails = props => {
                                 </div>
                                 <div className={styles.bot_input_div}>
                                     <span
-                                        style={{borderColor:props.andar.length>0?"#0358e5":""}} 
+                                        style={{borderColor:props.andar?.length>0?"#0358e5":""}} 
                                         className={styles.area_label_inverse}>Andar</span>
                                     <input 
                                         tabindex={props.selectedTab===2?'1':'-1'}
                                         style={{width:"100px", marginLeft:"10px", fontSize:'0.9rem',
-                                        borderColor:props.andar.length>0?"#0358e5":""}}
+                                        borderColor:props.andar?.length>0?"#0358e5":""}}
                                         maxLength={11} 
                                         onChange={e => props.setAndar(e.target.value)} 
                                         value={props.andar} 

@@ -63,7 +63,7 @@
     position: relative;
     font-size: 0.8rem;
     font-weight: 600;
-    color: var(--action);
+    color: var(--check);
     text-transform: uppercase;
 }
 .chat_div{
@@ -131,7 +131,7 @@
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: var(--action);
+    background-color: var(--job);
     visibility: hidden;
     transform: scaleX(0);
     transition: all 50ms ease-in-out;

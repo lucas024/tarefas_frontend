@@ -3,6 +3,17 @@ import styles from './welcome.module.css'
 import logo_text from '../assets/logo_text.png'
 import {CSSTransition}  from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
+import image1 from '../assets/1.png'
+import image2 from '../assets/2.png'
+import image3 from '../assets/3.png'
+import image4 from '../assets/4.png'
+import image5 from '../assets/5.png'
+import image6 from '../assets/6.png'
+import image7 from '../assets/7.png'
+import image8 from '../assets/8.png'
+import image9 from '../assets/9.png'
+import image10 from '../assets/10.png'
+import image11 from '../assets/11.png'
 
 const Welcome = (props) => {
 
@@ -15,55 +26,107 @@ const Welcome = (props) => {
 
             <div className={styles.welcome}>
                 <div className={styles.main}>
-                    <img className={styles.text_brand} src={logo_text}/>
-                    <div className={styles.sub_main_wrapper}>
-                        <CSSTransition 
-                            in={props.showWelcomeTrigger1000}
-                            onEntered={() => setTimeout(() => setFinalTrigger(true), 1000)}
-                            timeout={1000}
-                            classNames="fade"
-                            unmountOnExit
-                            >
-                            <div className={styles.sub_main}>
-                                {/* <span className={styles.sub_title_separator}>O lugar ideal para</span> */}
-                                <div className={styles.sub_sub_main}>
-                                    <span className={styles.sub_title}>
-                                        <span className={styles.sub_title_special_job}> publica </span>
-                                        a tua tarefa e recebe contacto dos profissionais.
-                                    </span>
-                                </div>
-                                <span className={styles.sub_title_separator}>OU</span>
-                                <div className={styles.sub_sub_main}>
-                                    <span className={styles.sub_title}>
-                                        <span className={styles.sub_title_special_action}> encontra profissionais </span> 
-                                        para realizar a tua tarefa.
-                                    </span>
-                                </div>
-                                
-
+                    <div className={styles.main_top}>
+                        <div className={styles.image_main}>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(-30deg)', right:'-800px', top:'0px'}} src={image1}/>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(30deg)', right:'-700px', top:'-400px'}} src={image2}/>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(40deg)', right:'-900px', top:'300px'}} src={image6}/>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(-50deg)', right:'-1100px', top:'-400px'}} src={image3}/>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(60deg)', right:'-400px', top:'-300px'}} src={image5}/>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(10deg)', right:'0px', top:'-50px'}} src={image4}/>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(-50deg)', right:'100px', top:'200px'}} src={image7}/>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(20deg)', right:'-750px', top:'250px'}} src={image8}/>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(20deg)', right:'-1450px', top:'-50px'}} src={image9}/>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(-30deg)', right:'200px', top:'-300px'}} src={image10}/>
+                            <img className={styles.image} style={{transform:'scale(0.3) rotate(-30deg)', right:'-200px', top:'300px'}} src={image11}/>
+                        </div>
+                        <div className={styles.image_main_small}>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(-30deg)', right:'-800px', top:'-150px'}} src={image1}/>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(30deg)', right:'-600px', top:'-400px'}} src={image2}/>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(40deg)', right:'-900px', top:'300px'}} src={image6}/>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(-50deg)', right:'-800px', top:'-300px'}} src={image3}/>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(60deg)', right:'-500px', top:'-300px'}} src={image5}/>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(10deg)', right:'-300px', top:'-150px'}} src={image4}/>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(-50deg)', right:'-400px', top:'0px'}} src={image7}/>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(20deg)', right:'-750px', top:'0px'}} src={image8}/>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(20deg)', right:'-900px', top:'50px'}} src={image9}/>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(-30deg)', right:'-200px', top:'-300px'}} src={image10}/>
+                            <img className={styles.image} style={{transform:'scale(0.15) rotate(-20deg)', right:'-500px', top:'10px'}} src={image11}/>
+                        </div>
+                        
+                        <div className={styles.main_top_wrapper}>
+                            <div style={{display:'flex', justifyContent:'center'}}>
+                                <img className={styles.text_brand} src={logo_text}/>
                             </div>
-                        </CSSTransition>
+                            <div className={styles.sub_main_wrapper}>
+                                <CSSTransition 
+                                    in={props.showWelcomeTrigger1000}
+                                    onEntered={() => setTimeout(() => setFinalTrigger(true), 1000)}
+                                    timeout={1000}
+                                    classNames="fade"
+                                    unmountOnExit
+                                    >
+                                    <div className={styles.sub_main}>
+                                        <p className={styles.sub_title_separator}>O lugar ideal para quem procura um profissional para realizar um serviço</p>
+                                        <p className={styles.sub_title}>Publica a tua tarefa e encontra um profissional</p>
+                                        <p className={styles.sub_title_caveat}>É grátis</p>
+                                        {/* <div className={styles.sub_sub_main}>
+                                            <span className={styles.sub_title}>
+                                                <span className={styles.sub_title_special_job}> É grátis</span>
+                                                a tua tarefa e recebe contacto dos profissionais.
+                                            </span>
+                                        </div> */}
+                                        {/* <span className={styles.sub_title_separator}>OU</span>
+                                        <div className={styles.sub_sub_main}>
+                                            <span className={styles.sub_title}>
+                                                <span className={styles.sub_title_special_action}> encontra profissionais </span> 
+                                                para realizar a tua tarefa.
+                                            </span>
+                                        </div> */}
+                                        
+
+                                    </div>
+                                </CSSTransition>
+                            </div>
+                            <div className={styles.button_wrapper}>
+                                <CSSTransition 
+                                        in={finalTrigger}
+                                        timeout={1000}
+                                        classNames="fade"
+                                        unmountOnExit
+                                        >
+                                    <div className=''>
+                                        <div className={styles.button} onClick={() => props.closeWelcome()}>
+                                            <span className={styles.button_text}>CONTINUAR como utilizador</span>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                </CSSTransition>
+                            </div>
+                        </div>
+                        
                     </div>
-                    
-                    <div className={styles.button_wrapper}>
-                        <CSSTransition 
-                                in={finalTrigger}
-                                timeout={1000}
-                                classNames="fade"
-                                unmountOnExit
-                                >
-                            <div className=''>
-                                <div className={styles.button} onClick={() => props.closeWelcome()}>
-                                    <span className={styles.button_text}>CONTINUAR PARA A PÁGINA INICIAL</span>
-                                </div>
-                                <div className={styles.button_separator}/>
+                    <div className={styles.button_separator}/>
+                    <div className={styles.main_bot}>
+                        <div className={styles.main_bot_wrapper}>
+                            <CSSTransition 
+                                    in={finalTrigger}
+                                    timeout={1000}
+                                    classNames="fade"
+                                    unmountOnExit
+                                    >
                                 <div className={styles.button_worker} onClick={() => navigate('/authentication/worker?type=0&landing=1')&&props.closeWelcome()}>
                                     <span className={styles.button_text}>tornar-me um profissional</span>
                                 </div>
-                            </div>
-                            
-                        </CSSTransition>
-                    </div>                    
+                            </CSSTransition>
+                        </div>
+                        
+
+                    </div>
+                    
+                    
+                                        
                 </div>
             </div>
         </div>

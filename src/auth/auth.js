@@ -329,7 +329,7 @@ const Auth = (props) => {
 
         let res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: emailLogin} })
         if(res.data != null){
-            setLoginError("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Faz login na Área Profissional.")
+            setLoginError("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Inicia a Sessão na Área Profissional.")
             setLoading(false)
         }
         else if(validator.isEmail(emailLogin)){
@@ -710,10 +710,10 @@ const Auth = (props) => {
                                 loginTab===0?
                                 <ul>
                                     <li onClick={() => setSelectedAuth(1)} className={selectedAuth?styles.li_active:""}>
-                                        <span className={selectedAuth?styles.li_text_active:styles.li_text}>Login</span>
+                                        <span className={selectedAuth?styles.li_text_active:styles.li_text}>Iniciar Sessão</span>
                                     </li>
                                     <li onClick={() => setSelectedAuth(0)} className={!selectedAuth?styles.li_active:""}>
-                                        <span className={!selectedAuth?styles.li_text_active:styles.li_text}>Registar</span>
+                                        <span className={!selectedAuth?styles.li_text_active:styles.li_text}>Criar Conta</span>
                                     </li>
                                 </ul>
                                 :null
@@ -790,11 +790,11 @@ const Auth = (props) => {
                             </div>
                             <div className={!loading?styles.login_button:styles.login_button_disabled} onClick={() => {
                                 if(!loading) loginHandler()}}>
-                                <p className={styles.login_text}>LOGIN</p>
+                                <p className={styles.login_text}>INICIAR SESSÃO</p>
                             </div>
                             <div className={styles.bottom_switch}>
                                 <span className={styles.bottom_switch_text}>Não tens conta? </span>
-                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Registar</span>
+                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Criar Conta</span>
                             </div>
                         </div>
                         :
@@ -876,7 +876,7 @@ const Auth = (props) => {
                                         setRecoverEmailError(null)
                                         setEmailRecoverWrong(null)
                                         setEmailRecover('')
-                                        setLoginTab(0)}}>voltar ao login</span>
+                                        setLoginTab(0)}}>voltar</span>
                             </div>
                         </div>
                         :selectedAuth===0?
@@ -955,7 +955,7 @@ const Auth = (props) => {
                                       
                             <div className={styles.bottom_switch}>
                                 <span className={styles.bottom_switch_text}>Já tens conta? </span>
-                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(1)}>Login</span>
+                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(1)}>Iniciar Sessão</span>
                             </div>
                         </div>
                         :null
@@ -997,7 +997,7 @@ const Auth = (props) => {
                     selectedAuth===2 || loginTab===1?
                     null
                     :
-                    <div className={styles.split_wrapper}>
+                    <div className={styles.split_wrapper} style={{backgroundColor:"#161F28"}}>
                         <span className={styles.split}/>
                         <div className={styles.split_text_wrapper} style={{backgroundColor:"#161F28"}}>
                             <span className={styles.split_text}>OU</span>

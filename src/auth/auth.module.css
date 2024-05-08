@@ -1190,8 +1190,20 @@ transform: rotate(45deg);
     font-size: 1.1rem;
     color: white;
 }
-
+.worker_back_helper{
+    background-color: #9f4b38;
+    width: fit-content;
+    z-index: 6;
+    margin: 0 auto;
+    padding: 0 20px;
+    margin-top: 80px;
+}
 @media (max-width: 500px){
+    .worker_back_helper{
+        width: 100%;
+        padding: 0px;
+        margin-top: 0px;
+    }
     .area{
         width: 100%;
         border-radius: 5px;

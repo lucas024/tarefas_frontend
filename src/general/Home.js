@@ -19,7 +19,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TitleIcon from '@mui/icons-material/Title';
 import { useDispatch, useSelector } from 'react-redux';
 import { search_scroll_save, user_sort_chats, user_update_chats } from '../store';
-
+import LoginIcon from '@mui/icons-material/Login';
 import logo_text from '../assets/logo_text.png'
 import logo_text_worker from '../assets/logo_text_worker.png'
 import TosBanner from './tosBanner';
@@ -395,10 +395,17 @@ const Home = (props) => {
                         <div className={styles.home_back_publish}>
                             {
                                 user?.type!==1?
-                                <p className={styles.back_publish_title}>PUBLICAR</p>
+                                <p className={styles.back_publish_title}>PUBLICAR TAREFA</p>
                                 :null
                             }
-                            
+                            {/* {
+                            user?._id!=null?
+                                null
+                                :
+                                <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'0px'}}>
+                                    <span className={styles.auth} style={{}}>Por-favor inicia sessão ou cria conta para publicares uma tarefa.</span>
+                                </div>
+                            } */}
                             {
                                 user?._id!==null&&user?.type===0?
                                 <div className={styles.back_publish_div} onClick={() => navigate('/publicar/novo')}>
@@ -409,23 +416,15 @@ const Home = (props) => {
                                 </div>
                                 :
                                 user?._id===null||!user?
-                                <div className={styles.back_publish_div_disabled} data-tooltip-id={'home'} data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
-                                    <div className={styles.home_back_publish_wrapper} style={{opacity:0.3}}>
-                                        <PostAddIcon className={styles.section_img_mini}/>
-                                        <span className={styles.section_publicar}>NOVA TAREFA</span>
-                                    </div>
+                                <div className={styles.back_publish_div} onClick={() => handleMoveAuth(1)} 
+                                    data-tooltip-id={'home'} data-tooltip-content="Por-favor inicia sessão ou cria conta para publicares uma tarefa.">
+                                    <LoginIcon className={styles.section_img_mini}/>
+                                    <span className={styles.section_publicar}>INICIAR SESSÃO | CRIAR CONTA</span>
                                 </div>
                                 :null
                             }
                         </div>
-                        {
-                            user?._id!=null?
-                            null
-                            :
-                            <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'0px'}}>
-                                <span className={styles.auth}><span onClick={() => handleMoveAuth(1)} className={styles.auth_specific}>Iniciar Sessão</span> | <span onClick={() => handleMoveAuth(0)} className={styles.auth_specific}>Criar Conta</span></span>
-                            </div>
-                        }
+
                     </div>
                     :!loaded?
                     <div className={styles.section_content}>

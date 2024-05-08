@@ -302,6 +302,17 @@ input[type=file]{
     justify-content: flex-end;
     cursor: pointer;
 }
+.input_div_button_text_no_animation{
+    color: white;
+    font-size: 0.9rem;
+    background: var(--yellow);
+    padding: 2px 5px;
+    border-radius: 3px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    min-width: 25px;
+    font-weight: 600;
+}
 .input_div_button_text{
     color: white;
     font-size: 0.9rem;
@@ -312,6 +323,10 @@ input[type=file]{
     border-bottom-right-radius: 0;
     min-width: 25px;
     font-weight: 600;
+    background-color: var(--yellow);
+    animation-name: yellow;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
 }
 .input_div_button:hover{
     opacity: 0.8;
@@ -961,6 +976,41 @@ transform: rotate(45deg);
     background-color: var(--neutral);
     margin: 10px 0 20px 0;
 }
+.verificar_top{
+    width: 100%;
+    background-color: var(--yellow);
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    padding: 3px 0;
+    margin-bottom: 5px;
+    background-color: var(--yellow);
+    animation-name: yellow;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+.verificar_top_no_animation{
+    width: 100%;
+    background-color: var(--yellow);
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    padding: 3px 0;
+    margin-bottom: 5px;
+    background-color: var(--grey);
+}
+
+@keyframes yellow {
+    0% {
+      background-color: #fdd835;
+    }
+    50% {
+        background-color: #fdd83540;
+    }
+    100% {
+        background-color: #fdd835;
+    }
+}
 @keyframes rotation {
     from {
       transform: rotate(0deg);
@@ -1091,7 +1141,7 @@ transform: rotate(45deg);
 
     .delete_account_divider{
         display: block;
-        margin: 50px 0 30px 0;
+        margin: 120px 0 0px 0;
     }
 }
 
@@ -1251,7 +1301,8 @@ transform: rotate(45deg);
     }
     .delete_account_divider{
         display: block;
-        margin: 10px 0 30px 0;
+        margin: 120px 0 0px 0;
+        display: block;
     }
     .delete_account_wrapper{
         margin-bottom: 140px;

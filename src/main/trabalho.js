@@ -712,7 +712,7 @@ const Trabalho = (props) => {
                                 </div>
 
                                 {
-                                    loaded&&(showFull||userView)&&!reservation.availableToGo?
+                                    loaded&&(showFull||userView)&&reservation.availableToGo?
                                     <div className={styles.location_div} style={{marginTop:'-5px'}}>
                                         <DirectionsWalkIcon className={styles.location_pin} style={{color:"#0358e5", backgroundColor:"#fff"}}/>
                                         <span className={styles.location} style={{fontWeight:600}}>Disponível para ir encontro do profissional</span>

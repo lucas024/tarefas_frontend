@@ -19,7 +19,7 @@ import { useTimer } from 'react-timer-hook';
 import PublicarService from '../publicar/publicar_service';
 import PublicarPhoto from '../publicar/publicar_photo';
 import PublicarDetails from '../publicar/publicar_details';
-import {profissoesMap} from '../general/util'
+import {profissoesMap, regioesMap} from '../general/util'
 import Loader2 from '../general/loader';
 import VerificationBannerConfirm from '../general/verificationBannerConfirm';
 import VerificationBannerEditConfirm from '../general/verificationBannerEditConfirm';
@@ -72,8 +72,6 @@ const Publicar = () => {
     const [district, setDistrict] = useState(null)
     const [edit, setEdit] = useState(false)
     const [editReservation, setEditReservation] = useState(null)
-    const [editAddress, setEditAddress] = useState(null)
-    const [activateEditAddress, setActivateEditAddress] = useState(false)
     const [confirmationEditPopup, setConfirmationEditPopup] = useState(false)
     const [selectedTab, setSelectedTab] = useState(0)
     const [verifyPhone, setVerifyPhone] = useState(0)
@@ -82,6 +80,7 @@ const Publicar = () => {
     const [loadingConfirm, setLoadingConfirm] = useState(false)
     const [taskType, setTaskType] = useState(0)
     const [availableToGo, setAvailableToGo] = useState(false)
+    const [editAddress, setEditAddress] = useState(null)
 
     const [photoPrincipal, setPhotoPrincipal] = useState(null)
     const [expired, setExpired] = useState(true)
@@ -109,7 +108,7 @@ const Publicar = () => {
     const checkAddressCorrect = () => {
         if(taskType===2)
             return true
-        return address?.length>10&&district!=null&&porta.length>0
+        return address?.length>10&&district!=null&&porta?.length>0
         
     }
 
@@ -166,14 +165,17 @@ const Publicar = () => {
                     setTitulo(res.data.title)
                     setDescription(res.data.desc)
                     setEditAddress(res.data.localizacao)
+                    setAddress(res.data.localizacao)
                     setPorta(res.data.porta)
+                    setAndar(res.data.andar)
                     setLat(res.data.lat)
                     setLng(res.data.lng)
-                    setDistrict(res.data.district)
+                    setDistrict(regioesMap[res.data.district])
                     setPhotoPrincipal(res.data.photo_principal)
                     setImages(res.data.photos)
                     setLoading(false)
                     setTaskType(res.data.task_type)
+                    setTituloWrong(false)
                     console.log(res.data);
                 }
                 else{
@@ -187,7 +189,6 @@ const Publicar = () => {
             // setEditReservation(null)
             // setTitulo('')
             // setDescription('')
-            // setEditAddress(null)
             // setPorta('')
             // setLat('')
             // setLng('')
@@ -278,7 +279,7 @@ const Publicar = () => {
             user_email: user.email,
             title: titulo,
             desc: description,
-            localizacao: (address||editAddress),
+            localizacao: address,
             task_type: taskType,
             porta: porta,
             andar: andar,
@@ -432,13 +433,6 @@ const Publicar = () => {
         else setTituloWrong(true)
     }
 
-    const setActivateEditAddressHandler = () => {
-        setActivateEditAddress(true)
-        setPorta('')
-        setAndar('')
-        setAddress('')
-    }
-
     const initiateEmailVerification = () => {
         setSendingError(null)
         var actionCodeSettings = {
@@ -534,6 +528,25 @@ const Publicar = () => {
         }
         catch (error){
             setCodeStatus(false)
+        }
+    }
+
+    const setSelectedTabTopHandler = index => {
+        if(index===0)
+        {
+            setSelectedTab(0)
+        }
+        else if(index===1||index===2)
+        {
+            if(!tituloWrong&&titulo.length>6&&selectedWorker!=null)
+                setSelectedTab(index)
+        }
+        else
+        {
+            if(!tituloWrong&&titulo.length>6&&selectedWorker!=null && (user.phone===phone&&user_phone_verified)&&user_email_verified&&checkAddressCorrect())
+            {
+                setSelectedTab(index)
+            }
         }
     }
 
@@ -672,7 +685,7 @@ const Publicar = () => {
                             }
                         </div>
                         <div className={styles.display}>
-                            <div className={styles.display_element}>
+                            <div className={styles.display_element} onClick={() => setSelectedTabTopHandler(0)}>
                                 <p className={selectedTab===0?styles.display_element_number_selected
                                                 :selectedTab>0?styles.display_element_number
                                                 :styles.display_element_number_empty}>1</p>
@@ -684,8 +697,8 @@ const Publicar = () => {
                                 }
                                 <p className={styles.display_element_text}>Tarefa</p>
                             </div>
-                            <span className={selectedTab===0?styles.display_element_bar_selected:selectedTab>0?styles.display_element_bar:styles.display_element_empty}/>
-                            <div className={styles.display_element}>
+                            <span className={!tituloWrong&&titulo.length>6&&selectedWorker!=null?styles.display_element_bar:selectedTab===0?styles.display_element_bar_selected:styles.display_element_empty}/>
+                            <div className={styles.display_element} onClick={() => setSelectedTabTopHandler(1)}>
                                 <p className={selectedTab===1?styles.display_element_number_selected
                                                 :selectedTab>1?styles.display_element_number
                                                 :styles.display_element_number_empty}>2</p>
@@ -697,8 +710,8 @@ const Publicar = () => {
                                 }
                                 <p className={styles.display_element_text}>Fotografias</p>
                             </div>
-                            <span className={selectedTab===1?styles.display_element_bar_selected:selectedTab>1?styles.display_element_bar:styles.display_element_empty}/>
-                            <div className={styles.display_element}>
+                            <span className={selectedTab===1?styles.display_element_bar:selectedTab>0?styles.display_element_bar:!tituloWrong&&titulo.length>6&&selectedWorker!=null && (user.phone===phone&&user_phone_verified)&&user_email_verified&&checkAddressCorrect()?styles.display_element_bar:styles.display_element_empty}/>
+                            <div className={styles.display_element} onClick={() => setSelectedTabTopHandler(2)}>
                                 <p className={selectedTab===2?styles.display_element_number_selected
                                                 :selectedTab>2?styles.display_element_number
                                                 :styles.display_element_number_empty}>3</p>
@@ -710,8 +723,8 @@ const Publicar = () => {
                                 }
                                 <p className={styles.display_element_text}>Detalhes</p>
                             </div>
-                            <span className={selectedTab===2?styles.display_element_bar_selected:selectedTab>2?styles.display_element_bar:styles.display_element_empty}/>
-                            <div className={styles.display_element}>
+                            <span className={!tituloWrong&&titulo.length>6&&selectedWorker!=null && (user.phone===phone&&user_phone_verified)&&user_email_verified&&checkAddressCorrect()?styles.display_element_bar:selectedTab===2?styles.display_element_bar_selected:styles.display_element_empty}/>
+                            <div className={styles.display_element} onClick={() => setSelectedTabTopHandler(3)}>
                                 <p className={selectedTab===3?styles.display_element_number_selected
                                                 :selectedTab>3?styles.display_element_number
                                                 :styles.display_element_number_empty}>4</p>
@@ -779,6 +792,7 @@ const Publicar = () => {
                                     setLat={setLat}
                                     setLng={setLng}
                                     setAddressParent={setAddress}
+                                    editAddress={editAddress}
                                     divRef={divRef}
                                     user={user}
                                     porta={porta}
@@ -787,9 +801,6 @@ const Publicar = () => {
                                     setPortaWrong={setPortaWrong}
                                     setAndar={setAndar}
                                     andar={andar}
-                                    setActivateEditAddress={setActivateEditAddressHandler}
-                                    activateEditAddress={activateEditAddress}
-                                    editAddress={editAddress}
                                     getFieldWrong={getFieldWrong}
                                     getFieldWrongText={getFieldWrongText}
                                     selectedTab={selectedTab}

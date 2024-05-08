@@ -701,6 +701,19 @@ const Personal = (props) => {
                         <div id='recaptcha-container' className={styles.recaptcha_container}></div>
                     </div>
                     {
+                        edit&&!user_email_verified?
+                        <div className={styles.verificar_top_no_animation}>
+                            <span className={styles.input_div_button_text_no_animation} style={{textTransform:'uppercase', backgroundColor:"transparent"}}>Verificar E-mail</span>
+                        </div>
+                        
+                        :
+                        !user_email_verified?
+                        <div className={styles.verificar_top} onClick={() => !edit&&setVerifyEmail(1)}>
+                            <span className={styles.input_div_button_text_no_animation} style={{textTransform:'uppercase', backgroundColor:"transparent"}}>Verificar E-mail</span>
+                        </div>
+                        :null
+                    }
+                    {
                         user?.type===1?
                         <div className={styles.top}>
                             <div className={styles.top_info}  onClick={() => setDisplayTop(!displayTop)}>
@@ -838,9 +851,14 @@ const Personal = (props) => {
                                     <div className={styles.top_edit_area}>
                                         <div className={styles.input_div}>
                                             {
+                                                edit&&!user_email_verified?
+                                                <div className={styles.input_div_button} onClick={() => !edit&&setVerifyEmail(1)}>
+                                                    <span className={styles.input_div_button_text_no_animation} style={{textTransform:'uppercase', backgroundColor:edit?"#71848d":""}}>Verificar E-mail</span>
+                                                </div>
+                                                :
                                                 !user_email_verified?
                                                 <div className={styles.input_div_button} onClick={() => !edit&&setVerifyEmail(1)}>
-                                                    <span className={styles.input_div_button_text} style={{textTransform:'uppercase', backgroundColor:edit?"#71848d":""}}>Verificar</span>
+                                                    <span className={styles.input_div_button_text} style={{textTransform:'uppercase', backgroundColor:edit?"#71848d":""}}>Verificar E-mail</span>
                                                 </div>
                                                 :null
                                             }

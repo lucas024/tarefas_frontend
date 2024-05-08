@@ -33,7 +33,6 @@ const VerificationBannerEditConfirm = (props) => {
                         {
                             props.loadingConfirm?
                             <div style={{marginTop:"0px"}}>
-                                <p className={styles.phone_input_title} style={{marginBottom:'20px'}}>A editar a tua tarefa</p>
                                 <Lottie
                                     loop={true}
                                     autoplay={true}
@@ -46,11 +45,12 @@ const VerificationBannerEditConfirm = (props) => {
                                         height:'80px',
                                         justifySelf:'center',
                                         alignSelf:'center',
-                                        marginTop:'30px'
+                                        margin:'20px auto 20px auto'
                                     }}
                                     // isStopped={this.state.isStopped}
                                     // isPaused={this.state.isPaused}
                                 />
+                                <p className={styles.phone_input_title} style={{marginBottom:'0px', textTransform:'uppercase'}}>A tua tarefa está a ser editada</p>
                             </div>
                             :
                             <div style={{marginTop:"20px"}}>

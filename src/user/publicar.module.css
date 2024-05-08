@@ -1180,6 +1180,11 @@ input::placeholder{
     justify-content: center;
     align-items: center;
     color: var(--neutral);
+    cursor: pointer;
+}
+.display_element:hover{
+    opacity: 0.6;
+    transition: all 150ms;
 }
 .display_element_underline{
     width: 30px;

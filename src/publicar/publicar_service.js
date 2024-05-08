@@ -49,8 +49,7 @@ const PublicarService = props => {
                         props.editReservation?.type===2&&props.getFieldWrong('titulo')?
                         <div className={styles.diff_right_title_container}>
                             <span className={styles.diff_right_title}
-                                style={{marginBottom:0}}>Título<span className={styles.action}>sdasdasd</span>
-                            </span>
+                                style={{marginBottom:0}}>Título</span>
                             <span className={styles.diff_right_title_wrong_div}>
                                 <span className={styles.editar_tit}>editar</span> {props.getFieldWrongText('titulo')}
                             </span>

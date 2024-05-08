@@ -333,7 +333,7 @@ const AuthWorker = (props) => {
         let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: emailLogin} })
         setEmailLoginWrong(false)
         if(res.data != null){
-            setLoginError("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Faz login na Área Utlizador.")
+            setLoginError("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Inicia Sessão na Área Utlizador.")
             setLoading(false)
         }
         else if(validator.isEmail(emailLogin)){
@@ -692,7 +692,11 @@ const AuthWorker = (props) => {
                     <div id='recaptcha-container' className={styles.recaptcha_container}></div>
                 </div>
                 <div className={styles.auth_main_worker_frontdrop}></div>
-                <div className={styles.area} style={{backgroundColor:selectedAuth===2?'transparent':'#fff'}}>
+
+                <div className={styles.worker_back_helper}>
+
+                
+                <div className={styles.area} style={{backgroundColor:selectedAuth===2?'transparent':'#fff', marginTop:'0px'}}>
                     {
                         selectedAuth!==2?
                         <div className={styles.area_top} style={{borderBottom:"1px solid #FF785A50"}}>
@@ -701,10 +705,10 @@ const AuthWorker = (props) => {
                             </div>
                             <ul>
                                 <li onClick={() => setSelectedAuth(1)} style={{color:"#FF785A"}} className={selectedAuth?styles.li_active_worker:""}>
-                                    <span className={selectedAuth?styles.li_text_active_worker:styles.li_text}>Login</span>
+                                    <span className={selectedAuth?styles.li_text_active_worker:styles.li_text}>Iniciar Sessão</span>
                                 </li>
                                 <li onClick={() => setSelectedAuth(0)} style={{color:"#FF785A"}} className={!selectedAuth?styles.li_active_worker:""}>
-                                    <span className={!selectedAuth?styles.li_text_active_worker:styles.li_text}>Registar</span>
+                                    <span className={!selectedAuth?styles.li_text_active_worker:styles.li_text}>Criar Conta</span>
                                 </li>
                             </ul>
                         </div>
@@ -761,11 +765,11 @@ const AuthWorker = (props) => {
                             </div>
                             <div className={!loading?styles.login_button_worker:styles.login_button_disabled} onClick={() => {
                                 if(!loading) loginHandler()}}>
-                                <p className={styles.login_text}>LOGIN PROFISSIONAL</p>
+                                <p className={styles.login_text}>INICIAR SEESÃO</p>
                             </div>
                             <div className={styles.bottom_switch}>
                                 <span className={styles.bottom_switch_text}>Não tens conta de profissional? </span>
-                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Registar</span>
+                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Criar Conta</span>
                             </div>
                         </div>
                         :
@@ -999,6 +1003,7 @@ const AuthWorker = (props) => {
                         <span className={styles.user_button} onClick={() => navigate('/authentication?type=1')}>Área Utilizador</span>
                     </div>
                 }
+            </div>
             </div>
             
         </div>

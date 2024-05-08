@@ -8,7 +8,7 @@ const slice = createSlice({
     search_context: null,
     search_scroll: null,
     user_email_verified: false,
-    user_phone_verified: false,
+    user_phone_verified: true,
     worker_profile_complete: false,
     worker_is_subscribed: false,
     user_subscription_active: false,
