@@ -278,7 +278,7 @@ const Profissional = props => {
                     </div>
                     <div className={styles.bottom_right}>
                         <div className={styles.bottom_right_wrapper}>
-                            <span className={styles.bottom_right_title}>Tarefas</span>
+                            <span className={styles.bottom_right_title}>Serviços</span>
                             <div className={styles.list}>
                                 {mapTrabalhosList()}
                             </div>
@@ -316,8 +316,8 @@ const Profissional = props => {
                                         placeholder="Escrever mensagem..."
                                         />
                                 <div className={styles.frontdrop}>
-                                    <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{textTransform:"capitalize", fontWeight:700}}>{worker?.name?.split(" ")[0]}</span>,</span>
-                                    <span className={styles.frontdrop_text}>registe-se ou entre numa conta!</span>
+                                    <span className={styles.frontdrop_text}>Para enviares uma mensagem a <span style={{textTransform:"capitalize", fontWeight:700}}>{worker?.name?.split(" ")[0]}</span>,</span>
+                                    <span className={styles.frontdrop_text}>inicia sessão ou cria uma conta!</span>
                                     <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication?type=1')}>autenticar</span>
                                 </div>
                             </div>

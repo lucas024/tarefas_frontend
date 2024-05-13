@@ -448,9 +448,9 @@ const Publicar = () => {
             .catch(e => {
                 console.log(e)
                 if(e.code === "auth/too-many-requests")
-                    setSendingError('Demasiadas tentativas, por-favor tente mais tarde.')
+                    setSendingError('Demasiadas tentativas, por favor tente mais tarde.')
                 else
-                    setSendingError('Erro a enviar o e-mail de verificação, por-favor tente mais tarde.')
+                    setSendingError('Erro a enviar o e-mail de verificação, por favor tente mais tarde.')
             })
     }
 

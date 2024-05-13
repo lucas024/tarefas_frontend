@@ -20,7 +20,6 @@ import { useSearchParams } from 'react-router-dom';
 import Loader2 from '../general/loader';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
-import { Loader } from '@googlemaps/js-api-loader'
 import blurredMap from '../assets/blurredMap.png'
 import arrow from '../assets/curve-down-arrow.png'
 import WorkerBanner from '../general/workerBanner';
@@ -40,6 +39,7 @@ import { regioesOptions } from '../general/util';
 import ChatIcon from '@mui/icons-material/Chat';
 import {Tooltip} from 'react-tooltip';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import Loader from '../general/loader';
 
 const ObjectID = require("bson-objectid");
 
@@ -119,6 +119,7 @@ const Trabalho = (props) => {
         paramsAux.region&&setLocationActive(paramsAux.region)
         paramsAux.work&&setWorkerActive(paramsAux.work)
         setPage(paramsAux.page)
+        setLoading(true)
         paramsAux.id&&axios.get(`${api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
             if(res.data){
                 setReservation(res.data)
@@ -169,10 +170,12 @@ const Trabalho = (props) => {
         {
             if(reservation)
             {
+
                 axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: reservation.user_id} })
                     .then(res => {
                         setPublicationUser(res.data)
-                        if(user?._id === reservation.user_id){
+                        if(user?._id === reservation.user_id && user?._id!==undefined){
+                            console.log('simmmm')
                             setViewTo('user')
                             setLoading(false)
                             setLoaded(true)
@@ -220,33 +223,39 @@ const Trabalho = (props) => {
         {
             setViewTo("showFull")
             setLoading(false)
+            setLoaded(true)
         }
         else if(!user?._id||user?.type===0){
             setViewTo('noAccount')
             setLoading(false)
+            setLoaded(true)
         }
         else if((!worker_profile_complete&&!worker_is_subscribed)){
             setViewTo('none')
-            setLoading(false)                
+            setLoading(false)
+            setLoaded(true)           
         }
         else if(worker_is_subscribed&&worker_profile_complete){
             setViewTo("showFull")
             setLoading(false)
+            setLoaded(true)
         }
         else if(worker_profile_complete){
             setViewTo('noSub')
             setLoading(false)
+            setLoaded(true)
         }
         else if(!worker_profile_complete){
             setViewTo('noProfile')
             setLoading(false)
+            setLoaded(true)
         }
         else
         {
             setViewTo('noAccount')
             setLoading(false)
+            setLoaded(true)
         }
-        setLoaded(true)
     }
 
     const setViewTo = (view) => {
@@ -254,7 +263,7 @@ const Trabalho = (props) => {
         {
             setNoneView(false)
         }
-        else
+        else if(view === "none")
         {
             setNoneView(true)
         }
@@ -262,7 +271,7 @@ const Trabalho = (props) => {
         {
             setNoProfileView(false)
         }
-        else
+        else if(view === "noProfile")
         {
             setNoProfileView(true)
         }
@@ -270,7 +279,7 @@ const Trabalho = (props) => {
         {
             setNoSubView(false)
         }
-        else
+        else if(view === "noSub")
         {
             setNoSubView(true)
         }
@@ -278,7 +287,7 @@ const Trabalho = (props) => {
         {
             setNoAccountView(false)
         }
-        else
+        else if(view === "noAccount")
         {
             setNoAccountView(true)
         }
@@ -286,7 +295,7 @@ const Trabalho = (props) => {
         {
             setUserView(false)
         }
-        else
+        else if(view === "user")
         {
             setUserView(true)
         }
@@ -294,7 +303,7 @@ const Trabalho = (props) => {
         {
             setShowFull(false)
         }
-        else
+        else if(view === "showFull")
         {
             setShowFull(true)
         }
@@ -415,6 +424,10 @@ const Trabalho = (props) => {
 
     return (
         <div style={{position:"relative"}}>
+            {
+                loading&&<div className={styles.main_frontdrop}/>
+            }
+            {/* <Loader loading={loading}/> */}
             {
                 workerBanner?
                 <WorkerBanner 
@@ -597,7 +610,10 @@ const Trabalho = (props) => {
                                     }}>
                                         Enviar Mensagem
                                     </span>
-                                    <div className={styles.top_message_icon_wrapper}>
+                                    <div className={styles.top_message_icon_wrapper} onClick={() => {
+                                        if(showFull) messageAreaRef.current.focus()
+                                        messageRef.current.scrollIntoView()
+                                    }}>
                                         <ChatIcon className={styles.top_message_icon}/>
                                     </div>
                                     
@@ -624,7 +640,7 @@ const Trabalho = (props) => {
                                                 <img src={arrow} className={styles.market_arrow}/>
                                                 <div className={styles.market_background}>
                                                     <span className={styles.market_text}>Gostavas de contacar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>?</span>
-                                                    <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Tornar-me Profissional</span>
+                                                    <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Tornar-me um Profissional</span>
                                                 </div>
                                             </div>
                                             :
@@ -809,7 +825,7 @@ const Trabalho = (props) => {
                                             }
                                             {
                                                 noAccountView?
-                                                <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>Tornar-me Profissional</span>
+                                                <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>Tornar-me um Profissional</span>
                                                 :noneView?
                                                 <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=personal')}>completar perfil</span>
                                                 :noSubView?

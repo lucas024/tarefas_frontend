@@ -50,7 +50,7 @@ const VerificationBannerConfirm = (props) => {
                                     // isStopped={this.state.isStopped}
                                     // isPaused={this.state.isPaused}
                                 />
-                                <p className={styles.phone_description} style={{marginTop:'30px'}}>Por-favor, não saias desta página.</p>
+                                <p className={styles.phone_description} style={{marginTop:'30px'}}>Por favor, não saias desta página.</p>
                             </div>
                             :props.publicationSent?
                             <div style={{marginTop:"20px"}}>

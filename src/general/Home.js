@@ -16,6 +16,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import SearchIcon from '@mui/icons-material/Search';
 import BackHandIcon from '@mui/icons-material/BackHand';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import TitleIcon from '@mui/icons-material/Title';
 import { useDispatch, useSelector } from 'react-redux';
 import { search_scroll_save, user_sort_chats, user_update_chats } from '../store';
@@ -25,6 +26,8 @@ import logo_text_worker from '../assets/logo_text_worker.png'
 import TosBanner from './tosBanner';
 import SuggestionBanner from './suggestionBanner';
 import ContactosBanner from './contactosBanner';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import ConstructionIcon from '@mui/icons-material/Construction';
 
 import {
     DefineAdSlot,
@@ -244,7 +247,7 @@ const Home = (props) => {
                             <ins class="adsbygoogle"
                                 className={styles.ad_inner}
                                 data-ad-client="ca-pub-1542751279392735"
-                                data-ad-slot="1"
+                                data-ad-slot="0"
                                 data-ad-format="auto"
                                 data-full-width-responsive="true"></ins>
                             
@@ -270,13 +273,13 @@ const Home = (props) => {
                                     <div className={styles.zone_img} style={{backgroundColor:first?.value==="profissionais"?"#FF785A":"#0358e5", borderColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>
                                         {
                                             first?.value==="profissionais"?
-                                            <BackHandIcon className={styles.zone_person_icon} style={{transform: 'scaleX(-1)', color:"#ffffff"}}/>
+                                            <EmojiPeopleIcon className={styles.zone_person_icon} style={{transform: 'scaleX(-1)', color:"#ffffff"}}/>
                                             :
-                                            <AssignmentIcon className={styles.zone_build_icon} style={{color:"#ffffff"}}/>
+                                            <TitleIcon className={styles.zone_build_icon} style={{color:"#ffffff"}}/>
                                         }
                                     </div>
                                     <div className={styles.zone_select}>
-                                        <SelectHome
+                                        {/* <SelectHome
                                             menuOpen={() => {}}
                                             menuClose={() => {}}
                                             searcheable={false}
@@ -285,7 +288,35 @@ const Home = (props) => {
                                             optionFirst={first} 
                                             option={first} 
                                             changeOption={val => setFirst(val)}
-                                            placeholder={"Tipo"}/>
+                                            placeholder={"Tipo"}/> */}
+                                        <div className={styles.zone_select_buttons}>
+                                            <span className={styles.zone_select_button} 
+                                                onClick={() => setFirst({ value: 'trabalhos', label: 'Trabalhos' })}
+                                                style={{marginRight:'2px', 
+                                                        width:first?.value==="trabalhos"?"85%":"15%",
+                                                        backgroundColor:first?.value==="trabalhos"?"#0358e5":"#0358e520", 
+                                                        fontWeight:first?.value==="trabalhos"?600:600,
+                                                        fontSize: first?.value==="trabalhos"?'0.9rem':'0.8rem',
+                                                        color:first?.value==="trabalhos"?'white':'#0358e5bb',
+                                                        borderColor:"#0358e5"}}>{
+                                                            first?.value==="trabalhos"?
+                                                            'TAREFAS'
+                                                            :<TitleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)', color:"#0358e5"}}/>
+                                                        }</span>
+                                            <span className={styles.zone_select_button}
+                                                onClick={() => setFirst({ value: 'profissionais', label: 'Profissionais' })}
+                                                style={{marginLeft:'2px',
+                                                        width:first?.value==="profissionais"?"85%":"15%",
+                                                        backgroundColor:first?.value==="profissionais"?"#FF785A":"#FF785A20",
+                                                        fontWeight:first?.value==="profissionais"?600:600,
+                                                        color:first?.value==="profissionais"?'white':'#FF785Abb',
+                                                        fontSize: first?.value==="profissionais"?'0.9rem':'0.8rem',
+                                                        borderColor:"#FF785A"}}>{
+                                                            first?.value==="profissionais"?
+                                                            'PROFISSIONAIS'
+                                                            :<EmojiPeopleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
+                                                        }</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className={styles.zone_arrow_div}>
@@ -301,7 +332,7 @@ const Home = (props) => {
                                             second?.value? 
                                             <img src={second.img} className={styles.zone_image_prof}/>
                                             :
-                                            <TitleIcon className={styles.zone_build_icon}/>
+                                            <ConstructionIcon className={styles.zone_build_icon} style={{transform: 'scaleX(-1)'}}/>
                                         }
                                     </div>
                                     <div className={styles.zone_select}>
@@ -323,7 +354,7 @@ const Home = (props) => {
                                                 top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
                                                 setSecond(val)
                                             }}
-                                            placeholder={'Tarefa'}/>
+                                            placeholder={'serviço'}/>
                                     </div>
                                 </div>
                                 <div className={styles.zone_arrow_div}>
@@ -372,7 +403,7 @@ const Home = (props) => {
                                             style={{backgroundColor:first?.value==="profissionais"?"#FF785A":"#0358e5",
                                                     borderColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>
                                 <SearchIcon className={styles.zone_search_icon} style={{color:"#ffffff"}}/>
-                                <span className={styles.zone_search_button} style={{color:"#ffffff"}}>PROCURAR</span>
+                                <span className={styles.zone_search_button} style={{color:"#ffffff", marginTop:'3px'}}>PROCURAR {first?.value==='profissionais'?'profissionais':'tarefas'}</span>
                             </div>
                             <div onClick={() => (second||third)&&clearTopSearch()} className={second||third?styles.search_clear_wrapper:styles.search_clear_wrapper_disabled} style={{borderColor:second||third?'#ffffff':"#ffffff80"}}>
                                 {/* <SearchOffIcon className={styles.zone_search_icon} style={{color:second&&third?"#ffffff":"#ffffff90"}}/> */}
@@ -403,7 +434,7 @@ const Home = (props) => {
                                 null
                                 :
                                 <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'0px'}}>
-                                    <span className={styles.auth} style={{}}>Por-favor inicia sessão ou cria conta para publicares uma tarefa.</span>
+                                    <span className={styles.auth} style={{}}>Por favor inicia sessão ou cria conta para publicares uma tarefa.</span>
                                 </div>
                             } */}
                             {
@@ -417,7 +448,7 @@ const Home = (props) => {
                                 :
                                 user?._id===null||!user?
                                 <div className={styles.back_publish_div} onClick={() => handleMoveAuth(1)} 
-                                    data-tooltip-id={'home'} data-tooltip-content="Por-favor inicia sessão ou cria conta para publicares uma tarefa.">
+                                    data-tooltip-id={'home'} data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
                                     <LoginIcon className={styles.section_img_mini}/>
                                     <span className={styles.section_publicar}>INICIAR SESSÃO | CRIAR CONTA</span>
                                 </div>
@@ -447,7 +478,7 @@ const Home = (props) => {
                         <div className={styles.home_back_bottom}>
                             <div className={styles.section_content}>
                                 <div className={styles.section_image_wrapper}>
-                                    <BackHandIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
+                                    <EmojiPeopleIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
                                 </div>
                                 <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
                                     PROFISSIONAIS
@@ -516,7 +547,7 @@ const Home = (props) => {
                                 <div className={styles.section_two}>
                                     <div className={styles.section_content}>
                                         <div className={styles.section_image_wrapper}>
-                                            <BackHandIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
+                                            <EmojiPeopleIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
                                         </div>
                                         <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
                                             PROFISSIONAIS
@@ -550,7 +581,7 @@ const Home = (props) => {
                         <div className={styles.footer_div_column}>
                             <p className={styles.footer_div_text} style={{color: '#71848d'}}>APP Tarefas (brevemente)</p>
                             <p className={styles.footer_div_text} onClick={() => setContactosBanner(true)}>Contactos</p>
-                            <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dê uma sugestão</p>
+                            <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dá uma sugestão</p>
                             <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
                             <p className={styles.footer_div_text} onClick={() => setPpBanner(true)}>Política de privacidade</p>
                             <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>

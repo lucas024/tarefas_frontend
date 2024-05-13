@@ -444,7 +444,7 @@ const AuthWorker = (props) => {
                         })
                     }
                     else{
-                        setLoginError("Problema no servidor. Por-favor tente mais tarde.")
+                        setLoginError("Problema no servidor. Por favor tente mais tarde.")
                         setLoading(false)
                     }
                 }
@@ -567,7 +567,7 @@ const AuthWorker = (props) => {
             .catch(e => {
                 console.log(e)
                 setEmailSent(false)
-                setSendingError('Erro a enviar o e-mail de verificação, por-favor tente mais tarde.')
+                setSendingError('Erro a enviar o e-mail de verificação, por favor tente mais tarde.')
             })
     }
 
@@ -608,7 +608,7 @@ const AuthWorker = (props) => {
                     recaptcha.clear()
                     setVerificationId(null)
                     setSuccess(false)
-                    setSendingError('Erro a enviar o código de verificação. Por-favor, tente mais tarde.')
+                    setSendingError('Erro a enviar o código de verificação. Por favor, tente mais tarde.')
                     setCodeSent(false)
                 })
         })

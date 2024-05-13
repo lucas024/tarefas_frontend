@@ -5,6 +5,7 @@ import select_styles from './select.module.css'
 import PersonIcon from '@mui/icons-material/Person';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import TitleIcon from '@mui/icons-material/Title';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import {regioes, profissoesGrouped, profissoesMap, regioesMap} from '../general/util'
 
 const SelectPublications = (props) => {
@@ -161,8 +162,8 @@ const SelectPublications = (props) => {
                 </span>
                 :props.trabalho?
                 <span className={styles.placeholder}>
-                    <TitleIcon className={styles.placeholder_icon}/>
-                    Tarefa
+                    <ConstructionIcon className={styles.placeholder_icon}/>
+                    Serviço
                 </span>
                 :
                 <span className={styles.placeholder}>

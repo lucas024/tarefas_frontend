@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import Select from 'react-select'
 import styles from '../servicos/main.module.css'
-import PersonIcon from '@mui/icons-material/Person';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import {useNavigate} from 'react-router-dom'
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import TitleIcon from '@mui/icons-material/Title';
 
 const SelectPosts = (props) => {
 
@@ -105,8 +105,8 @@ const SelectPosts = (props) => {
             formatOptionLabel={option => (
                 <span className={styles.placeholder_left}>
                     {option.value==='trabalhos'?
-                        <AssignmentIcon className={styles.placeholder_left_icon} style={{color:props.type===option.value?'#fff':'#161F28'}}/>
-                        :<PersonIcon className={styles.placeholder_left_icon} style={{color:props.type===option.value?'#fff':'#FF785A'}}/>
+                        <TitleIcon className={styles.placeholder_left_icon} style={{color:props.type===option.value?'#fff':'#0358e5'}}/>
+                        :<EmojiPeopleIcon className={styles.placeholder_left_icon} style={{color:props.type===option.value?'#fff':'#FF785A', transform: 'scaleX(-1)'}}/>
                     }
                     
                     <span className={props.type===option.value?styles.placeholder_left_text:styles.placeholder_left_text_nonselcted}

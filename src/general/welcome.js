@@ -68,8 +68,8 @@ const Welcome = (props) => {
                                     >
                                     <div className={styles.sub_main}>
                                         <p className={styles.sub_title_separator}>O lugar ideal para quem procura um profissional para realizar um serviço</p>
-                                        <p className={styles.sub_title}>Publica a tua tarefa e encontra um profissional</p>
-                                        <p className={styles.sub_title_caveat}>É grátis</p>
+                                        <p className={styles.sub_title}>Publica a tua tarefa e encontra um profissional,</p>
+                                        <p className={styles.sub_title_caveat}>É grátis.</p>
                                         {/* <div className={styles.sub_sub_main}>
                                             <span className={styles.sub_title}>
                                                 <span className={styles.sub_title_special_job}> É grátis</span>

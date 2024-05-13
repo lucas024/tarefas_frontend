@@ -221,7 +221,7 @@ const profissoesMap = {
     restauracao_empregado_mesa: { value: 'restauracao_empregrado_mesa', label: 'Empregrado Mesa', img: profissoesPngs['food']},
     restauracao_empregado_bar: { value: 'restauracao_empregado_bar', label: 'Empregado Bar', img: profissoesPngs['food']},
     restauracao_geral: { value: 'restauracao_geral', label: 'Geral (Restauração)', img: profissoesPngs['food']},
-    hotelaria: { value: 'hotelaria', label: 'Hotelaria', img: profissoesPngs['hotel']},
+    hotelaria: { value: 'hotelaria', label: 'Hotelaria', img: profissoesPngs['hotel'], solo: true},
     interprete: { value: 'interprete', label: 'Intérprete', img: profissoesPngs['speaking'], solo: true},
 }
 

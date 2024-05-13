@@ -6,7 +6,7 @@
     height: 100%;
     display: flex;
     background-color: #00000090;
-    z-index: 5;
+    z-index: 15;
     justify-content: center;
     align-items: center;
 }
@@ -45,27 +45,38 @@
 }
 .divider{
     width: 100%;
-    margin: auto;
     height: 1px;
     background-color: var(--grey);
     margin: 5px auto;
+}
+.ou{
+    align-self: center;
+    font-weight: 600;
+    color: var(--grey);
+    margin: 10px 0;
 }
 .line{
     width: 100%;
     margin: 15px auto;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
-.line_circle{
-    font-size: 20px;
-    align-self: flex-start;
+.line_image{
+    width: 50px;
+    height: 50px;
+    align-self: center;
     color: var(--action);
 }
 .helper_text{
-    opacity: 0.5;
-    margin-left: 3px;
-    align-self: flex-start;
-    min-width: 100px;
+    align-self: center;
+    color: var(--brand);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 .line_text_div{
     width: 90%;
@@ -74,14 +85,21 @@
 .line_text{
     text-align: left;
     align-self: center;
-    margin-left: 5px;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 5px;
+    width: 90%;
+}
+.line_discount{
+    font-size: 0.9rem;
+    font-weight: 400;
 }
 .action{
     color: var(--action);
+    font-weight: 600;
 }
 .bold{
-    font-weight: 600;
+    font-weight: 400;
 }
 .confirm_button{
     margin: 20px auto 0 auto;
@@ -119,12 +137,20 @@
 }
 .value_brand_wrapper{
     display: flex;
-    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.value_brand_text{
+    font-weight: 600;
+    text-align: center;
+    margin-top: 2px;
+    color: var(--brand);
 }
 .value_brand_img{
-    width: 130px;
-    margin-left: 7px;
-    margin-top: 3px;
+    width: 160px;
+    /* margin-left: 7px; */
+    /* margin-top: 3px; */
 }
 .input_title{
     font-size: 0.9rem;
@@ -276,27 +302,133 @@
     margin-bottom: 10px;
     font-size: 0.9rem;
 }
+.discount_big{
+    background-color: var(--brand);
+    padding: 3px 9px;
+    border-radius: 3px;
+    margin-top: 5px;
+}
+.discount_text_big{
+    font-family: "Caveat", cursive;
+    font-size: 1.5rem;
+    color: var(--neutral);
+}
+.discount{
+    background-color: var(--brand);
+    padding: 1px 6px;
+    border-radius: 3px;
+}
+.discount_text{
+    font-family: "Caveat", cursive;
+    font-size: 1.2rem;
+    color: var(--neutral);
+}
+.line_title{
+    font-weight: 600;
+    color: var(--brand);
+    text-transform: uppercase;
+    text-align: center;
+    /* font-style: italic; */
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+    font-size: 0.9rem;
+}
+.popup_inner{
+    width: 100%;
+    max-height: 500px;
+    overflow-y: auto;
+    position: relative;
+}
+.info_bottom_text{
+    text-align: left;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.info_bottom_text_helper{
+    text-align: left;
+    font-weight: 400;
+    color: var(--grey);
+    font-size: 0.8rem;
+    margin-bottom: -10px;
+}
+.steps_line{
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+}
+.steps_line_number{
+    padding: 1px 7px;
+    border: 2px solid var(--brand);
+    border-radius: 50%;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.steps_line_text{
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+.discount_area{
+    margin: 15px 0;
+    border-bottom: 1px solid var(--grey);
+    padding-bottom: 20px;
+}
 @media (max-width: 500px){
+    .steps_line_number{
+        padding: 1px 5px;
+        font-size: 0.7rem;
+    }
+    .steps_line_text{
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+    .discount_text_big{
+        font-size: 1.2rem;
+    }
+    .info_bottom_text{
+        font-size: 0.7rem;
+    }
+    
+    .info_bottom_text_helper{
+        font-size: 0.6rem;
+    }
+    .popup{
+        max-height: 500px;
+    }
+    .line_title{
+        font-size: 0.8rem;
+    }
+    .line_discount{
+        font-size: 0.7rem;
+    }
+    .discount_text{
+        font-size: 1rem;
+    }
+    .discount{
+        padding: 1px 4px;
+    }
     .value_brand{
         font-size: 0.8rem;
     }
     .value_brand_img{
-        width: 70px;
+        width: 100px;
     }
-    .helper_text{
-        display: none;
+    .value_brand_text{
+        font-size: 0.7rem;
     }
-    .line{
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-    .line_circle{
-        margin: auto;
+    .line_image{
+        width: 35px;
+        height: 35px;
     }
     .line_text{
-        text-align: center;
         font-size: 0.7rem;
+        margin-top: 3px;
+    }
+    .helper_text{
+        font-size: 0.6rem;
     }
     .confirm_button{
         font-size: 0.7rem;

@@ -110,9 +110,9 @@
     margin-top: 4px;
 }
 .bottom_div_icon{
-    width: 18px !important;
-    height: 18px !important;
-    color: var(--neutral);
+    width: 15px !important;
+    height: 15px !important;
+    /* color: var(--neutral); */
 }
 .bottom_div_icon_wrap{
     display: flex;

@@ -423,7 +423,7 @@ const Auth = (props) => {
                         axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
                             setLoading(false)
                             if(res.data != null){
-                                setEmailWrong("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Por-favor, utilize outro email.")
+                                setEmailWrong("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Por favor, utilize outro email.")
                             }
                             else{
                                 axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
@@ -566,7 +566,7 @@ const Auth = (props) => {
             .catch(e => {
                 console.log(e)
                 setEmailSent(false)
-                setSendingError('Erro a enviar o e-mail de verificação, por-favor tente mais tarde.')
+                setSendingError('Erro a enviar o e-mail de verificação, por favor tente mais tarde.')
             })
     }
 
@@ -607,7 +607,7 @@ const Auth = (props) => {
                     recaptcha.clear()
                     setVerificationId(null)
                     setSuccess(false)
-                    setSendingError('Erro a enviar o código de verificação. Por-favor, tente mais tarde.')
+                    setSendingError('Erro a enviar o código de verificação. Por favor, tente mais tarde.')
                     setCodeSent(false)
                 })
         })
@@ -815,7 +815,7 @@ const Auth = (props) => {
                                 <span className={styles.recover_title}>Recuperar palava-passe</span>
                                 {
                                     emailRecoverSent?
-                                    <span className={styles.recover_info}>E-mail de recuperação enviado para o <span style={{fontWeight:'700'}}>{emailRecover}</span>. Por-favor segue as instruções descritas lá.</span>
+                                    <span className={styles.recover_info}>E-mail de recuperação enviado para o <span style={{fontWeight:'700'}}>{emailRecover}</span>. Por favor segue as instruções lá descritas.</span>
                                     :
                                     <span className={styles.recover_info}>Porfavor indica-nos o e-mail associado a tua conta</span>
                                 }

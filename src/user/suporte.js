@@ -319,7 +319,7 @@ const Suporte = (props) => {
                                             style={{borderBottomLeftRadius:0, background:getTypeColorBackground(2)}}>
                                             <div style={{display:"flex", flexDirection:"column", margin:"auto"}}>
                                                 <span className={styles.over_text}>Tarefa Novamente Recusada</span>
-                                                <span className={styles.thing}>(NOVA MENSAGEM A BAIXO)</span>
+                                                <span className={styles.thing}>(NOVA MENSAGEM ABAIXO)</span>
                                                 <ArrowDownwardIcon className={styles.over_img}/>
                                             </div>
                                         </div>

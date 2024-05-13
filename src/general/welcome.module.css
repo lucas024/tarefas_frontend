@@ -48,7 +48,7 @@
 .image{
     position: absolute;
     z-index: 11;
-    opacity: 0.2;
+    opacity: 0.1;
     transform: scale(0.3);
 }
 .main_top{
@@ -114,7 +114,7 @@
 }
 .sub_title{
     color: var(--neutral);
-    font-size: 1rem;
+    font-size: 1.2rem;
     text-align: center;
     font-weight: 500;
     text-transform: uppercase;
@@ -123,7 +123,7 @@
 .sub_title_caveat{
     font-family: "Caveat", cursive;
     color: var(--neutral);
-    font-size: 1.7rem;
+    font-size: 1.9rem;
     text-align: center;
     font-weight: 500;
     margin-top: 10px;
@@ -142,10 +142,12 @@
 .sub_title_separator{
     text-align: center;
     margin: 0px;
-    color: var(--grey);
-    font-weight: 500;
-    font-size: 0.9rem;
+    color: var(--job);
+    font-weight: 700;
+    font-size: 1.1rem;
     text-transform: uppercase;
+    margin-top: -30px;
+    margin-bottom: 40px;
 }
 .main_inner{
     display: flex;
@@ -236,6 +238,9 @@
     }
     .sub_title{
         font-size: 0.9rem;
+    }
+    .sub_title_caveat{
+        font-size: 1.5rem;
     }
     .sub_title_special_job{
         font-size: 0.8rem !important;

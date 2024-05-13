@@ -30,7 +30,7 @@ const ContactosBanner = (props) => {
                 <span className={styles.value_brand}>Contactos</span>
                 <div className={styles.divider}/>
 
-                <p className={styles.contact_text_top}>Se precisares de algum tipo de suporte, relacionado com dúvidas que tenhas sobre a utilização do site, podes abrir um chat de Suporte na tua àrea pessoal.</p>
+                <p className={styles.contact_text_top}>Se precisares de algum tipo de apoio relacionado com dúvidas que tenhas sobre a utilização do site podes abrir um chat de Suporte na tua área pessoal.</p>
 
                 <p className={styles.contact_text_top} style={{marginBottom:'5px', marginTop:'15px'}}>Para outros assuntos:</p>
                 <span className={styles.contact_title}>E-mail</span>

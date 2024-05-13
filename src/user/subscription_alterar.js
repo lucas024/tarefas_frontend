@@ -13,7 +13,7 @@ const SubscriptionAlterar = props => {
     const discount_mensal_d_euro = '2'
     const discount_mensal_d_centimo = '59'
     const discount_mensal = '259'
-    const discount_mensal_monthly = '259'
+    const discount_mensal_monthly = '2.59'
 
     const discount_semestral_d = '13.78'
     const discount_semestral_d_euro = '13'
@@ -74,14 +74,21 @@ const SubscriptionAlterar = props => {
             image: pro
         }
     ]
+    
+    useEffect(() => {
+        console.log(props.subscriptionPlanObj)
+    }, [props.subscriptionPlanObj])
 
     return (
         <div className={styles.change_plan_wrap}>
-            <div style={{flex:'1'}}>
-                <div className={`${styles.sub_val_wrap}`} style={{borderColor:"#FFFFFF"}}>
+            <div style={{flex:'1', width:"100%"}}>
+                <div className={`${styles.sub_val_wrap_small}`} style={{borderColor:"#FFFFFF"}}>
                     {
                         props.discountSubscriber?
-                        <p className={styles.sub_val_date_discount}>fundador</p>
+                        <div>
+                            <p className={styles.sub_val_date_discount}>fundador</p>
+                            <p className={styles.sub_val_date_discount_small}>F</p>
+                        </div>
                         :null
                     }
                     <div className={styles.sub_val_wrap_image} style={{backgroundColor:"#FFFFFF"}}>
@@ -93,7 +100,7 @@ const SubscriptionAlterar = props => {
                         }
                         
                     </div>
-                    <p className={styles.sub_val_date} style={{fontWeight:400, fontSize:'0.9rem'}}>Plano ATUAL</p>
+                    <p className={styles.sub_val_date} style={{fontWeight:400, fontSize:'0.8rem'}}>Plano ATUAL</p>
                     {
                         props.trialActive?
                         <p className={styles.sub_val_date} style={{marginTop:'3px', fontSize:'0.9rem'}}>GRATUITO</p>
@@ -111,6 +118,7 @@ const SubscriptionAlterar = props => {
                                     <div>
                                         <span className={styles.info_text} style={{fontSize:'0.8rem', color:props.discountSubscriber?"#FF785A":"#ffffff"}}>€{props.subscriptionPlanObj.value}</span>
                                         <span className={styles.info_text} style={{fontSize:'0.7rem', fontWeight:400, marginLeft:'5px'}}>(€{props.subscriptionPlanObj.monthly}/mês)</span>
+                                        
                                     </div>
                                 }
                                 
@@ -135,11 +143,15 @@ const SubscriptionAlterar = props => {
             <ArrowRightAltIcon className={styles.arrow}/>
             {
                 props.subscriptionPlanObj.selected_plan!==props.selectedPlan?
-                <div style={{flex:'1'}}>
-                    <div className={`${styles.sub_val_wrap}`} style={{backgroundColor:"#FF785A90", borderColor:"#FF785A"}}>
+                <div style={{flex:'1', width:"100%"}}>
+                    <div className={`${styles.sub_val_wrap_small}`} style={{backgroundColor:"#FF785A90", borderColor:"#FF785A"}}>
                         {
                             props.discountSubscriber?
-                            <p className={styles.sub_val_date_discount}>fundador</p>
+                            <div>
+                                <p className={styles.sub_val_date_discount}>fundador</p>
+                                <p className={styles.sub_val_date_discount_small}>F</p>
+                            </div>
+                            
                             :null
                         }
                         <div className={styles.sub_val_wrap_image} style={{backgroundColor:"#FF785A"}}>
@@ -152,7 +164,7 @@ const SubscriptionAlterar = props => {
                                 <div className={styles.info_subdiv}>
                                     <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>VALOR:</span>
                                     <span className={styles.info_text} style={{fontSize:'0.8rem', color:props.discountSubscriber?"#FF785A":"#ffffff"}}>€{planPricingArray[props.nextPlan?props.nextPlan:props.selectedPlan-1]?.total}</span>
-                                    <span className={`${styles.info_text} ${styles.equivalente}`} style={{fontSize:'0.7rem', fontWeight:400, marginLeft:'5px'}}>(€{planPricingArray[props.nextPlan?props.nextPlan:props.selectedPlan-1]?.monthly}/mês)</span>
+                                    <span className={`${styles.info_text}`} style={{fontSize:'0.7rem', fontWeight:400, marginLeft:'5px'}}>(€{planPricingArray[props.nextPlan?props.nextPlan:props.selectedPlan-1]?.monthly}/mês)</span>
                                 </div>
                             </div>
                             <div className={styles.info_div}>
@@ -164,7 +176,7 @@ const SubscriptionAlterar = props => {
                         </div>
                     </div>
                 </div>
-                :<span className={styles.selected_plan_no_value} style={{flex:1, padding:"10px 0", backgroundColor:"#FF785A90"}}>Selecione um plano diferente do atual</span>
+                :<span className={styles.selected_plan_no_value} style={{flex:1, padding:"10px 0", backgroundColor:"#FF785A90"}}>Seleciona um plano diferente do atual</span>
             }
         </div>
     )

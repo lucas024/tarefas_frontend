@@ -442,7 +442,7 @@ const Personal = (props) => {
             })
             .catch(e => {
                 console.log(e)
-                setSendingError('Erro a enviar o e-mail de verificação, por-favor tente mais tarde.')
+                setSendingError('Erro a enviar o e-mail de verificação, por favor tente mais tarde.')
             })
     }
 
@@ -580,7 +580,7 @@ const Personal = (props) => {
                         user?.type===1?
                         <Sessao text={"Número de telefone e/ou descrição atualizados com sucesso!"}/>
                         :
-                        <Sessao text={"Número de telefone atualizado com sucesso! Por-favor, volta a verificar."}/>
+                        <Sessao text={"Número de telefone atualizado com sucesso! Por favor, volta a verificar."}/>
                     }
                 </CSSTransition>
                 <CSSTransition 

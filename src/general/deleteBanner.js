@@ -59,22 +59,22 @@ const DeleteBanner = (props) => {
                 <div className={styles.main_inner}>
                     {
                         props.type===0?
-                        <p className={styles.phone_description}>Ao eliminares a tua conta, todas as tuas publicações e mensagens serão eliminadas. Esta acção não é reversível.</p>
+                        <p className={styles.phone_description}>Ao eliminares a tua conta, todas as tuas publicações e mensagens serão eliminadas. Esta ação não é reversível.</p>
                         :
                         <div>
                             <p className={styles.phone_description}>Ao eliminares a tua conta, o teu perfil e mensagens serão eliminadas.</p>
                             <p className={styles.phone_description} style={{marginTop:'0px'}}>Qualquer subscrição será cancelada e o valor não será reembolsado.</p>
-                            <p className={styles.phone_description} style={{textDecoration:'underline'}}> Esta acção não é reversível.</p>
+                            <p className={styles.phone_description} style={{textDecoration:'underline'}}> Esta ação não é reversível.</p>
                         </div>
                     }
                     
 
-                    {/* <p className={styles.phone_description} style={{marginTop:'30px'}}>Insere a palavra "ELIMINAR" na caixa a baixo:</p> */}
+                    {/* <p className={styles.phone_description} style={{marginTop:'30px'}}>Insere a palavra "ELIMINAR" na caixa abaixo:</p> */}
                     {
                         state===0?
                         <p className={styles.phone_description} style={{marginTop:'30px', fontWeight:'600'}}>Por razões de segurança, volte a iniciar a sua sessão para continuar com a eliminação da conta.</p>
                         :
-                        <p className={styles.phone_description} style={{marginTop:'30px', fontWeight:'600'}}>Carrega no botão a baixo para eliminares a tua conta.</p>
+                        <p className={styles.phone_description} style={{marginTop:'30px', fontWeight:'600'}}>Carrega no botão abaixo para eliminares a tua conta.</p>
                     }
                 </div>
 

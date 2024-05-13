@@ -4,6 +4,8 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TitleIcon from '@mui/icons-material/Title';
 import {regioesOptions, profissoesMap} from '../general/util'
 import FaceIcon from '@mui/icons-material/Face';
+import ConstructionIcon from '@mui/icons-material/Construction';
+
 
 const Carta = (props) => {
     
@@ -119,8 +121,8 @@ const Carta = (props) => {
                 }
                 <div className={styles.bottom}>
                     <div className={styles.bottom_div}>
-                        <div className={styles.bottom_div_icon_wrap} style={{backgroundColor:worker?.trabalhos.includes(props.workerActive)?"#FF785A":"#161F28"}}>
-                            <TitleIcon className={styles.bottom_div_icon}/>
+                        <div className={styles.bottom_div_icon_wrap} style={{color:worker?.trabalhos.includes(props.workerActive)?"#FF785A":"#161F2890"}}>
+                            <ConstructionIcon className={styles.bottom_div_icon}/>
                         </div>
                         
                         <div className={styles.bottom_div_text}>
@@ -128,7 +130,7 @@ const Carta = (props) => {
                         </div>
                     </div>
                     <div className={styles.bottom_div}>
-                        <div className={styles.bottom_div_icon_wrap} style={{backgroundColor:worker?.regioes.includes(props.locationActive)?"#FF785A":"#161F28"}}>
+                        <div className={styles.bottom_div_icon_wrap} style={{color:worker?.regioes.includes(props.locationActive)?"#FF785A":"#161F2890"}}>
                             <LocationOnIcon className={styles.bottom_div_icon}/>
                         </div>
                         <div className={styles.bottom_div_text}>

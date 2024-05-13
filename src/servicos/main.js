@@ -20,6 +20,8 @@ import Carta from './carta'
 import { useSelector, useDispatch } from 'react-redux'
 import { search_save, search_scroll_save } from '../store';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import ConstructionIcon from '@mui/icons-material/Construction';
+
 
 require('dayjs/locale/pt')
 
@@ -474,9 +476,9 @@ const Main = (props) => {
                             <div className={styles.top_info_filter_flex}>
                                 {
                                     params.work?
-                                    <TitleIcon className={styles.top_info_filter_icon}/>
+                                    <ConstructionIcon className={styles.top_info_filter_icon}/>
                                     :
-                                    <TitleIcon className={styles.top_info_filter_icon}/>
+                                    <ConstructionIcon className={styles.top_info_filter_icon}/>
                                 }
                             </div>
                             {

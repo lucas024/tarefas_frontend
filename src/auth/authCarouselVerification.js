@@ -73,7 +73,7 @@ const AuthCarouselVerification = props => {
                                 props.codeSent===true?
                                 <div>
                                     <p className={styles.verification_desc}>
-                                        Envíamos uma mensagem com o código de verificação para o <span className={styles.verification_desc_strong}>{props.phone}</span>, por-favor insira o código enviado a baixo.
+                                        Envíamos uma mensagem com o código de verificação para o <span className={styles.verification_desc_strong}>{props.phone}</span>, por favor insira o código enviado abaixo.
                                     </p>
                                     <div className={styles.phone_input_wrapper} style={{borderColor:props.wrongCodeInserted?"#fdd835":"#0358e5"}}>
                                         <div className={styles.main_code_placeholder}>
@@ -216,12 +216,12 @@ const AuthCarouselVerification = props => {
                     {
                         props.emailSent===true?
                         <p className={styles.verification_desc}>
-                            Envíamos um e-mail de verificação para o <span className={styles.verification_desc_strong}>{props.email}</span>, por-favor acede ao teu e-mail e procede com a verificação.
+                            Envíamos um e-mail de verificação para o <span className={styles.verification_desc_strong}>{props.email}</span>, por favor acede ao teu e-mail e procede com a verificação.
                         </p>
                         :
                         props.emailSent===false?
                         <p className={styles.wrong_code_text} style={{marginTop:'40px', marginBottom:'-40px'}}>
-                            Erro a enviar o e-mail de verificação. Por-favor, tenta mais tarde.
+                            Erro a enviar o e-mail de verificação. Por favor, tenta mais tarde.
                         </p>
                         :
                         <p className={styles.verification_desc}>
