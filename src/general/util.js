@@ -201,6 +201,7 @@ const profissoesMap = {
     turismo: { value: 'turismo', label: 'Turismo', img: profissoesPngs['map'], solo: true },
     outros: { value: 'outros', label: 'Outros', img: profissoesPngs['more'], solo: true },
     saude_acupuntura : { value: 'saude_acupuntura', label: 'Acupuntura', img: profissoesPngs['saude']},
+    saude_enfermagem : { value: 'saude_enfermagem', label: 'Enfermagem', img: profissoesPngs['saude']},
     saude_fisioterapeuta : { value: 'saude_fisioterapeuta', label: 'Fisioterapeuta', img: profissoesPngs['saude']},
     saude_massagista : { value: 'saude_massagista', label: 'Massagista', img: profissoesPngs['saude']},
     saude_nutricionista : { value: 'saude_nutricionista', label: 'Nutricionista', img: profissoesPngs['saude']},
@@ -270,6 +271,7 @@ const profissoes_limpeza = [
 
 const profissoes_saude  = [
     profissoesMap.saude_acupuntura,
+    profissoesMap.saude_enfermagem,
     profissoesMap.saude_fisioterapeuta,
     profissoesMap.saude_massagista,
     profissoesMap.saude_nutricionista,

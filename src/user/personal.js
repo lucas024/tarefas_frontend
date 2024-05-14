@@ -670,7 +670,7 @@ const Personal = (props) => {
                         }}
                         confirmDelete={() => {
                             setLoading(true)
-                            if(user?.type===1&&user?.subscription?.plan!==null)
+                            if(user?.type===1&&user?.subscription?.plan!==null&&user?.subscription?.plan!==undefined)
                             {
                                 axios.post(`${api_url}/cancel-subscription`, {
                                     subscription: user.subscription,
@@ -701,13 +701,13 @@ const Personal = (props) => {
                         <div id='recaptcha-container' className={styles.recaptcha_container}></div>
                     </div>
                     {
-                        edit&&!user_email_verified?
+                        user?.type===0&&edit&&!user_email_verified?
                         <div className={styles.verificar_top_no_animation}>
                             <span className={styles.input_div_button_text_no_animation} style={{textTransform:'uppercase', backgroundColor:"transparent"}}>Verificar E-mail</span>
                         </div>
                         
                         :
-                        !user_email_verified?
+                        user?.type===0&&!user_email_verified?
                         <div className={styles.verificar_top} onClick={() => !edit&&setVerifyEmail(1)}>
                             <span className={styles.input_div_button_text_no_animation} style={{textTransform:'uppercase', backgroundColor:"transparent"}}>Verificar E-mail</span>
                         </div>
@@ -780,13 +780,13 @@ const Personal = (props) => {
                                             {
                                                 selectedProf?.length>0&&!editBottom?
                                                 <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text_complete}>Tarefas que exerço</span>
+                                                    <span className={styles.line_text_complete}>Serviços que exerço</span>
                                                     <CheckIcon className={styles.line_val_complete}></CheckIcon>
                                                 </div>
                                                 
                                                 :
                                                 <div style={{display:"flex", alignItems:"center"}}>
-                                                    <span className={styles.line_text}>Tarefas que exerço</span>
+                                                    <span className={styles.line_text}>Serviços que exerço</span>
                                                     <ClearIcon className={styles.line_val}></ClearIcon>
                                                 </div>
 
@@ -1023,16 +1023,16 @@ const Personal = (props) => {
                             <div className={styles.flex_bottom}>
                                 
                                 <div className={styles.flex_left}>
-                                    <span className={styles.flex_title}>Tarefas que exerço <span className={shakeTarefas?`${styles.selected_number} ${styles.shake}`:styles.selected_number}>({selectedProf?.length}/9)</span></span>
+                                    <span className={styles.flex_title}>Serviços que exerço <span className={shakeTarefas?`${styles.selected_number} ${styles.shake}`:styles.selected_number}>({selectedProf?.length}/9)</span></span>
                                     <span className={editBottom?styles.divider_active:styles.divider}></span>
                                     {
                                         editBottom&&selectedProf.length===0?
-                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um tipo de tarefa!</span>
+                                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um tipo de serviço!</span>
                                         :null
                                     }
                                     
                                     <div className={styles.input_wrapper}>
-                                        <input onChange={e => setListValue(e.target.value)} placeholder='Pesquisar tarefas...' value={listValue} className={styles.input_list} disabled={!editBottom} maxLength={20}/>
+                                        <input onChange={e => setListValue(e.target.value)} placeholder='Pesquisar serviços...' value={listValue} className={styles.input_list} disabled={!editBottom} maxLength={20}/>
                                     </div>
                                     <div className={styles.flex_select_div}>
                                         {mapTrabalhos()}

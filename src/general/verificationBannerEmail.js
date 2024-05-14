@@ -34,7 +34,7 @@ const VerificationBannerEmail = (props) => {
                 {
                     props.next===1?
                     <div className={styles.main_inner}>
-                        <p className={styles.phone_description}>O e-mail verificado permite o acesso a todas as funcionalidades da plataforma Tarefas.</p>
+                        <p className={styles.phone_description}>O e-mail verificado permite o acesso a todas as funcionalidades da plataforma TAREFAS.</p>
                         <div className={styles.phone_wrapper}>
                             <span className={styles.phone_value}>{props.email}</span>
                         </div>

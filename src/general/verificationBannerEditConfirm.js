@@ -69,7 +69,7 @@ const VerificationBannerEditConfirm = (props) => {
                                         margin:'0 auto 20px auto'
                                     }}
                                 />
-                                <p className={styles.phone_description}>A edição da publicação foi enviada para análise pela equipa do Tarefas. Poderás seguir o processo de publicação na tua area pessoal.</p>
+                                <p className={styles.phone_description}>A edição da publicação foi enviada para análise pela equipa do TAREFAS. Poderás seguir o processo de publicação na tua area pessoal.</p>
                                 <div style={{display:'flex', justifyContent:'center'}}>
                                     <div 
                                         className={styles.button}

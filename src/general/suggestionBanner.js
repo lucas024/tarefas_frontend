@@ -89,7 +89,7 @@ const SuggestionBanner = (props) => {
                                 minRows={8}
                                 maxLength={200}
                                 className={styles.top_desc_area} 
-                                placeholder="Seguestão..."
+                                placeholder="Sugestão..."
                                 value={props.description} onChange={e => {
                                 setSuggestion(e.target.value)}}>
                             </TextareaAutosize>

@@ -10,6 +10,7 @@ const Landing = (props) => {
 
     const [showWelcomeTrigger, setShowWelcomeTrigger] = useState(false)
     const [showWelcomeTrigger1000, setShowWelcomeTrigger1000] = useState(false)
+    const [showWelcomeTrigger2000, setShowWelcomeTrigger2000] = useState(false)
 
     useEffect(() => {
         console.log('entered')
@@ -25,12 +26,17 @@ const Landing = (props) => {
         <div className={styles.landing}>
             <CSSTransition
                 in={showWelcomeTrigger}
-                onEntered={() => setShowWelcomeTrigger1000(true)}
+                onEntered={() => {
+                    setShowWelcomeTrigger1000(true)
+                    setTimeout(() => {
+                        setShowWelcomeTrigger2000(true)
+                    }, 3000);
+                }}
                 timeout={1000}
                 classNames="fade"
                 unmountOnExit
                 >
-                <Welcome showWelcomeTrigger1000={showWelcomeTrigger1000} closeWelcome={() => showWelcomeHandler()}/>
+                <Welcome showWelcomeTrigger1000={showWelcomeTrigger1000} showWelcomeTrigger2000={showWelcomeTrigger2000} closeWelcome={() => showWelcomeHandler()}/>
             </CSSTransition>
         </div>
     )

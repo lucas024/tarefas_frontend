@@ -108,7 +108,7 @@ const UserSidebar = (props) => {
                                     user.type===0&&!(user_phone_verified&&user_email_verified)?
                                     <span className={styles.drop_div_notification}/>
                                     :
-                                    user.type===1&&!(user.regioes?.length>0&&user.trabalhos?.length>0&&user_phone_verified||user_email_verified)?
+                                    user.type===1&&!(user.regioes?.length>0&&user.trabalhos?.length>0&&user_phone_verified&&user_email_verified)?
                                     <span className={styles.drop_div_notification}/>
                                     :null
                                 }
@@ -207,7 +207,7 @@ const UserSidebar = (props) => {
                     :
                     user?.state===2?
                     <div className={styles.worker_text_div} style={{color:"#fdd835"}}>
-                        A tua conta foi desativada pela equipa do Tarefas.
+                        A tua conta foi desativada pela equipa do TAREFAS.
                     </div>
                     :null
                 }

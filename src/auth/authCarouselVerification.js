@@ -248,7 +248,7 @@ const AuthCarouselVerification = props => {
                             onClick={async () => {
                                 props.clearEmailAndPhone()
                                 await updateVerification()
-                                navigate('/', {
+                                navigate('/user?t=subscription', {
                                     state: {
                                         carry: 'register',
                                         // skippedVerification: props.skippedVerification CHANGE
@@ -264,7 +264,7 @@ const AuthCarouselVerification = props => {
                             onClick={async () => {
                                 props.clearEmailAndPhone()
                                 await updateVerification()
-                                navigate('/', {
+                                navigate('/user?t=personal', {
                                     state: {
                                         carry: 'register',
                                         skippedVerification: true
@@ -288,7 +288,7 @@ const AuthCarouselVerification = props => {
                                 onClick={async () => {
                                     props.clearEmailAndPhone()
                                     await updateVerification()
-                                    navigate('/', {
+                                    navigate('/user?t=personal', {
                                         state: {
                                             carry: 'register',
                                             skippedVerification: true

@@ -137,9 +137,10 @@ const WorkerBanner = (props) => {
                             </div>
                         </div>
                     </div>
-
+                    <span className={styles.line_title} style={{marginBottom:'10px'}}>3 passos</span>
                     <div className={styles.steps}>
-                        <p className={styles.info_bottom_text} style={{marginBottom:'10px', fontWeight:500}}>Ser um profissional no TAREFAS é simples. Segue os passos abaixo e começa a encontrar tarefas.</p>
+                        
+                        <p className={styles.info_bottom_text} style={{marginBottom:'10px', fontWeight:500}}>Ser um profissional no TAREFAS é simples.<br/>Segue os passos abaixo e começa a encontrar tarefas.</p>
                         <div className={styles.steps_line}>
                             <span className={styles.steps_line_number}>1</span>
                             <p className={styles.steps_line_text}>Cria a tua conta de profissional</p>

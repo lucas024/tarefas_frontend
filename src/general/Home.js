@@ -26,8 +26,8 @@ import logo_text_worker from '../assets/logo_text_worker.png'
 import TosBanner from './tosBanner';
 import SuggestionBanner from './suggestionBanner';
 import ContactosBanner from './contactosBanner';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import ConstructionIcon from '@mui/icons-material/Construction';
+import FacebookIcon from '@mui/icons-material/Facebook';
 
 import {
     DefineAdSlot,
@@ -182,7 +182,7 @@ const Home = (props) => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text={registerPopup==="skippedVerification"?"Conta criada com sucesso! Não se esqueça de verificar os seus dados de contacto.":"Conta criada com sucesso!"}/>
+                <Sessao text={registerPopup==="skippedVerification"?"Conta criada com sucesso! Não te esqueças de verificar o teu e-mail.":"Conta criada com sucesso!"}/>
             </CSSTransition>
             <CSSTransition 
                 in={mensagemPopup}
@@ -264,7 +264,7 @@ const Home = (props) => {
                     <img className={styles.text_brand} src={logo_text} style={{opacity:first?.value==='trabalhos'?1:0}}/>
                     <img className={styles.text_brand} src={logo_text_worker} style={{opacity:first?.value==='profissionais'?1:0}}/>
                     
-                    <span className={styles.text_title}>O que procuras?</span>
+                    <span className={styles.text_title}>Procura <span className={styles.text_title_underscore} style={{textDecorationColor:"#FF785A"}}>profissionais</span> ou <span className={styles.text_title_underscore} style={{textDecorationColor:"#0358e5"}}>tarefas</span></span>
                     {
                         loaded?
                         <div className={styles.main_wrapper}>
@@ -290,32 +290,39 @@ const Home = (props) => {
                                             changeOption={val => setFirst(val)}
                                             placeholder={"Tipo"}/> */}
                                         <div className={styles.zone_select_buttons}>
-                                            <span className={styles.zone_select_button} 
-                                                onClick={() => setFirst({ value: 'trabalhos', label: 'Trabalhos' })}
-                                                style={{marginRight:'2px', 
-                                                        width:first?.value==="trabalhos"?"85%":"15%",
-                                                        backgroundColor:first?.value==="trabalhos"?"#0358e5":"#0358e520", 
-                                                        fontWeight:first?.value==="trabalhos"?600:600,
-                                                        fontSize: first?.value==="trabalhos"?'0.9rem':'0.8rem',
-                                                        color:first?.value==="trabalhos"?'white':'#0358e5bb',
-                                                        borderColor:"#0358e5"}}>{
-                                                            first?.value==="trabalhos"?
-                                                            'TAREFAS'
-                                                            :<TitleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)', color:"#0358e5"}}/>
-                                                        }</span>
-                                            <span className={styles.zone_select_button}
+                                            <span className={first?.value==="profissionais"?styles.zone_select_button:styles.zone_select_button_off_profissional}
                                                 onClick={() => setFirst({ value: 'profissionais', label: 'Profissionais' })}
-                                                style={{marginLeft:'2px',
-                                                        width:first?.value==="profissionais"?"85%":"15%",
+                                                style={{marginRight:'2px',
+                                                        width:first?.value==="profissionais"?"80%":"20%",
                                                         backgroundColor:first?.value==="profissionais"?"#FF785A":"#FF785A20",
                                                         fontWeight:first?.value==="profissionais"?600:600,
                                                         color:first?.value==="profissionais"?'white':'#FF785Abb',
                                                         fontSize: first?.value==="profissionais"?'0.9rem':'0.8rem',
-                                                        borderColor:"#FF785A"}}>{
+                                                        borderColor:"#FF785A"}}>
+                                                            <span style={{position:'absolute', zIndex:3}}>{
                                                             first?.value==="profissionais"?
                                                             'PROFISSIONAIS'
-                                                            :<EmojiPeopleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
+                                                            :<EmojiPeopleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)'}}/>
                                                         }</span>
+                                                        </span>
+
+                                            <span className={first?.value==="trabalhos"?styles.zone_select_button:styles.zone_select_button_off} 
+                                                onClick={() => setFirst({ value: 'trabalhos', label: 'Trabalhos' })}
+                                                style={{marginLeft:'2px', 
+                                                        width:first?.value==="trabalhos"?"80%":"20%",
+                                                        backgroundColor:first?.value==="trabalhos"?"#0358e5":"#0358e520", 
+                                                        fontWeight:first?.value==="trabalhos"?600:600,
+                                                        fontSize: first?.value==="trabalhos"?'0.9rem':'0.8rem',
+                                                        color:first?.value==="trabalhos"?'white':'#0358e5bb',
+                                                        borderColor:"#0358e5"}}>
+                                                            <span style={{position:'absolute', zIndex:3}}>
+                                                            {
+                                                                first?.value==="trabalhos"?
+                                                                'TAREFAS'
+                                                                :<TitleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)'}}/>
+                                                            }
+                                                            </span>
+                                                        </span>
                                         </div>
                                     </div>
                                 </div>
@@ -465,6 +472,44 @@ const Home = (props) => {
                     :null
                 }
 
+                {
+                    loaded?
+                    <div>
+                        <div className={styles.home_back_publish}>
+                            {
+                                user?.type!==1?
+                                <p className={styles.back_publish_title}>PROFISSIONAL EM 3 PASSOS</p>
+                                :null
+                            }
+                            {/* {
+                            user?._id!=null?
+                                null
+                                :
+                                <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'0px'}}>
+                                    <span className={styles.auth} style={{}}>Por favor inicia sessão ou cria conta para publicares uma tarefa.</span>
+                                </div>
+                            } */}
+                            {
+                                user?._id===null||!user?
+                                <div className={styles.back_publish_div} style={{backgroundColor:"#FF785A"}}
+                                    onClick={() => setWorkerBanner(true)}
+                                    >
+                                    <EmojiPeopleIcon className={styles.section_img_mini} style={{transform: 'scaleX(-1)'}}/>
+                                    <span className={styles.section_publicar}>TORNAR-ME UM PROFISSIONAL</span>
+                                </div>
+                                :null
+                            }
+                        </div>
+
+                    </div>
+                    :!loaded?
+                    <div className={styles.section_content}>
+                        <p className={styles.skeleton_content_in}></p>
+                        <p className={styles.skeleton_content_in}></p>
+                    </div>
+                    :null
+                }
+
                 
                 <div className={styles.home_geral}>
                     {
@@ -591,6 +636,7 @@ const Home = (props) => {
                                 <p className={styles.footer_div_text} style={{fontWeight:400}}>Segue-nos nas redes:</p>
                                 <div className={styles.footer_icon_div}>
                                     <InstagramIcon className={styles.footer_icon} onClick={() => window.open('https://instagram.com/tarefaspt', "_blank", "noreferrer")}/>
+                                    <FacebookIcon className={styles.footer_icon} onClick={() => window.open('https://www.facebook.com/profile.php?id=61559666542359', "_blank", "noreferrer")}/>
                                 </div>
                             </div>
                         </div>  

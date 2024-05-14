@@ -508,7 +508,7 @@ const Subscription = props => {
 
         let start_date = new Date()
         let end_date = new Date(start_date)
-        end_date.setDate(end_date.getDate()+100)
+        end_date.setDate(end_date.getDate()+90)
 
         console.log(start_date, end_date)
 
@@ -611,7 +611,7 @@ const Subscription = props => {
                         classNames="transition"
                         unmountOnExit
                         >
-                        <Sessao text={successPopin?"Subscricação ativada com sucesso!"
+                        <Sessao text={successPopin?"Subscrição ativada com sucesso!"
                                         :failPopin?"Cartão inválido. Experimente outro!"
                                         :successPlanPopin?"Alteração de Plano marcado com sucesso!"
                                         :failPlanPopin?"Erro ao alterar plano."
@@ -626,8 +626,14 @@ const Subscription = props => {
                             <div className={styles.sub_info_main}>
                                 {/* <span ref={scrolltopref}/> */}
                                 <div className={styles.sub_info_wrap}>
+                                    <div className={styles.verificar_top_wrapper}>
+                                        <div className={styles.verificar_top}>
+                                            <span className={styles.input_div_button_text_no_animation} style={{textTransform:'uppercase', backgroundColor:"transparent"}}>Ativar Subscrição</span>
+                                        </div>
+                                    </div>
+                                    
                                     <div className={styles.sub_info}>
-                                        <span className={styles.sub_info_title} ref={scrolltopref}>Profissional no Tarefas</span>
+                                        <span className={styles.sub_info_title} ref={scrolltopref}>Profissional no TAREFAS</span>
                                         {display===1 && applyDiscount?
                                             <p className={styles.sub_info_title_discount}>SUBSCRIÇÃO EXCLUSIVA FUNDADOR</p>
                                             :null
@@ -672,9 +678,14 @@ const Subscription = props => {
                                             {
                                                 !user.trial?
                                                 <div>
+                                                    <div style={{display:"flex", justifyContent:'center'}}>
+                                                        <p className={styles.sub_info_title} style={{marginTop:'0px'}}>Planos de Subscrição</p>
+                                                    </div>
+                                                    
                                                     <div className={styles.info_bottom_text_wrapper}>
                                                         <div className={styles.info_bottom_text}>
-                                                            <p style={{textAlign:'center'}}>Ativa a tua subscrição com um <strong style={{color:"#FF785A"}}>desconto de 80% </strong> sobre qualquer plano, para sempre.</p>
+                                                            <p className={styles.info_bottom_text_title}>Plano Fundador -80%</p>
+                                                            <p style={{textAlign:'left'}}>Ativa a tua subscrição com um <strong style={{color:"#FF785A"}}>desconto de 80% </strong> sobre qualquer plano, para sempre.</p>
                                                             <p style={{fontWeight:300, marginTop:'3px'}}>Aproveita o desconto vitalício e exclusivo de
                                                             primeira ativação de subscrição</p>
                                                         </div>
@@ -736,25 +747,31 @@ const Subscription = props => {
                                                         </div>
                                                     
                                                     </div>
-                                                    <div className={styles.trial_button} style={{marginTop:'10px'}}
+                                                    <div className={styles.trial_button}
                                                         onClick={() => {
                                                             setApplyDiscount(true)
                                                             setDisplay(1)
                                                             // scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                         }}>
-                                                        <span className={styles.trial_button_banner}>DESCONTO FUNDADOR 80%</span>
-                                                        <span className={styles.trial_button_text}>VER E ATIVAR PLANOS EXCLUSIVOS</span>
+                                                        {/* <span className={styles.trial_button_banner}>DESCONTO FUNDADOR 80%</span> */}
+                                                        <span className={styles.trial_button_text}>VER PLANOS EXCLUSIVOS FUNDADOR</span>
                                                     </div>
                                                     <p className={styles.info_bottom_or}>OU</p>
+                                                    <p className={styles.info_bottom_text_title}>Plano Gratuito</p>
+                                                    <div className={styles.discount_2}>
+                                                        <p className={styles.discount_text_2}>3 meses subscrição grátis</p>
+                                                    </div>
                                                     <div className={styles.info_bottom_text_wrapper}>
+                                                        
                                                         <div className={styles.info_bottom_text}>
-                                                            <p style={{textAlign:'center'}}>Ativa a tua subscrição durante <strong>100 dias de forma gratuita</strong>.</p>
+                                                            <p style={{textAlign:'left'}}>Ativa a tua subscrição durante <strong>90 dias de forma gratuita</strong>.</p>
                                                             <p style={{fontWeight:300, marginTop:'3px'}}>Depois continua a usar a tua conta com um plano regular.</p>
                                                         </div>
                                                     </div>
+                                                    
                                                     <div className={styles.trial_button} onClick={() => setConfirmFreeBanner(true)}>
                                                         {/* <span className={styles.trial_button_banner}>GRATUITO</span> */}
-                                                        <span className={styles.trial_button_text}>ATIVAR PLANO 100 DIAS GRÁTIS</span>
+                                                        <span className={styles.trial_button_text}>ATIVAR PLANO 90 DIAS GRÁTIS</span>
                                                     </div>
                                                     
                                                 </div>
@@ -916,7 +933,7 @@ const Subscription = props => {
                                                                         <span className={styles.info_text_helper} style={{color:isCanceled?"#71848d":"#fff"}}>Modelo:</span>
                                                                         {
                                                                             trialActive?
-                                                                            <span className={styles.info_text} style={{color:isCanceled?"#71848d":"#fff"}}>100 dias</span>
+                                                                            <span className={styles.info_text} style={{color:isCanceled?"#71848d":"#fff"}}>90 dias</span>
                                                                             :
                                                                             <span className={styles.info_text} style={{color:isCanceled?"#71848d":"#fff"}}>A cada {subscriptionPlanObj.a_cada}</span>
                                                                         }

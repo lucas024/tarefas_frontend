@@ -355,7 +355,7 @@ const Tos = () => {
                                 <span className={styles.tos_desc}>O Anúncio deverá ser redigido em português e não deverá conter palavras habitualmente consideradas vulgares ou ofensivas, informações dúbias ou falsas. Na tarefa do tipo Tradução, o Anúncio também pode ser preparado numa língua estrangeira.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
-                                <span className={styles.tos_desc}>O Utilizador escolherá um tipo de tarefa que seja adequada, ao qual o Anúncio deverá ser atribuído.</span>
+                                <span className={styles.tos_desc}>O Utilizador escolherá um tipo de serviço que seja adequada, ao qual o Anúncio deverá ser atribuído.</span>
                             </li>
                             <li className={styles.tos_inner_li}>
                                 <span className={styles.tos_desc}>O conteúdo do Anúncio deve conter uma descrição clara, precisa e completa da tarefa/serviço, incluindo informações verídicas e não enganosas sobre as suas características. É proibido transmitir esta informação sem o Serviço;</span>

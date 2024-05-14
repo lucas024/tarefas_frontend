@@ -20,6 +20,7 @@ const Welcome = (props) => {
     const navigate = useNavigate()
 
     const [finalTrigger, setFinalTrigger] = useState(false)
+    const [finalTrigger2, setFinalTrigger2] = useState(false)
 
     return (
         <div className={styles.welcome_wrapper}>
@@ -59,34 +60,24 @@ const Welcome = (props) => {
                                 <img className={styles.text_brand} src={logo_text}/>
                             </div>
                             <div className={styles.sub_main_wrapper}>
-                                <CSSTransition 
-                                    in={props.showWelcomeTrigger1000}
-                                    onEntered={() => setTimeout(() => setFinalTrigger(true), 1000)}
-                                    timeout={1000}
-                                    classNames="fade"
-                                    unmountOnExit
-                                    >
-                                    <div className={styles.sub_main}>
-                                        <p className={styles.sub_title_separator}>O lugar ideal para quem procura um profissional para realizar um serviço</p>
-                                        <p className={styles.sub_title}>Publica a tua tarefa e encontra um profissional,</p>
-                                        <p className={styles.sub_title_caveat}>É grátis.</p>
-                                        {/* <div className={styles.sub_sub_main}>
-                                            <span className={styles.sub_title}>
-                                                <span className={styles.sub_title_special_job}> É grátis</span>
-                                                a tua tarefa e recebe contacto dos profissionais.
-                                            </span>
-                                        </div> */}
-                                        {/* <span className={styles.sub_title_separator}>OU</span>
-                                        <div className={styles.sub_sub_main}>
-                                            <span className={styles.sub_title}>
-                                                <span className={styles.sub_title_special_action}> encontra profissionais </span> 
-                                                para realizar a tua tarefa.
-                                            </span>
-                                        </div> */}
-                                        
-
-                                    </div>
-                                </CSSTransition>
+                                <div className={styles.sub_main}>
+                                    <p className={styles.sub_title_separator}>O lugar ideal para quem procura um profissional para realizar um serviço</p>
+                                    <CSSTransition 
+                                        in={props.showWelcomeTrigger1000}
+                                        onEntered={() => setTimeout(() => {
+                                            setFinalTrigger(true)
+                                            // setFinalTrigger2(true)
+                                        }, 1000)}
+                                        timeout={1000}
+                                        classNames="fade"
+                                        unmountOnExit
+                                        >
+                                        <div>
+                                            <p className={styles.sub_title_caveat}>Publica tarefas e procura profissionais.</p>
+                                            {/* <p className={styles.sub_title_caveat}>É grátis.</p>    */}
+                                        </div>
+                                    </CSSTransition>
+                                </div>
                             </div>
                             <div className={styles.button_wrapper}>
                                 <CSSTransition 
@@ -95,9 +86,9 @@ const Welcome = (props) => {
                                         classNames="fade"
                                         unmountOnExit
                                         >
-                                    <div className=''>
+                                    <div>
                                         <div className={styles.button} onClick={() => props.closeWelcome()}>
-                                            <span className={styles.button_text}>CONTINUAR como utilizador</span>
+                                            <span className={styles.button_text}>Quero publicar tarefas e procurar profissionais</span>
                                         </div>
                                         
                                     </div>
@@ -109,18 +100,40 @@ const Welcome = (props) => {
                     </div>
                     <div className={styles.button_separator}/>
                     <div className={styles.main_bot}>
-                        <div className={styles.main_bot_wrapper}>
+                        <div className={styles.main_bot_absolute}>
                             <CSSTransition 
-                                    in={finalTrigger}
-                                    timeout={1000}
-                                    classNames="fade"
-                                    unmountOnExit
-                                    >
-                                <div className={styles.button_worker} onClick={() => navigate('/authentication/worker?type=0&landing=1')&&props.closeWelcome()}>
-                                    <span className={styles.button_text}>tornar-me um profissional</span>
+                                        in={props.showWelcomeTrigger2000}
+                                        onEntered={() => setTimeout(() => {
+                                            setFinalTrigger2(true)
+                                        }, 1000)}
+                                        timeout={1000}
+                                        classNames="fade"
+                                        unmountOnExit
+                                        >
+                                <div>
+                                    <p className={styles.sub_title}>És um trabalhador independente ou tens o teu próprio negócio?</p>
+                                    <p className={styles.sub_title_caveat}>Começa a encontrar tarefas.</p>    
                                 </div>
+                                
+                                
                             </CSSTransition>
+                            <div className={styles.main_bot_wrapper}>
+                                <CSSTransition 
+                                        in={finalTrigger2}
+                                        timeout={1000}
+                                        classNames="fade"
+                                        unmountOnExit
+                                        >
+                                    <div>
+                                        <div className={styles.button_worker} onClick={() => navigate('/authentication/worker?type=0&landing=1')&&props.closeWelcome()}>
+                                            <span className={styles.button_text}>Quero tornar-me um profissional</span>
+                                        </div>
+                                    </div>
+                                    
+                                </CSSTransition>
+                            </div>
                         </div>
+                        
                         
 
                     </div>

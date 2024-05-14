@@ -244,7 +244,7 @@ const AuthWorker = (props) => {
                 validateEmailHandler()&&checkEmail()
             }
             else if(from === 'password'){
-                validatePasswordHandler()
+                tosAccepted&&validatePasswordHandler()
             }
             else if(from === 'name'){
                 validateNameHandler()&&validatePhoneHandler()&&clearWarnings()

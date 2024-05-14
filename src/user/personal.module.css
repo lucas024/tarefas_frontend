@@ -77,6 +77,9 @@
     padding: 5px;
     border-radius: 5px;
     margin-top: 5px;
+    animation-name: yellow;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
 }
 .top_wrap_complete{
     background-color: var(--check);
@@ -138,19 +141,20 @@
 .line_icon_complete{
     width: 15px !important;
     height: 15px !important;
-    color: var(--grey);
+    color: var(--brand);
 }
 .line_text{
     margin-left: 5px;
-    color: var(--grey);
+    color: var(--brand);
     text-transform: uppercase;
     font-size: 0.8rem;
+    font-weight: 600;
 }
 .line_val{
     width: 18px !important;
     height: 18px !important;
     margin-left: 5px;
-    color: var(--grey);
+    color: var(--brand);
 }
 .line_text_complete{
     color: var(--neutral);
@@ -302,17 +306,7 @@ input[type=file]{
     justify-content: flex-end;
     cursor: pointer;
 }
-.input_div_button_text_no_animation{
-    color: white;
-    font-size: 0.9rem;
-    background: var(--yellow);
-    padding: 2px 5px;
-    border-radius: 3px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    min-width: 25px;
-    font-weight: 600;
-}
+
 .input_div_button_text{
     color: white;
     font-size: 0.9rem;
@@ -328,6 +322,7 @@ input[type=file]{
     animation-duration: 2s;
     animation-iteration-count: infinite;
 }
+
 .input_div_button:hover{
     opacity: 0.8;
     transition: all 150ms ease-in-out;
@@ -989,15 +984,16 @@ transform: rotate(45deg);
     animation-duration: 2s;
     animation-iteration-count: infinite;
 }
-.verificar_top_no_animation{
-    width: 100%;
-    background-color: var(--yellow);
+.input_div_button_text_no_animation{
+    color: white;
+    font-size: 0.9rem;
+    background: var(--yellow);
+    padding: 2px 5px;
     border-radius: 3px;
-    display: flex;
-    justify-content: center;
-    padding: 3px 0;
-    margin-bottom: 5px;
-    background-color: var(--grey);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    min-width: 25px;
+    font-weight: 600;
 }
 
 @keyframes yellow {
@@ -1147,6 +1143,12 @@ transform: rotate(45deg);
 
 
 @media (max-width: 500px){
+    .verificar_top{
+        padding: 2px 0;
+    }
+    .input_div_button_text_no_animation{
+        font-size: 0.7rem;
+    }
     .top_title{
         font-size: 1rem;
     }

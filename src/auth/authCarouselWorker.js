@@ -220,13 +220,13 @@ const AuthCarouselWorker = props => {
             </div>
 
             <div className={styles.login}>
-                <p className={styles.register_title}>As tarefas que excerces</p>
+                <p className={styles.register_title}>Os serviços que excerces</p>
                 <span className={shake?`${styles.selected_number} ${styles.shake}`:styles.selected_number}>({props.selectedProf.length}/9)</span>
 
                 <div className={styles.input_wrapper_list}>
                     <input 
                         onChange={e => setListValue(e.target.value)} 
-                        placeholder='Pesquisar tarefas...' 
+                        placeholder='Pesquisar serviços...' 
                         value={listValue} 
                         className={styles.input_list} 
                         maxLength={20}/>
@@ -258,7 +258,7 @@ const AuthCarouselWorker = props => {
 
                 <div className={styles.bottom}>
                     <div className={styles.bottom_wrapper}>
-                        <span className={styles.bottom_title}>Tarefas</span>
+                        <span className={styles.bottom_title}>Serviços</span>
                         <div className={styles.list}>
                             {mapTrabalhosList()}
                         </div>

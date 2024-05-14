@@ -129,7 +129,7 @@ const SubscriptionAlterar = props => {
                                 <span className={styles.info_text_helper} style={{fontSize:'0.7rem'}}>Modelo:</span>
                                 {
                                     props.trialActive?
-                                    <span className={styles.info_text} style={{fontSize:'0.8rem'}}>100 Dias</span>
+                                    <span className={styles.info_text} style={{fontSize:'0.8rem'}}>90 Dias</span>
                                     :
                                     <span className={styles.info_text} style={{fontSize:'0.8rem'}}>A cada {props.subscriptionPlanObj.a_cada}</span>
                                 }
