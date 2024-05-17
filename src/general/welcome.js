@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from './welcome.module.css'
-import logo_text from '../assets/logo_text.png'
+import logo_text from '../assets/logo_text_mix.png'
 import {CSSTransition}  from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
 import image1 from '../assets/1.png'
@@ -59,9 +59,9 @@ const Welcome = (props) => {
                             <div style={{display:'flex', justifyContent:'center'}}>
                                 <img className={styles.text_brand} src={logo_text}/>
                             </div>
-                            <div className={styles.sub_main_wrapper}>
-                                <div className={styles.sub_main}>
-                                    <p className={styles.sub_title_separator}>O lugar ideal para quem procura um profissional para realizar um serviço</p>
+                                
+                                {/* <p className={styles.sub_title_separator}>O lugar ideal para quem procura um profissional para realizar um serviço</p> */}
+                                <div className={styles.main_top_wrapper_2}>
                                     <CSSTransition 
                                         in={props.showWelcomeTrigger1000}
                                         onEntered={() => setTimeout(() => {
@@ -73,28 +73,30 @@ const Welcome = (props) => {
                                         unmountOnExit
                                         >
                                         <div>
-                                            <p className={styles.sub_title_caveat}>Publica tarefas e procura profissionais.</p>
+                                            <p className={styles.sub_title}>Queres publicar uma tarefa e ser contactado por profissionais?</p>
+                                            {/* <p className={styles.sub_title_caveat}>Publica tarefas e procura profissionais.</p> */}
                                             {/* <p className={styles.sub_title_caveat}>É grátis.</p>    */}
                                         </div>
                                     </CSSTransition>
                                 </div>
-                            </div>
-                            <div className={styles.button_wrapper}>
+
                                 <CSSTransition 
                                         in={finalTrigger}
                                         timeout={1000}
                                         classNames="fade"
                                         unmountOnExit
                                         >
-                                    <div>
-                                        <div className={styles.button} onClick={() => props.closeWelcome()}>
-                                            <span className={styles.button_text}>Quero publicar tarefas e procurar profissionais</span>
-                                        </div>
                                         
+                                    <div>
+                                        <div className={styles.button_wrapper}>
+                                            <div className={styles.button} onClick={() => props.closeWelcome()}>
+                                                <span className={styles.button_text}>Publicar tarefas e encontrar profissionais</span>
+                                            </div>
+                                        </div>
                                     </div>
+
                                     
                                 </CSSTransition>
-                            </div>
                         </div>
                         
                     </div>
@@ -111,8 +113,8 @@ const Welcome = (props) => {
                                         unmountOnExit
                                         >
                                 <div>
-                                    <p className={styles.sub_title}>És um trabalhador independente ou tens o teu próprio negócio?</p>
-                                    <p className={styles.sub_title_caveat}>Começa a encontrar tarefas.</p>    
+                                    <p className={styles.sub_title} style={{textDecorationColor:"#FF785A"}}>És um trabalhador independente ou tens o teu próprio negócio?</p>
+                                    {/* <p className={styles.sub_title_caveat}>Começa a encontrar tarefas hoje.</p>     */}
                                 </div>
                                 
                                 
@@ -126,7 +128,7 @@ const Welcome = (props) => {
                                         >
                                     <div>
                                         <div className={styles.button_worker} onClick={() => navigate('/authentication/worker?type=0&landing=1')&&props.closeWelcome()}>
-                                            <span className={styles.button_text}>Quero tornar-me um profissional</span>
+                                            <span className={styles.button_text}>Começar a encontrar tarefas hoje</span>
                                         </div>
                                     </div>
                                     

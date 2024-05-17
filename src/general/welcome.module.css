@@ -21,6 +21,8 @@
     flex-direction: column;
     z-index: 9;
     overflow-x: hidden;
+    /* overflow-y: hidden; */
+    min-height: 1000px;
 }
 .main{
     position: absolute;
@@ -32,7 +34,7 @@
     justify-content: center;
     height: 100%;
     z-index: 11;
-    min-height: 1200px;
+    /* min-height: 1200px; */
 }
 .image_main{
     position: absolute;
@@ -55,30 +57,34 @@
     background: rgb(56,64,71);
     background: linear-gradient(180deg, rgba(56,64,71,1) 0%, rgba(22,31,40,1) 25%, rgba(3,5,6,1) 100%);
     margin-top: 0px;
-    padding-bottom: 40px;
-    padding-top: 120px;
-    flex: 2 auto;
     position: relative;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
 }
 .main_top_wrapper{
-    position: absolute;
-    z-index: 13;
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    margin-top: -200px;
+    /* width: 100%; */
+}
+.main_top_wrapper_2{
+    height: 70px;
+    /* width: 100%; */
 }
 .main_bot{
     background: rgb(3,5,6);
     background: linear-gradient(180deg, rgba(3,5,6,1) 38%, rgba(49,31,29,1) 61%, rgba(82,47,42,1) 80%, rgba(151,80,68,1) 100%, rgba(200,99,78,1) 100%, rgba(255,120,90,1) 100%);
-    flex: 2 auto;
+    flex: 1 auto;
     position: relative;
 }
 .main_bot_absolute{
     position: absolute;
-    top: 0;
+    top: 30px;
     left: 0;
     width: 100%;
     height: 300px;
@@ -123,11 +129,19 @@
 }
 .sub_title{
     color: var(--neutral);
+    /* text-decoration: underline; */
+    text-decoration-color: var(--job);
+    text-decoration-thickness: 2px;
     font-size: 1.2rem;
     text-align: center;
-    font-weight: 500;
+    font-weight: 700;
     text-transform: uppercase;
+    margin: 0 auto;
+    width: fit-content;
     margin-top: 40px;
+    /* background-color: var(--neutral);
+    padding: 5px;
+    border-radius: 3px; */
 }
 .sub_title_caveat{
     font-family: "Caveat", cursive;
@@ -175,28 +189,33 @@
     font-size: 1.1rem;
     transition: 150ms all;
     margin: auto;
+    margin-top: 30px;
+    position: absolute;
+    z-index: 13;
 }
 .button:hover{
     background-color: var(--neutral);
     color: var(--job);
 }
 .text_brand{
-    width: 280px;
+    width: 350px;
     /* height: 144px; */
     margin: auto;
-    margin-bottom: -20px;
-}
-.sub_main_wrapper{
-    height: 120px;
+    margin-bottom: 50px;
 }
 .button_wrapper{
     margin: auto;
     margin-top: 0px;
     transition: 150ms all;
     width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
 }
 .button_text{
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
+    /* font-family: "Caveat", cursive; */
+    font-size: 1.2rem;
 }
 .button_worker{
     padding: 20px 25px;
@@ -219,11 +238,13 @@
 }
 .button_separator{
     width: 100%;
-    height: 1px;
+    height: 10px;
     background-color: var(--neutral);
-    opacity: 0.5;
+    opacity: 0.99;
     /* margin: 70px 0; */
-    margin-top: -150px;
+    margin-top: -100px;
+    background-image: url('../assets/logo_full_brand.png');
+    background-position: left -50px top 0px; 
 }
 
 @media (max-width: 850px){
@@ -234,26 +255,22 @@
 @media (max-width: 500px){
     .welcome{
         height: 100vh;
+        min-height: 700px;
     }
     .button{
-        width: 100%;
-        padding: 15px 0;
-        border-radius: 0px;
-    }
-    .button_worker{
-        width: 100%;
-        padding: 15px 0;
-        border-radius: 0px;
+        padding: 10px 10px;
         margin-top: 10px;
     }
-    .button_separator{
+    .button_worker{
+        padding: 10px 10px;
+        margin-top: 20px;
     }
-    .sub_sub_main{
-        width: 80%;
-        text-align: center;
+    .button_separator{
+        margin-top: -250px;
     }
     .sub_title{
         font-size: 0.9rem;
+        width: 90%;
     }
     .sub_title_caveat{
         font-size: 1.5rem;
@@ -269,6 +286,7 @@
     }
     .text_brand{
         width: 200px;
+        margin-bottom: 20px;
     }
     .sub_title_separator{
         font-size: 0.7rem;
@@ -281,9 +299,6 @@
         flex: 1;
         padding-top: 20px;
         padding-bottom: 130px;
-    }
-    .main_bot_wrapper{
-        padding-top: 40px;
     }
     .main_bot{
         flex: 1;

@@ -1013,6 +1013,14 @@ const Auth = (props) => {
                     </div>
                 }
             </div>
+            <div className={styles.top_right}>
+                <span className={styles.top_right_button} 
+                    style={{color:"#0358e5", 
+                            fontWeight:!(selectedAuth===2 || loginTab===1)?700:500}} onClick={() => navigate('/authentication/user?type=1')}>Área Utilizador</span>
+                <span className={styles.top_right_button} 
+                    style={{color:"#FF785A", marginLeft:'5px', 
+                            fontWeight:(selectedAuth===2 || loginTab===1)?700:500}} onClick={() => navigate('/authentication/worker?type=1')}>Área Profissional</span>
+            </div>
         </div>
     )
 }

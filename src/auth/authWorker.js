@@ -765,7 +765,7 @@ const AuthWorker = (props) => {
                             </div>
                             <div className={!loading?styles.login_button_worker:styles.login_button_disabled} onClick={() => {
                                 if(!loading) loginHandler()}}>
-                                <p className={styles.login_text}>INICIAR SEESÃO</p>
+                                <p className={styles.login_text}>INICIAR SESSÃO</p>
                             </div>
                             <div className={styles.bottom_switch}>
                                 <span className={styles.bottom_switch_text}>Não tens conta de profissional? </span>
@@ -1005,7 +1005,14 @@ const AuthWorker = (props) => {
                 }
             </div>
             </div>
-            
+            <div className={styles.top_right}>
+                <span className={styles.top_right_button} 
+                    style={{color:"#0358e5",
+                            fontWeight:(selectedAuth===2)?700:400}} onClick={() => navigate('/authentication/user?type=1')}>Área Utilizador</span>
+                <span className={styles.top_right_button} 
+                    style={{color:"#FF785A", marginLeft:'5px',
+                            fontWeight:!(selectedAuth===2)?700:400}} onClick={() => navigate('/authentication/worker?type=1')}>Área Profissional</span>
+            </div>
         </div>
     )
 }

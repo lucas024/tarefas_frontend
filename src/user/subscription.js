@@ -1616,16 +1616,22 @@ const Subscription = props => {
                                                     discount_mensal_d_centimo={discount_mensal_d_centimo}
                                                     discount_mensal_d={discount_mensal_monthly}
                                                     mensal_d={mensal_monthly}
-
+                                                    mensal_d_euro={mensal_d_euro}
+                                                    mensal_d_centimo={mensal_d_centimo}
+                        
                                                     discount_semestral_d_euro={discount_semestral_d_euro}
                                                     discount_semestral_d_centimo={discount_semestral_d_centimo}
                                                     discount_semestral_monthly={discount_semestral_monthly}
                                                     semestral_monthly={semestral_monthly}
-
+                                                    semestral_d_euro={semestral_d_euro}
+                                                    semestral_d_centimo={semestral_d_centimo}
+                        
                                                     discount_anual_d_euro={discount_anual_d_euro}
                                                     discount_anual_d_centimo={discount_anual_d_centimo}
                                                     discount_anual_monthly={discount_anual_monthly}
                                                     anual_monthly={anual_monthly}
+                                                    anual_d_euro={anual_d_euro}
+                                                    anual_d_centimo={anual_d_centimo}
 
                                                     setSelectedPlan={setSelectedPlan}
                                                     

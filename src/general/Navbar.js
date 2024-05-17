@@ -14,7 +14,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import { useSelector, useDispatch } from 'react-redux'
-import logo from '../assets/logo.png'
+import logo from '../assets/logo_inicio.png'
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -82,6 +82,7 @@ const Navbar = (props) => {
                 <div className={styles.flex_end}>
                     <img className={styles.logo} src={logo}
                         onClick={() => navigate('/')}/>
+                    <p></p>
                 </div>
                     <div className={styles.flex_end}>
                         <div className={styles.flex_right}>

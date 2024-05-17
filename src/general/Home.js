@@ -454,10 +454,10 @@ const Home = (props) => {
                                 </div>
                                 :
                                 user?._id===null||!user?
-                                <div className={styles.back_publish_div} onClick={() => handleMoveAuth(1)} 
+                                <div className={styles.back_publish_div} style={{backgroundColor:"#0358e520", border:"2px solid #0358e5"}} onClick={() => handleMoveAuth(1)} 
                                     data-tooltip-id={'home'} data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
                                     <LoginIcon className={styles.section_img_mini}/>
-                                    <span className={styles.section_publicar}>INICIAR SESSÃO | CRIAR CONTA</span>
+                                    <span className={styles.section_publicar} style={{color:"#0358e5"}}>INICIAR SESSÃO | CRIAR CONTA UTILIZADOR</span>
                                 </div>
                                 :null
                             }
@@ -465,7 +465,7 @@ const Home = (props) => {
 
                     </div>
                     :!loaded?
-                    <div className={styles.section_content}>
+                    <div className={styles.section_content} style={{marginTop:"50px"}}>
                         <p className={styles.skeleton_content_in}></p>
                         <p className={styles.skeleton_content_in}></p>
                     </div>
@@ -477,25 +477,17 @@ const Home = (props) => {
                     <div>
                         <div className={styles.home_back_publish}>
                             {
-                                user?.type!==1?
+                                user?._id===null||!user?
                                 <p className={styles.back_publish_title}>PROFISSIONAL EM 3 PASSOS</p>
                                 :null
                             }
-                            {/* {
-                            user?._id!=null?
-                                null
-                                :
-                                <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'0px'}}>
-                                    <span className={styles.auth} style={{}}>Por favor inicia sessão ou cria conta para publicares uma tarefa.</span>
-                                </div>
-                            } */}
                             {
                                 user?._id===null||!user?
-                                <div className={styles.back_publish_div} style={{backgroundColor:"#FF785A"}}
+                                <div className={styles.back_publish_div} style={{backgroundColor:"#FF785A20", border:"2px solid #FF785A"}}
                                     onClick={() => setWorkerBanner(true)}
                                     >
                                     <EmojiPeopleIcon className={styles.section_img_mini} style={{transform: 'scaleX(-1)'}}/>
-                                    <span className={styles.section_publicar}>TORNAR-ME UM PROFISSIONAL</span>
+                                    <span className={styles.section_publicar} style={{color:"#FF785A"}}>TORNAR-ME UM PROFISSIONAL</span>
                                 </div>
                                 :null
                             }
@@ -545,7 +537,7 @@ const Home = (props) => {
                                     loaded?
                                     <div className={styles.section_content}>
                                         <div className={styles.section_image_wrapper}>
-                                            <AssignmentIcon className={styles.section_img} style={{color:"white"}}/>
+                                            <TitleIcon className={styles.section_img} style={{color:"white"}}/>
                                         </div>
                                         <span className={styles.section_image_text_title} style={{color:"#0358e5"}}>
                                             TAREFAS

@@ -5,6 +5,7 @@ import medium from '../assets/real_medium.png'
 import pro from '../assets/medium.png'
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import Check from '@mui/icons-material/Check';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 const SubscriptionPlans = props => {
     return (
@@ -16,8 +17,8 @@ const SubscriptionPlans = props => {
                 {
                     props.discountSubscriber?
                     <div>
-                        <span className={styles.discount_letters} style={{fontSize:'0.6rem'}}>{props.workerBanner?'80%':'FUNDADOR'}</span>
-                        <span className={styles.discount_letters_small} style={{fontSize:'0.6rem'}}>{props.workerBanner?'80%':'F'}</span>
+                        <span className={styles.discount_letters} style={{fontSize:'0.6rem'}}>{props.workerBanner?'-80%':'FUNDADOR'}</span>
+                        <span className={styles.discount_letters_small} style={{fontSize:'0.6rem'}}>{props.workerBanner?'-80%':'F'}</span>
                     </div>
                     :null
                 }
@@ -34,11 +35,24 @@ const SubscriptionPlans = props => {
                 <div className={styles.section_valor_div}>
                     {
                         props.discountSubscriber?
-                        <div className={styles.section_valor_top}>
-                            <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                            <span className={styles.section_valor_top_number}>{props.discount_mensal_d_euro}</span>
-                            <span className={styles.section_valor_top_number_decimal}>.{props.discount_mensal_d_centimo}</span>
+                        <div className={styles.options_price_flex}>
+                            <div className={styles.options_price_flex_flex}>
+                                <EuroSymbolIcon className={styles.price_euro}/>
+                                <p className={styles.options_price_value}>{props.mensal_d_euro}</p>
+                                <p className={styles.options_price_decimal}>.{props.mensal_d_centimo}</p>
+                            </div>
+                            <ArrowRightIcon className={styles.price_arrow}/>
+                            <div className={styles.options_price_flex_flex} style={{color:"#FF785A", fontWeight:'700'}}>
+                                <EuroSymbolIcon className={styles.price_euro}/>
+                                <p className={styles.section_valor_top_number}>{props.discount_mensal_d_euro}</p>
+                                <p className={styles.section_valor_top_number_decimal}>.{props.discount_mensal_d_centimo}</p>
+                            </div>
                         </div>
+                        // <div className={styles.section_valor_top}>
+                        //     <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                        //     <span className={styles.section_valor_top_number}>{props.discount_mensal_d_euro}</span>
+                        //     <span className={styles.section_valor_top_number_decimal}>.{props.discount_mensal_d_centimo}</span>
+                        // </div>
                         :
                         <div className={styles.section_valor_top}>
                             <EuroSymbolIcon className={styles.section_valor_top_symbol} style={{color:'#ffffff'}}/>
@@ -69,8 +83,8 @@ const SubscriptionPlans = props => {
                 {
                     props.discountSubscriber?
                     <div>
-                        <span className={styles.discount_letters} style={{fontSize:'0.6rem'}}>{props.workerBanner?'80%':'FUNDADOR'}</span>
-                        <span className={styles.discount_letters_small} style={{fontSize:'0.6rem'}}>{props.workerBanner?'80%':'F'}</span>
+                        <span className={styles.discount_letters} style={{fontSize:'0.6rem'}}>{props.workerBanner?'-80%':'FUNDADOR'}</span>
+                        <span className={styles.discount_letters_small} style={{fontSize:'0.6rem'}}>{props.workerBanner?'-80%':'F'}</span>
                     </div>
                     :null
                 }
@@ -87,11 +101,24 @@ const SubscriptionPlans = props => {
                 <div className={styles.section_valor_div}>
                     {
                         props.discountSubscriber?
-                        <div className={styles.section_valor_top}>
-                            <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                            <span className={styles.section_valor_top_number}>{props.discount_semestral_d_euro}</span>
-                            <span className={styles.section_valor_top_number_decimal}>.{props.discount_semestral_d_centimo}</span>
+                        <div className={styles.options_price_flex}>
+                            <div className={styles.options_price_flex_flex}>
+                                <EuroSymbolIcon className={styles.price_euro}/>
+                                <p className={styles.options_price_value}>{props.semestral_d_euro}</p>
+                                <p className={styles.options_price_decimal}>.{props.semestral_d_centimo}</p>
+                            </div>
+                            <ArrowRightIcon className={styles.price_arrow}/>
+                            <div className={styles.options_price_flex_flex} style={{color:"#FF785A", fontWeight:'700'}}>
+                                <EuroSymbolIcon className={styles.price_euro}/>
+                                <p className={styles.section_valor_top_number}>{props.discount_semestral_d_euro}</p>
+                                <p className={styles.section_valor_top_number_decimal}>.{props.discount_semestral_d_centimo}</p>
+                            </div>
                         </div>
+                        // <div className={styles.section_valor_top}>
+                        //     <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                        //     <span className={styles.section_valor_top_number}>{props.discount_semestral_d_euro}</span>
+                        //     <span className={styles.section_valor_top_number_decimal}>.{props.discount_semestral_d_centimo}</span>
+                        // </div>
                         :
                         <div className={styles.section_valor_top}>
                             <EuroSymbolIcon className={styles.section_valor_top_symbol} style={{color:'#ffffff'}}/>
@@ -121,8 +148,8 @@ const SubscriptionPlans = props => {
                 {
                     props.discountSubscriber?
                     <div>
-                        <span className={styles.discount_letters} style={{fontSize:'0.6rem'}}>{props.workerBanner?'80%':'FUNDADOR'}</span>
-                        <span className={styles.discount_letters_small} style={{fontSize:'0.6rem'}}>{props.workerBanner?'80%':'F'}</span>
+                        <span className={styles.discount_letters} style={{fontSize:'0.6rem'}}>{props.workerBanner?'-80%':'FUNDADOR'}</span>
+                        <span className={styles.discount_letters_small} style={{fontSize:'0.6rem'}}>{props.workerBanner?'-80%':'F'}</span>
                     </div>
                     :null
                 }
@@ -139,11 +166,24 @@ const SubscriptionPlans = props => {
                 <div className={styles.section_valor_div}>
                     {
                         props.discountSubscriber?
-                        <div className={styles.section_valor_top}>
-                            <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
-                            <span className={styles.section_valor_top_number}>{props.discount_anual_d_euro}</span>
-                            <span className={styles.section_valor_top_number_decimal}>.{props.discount_anual_d_centimo}</span>
+                        <div className={styles.options_price_flex}>
+                            <div className={styles.options_price_flex_flex}>
+                                <EuroSymbolIcon className={styles.price_euro}/>
+                                <p className={styles.options_price_value}>{props.anual_d_euro}</p>
+                                <p className={styles.options_price_decimal}>.{props.anual_d_centimo}</p>
+                            </div>
+                            <ArrowRightIcon className={styles.price_arrow}/>
+                            <div className={styles.options_price_flex_flex} style={{color:"#FF785A", fontWeight:'700'}}>
+                                <EuroSymbolIcon className={styles.price_euro}/>
+                                <p className={styles.section_valor_top_number}>{props.discount_anual_d_euro}</p>
+                                <p className={styles.section_valor_top_number_decimal}>.{props.discount_anual_d_centimo}</p>
+                            </div>
                         </div>
+                        // <div className={styles.section_valor_top}>
+                        //     <EuroSymbolIcon className={styles.section_valor_top_symbol}/>
+                        //     <span className={styles.section_valor_top_number}>{props.discount_anual_d_euro}</span>
+                        //     <span className={styles.section_valor_top_number_decimal}>.{props.discount_anual_d_centimo}</span>
+                        // </div>
                         :
                         <div className={styles.section_valor_top}>
                             <EuroSymbolIcon className={styles.section_valor_top_symbol} style={{color:'#ffffff'}}/>

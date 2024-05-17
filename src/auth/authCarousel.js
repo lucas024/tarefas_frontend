@@ -142,7 +142,7 @@ const AuthCarousel = props => {
                         :null
                     }
                 
-
+                
                 <div style={{cursor:"pointer"}} className={styles.container} onClick={() => props.setTosAccepted(!props.tosAccepted)}>
                     <input tabindex={'-1'} type="checkbox" readOnly checked={props.tosAccepted}/>
                     <span className={styles.checkmark}></span>
@@ -151,6 +151,12 @@ const AuthCarousel = props => {
                         e.stopPropagation()
                     }} style={{color:"#0358e5", cursor:'pointer'}}>Termos e Condições.</span></span>
                 </div>
+
+                {
+                    props.type==="worker"?
+                    <p className={styles.info_bottom}>Se no futuro quiser publicar uma tarefa, terá que o fazer <strong>criando uma conta de utilizador com um e-mail diferente</strong>.</p>
+                    :null
+                }
             </div>
         </Carousel>
     )
