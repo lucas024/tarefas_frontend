@@ -83,7 +83,7 @@
     position: absolute;
     right: -4px;
     top: 5px;
-    background-color: var(--action);
+    background-color: var(--yellow);
 }
 .chat_div:hover > *{
     cursor: pointer;

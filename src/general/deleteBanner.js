@@ -32,7 +32,6 @@ const DeleteBanner = (props) => {
             setState(1)
         }
         catch (err){
-            console.log(err)
             setPasswordError(true)
         }       
     }
@@ -46,7 +45,6 @@ const DeleteBanner = (props) => {
             setState(1)
         }
         catch (err){
-            console.log(err)
         }
         
     }
@@ -59,11 +57,11 @@ const DeleteBanner = (props) => {
                 <div className={styles.main_inner}>
                     {
                         props.type===0?
-                        <p className={styles.phone_description}>Ao eliminares a tua conta, todas as tuas publicações e mensagens serão eliminadas. Esta ação não é reversível.</p>
+                        <p className={styles.phone_description} style={{textAlign:"left"}}>Ao eliminares a tua conta, todas as tuas publicações e mensagens serão eliminadas. Esta ação não é reversível.</p>
                         :
                         <div>
-                            <p className={styles.phone_description}>Ao eliminares a tua conta, o teu perfil e mensagens serão eliminadas.</p>
-                            <p className={styles.phone_description} style={{marginTop:'0px'}}>Qualquer subscrição será cancelada e o valor não será reembolsado.</p>
+                            <p className={styles.phone_description} style={{textAlign:"left"}}>Ao eliminares a tua conta, o teu perfil e mensagens serão eliminadas.</p>
+                            <p className={styles.phone_description} style={{marginTop:'5px', textAlign:"left"}}>Qualquer subscrição será cancelada e o valor não será reembolsado.</p>
                             <p className={styles.phone_description} style={{textDecoration:'underline'}}> Esta ação não é reversível.</p>
                         </div>
                     }
@@ -72,9 +70,9 @@ const DeleteBanner = (props) => {
                     {/* <p className={styles.phone_description} style={{marginTop:'30px'}}>Insere a palavra "ELIMINAR" na caixa abaixo:</p> */}
                     {
                         state===0?
-                        <p className={styles.phone_description} style={{marginTop:'30px', fontWeight:'600'}}>Por razões de segurança, volte a iniciar a sua sessão para continuar com a eliminação da conta.</p>
+                        <p className={styles.phone_description} style={{marginTop:'30px', fontWeight:'600', color:"#fdd835"}}>Por razões de segurança, volta a iniciar a tua sessão abaixo para continuares com a eliminação da conta.</p>
                         :
-                        <p className={styles.phone_description} style={{marginTop:'30px', fontWeight:'600'}}>Carrega no botão abaixo para eliminares a tua conta.</p>
+                        <p className={styles.phone_description} style={{marginTop:'30px', fontWeight:'600', color:"#ff3b30"}}>Carrega no botão abaixo para eliminares a tua conta.</p>
                     }
                 </div>
 
@@ -88,11 +86,11 @@ const DeleteBanner = (props) => {
                             user?.registerMethod === 'email'?
                             <div className={styles.email}>
                                 <div className={styles.email_flex}>
-                                    <AlternateEmailIcon className={styles.email_input_icon} style={{marginTop:'10px'}}/>
-                                    <input className={styles.email_input} disabled={true} value={user?.email}></input>
+                                    <p className={styles.email_input_title} style={{marginBottom:'-5px'}}>E-mail</p>
+                                    <input className={styles.email_input} style={{borderColor:"#fdd8357c"}} disabled={true} value={user?.email}></input>
                                 </div>
                                 <div className={styles.email_flex}>
-                                    <PasswordIcon className={styles.email_input_icon}/>
+                                    <p className={styles.email_input_title}>Palavra-passe</p>
                                     <input className={styles.email_input} placeholder='Palavra-passe...' type='password' value={password} onChange={e => {setPassword(e.target.value)
                                         setPasswordError(false)}}></input>
                                 </div>
@@ -120,7 +118,7 @@ const DeleteBanner = (props) => {
                     state===0?
                     <div 
                         className={styles.button}
-                        style={{backgroundColor:password.length>0&&passwordError===false?"#0358e5":"#ccc"}}
+                        style={{backgroundColor:password.length>0&&passwordError===false?"#fdd835":"#ccc"}}
                         onClick={() => passwordError===false&&handleEmailSignIn()}>
                         <span className={styles.button_text} style={{color:"white"}}>CONTINUAR</span>
                     </div>

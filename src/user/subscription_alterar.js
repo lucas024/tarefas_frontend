@@ -74,10 +74,6 @@ const SubscriptionAlterar = props => {
             image: pro
         }
     ]
-    
-    useEffect(() => {
-        console.log(props.subscriptionPlanObj)
-    }, [props.subscriptionPlanObj])
 
     return (
         <div className={styles.change_plan_wrap}>

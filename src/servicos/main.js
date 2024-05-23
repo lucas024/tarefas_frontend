@@ -13,9 +13,7 @@ import NoPage from '../general/noPage';
 import {regioesMap, profissoesMap} from '../general/util'
 import SelectPosts from '../selects/selectPosts';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import TitleIcon from '@mui/icons-material/Title';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import Carta from './carta'
 import { useSelector, useDispatch } from 'react-redux'
 import { search_save, search_scroll_save } from '../store';
@@ -207,7 +205,7 @@ const Main = (props) => {
                     setItemsAux(all_items, res.data.size, params_aux?.p?parseInt(params_aux?.p):1)
                 }
                 setLoading(false)
-            }).catch(err => console.log(err))
+            }).catch(err => {})
         }
     }
 
@@ -236,7 +234,7 @@ const Main = (props) => {
                 setItemsAux(all_items, res.data.size, params_aux?.p?parseInt(params_aux?.p):1)
             }
             setLoading(false)
-        }).catch(err => console.log(err))
+        }).catch(err => {})
 
     }
 

@@ -176,7 +176,6 @@ const Publicar = () => {
                     setLoading(false)
                     setTaskType(res.data.task_type)
                     setTituloWrong(false)
-                    console.log(res.data);
                 }
                 else{
                     setEditReservation(null)
@@ -261,7 +260,6 @@ const Publicar = () => {
                     }
                 }
                 if(original_still_exists_in_current===false){
-                    console.log('teste')
                     const deleteRef = ref(storage, `/posts/${postId}/${photo_original.id}`)
                     await deleteObject(deleteRef)
                 }
@@ -303,7 +301,6 @@ const Publicar = () => {
                     user_id : user._id,
                     phone: phone
                 }).then(res => {
-                    console.log(res);
                 })
             }
         })
@@ -348,7 +345,6 @@ const Publicar = () => {
         for(let img of event.target.files){
             let time = new Date().getTime()
             const objectUrl = URL.createObjectURL(img)
-            console.log(objectUrl, img);
             files_aux.push({
                 img: img,
                 id:`${img.name}_${time}`
@@ -367,7 +363,6 @@ const Publicar = () => {
     }
 
     const setPhotoPrincipalHandler = img_id => {
-        console.log(img_id)
         let auximages = [...images]
 
         let i = 0
@@ -443,10 +438,8 @@ const Publicar = () => {
         sendEmailVerification(auth.currentUser, actionCodeSettings)
             .then(() => {
                 setVerifyEmail(2)
-                console.log('sent')
             })
             .catch(e => {
-                console.log(e)
                 if(e.code === "auth/too-many-requests")
                     setSendingError('Demasiadas tentativas, por favor tente mais tarde.')
                 else
@@ -487,7 +480,6 @@ const Publicar = () => {
         recaptcha.verify().then(() => {
             var provider = new PhoneAuthProvider(auth)
             provider.verifyPhoneNumber(`+351${user.phone}`, recaptcha).then(verificationId => {
-                    console.log(verificationId)
                     setVerificationId(verificationId)
                     setVerifyPhone(2)
                 }).catch(function (error) {
@@ -497,7 +489,6 @@ const Publicar = () => {
                 })
         })
         .catch(e => {
-            console.log(e)
         })
     }
 

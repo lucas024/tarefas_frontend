@@ -13,7 +13,7 @@ import {loadStripe} from '@stripe/stripe-js';
 import Loader from '../general/loader';
 import { useSelector } from 'react-redux'
 
-const stripePromise = loadStripe('pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd');
+const stripePromise = loadStripe('pk_live_ypMbNWLAJDZYOWG4JqncBktA00qBx03bOR');
 
 const User = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -24,8 +24,6 @@ const User = (props) => {
     const [nextReservation, setNextReservation] = useState(null)
     const [loading, setLoading] = useState(false)
     const [loaded, setLoaded] = useState(false)
-
-    const publishableKey = "pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd"
 
     useEffect(() => {
         props.userLoadAttempt&&setLoaded(true)

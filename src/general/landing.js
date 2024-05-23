@@ -13,7 +13,6 @@ const Landing = (props) => {
     const [showWelcomeTrigger2000, setShowWelcomeTrigger2000] = useState(false)
 
     useEffect(() => {
-        console.log('entered')
         setShowWelcomeTrigger(true)
     }, [])
 

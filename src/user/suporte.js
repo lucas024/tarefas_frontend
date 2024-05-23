@@ -61,14 +61,12 @@ const Suporte = (props) => {
     }, [user])
 
     const getChats = (first) => {
-        console.log(first)
         if(user && user.admin_chat)
         {
             axios.get(`${api_url}/admin_chats/get_chat`, { params: {chat_id: user.admin_chat} })
             .then(chat => {
                 if(chat.data.texts?.length > messages?.length || messages === undefined || first)
                 {
-                    console.log('teste')
                     if(chat.data != null){
                         setChat(chat.data)
                         setMessages(chat.data.texts)
@@ -112,7 +110,6 @@ const Suporte = (props) => {
                 if(el.refusal_start && !alreadyChecked.includes(el.reservation_id))
                 {
                     alreadyChecked.push(el.reservation_id)
-                    console.log(el.reservation_id);
                 }
                 else
                 {
@@ -138,7 +135,6 @@ const Suporte = (props) => {
             timestamp : data.time,
             text: data.text
         }
-        console.log(messages);
         setMessages(prevMessages => [...prevMessages, text_object])
 
         if(chat)

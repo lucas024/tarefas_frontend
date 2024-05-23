@@ -21,7 +21,6 @@ const Publications = (props) => {
     const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
-        console.log(props.reservations)
         for(let res of props.reservations){
             if(res.type<3){
                 setActiveReservations(true)

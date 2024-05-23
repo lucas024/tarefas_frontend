@@ -20,10 +20,6 @@ const SelectPublications = (props) => {
             setOptions(profissoesGrouped)
         }
     }, [props.type])
-
-    useEffect(() => {
-        console.log(props.option)
-    }, [props.option])
    
  
     const stylesSelect = {

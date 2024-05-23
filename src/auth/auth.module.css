@@ -245,9 +245,10 @@
 }
 .o2_text{
     font-weight: 600;
-    width: 200px;
+    /* width: 200px; */
     margin-left: 10px;
     font-size: 1.1rem;
+    text-align: center;
 }
 .ou{
     position: absolute;
@@ -1119,7 +1120,7 @@ transform: rotate(45deg);
 .worker_carousel_verification{
     background-color: var(--brand);
     border-radius: 5px;
-    padding: 20px 0;
+    padding: 20px 20px;
     z-index: 2;
 }
 .resend_seconds{

@@ -9,15 +9,18 @@ import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import {regioesOptions, profissoesMap} from '../general/util'
 import ChatIcon from '@mui/icons-material/Chat';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import {user_update_chats} from '../store'
 
 const ObjectID = require("bson-objectid");
 
 const Profissional = props => {
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
+    const chats = useSelector(state => {return state.chats})
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const messageRef = useRef(null)
     const messageAreaRef = useRef(null)
@@ -59,32 +62,41 @@ const Profissional = props => {
 
             let time = new Date().getTime()
             let text_object = {
-                origin_type : user?.type,
+                origin_type : 0,
                 timestamp : time,
                 text: text,
             }
 
             var repeated = false
 
-            if(user?.chats)
+            if(chats?.length>0)
             {
-                for(let chat of user?.chats)
+                let chatsCopy = JSON.parse(JSON.stringify(([...chats])))
+
+                for(let chat of chatsCopy)
                 {
+                    console.log(chat.worker_id === worker._id)
                     if(chat.worker_id === worker._id && chat.reservation_id === null)
                     {
-                        console.log("repeated chat")
+                        console.log('yes')
                         repeated=true
                         await axios.post(`${api_url}/chats/update_common_chat`, {
-                            worker_read: user?.type===1?true:false,
-                            user_read: user?.type===0?true:false,
+                            worker_read: false,
+                            user_read: true,
                             chat_id: chat.chat_id,
                             text: text_object,
                             updated: time
                         })
+                        chat.worker_read = false
+                        chat.user_read = true
+                        chat.last_text = text_object
+                        dispatch(user_update_chats(chatsCopy))
                         setLocalChatSent(chat.chat_id)
+                        break
                     }
                 }
             }
+
             
 
             if(!repeated)
@@ -102,6 +114,8 @@ const Profissional = props => {
                     user_photoUrl: user?.photoUrl,
                     user_phone: user?.phone,
                     user_id: user?._id,
+                    user_read: true,
+                    worker_read: false,
                     text: text_object,
                     updated: time,
                     chat_id: chatId

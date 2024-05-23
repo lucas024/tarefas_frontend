@@ -37,9 +37,7 @@ export function InitializeGPT({ limitedAds }) {
   // Reset tracking variables.
   adSlots = {};
   adSlotCount = 0;
-
-  console.log('yo')
-
+  
   return (
     <script src={limitedAds ? GPT_LIMITED_ADS_URL : GPT_STANDARD_URL} async />
   );

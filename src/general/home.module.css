@@ -64,6 +64,9 @@
     font-weight: 400;
     text-transform: uppercase;
     font-weight: 700;
+    background-color: #474747;
+    padding: 5px 7px;
+    border-radius: 5px;
 }
 .text_title_underscore{
     text-decoration: underline;
@@ -436,7 +439,7 @@
 .home_geral{
     width: 80%;
     margin: auto;
-    margin-top: 30px;
+    margin-top: 5px;
     height: 100%;
 }
 .home_back_bottom{
@@ -879,6 +882,132 @@
     color: var(--neutral);
 }
 
+.notification_area{
+    min-height: 80px;
+    max-height: 300px;
+    width: 100%;
+    margin: auto;
+    border: 2px solid white;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+.notification_empty{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+.notification_empty_text{
+    color: var(--neutral);
+    font-style: italic;
+    margin-top: 22px;
+}
+.notification{
+    display: flex;
+    align-items: center;
+    animation-name: yellow;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    margin-bottom: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    height: 80px;
+    max-height: 80px;
+    border-radius: 5px;
+    /* border: 2px solid transparent; */
+}
+.notification:hover{
+    /* border: 2px solid var(--yellow); */
+    cursor: pointer;
+}
+.notification:last-child{
+    margin-bottom: 0px;
+}
+.notification_left{
+    width: 20%;
+    display: flex;
+    justify-content: center;
+}
+.notification_left_icon{
+    width: 40px !important;
+    height: 40px !important;
+}
+.notification_right{
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+}
+.notification_right_column{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 70px;
+}
+.notification_right_flex{
+    display: flex;
+    align-items: center;
+}
+.notification_right_image{
+    width: 25px !important;
+    height: 25px !important;
+    border-radius: 50%;
+}
+.notification_right_name{
+    margin-left: 5px;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.notification_right_text{
+    width: 90%;
+    text-align: left;
+    /* max-width: 90%; */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.9rem;
+    white-space: pre-line;
+    text-align: left;
+    align-self: flex-start;
+    max-height: 40px;
+}
+.notification_right_reservation{
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    max-width: 150px;
+}
+.notification_right_time{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.notification_right_date{
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+.notification_right_hour{
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+@keyframes yellow {
+    0% {
+      background-color: #ffffff;
+    }
+    50% {
+        background-color: #ffeeab;
+    }
+    100% {
+        background-color: #ffffff;
+    }
+}
+
 @keyframes color {
     0% {
       background-color: var(--skeleton);
@@ -970,6 +1099,9 @@
 }
 
 @media (max-width: 768px){
+    .notification_area{
+        margin-top: 20px;
+    }
     .home_back_publish{
         width: 100%;
         text-align: center;
@@ -1060,6 +1192,36 @@
 }
 
 @media (max-width: 500px){
+    .notification_area{
+        min-height: 60px;
+    }
+    .notification_left_icon{
+        width: 25px !important;
+        height: 25px !important;
+    }
+    .notification_right_image{
+        width: 20px !important;
+        height: 20px !important;
+    }
+    .notification_right_name{
+        font-size: 0.9rem;
+    }
+    .notification_right_reservation{
+        font-size: 0.7rem;
+    }
+    .notification_right_date{
+        font-size: 0.7rem;
+    }
+    .notification_right_hour{
+        font-size: 0.7rem;
+    }
+    .notification{
+        max-height: 60px;
+    }
+    .notification_right_column{
+        height: 55px;
+    }
+
     .home{
         height: calc(100vh - 38px);
     }

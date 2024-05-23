@@ -164,7 +164,6 @@ const Personal = (props) => {
     
             else if(arr.length===9)
             {
-                console.log('yo')
                 setShakeTarefas(true)
                 setTimeout(() => setShakeTarefas(false), 1000)
             } 
@@ -265,7 +264,6 @@ const Personal = (props) => {
     }
 
     const setPhoneHandler = (val) => {
-        console.log(val)
         let phone = val
         if(val.length>0)
             phone = val.replace(/\s/g, '')
@@ -438,10 +436,8 @@ const Personal = (props) => {
         sendEmailVerification(auth.currentUser, actionCodeSettings)
             .then(() => {
                 setVerifyEmail(2)
-                console.log('sent')
             })
             .catch(e => {
-                console.log(e)
                 setSendingError('Erro a enviar o e-mail de verificação, por favor tente mais tarde.')
             })
     }
@@ -450,7 +446,6 @@ const Personal = (props) => {
         setEmailCodeStatus(null)
         
         await auth.currentUser.reload()
-        console.log(auth.currentUser)
         if(auth?.currentUser?.emailVerified === true)
         {
             setEmailCodeStatus(true)
@@ -479,7 +474,6 @@ const Personal = (props) => {
         recaptcha.verify().then(() => {
             var provider = new PhoneAuthProvider(auth)
             provider.verifyPhoneNumber(`+351${user.phone}`, recaptcha).then(verificationId => {
-                    console.log(verificationId)
                     setVerificationId(verificationId)
                     setVerifyPhone(2)
                 }).catch(function (error) {
@@ -489,7 +483,6 @@ const Personal = (props) => {
                 })
         })
         .catch(e => {
-            console.log(e)
         })
     }
 
@@ -523,20 +516,17 @@ const Personal = (props) => {
         }
     }
 
-    const getAmountPay = plan => {
-        if(plan===1)
+    const getAmountPay = subscription => {
+        if(subscription.new_price_id !== null && subscription.new_price_id !== undefined)
         {
-            return "price_1O694XKC1aov6F9prK2XmPWr"
-            // return discountSubscriber||applyDiscount?"price_1O694XKC1aov6F9prK2XmPWr":"price_1LKQUSKC1aov6F9p9gL1euLW"
+            if(new Date(subscription.new_price_date) < new Date())
+            {
+                return subscription.new_price_id
+            }
         }
-        else if(plan===2)
+        else
         {
-            return "price_1O696AKC1aov6F9pH03uvMvy"
-            // return discountSubscriber||applyDiscount?"price_1O696AKC1aov6F9pH03uvMvy":"price_1LKQUyKC1aov6F9pTpM3gn0l"
-        }
-        else{
-            return "price_1O696sKC1aov6F9pgfNrXs5i"
-            // return discountSubscriber||applyDiscount?"price_1O696sKC1aov6F9pgfNrXs5i":"price_1LKQVEKC1aov6F9p4RgyXAqj"
+            return subscription.price_id
         }
     }
 
@@ -674,7 +664,7 @@ const Personal = (props) => {
                             {
                                 axios.post(`${api_url}/cancel-subscription`, {
                                     subscription: user.subscription,
-                                    current_amount: getAmountPay(user.subscription.plan),
+                                    current_amount: getAmountPay(user.subscription),
                                 })
                             }
                             axios.post(`${api_url}/general/delete_user`, {

@@ -43,13 +43,10 @@ const Navbar = (props) => {
         if(arr_pathname[1]==='confirm-email') setDisplay(false)
         else setDisplay(true)
 
-        console.log(user_email_verified&&user_phone_verified)
     }, [props.userLoadAttempt])
 
     useEffect(() => {
-        console.log(chats)
         if(chats?.length>0){
-            console.log(chats)
             let clear = true
             for(const el of chats){
                 //user

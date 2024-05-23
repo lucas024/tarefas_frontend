@@ -27,7 +27,6 @@ const SuggestionBanner = (props) => {
 
     
     const setTituloHandler = val => {
-        console.log(val)
         if(assunto.length===0)
             setAssunto(val.replace(/\s/g, ''))
         else

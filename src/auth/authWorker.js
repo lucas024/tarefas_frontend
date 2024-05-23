@@ -112,7 +112,6 @@ const AuthWorker = (props) => {
 
     useEffect(() => {
         const paramsAux = Object.fromEntries([...searchParams])
-        console.log(paramsAux)
         if(paramsAux)
         {
             setSelectedAuth(parseInt(paramsAux.type))
@@ -558,14 +557,11 @@ const AuthWorker = (props) => {
             url: 'https://pt-tarefas.pt/confirm-email',
             handleCodeInApp: false
         }
-        console.log(auth.currentUser)
         sendEmailVerification(auth.currentUser, actionCodeSettings)
             .then(() => {
                 setEmailSent(true)
-                console.log('sent')
             })
             .catch(e => {
-                console.log(e)
                 setEmailSent(false)
                 setSendingError('Erro a enviar o e-mail de verificação, por favor tente mais tarde.')
             })
@@ -945,7 +941,7 @@ const AuthWorker = (props) => {
                 </div>
                 {
                     selectedAuth===2?
-                    <div className={styles.verification_backdrop}/>
+                    loading&&<div className={styles.verification_backdrop}/>
                     :null
                 }
                 {

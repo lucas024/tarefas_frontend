@@ -28,6 +28,10 @@ import SuggestionBanner from './suggestionBanner';
 import ContactosBanner from './contactosBanner';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import FacebookIcon from '@mui/icons-material/Facebook';
+import ChatIcon from '@mui/icons-material/Chat';
+import FaceIcon from '@mui/icons-material/Face';
+import axios from 'axios';
+
 
 import {
     DefineAdSlot,
@@ -54,12 +58,15 @@ const Home = (props) => {
     const dispatch = useDispatch()
     const user = useSelector(state => {return state.user})
     const chats = useSelector(state => {return state.chats})
+    const api_url = useSelector(state => {return state.api_url})
 
     const [workerBanner, setWorkerBanner] = useState(false)
     const [tosBanner, setTosBanner] = useState(false)
     const [ppBanner, setPpBanner] = useState(false)
     const [suggestionBanner, setSuggestionBanner] = useState(false)
     const [contactosBanner, setContactosBanner] = useState(false)
+    const [hasUnreadTexts, setHasUnreadTexts] = useState(false)
+    const [unreadTexts, setUnreadTexts] = useState([])
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
     const [loginPopup, setLoginPopup] = useState(false)
@@ -69,6 +76,8 @@ const Home = (props) => {
     const [first, setFirst] = useState({ value: 'profissionais', label: 'Profissionais' })
     const [second, setSecond] = useState(null)
     const [third, setThird] = useState(null)
+
+    const totalNotifications = [1, 2, 3]
     
 
     const location = useLocation()
@@ -101,12 +110,78 @@ const Home = (props) => {
             setTimeout(() => setLoginPopup(false), 4000)
         }
         dispatch(search_scroll_save(null))
-        if(chats?.length===0 || chats === undefined)
-        {
-            dispatch(user_update_chats(user?.chats))
-        }        
-        // Tooltip.rebuild()
+        // if(chats?.length===0 || chats === undefined)
+        // {
+        //     dispatch(user_update_chats(user?.chats))
+        // }     
+            
     }, [location, user, loaded])
+
+    const sortByTimestamp = (a, b) => {
+        return a.last_text.timestamp < b.last_text.timestamp ? 1 : -1
+    }
+
+    useEffect(() => {
+        if(user){
+            if(user.type===1){
+                axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: user._id} })
+                .then(res => {
+                    if(res.data!==''){
+                        if(res.data?.chats.length>0)
+                        {
+                            let chats_aux = JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp))))
+                            dispatch(user_update_chats(chats_aux))
+                        }
+                            
+                    } 
+                })
+            }
+            else{
+                axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
+                .then(res => {
+                    if(res.data!==''){
+                        if(res.data?.chats?.length>0)
+                        {
+                            let chats_aux = JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp))))
+                            dispatch(user_update_chats(chats_aux))
+                        }
+                    }
+                })
+            }         
+        }
+
+    }, [user])
+
+    useEffect(() => {
+        if(chats?.length>0){
+            let clear = true
+            let aux = []
+            for(const el of chats){
+                //user
+                if(user?.type===0&&!el.user_read){
+                    aux.push(el)
+                    clear = false
+                }
+                //worker
+                else if(user?.type===1&&!el.worker_read){
+                    aux.push(el)
+                    clear = false
+                }
+            }
+            if(clear)
+            {
+                setHasUnreadTexts(false)
+                setUnreadTexts([])
+            }
+            else{
+                setHasUnreadTexts(true)
+                setUnreadTexts(aux)
+            } 
+        }
+        else{
+            setHasUnreadTexts(false)
+        }
+    }, [user, chats])
 
     
 
@@ -164,6 +239,62 @@ const Home = (props) => {
     const clearTopSearch = () => {
         setSecond(null)
         setThird(null)
+    }
+
+    const getTime = (val) => {
+        let time = new Date(val)
+        return time.toISOString().split("T")[0]
+    }
+
+    const getDisplayTime = time => {
+        let val = new Date(time).toLocaleTimeString()
+        return val.slice(0,5)
+    }
+
+    const mapNotifications = () => {
+        return unreadTexts.map(el => {
+            return (
+                <div className={styles.notification} onClick={() => navigate(`/user?t=messages&id=${el.chat_id}`)}>
+                    <div className={styles.notification_left}>
+                        <ChatIcon className={styles.notification_left_icon}/>
+                    </div>
+                    <div className={styles.notification_right}>
+                        <div className={styles.notification_right_column}>
+                            <div className={styles.notification_right_flex}>
+                                {
+                                    el.last_text.origin_type===1?
+                                    el.worker_photoUrl != ""?
+                                        <img src={el.worker_photoUrl} className={styles.notification_right_image}/>
+                                        :
+                                        <FaceIcon className={styles.notification_right_image}/>
+                                    :
+                                    el.user_photoUrl != ""?
+                                        <img src={el.user_photoUrl} className={styles.notification_right_image}/>
+                                        :
+                                        <FaceIcon className={styles.notification_right_image}/>
+                                }
+                                <p className={styles.notification_right_name}>{user?.type===0?el.worker_name:el.user_name}</p>
+                            </div>
+                            <span className={styles.notification_right_text}>
+                                {el.last_text.text}
+                            </span>
+                        </div>
+                        <div className={styles.notification_right_column}>
+                            {
+                                el.reservation_title?
+                                <p className={styles.notification_right_reservation}>{el.reservation_title}</p>
+                                :
+                                <p className={styles.notification_right_reservation}>mensagem por ler</p>
+                            }
+                            <div className={styles.notification_right_time}>
+                                <p className={styles.notification_right_date}>{getTime(el.last_text.timestamp)}</p>
+                                <p className={styles.notification_right_hour}>{getDisplayTime(el.last_text.timestamp)}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        })
     }
     
     return(
@@ -264,7 +395,7 @@ const Home = (props) => {
                     <img className={styles.text_brand} src={logo_text} style={{opacity:first?.value==='trabalhos'?1:0}}/>
                     <img className={styles.text_brand} src={logo_text_worker} style={{opacity:first?.value==='profissionais'?1:0}}/>
                     
-                    <span className={styles.text_title}>Procura <span className={styles.text_title_underscore} style={{textDecorationColor:"#FF785A"}}>profissionais</span> ou <span className={styles.text_title_underscore} style={{textDecorationColor:"#0358e5"}}>tarefas</span></span>
+                    <span className={styles.text_title}>Procuras <span className={styles.text_title_underscore} style={{textDecorationColor:"#FF785A"}}>profissionais</span> ou <span className={styles.text_title_underscore} style={{textDecorationColor:"#0358e5"}}>tarefas</span>?</span>
                     {
                         loaded?
                         <div className={styles.main_wrapper}>
@@ -432,24 +563,38 @@ const Home = (props) => {
                     <div>
                         <div className={styles.home_back_publish}>
                             {
-                                user?.type!==1?
-                                <p className={styles.back_publish_title}>PUBLICAR TAREFA</p>
+                                user?._id!=null?
+                                <p className={styles.back_publish_title}>CENTRO DE NOTIFICAÇÕES</p>
                                 :null
                             }
-                            {/* {
-                            user?._id!=null?
-                                null
-                                :
-                                <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'0px'}}>
-                                    <span className={styles.auth} style={{}}>Por favor inicia sessão ou cria conta para publicares uma tarefa.</span>
+                            {
+                                user?._id!=null?
+                                <div className={styles.notification_area}>
+                                    {
+                                        unreadTexts.length>0?
+                                        mapNotifications()
+                                        :
+                                        <div className={styles.notification_empty}>
+                                            <p className={styles.notification_empty_text}>Sem mensagens novas ou notificações, por enquanto.</p>
+                                        </div>
+                                    }
                                 </div>
-                            } */}
+                                :null
+                            }
+                        </div>
+
+                        <div className={styles.home_back_publish}>
+                            {
+                                user?.type!==1?
+                                <p className={styles.back_publish_title}>PUBLICAR</p>
+                                :null
+                            }
                             {
                                 user?._id!==null&&user?.type===0?
                                 <div className={styles.back_publish_div} onClick={() => navigate('/publicar/novo')}>
                                     <div className={styles.home_back_publish_wrapper}>
                                         <PostAddIcon className={styles.section_img_mini}/>
-                                        <span className={styles.section_publicar}>NOVA TAREFA</span>
+                                        <span className={styles.section_publicar}>PUBLICAR TAREFA</span>
                                     </div>
                                 </div>
                                 :
@@ -465,9 +610,15 @@ const Home = (props) => {
 
                     </div>
                     :!loaded?
-                    <div className={styles.section_content} style={{marginTop:"50px"}}>
-                        <p className={styles.skeleton_content_in}></p>
-                        <p className={styles.skeleton_content_in}></p>
+                    <div style={{marginTop:"50px"}}>
+                        <div className={styles.section_content} style={{paddingBottom:"30px"}}>
+                            <p className={styles.skeleton_content_in}></p>
+                            <p className={styles.skeleton_content_in}></p>
+                        </div>
+                        <div className={styles.section_content} style={{marginTop:"30px", paddingBottom:"30px"}}>
+                            <p className={styles.skeleton_content_in}></p>
+                            <p className={styles.skeleton_content_in}></p>
+                        </div>
                     </div>
                     :null
                 }

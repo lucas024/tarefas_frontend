@@ -76,7 +76,6 @@ Para que a tua tarefa possa ser aprovada, altere os seguintes campos:`)
         let refusals_aux = [...refusals]
         refusals_aux[index].text = text
 
-        console.log(refusals_aux);
         setRefusals(refusals_aux)
     }
 

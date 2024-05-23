@@ -175,7 +175,6 @@ const Trabalho = (props) => {
                     .then(res => {
                         setPublicationUser(res.data)
                         if(user?._id === reservation.user_id && user?._id!==undefined){
-                            console.log('simmmm')
                             setViewTo('user')
                             setLoading(false)
                             setLoaded(true)
@@ -376,6 +375,8 @@ const Trabalho = (props) => {
                 user_photoUrl: publicationUser.photoUrl,
                 user_phone: publicationUser.phone,
                 user_id: publicationUser._id,
+                user_read: false,
+                worker_read: true,
                 text: text_object,
                 updated: time,
                 chat_id: chatId,

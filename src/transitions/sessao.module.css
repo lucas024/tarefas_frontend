@@ -9,10 +9,10 @@
     text-align: center;
     background-color: var(--brand);
     color: var(--neutral);
-    border-radius: 10px;
+    border-radius: 5px;
     border: 2px solid white;
     cursor: default;
-    z-index: 4;
+    z-index: 20;
     font-weight: 600;
 }
 

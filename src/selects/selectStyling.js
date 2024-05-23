@@ -129,7 +129,6 @@ const TopSelect = (props) => {
             value={props.worker?profissoesMap[props.worker]:null}
             placeholder={<span style={{color:"#fff", fontSize:'0.8rem', marginLeft:"10px"}}>ESCOLHER TAREFA</span>}
             onChange={val => {
-                console.log(val)
                 props.changeWorker(val)
             }}
         />

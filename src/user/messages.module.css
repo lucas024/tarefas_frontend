@@ -216,6 +216,7 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
+
 .chatbox_text_receive{
     margin: 2px 10px;
     background-color: white;
@@ -234,6 +235,10 @@
     word-wrap:break-word;
     font-size: 0.9rem;
     white-space: pre-line;
+}
+.chatbox_text_value::selection{
+    color: var(--brand);
+    background-color: var(--yellow);
 }
 .chatbox_text_starter{
     margin: 2px 10px;

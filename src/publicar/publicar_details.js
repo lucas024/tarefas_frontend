@@ -74,7 +74,6 @@ const PublicarDetails = props => {
 
         if(val.length>0)
         {
-            console.log('triggering now')
             axios.post(`${api_url}/fulltextsearch`, {search: val})
             .then(result => {
                 addressSearchHelper(result.data?.response?.docs)
@@ -130,7 +129,6 @@ const PublicarDetails = props => {
         }
         if(!found)
             props.setDistrictHelper(null)
-        console.log(addressOptions[index])
         props.setLat(addressOptions[index].lat)
         props.setLng(addressOptions[index].lng || addressOptions[index].lon)
         setAddressOptions([])

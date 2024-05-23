@@ -111,7 +111,6 @@ const SelectHome = (props) => {
     }
 
     const selectChange = (val) => {
-        console.log(val)
         props.changeOption(val)
     }
 

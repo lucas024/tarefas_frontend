@@ -75,6 +75,8 @@ const AdminMessages = (props) => {
         if(paramsAux.id)
         {
             setSelectedChatId(paramsAux.id)
+            updateReadDatabaseAndNavigate(paramsAux.id, user?.type)
+            updateReadLocal(paramsAux.id, user?.type, null)
             if(landingLoad)
             {
                 triggerChatLoad(paramsAux.id, true, true, true)
@@ -264,12 +266,10 @@ const AdminMessages = (props) => {
 
     const updateReadLocal = (selected_chat_id, type, last_text) => {
         let arr = [...chats]
-        console.log(arr)
         for(let el of arr)
         {
           if(el.chat_id===selected_chat_id)
           {
-            console.log(selected_chat_id, type, last_text)
             el.worker_read = type===1?true:false
             el.user_read = type===0?true:false
             if(last_text !== null)
@@ -278,22 +278,28 @@ const AdminMessages = (props) => {
           }
         }
         setChats(arr.sort(sortByTimestamp))
+        // dispatch(user_update_chats(arr))
 
-        let aux2 = JSON.parse(JSON.stringify(([...chatsStore])))
-        for(let el of aux2)
+        console.log('called')
+
+        console.log(chatsStore)
+        if(chatsStore?.length>0)
         {
-          if(el.chat_id===selected_chat_id)
-          {
-            console.log(selected_chat_id, type, last_text)
-            el.worker_read = type===1?true:false
-            el.user_read = type===0?true:false
-            if(last_text !== null)
-                el.last_text = last_text
-            break
-          }
-        }
-
-        dispatch(user_update_chats(aux2))
+            let aux2 = JSON.parse(JSON.stringify(([...chatsStore])))
+            for(let el of aux2)
+            {
+                if(el.chat_id===selected_chat_id)
+                {
+                console.log('updating')
+                el.worker_read = type===1?true:false
+                el.user_read = type===0?true:false
+                if(last_text !== null)
+                    el.last_text = last_text
+                break
+                }
+            }
+            dispatch(user_update_chats(aux2))
+        }        
     }
 
     const messageHandler = () => {
@@ -665,7 +671,6 @@ const AdminMessages = (props) => {
         if(display_timing===true || stop===false || new_trigger)
         {
             setDisplayLoadingNew(true)
-            console.log('triggering actual')
             axios.get(`${api_url}/chats/get_chat`, { params: {chat_id: chat_id, skip: new_load?0:skip*limit, limit: limit} })
             .then(res => {
                 if(res.data!==''){
@@ -701,7 +706,6 @@ const AdminMessages = (props) => {
                             scrollToBottom()
                             setStop(false)
                             setDisplayLoadingNew(false)
-                            console.log('stop now false')
                         }, 3000)
                     else{
                         scrollToBottom()

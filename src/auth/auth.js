@@ -273,7 +273,6 @@ const Auth = (props) => {
     }
 
     const handleKeyDownRegister = (from, event) => {
-        console.log(from, event)
         if (event.key === 'Enter') {
             event.target.blur()
             event.preventDefault()
@@ -292,7 +291,6 @@ const Auth = (props) => {
     const checkEmail = async () => {
         setLoading(true)
         let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} })
-        console.log(res)
 
         if(res.data){
             setEmailWrong('Este e-mail já se encontra registado a uma conta de utilizador.')
@@ -301,7 +299,6 @@ const Auth = (props) => {
         else
         {
             res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} })
-            console.log(res)
             if(res.data){
                 setEmailWrong('Este e-mail já se encontra registado a uma conta de profissional.')
                 setLoading(false)
@@ -335,7 +332,6 @@ const Auth = (props) => {
         else if(validator.isEmail(emailLogin)){
             fetchSignInMethodsForEmailHandler(emailLogin)
                 .then(res => {
-                    console.log(res);
                     if(res.length>0){
                         if(res[0] === "google.com"){
                             setLoginError('Este e-mail encontra-se registado através da Google. Por favor inicia a sessão com "Entrar com Google"')
@@ -408,7 +404,6 @@ const Auth = (props) => {
             && validator.isEmail(email)
             && validator.isStrongPassword(password, {minLength:8, minNumbers:0, minSymbols:0, minLowercase:0, minUppercase:0})){
                 setLoading(true)
-                console.log('oioioi')
                 try{
                     let res = await registerWithEmailAndPassword(email.toLocaleLowerCase(), password)
                     await registerHelper(res.user.uid, false)
@@ -450,7 +445,6 @@ const Auth = (props) => {
             }
 
         else{
-            console.log('no')
             setLoading(false)
         }
     }
@@ -557,14 +551,11 @@ const Auth = (props) => {
             url: 'https://pt-tarefas.pt/confirm-email',
             handleCodeInApp: false
         }
-        console.log(auth.currentUser)
         sendEmailVerification(auth.currentUser, actionCodeSettings)
             .then(() => {
                 setEmailSent(true)
-                console.log('sent')
             })
             .catch(e => {
-                console.log(e)
                 setEmailSent(false)
                 setSendingError('Erro a enviar o e-mail de verificação, por favor tente mais tarde.')
             })

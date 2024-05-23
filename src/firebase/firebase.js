@@ -60,9 +60,7 @@ const loginWithEmailAndPassword = async (email, password) => {
 }
 
 const sendSignInLinkToEmailHandler = (email) => {
-  console.log(email);
   sendSignInLinkToEmail(auth, email, actionCodeSettings).then(() => {
-    console.log(email);
     window.localStorage.setItem('emailForSignIn', email);
   })
   .catch((error) => {

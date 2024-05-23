@@ -65,6 +65,8 @@ onAuthStateChanged(auth, (user_google) => {
     }
 })
 
+
+
 const checkWorkerComplete = (worker, userGoogle) => {
   // if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.phoneNumber === null||userGoogle?.emailVerified === false)
   if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.emailVerified === false)
@@ -77,7 +79,10 @@ const checkWorkerComplete = (worker, userGoogle) => {
   {
     dispatch(worker_update_profile_complete(true))
     if(worker.state!==1 && worker_is_subscribed)
-        axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: worker._id})
+    {
+      axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: worker._id})
+    }
+        
   }
 
   if(userGoogle?.emailVerified === true)
@@ -133,9 +138,11 @@ useEffect(() => {
                   if(res2.data.schedule){
                       if(new Date().getTime() < new Date(res2.data.schedule.current_phase?.end_date*1000)){
                         dispatch(worker_update_is_subscribed(true))
+                        checkWorkerComplete(res.data, userGoogle)
                       }
                       else{
                         dispatch(worker_update_is_subscribed(false))
+                        checkWorkerComplete(res.data, userGoogle)
                         if(res.data.state!==0)
                           axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
                       }
@@ -145,14 +152,16 @@ useEffect(() => {
             else if(new Date(res.data.trial?.end_date) > new Date())
             {
               dispatch(worker_update_is_subscribed(true))
+              checkWorkerComplete(res.data, userGoogle)
             }
             else
             {
               dispatch(worker_update_is_subscribed(false))
+              checkWorkerComplete(res.data, userGoogle)
               if(res.data.state!==0)
                 axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
             }
-            checkWorkerComplete(res.data, userGoogle)
+            
             setUserLoadAttempt(true)
             setLoading(false)
           }
@@ -167,7 +176,7 @@ useEffect(() => {
     })
   }
   else{
-    dispatch(worker_update_is_subscribed(false))
+    // dispatch(worker_update_is_subscribed(false))
     setLoading(false)
   }
 }, [userGoogle])
@@ -187,20 +196,23 @@ const refreshWorker = () => {
             if(res2.data.schedule){
                 if(new Date().getTime() < new Date(res2.data.schedule.current_phase.end_date*1000)){
                   dispatch(worker_update_is_subscribed(true))
+                  checkWorkerComplete(res.data, userGoogle)
                 }
+                
             }
         })
       }
       else if(new Date(res.data.trial?.end_date) > new Date())
       {
         dispatch(worker_update_is_subscribed(true))
+        checkWorkerComplete(res.data, userGoogle)
       }
       else{
         dispatch(worker_update_is_subscribed(false))
+        if(res.data.state!==0)
+          axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
       }
 
-      //worker complete
-      checkWorkerComplete(res.data, userGoogle)
       setUserLoadAttempt(true)
       setLoading(false)
     }

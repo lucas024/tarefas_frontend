@@ -96,7 +96,7 @@ const WorkerBanner = (props) => {
 
                     <div className={`${styles.info_bottom_text}`}>
                         <p className={styles.info_bottom_text}>Ativa a tua subscrição com um <strong style={{color:"#FF785A"}}>desconto de 80% </strong> sobre qualquer plano, para sempre.</p>
-                        <p className={styles.info_bottom_text_helper}>O desconto é vitalício e exclusivo de primeira ativação de subscrição.</p>
+                        <p className={styles.info_bottom_text_helper}>O desconto é exclusivo de primeira ativação de subscrição.</p>
                     </div>
                     <div>
                         <SubscriptionPlans 
