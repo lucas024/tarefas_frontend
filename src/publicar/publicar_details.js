@@ -144,7 +144,7 @@ const PublicarDetails = props => {
                 </div>
                 <div className={styles.contact_area} onClick={() => props.divRef?.current?.scrollIntoView({ behavior: 'smooth' })}>
                 <div className={styles.diff_right_title_container}>
-                    <span className={styles.diff_right_title}>
+                    <span className={styles.diff_right_title} style={{marginTop:'-8px'}}>
                         Localização<span className={styles.action}>*</span>
                     </span>
                     <div className={styles.top_check} style={{backgroundColor:(props.correct_location||props.correct_location_online)?'#0358e5':"", top:0, right:0}}>
@@ -305,7 +305,7 @@ const PublicarDetails = props => {
                     } */}
                 </div>
                 <div className={styles.diff_right_title_container_bottom}>
-                    <span className={styles.diff_right_title}>
+                    <span className={styles.diff_right_title} style={{marginTop:'-5px'}}>
                         Detalhes de Contacto<span className={styles.action}>*</span>
                     </span>
                     <div className={styles.top_check} style={{backgroundColor:props.phone.length!==9?"#71848d":props.correct_phone&&props.correct_email?'#0358e5':"#fdd835", top:0, right:0}}>

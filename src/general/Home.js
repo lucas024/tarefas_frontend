@@ -20,9 +20,6 @@ import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import TitleIcon from '@mui/icons-material/Title';
 import { useDispatch, useSelector } from 'react-redux';
 import { search_scroll_save, user_sort_chats, user_update_chats } from '../store';
-import LoginIcon from '@mui/icons-material/Login';
-import logo_text from '../assets/logo_text.png'
-import logo_text_worker from '../assets/logo_text_worker.png'
 import TosBanner from './tosBanner';
 import SuggestionBanner from './suggestionBanner';
 import ContactosBanner from './contactosBanner';
@@ -31,6 +28,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import ChatIcon from '@mui/icons-material/Chat';
 import FaceIcon from '@mui/icons-material/Face';
 import axios from 'axios';
+import logo_text_mix from '../assets/logo_text_mix.png'
 
 
 import {
@@ -67,6 +65,7 @@ const Home = (props) => {
     const [contactosBanner, setContactosBanner] = useState(false)
     const [hasUnreadTexts, setHasUnreadTexts] = useState(false)
     const [unreadTexts, setUnreadTexts] = useState([])
+    const [newPopup, setNewPopup] = useState(false)
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
     const [loginPopup, setLoginPopup] = useState(false)
@@ -114,7 +113,6 @@ const Home = (props) => {
         // {
         //     dispatch(user_update_chats(user?.chats))
         // }     
-            
     }, [location, user, loaded])
 
     const sortByTimestamp = (a, b) => {
@@ -187,7 +185,16 @@ const Home = (props) => {
 
     useEffect(() => {
         props.userLoadAttempt&&setLoaded(true)
-    }, [props.userLoadAttempt])
+        if(!props.userLoggedIn)
+            {
+                setTimeout(() => {
+                    setNewPopup(true)
+                }, 1000);
+            }
+            else{
+                setNewPopup(false)
+            }
+    }, [props.userLoadAttempt, props.userLoggedIn])
 
 
     useEffect(() => {
@@ -266,7 +273,7 @@ const Home = (props) => {
                                     el.worker_photoUrl != ""?
                                         <img src={el.worker_photoUrl} className={styles.notification_right_image}/>
                                         :
-                                        <FaceIcon className={styles.notification_right_image}/>
+                                        <EmojiPeopleIcon className={styles.notification_right_image} style={{transform: 'scaleX(-1)'}}/>
                                     :
                                     el.user_photoUrl != ""?
                                         <img src={el.user_photoUrl} className={styles.notification_right_image}/>
@@ -370,6 +377,7 @@ const Home = (props) => {
                     cancel={() => setContactosBanner(false)}/>
                 :null
             }
+            {/* <div style={{display:'inline-block'}}></div> */}
             <div ref={top} className={styles.home_back}>
                 {
                     window.adsbygoogle?
@@ -388,17 +396,65 @@ const Home = (props) => {
                     </div>
                     :null
                 }
-           
+                <CSSTransition 
+                    in={newPopup}
+                    timeout={1000}
+                    classNames="welcome"
+                    unmountOnExit
+                    >
+                        <div className={styles.upper_wrapper}>
+                            <div className={styles.upper_wrapper_text}>
+                                <p className={styles.upper_wrapper_text_title}>NOVO NO TAREFAS?</p>
+                                <p className={styles.upper_wrapper_text_subtitle}>Esta é uma plataforma que junta <span style={{color:"#0358e5", fontWeight:600}}>utilizadores</span> que querem publicar tarefas ou encontrar diretamente profissionais a <span style={{color:"#FF785A", fontWeight:600}}>profissionais</span> que querem realizar tarefas e expôr o seu negócio.</p>
+                                
+                            </div>
+                            <div className={styles.upper}>
+                                <div className={styles.upper_side_wrapper}>
+                                    <p className={styles.upper_side_text}>Quero publicar tarefas e encontrar profissionais</p>
+                                    <div className={styles.upper_side}>
+                                        <div className={styles.upper_button} style={{backgroundColor:"#0358e520", borderColor:"#0358e5"}} onClick={() => handleMoveAuth(1)} >
+                                            <FaceIcon className={styles.section_img_mini_mini} style={{color:"#0358e5"}}/>
+                                            <span className={styles.section_publicar_mini} style={{color:"#0358e5"}}>CRIAR CONTA UTILIZADOR</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={styles.upper_side_wrapper}>
+                                    <p className={styles.upper_side_text}>Quero realizar tarefas e expôr o meu negócio</p>
+                                    <div className={styles.upper_side}>
+                                        <span className={styles.upper_button} onClick={() => setWorkerBanner(true)} style={{backgroundColor:"#FF785A20",  borderColor:"#FF785A"}}>
+                                        <EmojiPeopleIcon className={styles.section_img_mini_mini} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
+                                            <span className={styles.section_publicar_mini} style={{color:"#FF785A"}}>CRIAR CONTA PROFISSIONAL</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <span className={styles.upper_wrapper_close} onClick={() => setNewPopup(false)}>FECHAR</span>
+                        </div>
+                        
+                </CSSTransition>
                 <div className={styles.home_back_top}>
+                
 
                     
-                    <img className={styles.text_brand} src={logo_text} style={{opacity:first?.value==='trabalhos'?1:0}}/>
-                    <img className={styles.text_brand} src={logo_text_worker} style={{opacity:first?.value==='profissionais'?1:0}}/>
                     
-                    <span className={styles.text_title}>Procuras <span className={styles.text_title_underscore} style={{textDecorationColor:"#FF785A"}}>profissionais</span> ou <span className={styles.text_title_underscore} style={{textDecorationColor:"#0358e5"}}>tarefas</span>?</span>
+                    <img className={styles.text_brand} src={logo_text_mix}/>
+                    <p className={styles.text_brand_helper}>Plataforma online que junta <span style={{color:"#0358e5", fontWeight:600}}>utilizadores</span> a <span style={{color:"#FF785A", fontWeight:600}}>profissionais</span> de forma simples.</p>
+                    
+                    {/* <div className={styles.upper_divider}/> */}
+                    <div className={styles.home_back_publish_special_wrapper} style={{borderTop:user!==null?"none":""}}>
+                        <div className={styles.home_back_publish_special}>
+                            <p className={styles.back_publish_title_special} style={{marginTop:"50px"}}>PESQUISAR PROFISSIONAIS OU TAREFAS</p>
+                        </div>
+                    </div>
+                    
+
+
+                    {/* <span className={styles.text_title}>Procuras <span className={styles.text_title_underscore} style={{textDecorationColor:"#FF785A"}}>profissionais</span> ou <span className={styles.text_title_underscore} style={{textDecorationColor:"#0358e5"}}>tarefas</span>?</span> */}
                     {
                         loaded?
                         <div className={styles.main_wrapper}>
+                            
                             <div className={styles.main}>
                                 <div className={styles.zone}>
                                     <div className={styles.zone_img} style={{backgroundColor:first?.value==="profissionais"?"#FF785A":"#0358e5", borderColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>
@@ -489,10 +545,11 @@ const Home = (props) => {
                                             optionFirst={first} 
                                             option={second} 
                                             changeOption={val => {
-                                                top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                if(windowDimensions.width <= 768)
+                                                    top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
                                                 setSecond(val)
                                             }}
-                                            placeholder={'serviço'}/>
+                                            placeholder={'tipo de serviço'}/>
                                     </div>
                                 </div>
                                 <div className={styles.zone_arrow_div}>
@@ -521,14 +578,19 @@ const Home = (props) => {
                                                         select_regioes.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
                                                     }, 200)
                                             }}
-                                            menuClose={() => top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})}
+                                            menuClose={() => {
+                                                if(windowDimensions.width <= 768)
+                                                    top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                            }}
+                                                
                                             home={true}
                                             regioes={true}
                                             options={regioes}
                                             optionFirst={first} 
                                             option={third} 
                                             changeOption={val => {
-                                                top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                if(windowDimensions.width <= 768)
+                                                    top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
                                                 setThird(val)}}
                                             placeholder={'Região'}/>
                                     </div>
@@ -586,7 +648,7 @@ const Home = (props) => {
                         <div className={styles.home_back_publish}>
                             {
                                 user?.type!==1?
-                                <p className={styles.back_publish_title}>PUBLICAR</p>
+                                <p className={styles.back_publish_title}>PUBLICAR TAREFA</p>
                                 :null
                             }
                             {
@@ -594,15 +656,15 @@ const Home = (props) => {
                                 <div className={styles.back_publish_div} onClick={() => navigate('/publicar/novo')}>
                                     <div className={styles.home_back_publish_wrapper}>
                                         <PostAddIcon className={styles.section_img_mini}/>
-                                        <span className={styles.section_publicar}>PUBLICAR TAREFA</span>
+                                        <span className={styles.section_publicar}>NOVA TAREFA</span>
                                     </div>
                                 </div>
                                 :
                                 user?._id===null||!user?
                                 <div className={styles.back_publish_div} style={{backgroundColor:"#0358e520", border:"2px solid #0358e5"}} onClick={() => handleMoveAuth(1)} 
                                     data-tooltip-id={'home'} data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
-                                    <LoginIcon className={styles.section_img_mini}/>
-                                    <span className={styles.section_publicar} style={{color:"#0358e5"}}>INICIAR SESSÃO | CRIAR CONTA UTILIZADOR</span>
+                                    <FaceIcon className={styles.section_img_mini}/>
+                                    <span className={styles.section_publicar} style={{color:"#0358e5"}}>CRIAR CONTA UTILIZADOR</span>
                                 </div>
                                 :null
                             }
@@ -625,7 +687,7 @@ const Home = (props) => {
 
                 {
                     loaded?
-                    <div>
+                    <div style={{marginBottom:"15px"}}>
                         <div className={styles.home_back_publish}>
                             {
                                 user?._id===null||!user?
@@ -638,7 +700,7 @@ const Home = (props) => {
                                     onClick={() => setWorkerBanner(true)}
                                     >
                                     <EmojiPeopleIcon className={styles.section_img_mini} style={{transform: 'scaleX(-1)'}}/>
-                                    <span className={styles.section_publicar} style={{color:"#FF785A"}}>TORNAR-ME UM PROFISSIONAL</span>
+                                    <span className={styles.section_publicar} style={{color:"#FF785A"}}>CRIAR CONTA PROFISSIONAL</span>
                                 </div>
                                 :null
                             }
@@ -657,7 +719,7 @@ const Home = (props) => {
                 <div className={styles.home_geral}>
                     {
                         loaded?
-                        <p className={styles.back_publish_title}>VER</p>
+                        <p className={styles.back_publish_title}>PESQUISA RÁPIDA</p>
                         :null
                     }
                     

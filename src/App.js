@@ -50,6 +50,7 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [userLoadAttempt, setUserLoadAttempt] = useState(false)
+  const [userExists, setUserExists] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
 
 onAuthStateChanged(auth, (user_google) => {
@@ -325,6 +326,7 @@ const refreshWorker = () => {
               <Route path="/" 
                 element={<Home
                   refreshWorker={() => refreshWorker()}
+                  userLoggedIn = {parseInt(window.localStorage.getItem('loggedIn'))}
                   notifications={notifications}
                   userLoadAttempt={userLoadAttempt}/>} />
               <Route path="*" element={<Navigate to="/" replace />} />

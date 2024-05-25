@@ -670,7 +670,7 @@ const Publicar = () => {
                                 null
                                 :
                                 <p className={styles.reservar_upper_desc}>
-                                    Criar e publicar a tua <span className={styles.action} style={{fontWeight:600}}>Tarefa</span>.<br/>
+                                    Publica a tua tarefa e espera o contacto dum <span style={{color:"#FF785A", fontWeight:600}}>profissional</span>!<br/>
                                     <br></br>
                                 </p>
                             }
@@ -897,7 +897,7 @@ const Publicar = () => {
                         <div className={styles.buttons}>
                             {
                                 selectedTab===0?
-                                <div className={!tituloWrong&&titulo.length>6&&selectedWorker!=null?styles.login_button:styles.login_button_disabled}
+                                <div data-tooltip- data-tooltip-id={!tituloWrong&&titulo.length>6&&selectedWorker!=null?'':"publicar"} className={!tituloWrong&&titulo.length>6&&selectedWorker!=null?styles.login_button:styles.login_button_disabled}
                                     style={{marginTop:0}}
                                     onClick={() => {!tituloWrong&&titulo.length>6&&selectedWorker!=null&&setSelectedTab(1)}}>
                                     <p className={styles.login_text}>Continuar</p>
@@ -956,7 +956,11 @@ const Publicar = () => {
                 </div>
                 <div className={styles.right}></div>
             </div>
-            <Tooltip effect='solid'/>
+            <Tooltip effect='solid' place='top' id="publicar" className={styles.publicar_tooltip}
+                style={{display:selectedTab===0&&(tituloWrong||!titulo.length>6||selectedWorker==null)?"block":selectedTab===2&&(user.phone!==phone||!user_phone_verified||!user_email_verified||!checkAddressCorrect())?"block":"none"}}
+                render={() => (
+                    <span>Por-favor preenche todos os campos assinalados com um<span style={{color:"#0358e5", fontWeight:"700", fontSize:"1.6rem", marginTop:"5px"}}> *</span> antes de continuares.</span>
+                  )}/>
         </div>
     )
 }

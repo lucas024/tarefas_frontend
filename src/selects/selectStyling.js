@@ -127,7 +127,7 @@ const TopSelect = (props) => {
             formatOptionLabel={formatOptionLabelAux}
             isSearchable={true}
             value={props.worker?profissoesMap[props.worker]:null}
-            placeholder={<span style={{color:"#fff", fontSize:'0.8rem', marginLeft:"10px"}}>ESCOLHER TAREFA</span>}
+            placeholder={<span style={{color:"#ffffff90", fontSize:'0.8rem', marginLeft:"10px"}}>SERVIÇO...</span>}
             onChange={val => {
                 props.changeWorker(val)
             }}

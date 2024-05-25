@@ -60,7 +60,6 @@ const Welcome = (props) => {
                                 <img className={styles.text_brand} src={logo_text}/>
                             </div>
                                 
-                                {/* <p className={styles.sub_title_separator}>O lugar ideal para quem procura um profissional para realizar um serviço</p> */}
                                 <div className={styles.main_top_wrapper_2}>
                                     <CSSTransition 
                                         in={props.showWelcomeTrigger1000}
@@ -73,9 +72,7 @@ const Welcome = (props) => {
                                         unmountOnExit
                                         >
                                         <div>
-                                            <p className={styles.sub_title}>Queres publicar uma tarefa e ser contactado por profissionais?</p>
-                                            {/* <p className={styles.sub_title_caveat}>Publica tarefas e procura profissionais.</p> */}
-                                            {/* <p className={styles.sub_title_caveat}>É grátis.</p>    */}
+                                            <p className={styles.sub_title}>Plataforma online que junta <span style={{color:"#0358e5", fontWeight:600}}>utilizadores</span> a <span style={{color:"#FF785A", fontWeight:600}}>profissionais</span> de forma simples.</p>
                                         </div>
                                     </CSSTransition>
                                 </div>
@@ -90,7 +87,7 @@ const Welcome = (props) => {
                                     <div>
                                         <div className={styles.button_wrapper}>
                                             <div className={styles.button} onClick={() => props.closeWelcome()}>
-                                                <span className={styles.button_text}>Publicar tarefas e encontrar profissionais</span>
+                                                <span className={styles.button_text}>CONTINUAR</span>
                                             </div>
                                         </div>
                                     </div>
@@ -100,8 +97,8 @@ const Welcome = (props) => {
                         </div>
                         
                     </div>
-                    <div className={styles.button_separator}/>
-                    <div className={styles.main_bot}>
+                    {/* <div className={styles.button_separator}/> */}
+                    {/* <div className={styles.main_bot}>
                         <div className={styles.main_bot_absolute}>
                             <CSSTransition 
                                         in={props.showWelcomeTrigger2000}
@@ -114,7 +111,6 @@ const Welcome = (props) => {
                                         >
                                 <div>
                                     <p className={styles.sub_title} style={{textDecorationColor:"#FF785A"}}>És um trabalhador independente ou tens o teu próprio negócio?</p>
-                                    {/* <p className={styles.sub_title_caveat}>Começa a encontrar tarefas hoje.</p>     */}
                                 </div>
                                 
                                 
@@ -138,7 +134,7 @@ const Welcome = (props) => {
                         
                         
 
-                    </div>
+                    </div> */}
                     
                     
                                         

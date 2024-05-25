@@ -94,12 +94,12 @@ const Navbar = (props) => {
                                 </span>
                                 :loaded&&user?.type===0?
                                 <span className={styles.user_button} style={{backgroundColor:"#0358e5", borderColor:"#0358e5"}} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
-                                        PUBLICAR TAREFA
+                                        NOVA TAREFA
                                 </span>
                                 :loaded?
                                 <div className={styles.user_button_disabled} data-tooltip-id='navbar' data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
                                         <span className={styles.back_publish_div_frontdrop}></span>
-                                        <span>PUBLICAR TAREFA</span>
+                                        <span>NOVA TAREFA</span>
                                 </div>
 
                                 

@@ -20,8 +20,8 @@ const PublicarService = props => {
         </div>
         <div>
             <div className={styles.diff_right_title_container}>
-                <span className={styles.diff_right_title}>
-                    Tarefa<span className={styles.action}>*</span>
+                <span className={styles.diff_right_title} style={{marginTop:"-8px"}}>
+                    Tipo de Serviço<span className={styles.action}>*</span>
                 </span>
             </div>
             <div className={styles.top_left}>
@@ -49,13 +49,13 @@ const PublicarService = props => {
                         props.editReservation?.type===2&&props.getFieldWrong('titulo')?
                         <div className={styles.diff_right_title_container}>
                             <span className={styles.diff_right_title}
-                                style={{marginBottom:0}}>Título</span>
+                                style={{marginBottom:0}}>Título da TAREFA</span>
                             <span className={styles.diff_right_title_wrong_div}>
                                 <span className={styles.editar_tit}>editar</span> {props.getFieldWrongText('titulo')}
                             </span>
                         </div>
                         :
-                        <span className={styles.diff_right_title}>Título<span className={styles.action}>*</span>
+                        <span className={styles.diff_right_title}>Título DA TAREFA<span className={styles.action}>*</span>
                         </span>
                     }
                 
@@ -66,6 +66,7 @@ const PublicarService = props => {
                     value={props.titulo} 
                     className={styles.top_input_short} 
                     style={{borderColor:!props.tituloWrong?"#0358e5":"", width:'100%', maxWidth:'700px'}}></input>
+                <span className={styles.title_helper} style={{color:props.titulo.length>0&&props.tituloWrong?"#0358e5":"#fff"}}>Titulo demasiado curto.</span>
             </div>
             <div className={styles.diff_right}>
                     {

@@ -19,7 +19,7 @@ const SelectHome = (props) => {
             // borderBottomRightRadius: "0px",
             // borderBottomLeftRadius: state.isFocused? 0: "10px",
             // borderBottomRightRadius: state.isFocused? 0: "10px",
-            border: state.isSelected? "1px solid white": 0,
+            border: state.isSelected? "1px solid white":props.home?'2px solid white': 0,
             boxShadow: "white",
             height: "40px",
             "&:hover": {
@@ -76,7 +76,7 @@ const SelectHome = (props) => {
             ...base,
             color: "#ffffff",
             margin: "auto",
-            minWidth: '200px',
+            minWidth:props.publicar?'0px':'200px',
             display: 'flex',
             justifyContent: 'center',
             fontSize: props.publicar?"0.8rem":"0.7rem",
