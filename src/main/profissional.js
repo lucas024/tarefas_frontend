@@ -2,7 +2,6 @@ import React, {useEffect, useState, useRef} from 'react'
 import styles from './profissional.module.css'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import FaceIcon from '@mui/icons-material/Face';
 import axios from 'axios'
 import Loader from '../general/loader';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
@@ -11,6 +10,7 @@ import {regioesOptions, profissoesMap} from '../general/util'
 import ChatIcon from '@mui/icons-material/Chat';
 import { useDispatch, useSelector } from 'react-redux'
 import {user_update_chats} from '../store'
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 
 const ObjectID = require("bson-objectid");
 
@@ -230,7 +230,7 @@ const Profissional = props => {
                         {
                             worker.photoUrl!=""?
                             <img src={worker.photoUrl} className={styles.left_img}></img>
-                            :<FaceIcon className={styles.left_img}/>
+                            :<EmojiPeopleIcon className={styles.left_img} style={{transform: 'scaleX(-1)'}}/>
                         }
                         <div className={styles.left_div_wrapper}>
                             <div className={styles.left_div}>
@@ -314,7 +314,7 @@ const Profissional = props => {
                                 {
                                     worker.photoUrl!==""?
                                     <img src={worker?.photoUrl} className={styles.message_img}></img>
-                                    :<FaceIcon className={styles.message_img}/>
+                                    :<EmojiPeopleIcon className={styles.message_img} style={{transform: 'scaleX(-1)'}}/>
                                 }
                                 <span className={styles.message_left_user_name}>{worker.name}</span>
                             </div>

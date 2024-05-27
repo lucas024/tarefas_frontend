@@ -30,9 +30,10 @@ import { user_update_field, user_update_phone_verified, user_update_email_verifi
 import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink, getAuth, deleteUser } from 'firebase/auth';
 import { auth } from '../firebase/firebase'
 import VerificationBannerEmail from '../general/verificationBannerEmail';
-import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 import DeleteBanner from '../general/deleteBanner';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+
 
 const Personal = (props) => {
 
@@ -817,7 +818,10 @@ const Personal = (props) => {
                                 {
                                     user&&photo!==""?
                                     <img className={styles.image} src={photo} alt='photo_google'/>
-                                    :<FaceIcon style={{color:user.type===1?"#ffffff":""}} className={styles.image_tbd}/>
+                                    :
+                                    user?.type===0?
+                                    <FaceIcon className={styles.image_tbd}/>
+                                    :<EmojiPeopleIcon style={{color: "#ffffff", transform: 'scaleX(-1)'}} className={styles.image_tbd}/>
                                 }
                                 <div className={styles.image_input_wrapper}>
                                     <EditIcon className={styles.edit_icon}/>
@@ -833,7 +837,6 @@ const Personal = (props) => {
                                         <div className={styles.input_div}>
                                             <span className={styles.input_title}>Nome</span>
                                             <div className={styles.input_div_wrapper}>
-                                                {/* <FaceIcon className={styles.input_icon}/> */}
                                                 <span className={styles.input_email}>{name}</span>
                                             </div>
                                         </div>

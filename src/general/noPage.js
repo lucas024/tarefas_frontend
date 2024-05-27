@@ -16,7 +16,7 @@ const NoPage = (props) => {
                     <span className={styles.blank_text} style={{color:"white"}}>Ainda não tens mensagens</span>
                     <ChatIcon className={styles.blank_face} style={{color:"white"}}/>
                     <span className={styles.blank_request} style={{color:"white"}}>
-                        Procurar <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/trabalhos')}>tarefas</span>
+                        Procurar <span className={styles.blank_request_click} style={{color:"#0358e5"}} onClick={() => navigate('/main/publications/trabalhos')}>tarefas</span>
                     </span>
                 </div>
                 :props.object==="mensagens_user"?

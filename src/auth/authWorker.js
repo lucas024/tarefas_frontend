@@ -256,7 +256,7 @@ const AuthWorker = (props) => {
         let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} })
 
         if(res.data){
-            setEmailWrong('Este e-mail já se encontra registado a uma conta de utilizador.')
+            setEmailWrong('Este e-mail já se encontra registado a uma conta de cliente.')
             setLoading(false)
         }
         else
@@ -332,7 +332,7 @@ const AuthWorker = (props) => {
         let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: emailLogin} })
         setEmailLoginWrong(false)
         if(res.data != null){
-            setLoginError("Este e-mail já se encontra associado a uma conta de UTILIZADOR. Inicia Sessão na Área Utlizador.")
+            setLoginError("Este e-mail já se encontra associado a uma conta de cliente. Inicia Sessão na Área Utlizador.")
             setLoading(false)
         }
         else if(validator.isEmail(emailLogin)){
@@ -399,7 +399,8 @@ const AuthWorker = (props) => {
                 stripe_id: obj.data.customer.id,
                 entity: 0,
                 entity_name: "",
-                registerMethod: from_signup?from_signup.register_type:"email"
+                registerMethod: from_signup?from_signup.register_type:"email",
+                email_verified: false
             })
         let res = await axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: user_uid} })
         if(res.data !== null){
@@ -428,7 +429,7 @@ const AuthWorker = (props) => {
                         axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
                             setLoading(false)
                             if(res.data != null){
-                                setEmailWrong('Este e-mail já se encontra registado a uma conta de utilizador.')
+                                setEmailWrong('Este e-mail já se encontra registado a uma conta de cliente.')
                             }
                             else{
                                 setEmailWrong('Este e-mail já se encontra registado a uma conta de profissional.')
@@ -791,7 +792,7 @@ const AuthWorker = (props) => {
                                     <p className={styles.area_bot_title_helper} style={{color:"#FF785A"}}>({registarTab-2}/4)</p>
                                 }
                                 
-                                <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Palavra-passe', 'Detalhes do utilizador', 'Particular ou Empresa', 'Tarefas que excerço', 'Distritos ou regiões onde trabalho', 'Concluir'][registarTab]}</p>
+                                <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Palavra-passe', 'Detalhes do cliente', 'Particular ou Empresa', 'Tarefas que excerço', 'Distritos ou regiões onde trabalho', 'Concluir'][registarTab]}</p>
                                 {
                                     registarTab<=2?
                                     <div className={styles.login_div}>
@@ -996,7 +997,7 @@ const AuthWorker = (props) => {
                     null
                     :
                     <div className={styles.button_area}>
-                        <span className={styles.user_button} onClick={() => navigate('/authentication?type=1')}>Área Utilizador</span>
+                        <span className={styles.user_button} onClick={() => navigate('/authentication?type=1')}>Área Cliente</span>
                     </div>
                 }
             </div>
@@ -1004,7 +1005,7 @@ const AuthWorker = (props) => {
             <div className={styles.top_right}>
                 <span className={styles.top_right_button} 
                     style={{color:"#0358e5",
-                            fontWeight:(selectedAuth===2)?700:400}} onClick={() => navigate('/authentication/user?type=1')}>Área Utilizador</span>
+                            fontWeight:(selectedAuth===2)?700:400}} onClick={() => navigate('/authentication/user?type=1')}>Área Cliente</span>
                 <span className={styles.top_right_button} 
                     style={{color:"#FF785A", marginLeft:'5px',
                             fontWeight:!(selectedAuth===2)?700:400}} onClick={() => navigate('/authentication/worker?type=1')}>Área Profissional</span>

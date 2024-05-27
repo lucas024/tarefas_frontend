@@ -19,7 +19,7 @@ const SelectHome = (props) => {
             // borderBottomRightRadius: "0px",
             // borderBottomLeftRadius: state.isFocused? 0: "10px",
             // borderBottomRightRadius: state.isFocused? 0: "10px",
-            border: state.isSelected? "1px solid white":props.home?'2px solid white': 0,
+            border: props.home&&state.isSelected?"2px solid white":state.isSelected? "1px solid white":props.home?'2px solid #ffffff40': 0,
             boxShadow: "white",
             height: "40px",
             "&:hover": {

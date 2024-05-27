@@ -3,7 +3,6 @@ import styles from './messages.module.css'
 import axios from 'axios';
 import {io} from "socket.io-client"
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import { css } from "@emotion/react";
 import CheckIcon from '@mui/icons-material/Check';
 import CircleIcon from '@mui/icons-material/Circle';
 import FaceIcon from '@mui/icons-material/Face';
@@ -13,15 +12,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
 import ScrollToBottom, { useScrollToBottom, useSticky, useAtBottom, useAtEnd, useAtStart } from 'react-scroll-to-bottom';
-import letter_t from '../assets/letter-t.png'
-import BackHandIcon from '@mui/icons-material/BackHand';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useSelector, useDispatch } from 'react-redux'
 import {user_update_chats} from '../store'
-import Timer from '../general/timer';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 
 
-const AdminMessages = (props) => {
+const AdminMessages = () => {
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
     const chatsStore = useSelector(state => {return state.chats})
@@ -152,7 +149,7 @@ const AdminMessages = (props) => {
                         setIsLoaded(true)
                         setLoadingChats(false)
                         setLoading(false)
-                        if(res.data?.chats.length>0)
+                        if(res.data?.chats?.length>0)
                         {
                             setChats(JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp)))))
                             for(let el of res.data.chats)
@@ -360,7 +357,7 @@ const AdminMessages = (props) => {
                                             chatInformation.worker_photo!==""?
                                             <img src={chatInformation.worker_photo} className={styles.chatbox_user_img}/>
                                             :
-                                            <FaceIcon className={styles.chatbox_user_img}/>
+                                            <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
                                         :
                                             chatInformation.user_photo!==""?
                                             <img src={chatInformation.user_photo} className={styles.chatbox_user_img}/>
@@ -375,7 +372,7 @@ const AdminMessages = (props) => {
                                         chatInformation.worker_photo!==""?
                                         <img src={chatInformation.worker_photo} className={styles.chatbox_user_img}/>
                                         :
-                                        <FaceIcon className={styles.chatbox_user_img}/>
+                                        <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
                                     :
                                     chatInformation.user_photo!==""?
                                         <img src={chatInformation.user_photo} className={styles.chatbox_user_img}/>
@@ -458,7 +455,7 @@ const AdminMessages = (props) => {
                                             chatInformation.worker_photo!==""?
                                             <img src={chatInformation.worker_photo} className={styles.chatbox_user_img}/>
                                             :
-                                            <FaceIcon className={styles.chatbox_user_img} style={{color:'#FF785A'}}/>
+                                            <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)', color:'#FF785A'}}/>
                                     }
                                     <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
                                 </div>
@@ -473,7 +470,7 @@ const AdminMessages = (props) => {
                                         chatInformation.worker_photo!==""?
                                         <img src={chatInformation.worker_photo} className={styles.chatbox_user_img}/>
                                         :
-                                        <FaceIcon className={styles.chatbox_user_img} style={{color:'#FF785A'}}/>
+                                        <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)', color:'#FF785A'}}/>
                                     }
                                     <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
                                 </div>
@@ -627,7 +624,7 @@ const AdminMessages = (props) => {
                         :item.worker_photoUrl!==""?
                         <img className={styles.row_img} src={item.worker_photoUrl}/>
                         :
-                        <FaceIcon className={styles.chatbox_user_img}/>
+                        <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
                     }
                     <div className={styles.row_main}>
                         <div className={styles.main_top}>
@@ -800,7 +797,8 @@ const AdminMessages = (props) => {
                                                     style={{marginLeft:"5px", border:"2px solid #FF785A"}} 
                                                     className={styles.chatbox_user_img} 
                                                     src={chatInformation.worker_photo}/>
-                                                :<FaceIcon style={{marginLeft:"5px", border:"2px solid #FF785A"}} className={styles.chatbox_user_img}/>
+                                                :
+                                                <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)', marginLeft:"5px", border:"2px solid #FF785A"}}/>
                                                 :
                                                 chatInformation.user_photo!==""?
                                                 <img style={{marginLeft:"5px", border:"2px solid #0358e5"}} className={styles.chatbox_user_img} st src={chatInformation.user_photo}/>

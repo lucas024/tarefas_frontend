@@ -272,7 +272,7 @@
 }
 .drop_div_notification_text{
     position: absolute;
-    right: 10px;
+    right: 15px;
     top: 25px;
     font-weight: 700;
     width: max-content;

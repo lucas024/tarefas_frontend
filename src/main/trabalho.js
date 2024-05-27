@@ -624,7 +624,7 @@ const Trabalho = (props) => {
                                     :<span className={`${styles.top_right_message} ${styles.skeleton}`} style={{height:"40px", width:"150px"}}></span>
                                 }
                                 
-                                <span className={styles.top_right_user}>Utilizador</span>
+                                <span className={styles.top_right_user}>Cliente</span>
                                 <div className={styles.top_right_div}>
                                     {
                                         publicationUser?.photoUrl!==""?

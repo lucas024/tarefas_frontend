@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from './welcome.module.css'
-import logo_text from '../assets/logo_text_mix.png'
+import logo_text from '../assets/logo_text_mix_3.png'
 import {CSSTransition}  from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
 import image1 from '../assets/1.png'
@@ -71,29 +71,31 @@ const Welcome = (props) => {
                                         classNames="fade"
                                         unmountOnExit
                                         >
-                                        <div>
-                                            <p className={styles.sub_title}>Plataforma online que junta <span style={{color:"#0358e5", fontWeight:600}}>utilizadores</span> a <span style={{color:"#FF785A", fontWeight:600}}>profissionais</span> de forma simples.</p>
+                                        <div style={{height:'30px'}}>
+                                            <p className={styles.sub_title}>Plataforma que junta <span style={{color:"#0358e5", fontWeight:600}}>clientes</span> a <span style={{color:"#FF785A", fontWeight:600}}>profissionais</span></p>
                                         </div>
                                     </CSSTransition>
                                 </div>
-
-                                <CSSTransition 
-                                        in={finalTrigger}
-                                        timeout={1000}
-                                        classNames="fade"
-                                        unmountOnExit
-                                        >
-                                        
-                                    <div>
-                                        <div className={styles.button_wrapper}>
-                                            <div className={styles.button} onClick={() => props.closeWelcome()}>
-                                                <span className={styles.button_text}>CONTINUAR</span>
+                                <div style={{height:'50px'}}>
+                                    <CSSTransition 
+                                            in={finalTrigger}
+                                            timeout={500}
+                                            classNames="fade"
+                                            unmountOnExit
+                                            >
+                                            
+                                        <div>
+                                            <div className={styles.button_wrapper}>
+                                                <div className={styles.button} onClick={() => props.closeWelcome()}>
+                                                    <span className={styles.button_text}>CONTINUAR</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    
-                                </CSSTransition>
+                                        
+                                    </CSSTransition>
+                                </div>
+                                
                         </div>
                         
                     </div>

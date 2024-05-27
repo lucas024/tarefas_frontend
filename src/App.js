@@ -88,8 +88,9 @@ const checkWorkerComplete = (worker, userGoogle) => {
 
   if(userGoogle?.emailVerified === true)
   {
+    console.log(worker)
     dispatch(user_update_email_verified(true))
-    if(worker?.email_verified === false)
+    if(worker?.email_verified === false || worker.email_verified == null)
     {
       axios.post(`${api_url}/worker/verify_email`, {user_id: worker._id})
     }
@@ -102,10 +103,11 @@ const checkUserComplete = (user_google, user_mongo) => {
   else dispatch(user_update_phone_verified(true))
   // else dispatch(user_update_phone_verified(false))
   //email
+
   if(user_google?.emailVerified === true)
   {
     dispatch(user_update_email_verified(true))
-    if(user_mongo?.email_verified === false)
+    if(user_mongo?.email_verified === false || user_mongo?.email_verified == null)
     {
       axios.post(`${api_url}/user/verify_email`, {user_id: user_mongo._id})
     }
@@ -128,7 +130,7 @@ useEffect(() => {
         axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle?.uid} }).then(res => {
           if(res.data !== null){
             dispatch(user_load(res.data))
-            checkUserComplete(userGoogle)
+            checkWorkerComplete(userGoogle)
             if(res.data.subscription){
               setLoading(true)
               axios.post(`${api_url}/retrieve-subscription-and-schedule`, {

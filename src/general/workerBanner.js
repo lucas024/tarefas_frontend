@@ -90,7 +90,7 @@ const WorkerBanner = (props) => {
                     <div className={styles.line} style={{borderBottom:'1px solid #71848d', paddingBottom:"25px"}}>
                         <img className={styles.line_image} src={perfil}/>
                         <span className={styles.helper_text}>Perfil</span>
-                        <span className={styles.line_text}>Criação do teu <span className={styles.action}>perfil de profissional</span> que será acessível a todos utilizadores do TAREFAS.</span>
+                        <span className={styles.line_text}>Criação do teu <span className={styles.action}>perfil de profissional</span> que será acessível a todos clientes do TAREFAS.</span>
                     </div>
                     <span className={styles.line_title}>Planos de Subscrição</span>
 

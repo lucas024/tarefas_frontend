@@ -670,7 +670,7 @@ const Publicar = () => {
                                 null
                                 :
                                 <p className={styles.reservar_upper_desc}>
-                                    Publica a tua tarefa e espera o contacto dum <span style={{color:"#FF785A", fontWeight:600}}>profissional</span>!<br/>
+                                    Publica a tua tarefa e espera o contacto de um <span style={{color:"#FF785A", fontWeight:600}}>profissional</span><br/>
                                     <br></br>
                                 </p>
                             }

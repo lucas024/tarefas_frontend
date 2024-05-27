@@ -17,6 +17,7 @@ import Loader from '../general/loader';
 import AssignmentdIcon from '@mui/icons-material/Assignment';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useSelector } from 'react-redux'
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 
 
 const UserSidebar = (props) => {
@@ -62,7 +63,10 @@ const UserSidebar = (props) => {
                         user&&user.photoUrl?
                         <img className={styles.sidebar_img} src={user.photoUrl}/>
                         :!loading?
+                        user?.type===0?
                         <FaceIcon className={styles.sidebar_img_icon}/>
+                        :
+                        <EmojiPeopleIcon className={styles.sidebar_img_icon} style={{transform: 'scaleX(-1)', padding:'5px', boxSizing:'border-box'}}/>
                         :null
                     }
                 </div>

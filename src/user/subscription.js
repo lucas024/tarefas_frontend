@@ -731,7 +731,7 @@ const Subscription = props => {
                                                         <span className={styles.helper_text}>Perfil</span>
                                                     </div>
                                                     <span className={styles.connector}/>
-                                                    <span className={styles.line_text}>Criação do teu <strong>perfil de profissional</strong>, que será acessível a todos utilizadores do TAREFAS. Maior exposição ao teu negócio!</span>
+                                                    <span className={styles.line_text}>Criação do teu <strong>perfil de profissional</strong>, que será acessível a todos clientes do TAREFAS. Maior exposição ao teu negócio!</span>
                                                 </div>
                                             </div>
                                             :null

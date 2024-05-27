@@ -14,6 +14,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useSelector } from 'react-redux'
 import { TextareaAutosize } from '@mui/material';
 import Loader from '../general/loader';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 
 const Suporte = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -289,7 +290,10 @@ const Suporte = (props) => {
                                 <div className={styles.chatbox_user}>
                                     {
                                         msg.origin_type!==4?
+                                            msg.origin_type===0?
                                             <FaceIcon className={styles.chatbox_user_img}/>
+                                            :
+                                            <FaceIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
                                         :
                                             <SupportAgentIcon className={styles.chatbox_user_img}/>
                                     }
@@ -298,7 +302,10 @@ const Suporte = (props) => {
                                 :<div className={styles.chatbox_user_opacity}>
                                     {
                                         msg.origin_type!==4?
-                                        <FaceIcon className={styles.chatbox_user_img}/>
+                                        msg.origin_type===0?
+                                            <FaceIcon className={styles.chatbox_user_img}/>
+                                            :
+                                            <FaceIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
                                     :
                                         <SupportAgentIcon className={styles.chatbox_user_img}/>
                                     }

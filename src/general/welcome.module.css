@@ -130,7 +130,7 @@
     text-decoration-thickness: 2px;
     font-size: 1.2rem;
     text-align: center;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     margin: 0 auto;
     width: fit-content;
@@ -171,6 +171,9 @@
 .main_inner{
     display: flex;
     justify-content: center;
+}
+.main_top_wrapper_2{
+    height: 60px;
 }
 .button{
     padding: 20px 25px;

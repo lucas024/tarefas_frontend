@@ -293,7 +293,7 @@ const Auth = (props) => {
         let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} })
 
         if(res.data){
-            setEmailWrong('Este e-mail já se encontra registado a uma conta de utilizador.')
+            setEmailWrong('Este e-mail já se encontra registado a uma conta de cliente.')
             setLoading(false)
         }
         else
@@ -877,9 +877,9 @@ const Auth = (props) => {
                             }
                             <Loader loading={loading}/>
                             <div className={styles.area_bot_wrapper}>
-                                <p className={styles.area_bot_title}>Criar conta de utilizador</p>
+                                <p className={styles.area_bot_title}>Criar conta de cliente</p>
                                 <p className={styles.area_bot_title_helper}>({registarTab+1}/3)</p>
-                                <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Detalhes do utilizador', 'Palavra-passe'][registarTab]}</p>
+                                <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Detalhes do cliente', 'Palavra-passe'][registarTab]}</p>
                                 <div className={styles.login_div}>
                                     <AuthCarousel 
                                         registarTab={registarTab}
@@ -1007,7 +1007,7 @@ const Auth = (props) => {
             <div className={styles.top_right}>
                 <span className={styles.top_right_button} 
                     style={{color:"#0358e5", 
-                            fontWeight:!(selectedAuth===2 || loginTab===1)?700:500}} onClick={() => navigate('/authentication/user?type=1')}>Área Utilizador</span>
+                            fontWeight:!(selectedAuth===2 || loginTab===1)?700:500}} onClick={() => navigate('/authentication/user?type=1')}>Área Cliente</span>
                 <span className={styles.top_right_button} 
                     style={{color:"#FF785A", marginLeft:'5px', 
                             fontWeight:(selectedAuth===2 || loginTab===1)?700:500}} onClick={() => navigate('/authentication/worker?type=1')}>Área Profissional</span>

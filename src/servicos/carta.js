@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styles from './carta.module.css'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import TitleIcon from '@mui/icons-material/Title';
 import {regioesOptions, profissoesMap} from '../general/util'
-import FaceIcon from '@mui/icons-material/Face';
 import ConstructionIcon from '@mui/icons-material/Construction';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 
 
 const Carta = (props) => {
@@ -84,7 +83,7 @@ const Carta = (props) => {
                             src={worker.photoUrl}/>
                         :
                         <div className={styles.image_tbd_wrapper}>
-                            <FaceIcon className={styles.image_tbd}/>
+                            <EmojiPeopleIcon className={styles.image_tbd} style={{transform: 'scaleX(-1)'}}/>
                         </div>
                     }   
                     

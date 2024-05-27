@@ -154,7 +154,7 @@ const AuthCarousel = props => {
 
                 {
                     props.type==="worker"?
-                    <p className={styles.info_bottom}>Se no futuro quiser publicar uma tarefa, terá que o fazer <strong>criando uma conta de utilizador com um e-mail diferente</strong>.</p>
+                    <p className={styles.info_bottom}>Se no futuro quiser publicar uma tarefa, terá que o fazer <strong>criando uma conta de cliente com um e-mail diferente</strong>.</p>
                     :null
                 }
             </div>
