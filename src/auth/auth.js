@@ -27,6 +27,7 @@ import { useDispatch } from 'react-redux'
 import { 
     user_load,
     user_update_phone_verified,
+    user_update_field
   } from '../store';
 import AuthCarousel from './authCarousel'
 import AuthCarouselVerification from './authCarouselVerification'
@@ -34,10 +35,13 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao'
 import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, sendPasswordResetEmail } from 'firebase/auth';
 import TosBanner from '../general/tosBanner'
-import logo_text from '../assets/logo_png_white_background.png'
+import logo_text from '../assets/logo_text_full.png'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Lottie from "lottie-react";
 import * as sendEmail from '../assets/lotties/plane-email.json'
+import WorkerBanner from '../general/workerBanner';
+import AuthCarouselWorker from './authCarouselWorker';
+
 
 const Auth = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -85,6 +89,8 @@ const Auth = (props) => {
 
     const location = useLocation()
 
+    const [workerMode, setWorkerMode] = useState(false)
+
 
     const codePlaceholder = [0,0,0,0,0,0]
 
@@ -111,6 +117,22 @@ const Auth = (props) => {
     const [emailCodeStatus, setEmailCodeStatus] = useState(null)
 
     const [sendingError, setSendingError] = useState(null)
+    const [showWorker, setShowWorker] = useState(false)
+
+
+
+    // worker addtions
+    const [selectedProf, setSelectedProf] = useState([])
+    const [selectedReg, setSelectedReg] = useState([])
+    const [selectedType, setSelectedType] = useState(0)
+    const [entityName, setEntityName] = useState('')
+    const [entityNameWrong, setEntityNameWrong] = useState('')
+
+    const [selectedProfWrong, setSelectedProfWrong] = useState(false)
+    const [selectedRegWrong, setSelectedRegWrong] = useState(false)
+    const [selectedTypeWrong, setSelectedTypeWrong] = useState(false)
+
+    const [detailsPopup, setDetailsPopup] = useState(false)
 
     useEffect(() => {
         if(location.state && location.state.nameCarry){
@@ -119,6 +141,7 @@ const Auth = (props) => {
             setPhone(location.state.phoneCarry)
             setEmail(location.state.emailCarry)
         }
+        if(location.state?.workerMode) setWorkerMode(true)
     }, [location])
 
     useEffect(() => {
@@ -293,23 +316,29 @@ const Auth = (props) => {
         let res = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} })
 
         if(res.data){
-            setEmailWrong('Este e-mail já se encontra registado a uma conta de cliente.')
+            setEmailWrong('Este e-mail já se encontra registado a uma conta.')
             setLoading(false)
         }
-        else
-        {
-            res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} })
-            if(res.data){
-                setEmailWrong('Este e-mail já se encontra registado a uma conta de profissional.')
-                setLoading(false)
-            }
-            else{
-                setLoading(false)
-                setEmailWrong(false)
-                setRegistarTab(1)
-                clearWarnings()
-            }
+        else{
+            setLoading(false)
+            setEmailWrong(false)
+            setRegistarTab(1)
+            clearWarnings()
         }
+        // else
+        // {
+        //     res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} })
+        //     if(res.data){
+        //         setEmailWrong('Este e-mail já se encontra registado a uma conta de profissional.')
+        //         setLoading(false)
+        //     }
+        //     else{
+        //         setLoading(false)
+        //         setEmailWrong(false)
+        //         setRegistarTab(1)
+        //         clearWarnings()
+        //     }
+        // }
     }
 
     const clearWarnings = () => {
@@ -324,12 +353,12 @@ const Auth = (props) => {
         setEmailLoginWrong(false)
         setLoading(true)
 
-        let res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: emailLogin} })
-        if(res.data != null){
-            setLoginError("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Inicia a Sessão na Área Profissional.")
-            setLoading(false)
-        }
-        else if(validator.isEmail(emailLogin)){
+        // let res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: emailLogin} })
+        // if(res.data != null){
+        //     setLoginError("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Inicia a Sessão na Área Profissional.")
+        //     setLoading(false)
+        // }
+        if(validator.isEmail(emailLogin)){
             fetchSignInMethodsForEmailHandler(emailLogin)
                 .then(res => {
                     if(res.length>0){
@@ -389,7 +418,8 @@ const Auth = (props) => {
                 type: 0,
                 email_verified: false,
                 phone_verified: false,
-                registerMethod: from_signup?from_signup.register_type:"email"
+                registerMethod: from_signup?from_signup.register_type:"email",
+                worker: workerMode
             })
         let res = await axios.get(`${api_url}/auth/get_user`, { params: {google_uid: user_uid} })
         if(res.data !== null){
@@ -410,24 +440,45 @@ const Auth = (props) => {
                     setLoading(false)
                     setRegisterPopup(true)
                     setTimeout(() => setRegisterPopup(false), 4000)
-                    setSelectedAuth(2)
-                    setRegistarTab(0)
+                    if(!workerMode)
+                    {
+                        setSelectedAuth(2)
+                        setRegistarTab(0)
+                    }
+                    else
+                    {
+                        setRegistarTab(3)
+                    }
+                    
                 }
                 catch (err) {
                     if(err.code == "auth/email-already-in-use"){
-                        axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
-                            setLoading(false)
-                            if(res.data != null){
-                                setEmailWrong("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Por favor, utilize outro email.")
+                        // axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                        //     setLoading(false)
+                        //     if(res.data != null){
+                        //         setEmailWrong("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Por favor, utilize outro email.")
+                        //     }
+                        //     else{
+                        //         axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                        //             if(res.data.registerMethod != "email"){
+                        //                 setEmailWrong('Este e-mail encontra-se registado através da Google.')
+                        //             }
+                        //         })
+                        //         setEmailWrong("Este e-mail já se encontra registado. Esqueceu-se da palavra passe?")
+                        //     }
+                        //     setLoading(false)
+                        //     setPassword(null)
+                        //     setPasswordRepeat(null)
+                        //     setName(null)
+                        //     setPhone(null)
+                        //     setPhoneVisual(null)
+                        //     setRegistarTab(0)
+                        // })
+                        axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
+                            if(res.data.registerMethod != "email"){
+                                setEmailWrong('Este e-mail encontra-se registado através da Google. Por favor inicia a sessão com "Entrar com Google"')
                             }
-                            else{
-                                axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: email.toLocaleLowerCase()} }).then(res => {
-                                    if(res.data.registerMethod != "email"){
-                                        setEmailWrong('Este e-mail encontra-se registado através da Google.')
-                                    }
-                                })
-                                setEmailWrong("Este e-mail já se encontra registado. Esqueceu-se da palavra passe?")
-                            }
+                            setEmailWrong("Este e-mail já se encontra registado. Esqueceu-se da palavra passe?")
                             setLoading(false)
                             setPassword(null)
                             setPasswordRepeat(null)
@@ -436,6 +487,7 @@ const Auth = (props) => {
                             setPhoneVisual(null)
                             setRegistarTab(0)
                         })
+
                     }
                     else{
                         setLoginError("Problema no servidor.")
@@ -454,9 +506,9 @@ const Auth = (props) => {
         try{
             let res = await signInWithPopup(auth, type==="google"?provider:providerFacebook)
             let existing_user = await axios.get(`${api_url}/auth/get_user_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
-            let existing_worker = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
+            // let existing_worker = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
 
-            if(existing_user.data == null && existing_worker.data == null){
+            if(existing_user.data == null){
                 //conta nao existe - criar
                 let from_signup = {
                     name: res.user.displayName,
@@ -464,12 +516,16 @@ const Auth = (props) => {
                     photoURL: res.user.photoURL
                 }
                 await registerHelper(res.user.uid, from_signup)
-                navigate('/', {
-                    state: {
-                        carry: 'login'
-                    }
-                })
-                setLoading(false)
+                if(!workerMode)
+                {
+                    navigate('/', {
+                        state: {
+                            carry: 'login'
+                        }
+                    })
+                    setLoading(false)
+                }
+
             }
             else{
                 //conta existe
@@ -667,6 +723,140 @@ const Auth = (props) => {
         }
     }
 
+    const o2auth = () => {
+        return(
+            <div className={styles.area_o2}>
+                {/* <div className={styles.o2_button} onClick={() => signInWithPopupHandler("facebook")}>
+                    <img src={facebook} className={styles.o2_img}></img>
+                    <span className={styles.align_vert}>
+                        <span className={styles.o2_text}>Entrar com Facebook</span>
+                    </span>
+                </div> */}
+                <div className={styles.o2_button} style={{marginTop:"0px"}}  onClick={() => signInWithPopupHandler("google")}>
+                    <img src={google} className={styles.o2_img}></img>
+                    <span className={styles.align_vert}>
+                        <span className={styles.o2_text}>
+                            {
+                                workerMode?
+                                <p className={styles.modo_box}>
+                                    modo profissional
+                                </p>
+                                :null
+                            }
+                            {
+                                selectedAuth===0?
+                                "Criar conta com Google":
+                                "Entrar com Google"
+                            }
+
+                        </span>
+                    </span>
+                </div>
+                <span className={styles.ou}>
+                    ou
+                </span>
+            </div>
+        )
+    }
+
+    const setWorkerModeHelper = (wm) => {
+        setWorkerMode(wm)
+        setRegistarTab(0)
+        setPassword('')
+        setPasswordRepeat('')
+        setPasswordWrong(false)
+        setPasswordRepeatWrong(false)
+        setName('')
+        setNameWrong(false)
+        setPhone('')
+        setPhoneVisual('')
+        setPhoneWrong(false)
+    }
+
+    // worker additions
+    const verifySelectedType = () => {
+        if(selectedType===0||(selectedType===1&&entityName.length>1)){
+            setSelectedTypeWrong(false)
+            setRegistarTab(4)
+            return true
+        }
+        else
+        {
+            setSelectedTypeWrong(true)
+            setLoading(false)
+            return false
+        }
+    }
+
+    const verifySelectedProfessions = () => {
+        if(selectedProf.length>0){
+            setSelectedProfWrong(false)
+            setRegistarTab(5)
+            return true
+        }
+        else
+        {
+            setSelectedProfWrong(true)
+            setLoading(false)
+            return false
+        }
+    }
+
+    const verifySelectedRegions = () => {
+        if(selectedReg.length>0){
+            setSelectedRegWrong(false)
+            setRegistarTab(6)
+            return true
+        }
+        else
+        {
+            setSelectedRegWrong(true)
+            setLoading(false)
+            return false
+        }
+    }
+
+    const setEntityNameHandler = val => {
+        if(entityName.length===0)
+            setEntityName(val.replace(/\s/g, ''))
+        else
+            setEntityName(val)
+
+        let aux = val.replace(/\s/g, '').length
+        if(aux>1) setEntityNameWrong(false)
+        else setEntityNameWrong(true)
+    }
+
+    const updateWorkerDetails = () => {
+        setLoading(true)
+        verifySelectedRegions()&&
+        verifySelectedProfessions()&&
+        verifySelectedType()&&
+        axios.post(`${api_url}/worker/update_selected`, {
+            user_id : user._id,
+            trabalhos : selectedProf,
+            regioes: selectedReg,
+            entity: selectedType,
+            entity_name: entityName
+        }).then(() => {
+            dispatch(
+                user_update_field(
+                    [
+                        {field: 'trabalhos', value: selectedProf},
+                        {field: 'regioes', value: selectedReg},
+                        {field: 'entity', value: selectedType},
+                        {field: 'entity_name', value: entityName}
+                    ]
+                )
+            )
+            setLoading(false)
+            setDetailsPopup(true)
+            setTimeout(() => setDetailsPopup(false), 4000)
+            setSelectedAuth(2)
+        })
+    }
+
+
     return (
         <div className={styles.auth}>
             <CSSTransition 
@@ -677,6 +867,15 @@ const Auth = (props) => {
                 >
                 <Sessao text={"Conta criada com sucesso!"}/>
             </CSSTransition>
+
+            <CSSTransition 
+                    in={detailsPopup}
+                    timeout={1000}
+                    classNames="transition"
+                    unmountOnExit
+                    >
+                    <Sessao text={"Detalhes profissional atualizados com sucesso!"}/>
+            </CSSTransition>
             {
                 tosBanner?
                 <TosBanner 
@@ -686,11 +885,22 @@ const Auth = (props) => {
                     cancel={() => setTosBanner(false)}/>
                 :null
             }
+            {
+                showWorker?
+                <WorkerBanner 
+                    authPage={true}
+                    confirm={() => {
+                        setShowWorker(false)
+                        setWorkerMode(true)
+                    }}
+                    cancel={() => setShowWorker(false)}/>
+                :null
+            }
             <div className={styles.auth_main}>
                 <div ref={recaptchaWrapperRef}>
                     <div id='recaptcha-container' className={styles.recaptcha_container}></div>
                 </div>
-                <div className={styles.area} style={{backgroundColor:selectedAuth===2?'#161F28':'#fff'}}>
+                <div className={styles.area} style={{backgroundColor:selectedAuth===2?'#161F28':'#fff',}}>
                     {
                         selectedAuth!==2?
                         <div className={styles.area_top}>
@@ -700,10 +910,13 @@ const Auth = (props) => {
                             {
                                 loginTab===0?
                                 <ul>
-                                    <li onClick={() => setSelectedAuth(1)} className={selectedAuth?styles.li_active:""}>
+                                    <li onClick={() => {setSelectedAuth(1)
+                                        setWorkerModeHelper(false)
+                                        }} className={selectedAuth?styles.li_active:""}>
                                         <span className={selectedAuth?styles.li_text_active:styles.li_text}>Iniciar Sessão</span>
                                     </li>
-                                    <li onClick={() => setSelectedAuth(0)} className={!selectedAuth?styles.li_active:""}>
+                                    <li onClick={() => {setSelectedAuth(0)
+                                        setWorkerMode(false)}} className={!selectedAuth?styles.li_active:""}>
                                         <span className={!selectedAuth?styles.li_text_active:styles.li_text}>Criar Conta</span>
                                     </li>
                                 </ul>
@@ -716,28 +929,13 @@ const Auth = (props) => {
                     {
                         selectedAuth===1?
                         loginTab===0?
+                        <div style={{border:'6px solid white', borderTop:'none', borderBottom:'none'}}>
                         <div className={styles.area_bot}>
                             {
                                 loading&&<div className={styles.verification_backdrop}/>
                             }
                             <Loader radius={true} loading={loading}/>
-                            <div className={styles.area_o2}>
-                                {/* <div className={styles.o2_button} onClick={() => signInWithPopupHandler("facebook")}>
-                                    <img src={facebook} className={styles.o2_img}></img>
-                                    <span className={styles.align_vert}>
-                                        <span className={styles.o2_text}>Entrar com Facebook</span>
-                                    </span>
-                                </div> */}
-                                <div className={styles.o2_button} style={{marginTop:"0px"}}  onClick={() => signInWithPopupHandler("google")}>
-                                    <img src={google} className={styles.o2_img}></img>
-                                    <span className={styles.align_vert}>
-                                        <span className={styles.o2_text}>Entrar com Google</span>
-                                    </span>
-                                </div>
-                                <span className={styles.ou}>
-                                    ou
-                                </span>
-                            </div>
+                            {o2auth()}
                             <div className={styles.login_div}>
                                 <div className={styles.login}>
                                     <p className={styles.login_title}>E-mail</p>
@@ -779,7 +977,7 @@ const Auth = (props) => {
                             <div style={{marginTop:"20px"}}>
                                 <span className={styles.recup_password} onClick={() => setLoginTab(1)}>Recuperar palavra-passe</span>
                             </div>
-                            <div className={!loading?styles.login_button:styles.login_button_disabled} onClick={() => {
+                            <div className={!loading?styles.login_button:styles.login_button_disabled} style={{backgroundColor:"#161F28"}} onClick={() => {
                                 if(!loading) loginHandler()}}>
                                 <p className={styles.login_text}>INICIAR SESSÃO</p>
                             </div>
@@ -787,6 +985,7 @@ const Auth = (props) => {
                                 <span className={styles.bottom_switch_text}>Não tens conta? </span>
                                 <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(0)}>Criar Conta</span>
                             </div>
+                        </div>
                         </div>
                         :
                         <div className={styles.area_bot}>
@@ -871,84 +1070,213 @@ const Auth = (props) => {
                             </div>
                         </div>
                         :selectedAuth===0?
-                        <div className={styles.area_bot}>
+                        //registar
+                        <div>
                             {
-                                loading&&<div className={styles.verification_backdrop}/>
+                                registarTab<=2?
+                                <div className={styles.mode} style={{backgroundColor:workerMode?"#FF785A":""}} onClick={() => setWorkerModeHelper(!workerMode)}>
+                                    <span className={styles.mode_text} style={{color:workerMode?"white":""}}>{workerMode?'DESATIVAR MODO PROFISSIONAL':'ATIVAR MODO PROFISSIONAL'}</span>
+                                </div>
+                                :null
                             }
-                            <Loader loading={loading}/>
-                            <div className={styles.area_bot_wrapper}>
-                                <p className={styles.area_bot_title}>Criar conta de cliente</p>
-                                <p className={styles.area_bot_title_helper}>({registarTab+1}/3)</p>
-                                <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Detalhes do cliente', 'Palavra-passe'][registarTab]}</p>
-                                <div className={styles.login_div}>
-                                    <AuthCarousel 
-                                        registarTab={registarTab}
-                                        email={email}
-                                        emailWrong={emailWrong}
-                                        name={name}
-                                        nameWrong={nameWrong}
-                                        password={password}
-                                        passwordWrong={passwordWrong}
-                                        passwordRepeat={passwordRepeat}
-                                        passwordRepeatWrong={passwordRepeatWrong}
-                                        phone={phone}
-                                        phoneVisual={phoneVisual}
-                                        phoneWrong={phoneWrong}
-                                        setEmailHandler={val => setEmailHandler(val)}
-                                        handleKeyDownRegister={(from, e) => handleKeyDownRegister(from, e)}
-                                        setPasswordRepeat={val => setPasswordRepeat(val)}
-                                        setPassword={val => setPassword(val)}
-                                        setNameHandler={val => setNameHandler(val)}
-                                        setPhoneHandler={val => setPhoneHandler(val)}
-                                        setTosAccepted={val => setTosAccepted(val)}
-                                        tosAccepted={tosAccepted}
-                                        setTosBanner={() => setTosBanner(true)}
-                                    />
+                            {
+                                registarTab<=2?
+                                <div className={styles.area_bot_upper} style={{borderColor:workerMode?"#FF785A":"#ffffff"}}>
+                                    <div className={styles.area_bot_text_wrapper}>
+                                        <span className={styles.area_bot_text} onClick={() => setShowWorker(true)}>O que é o modo profissional?</span>
+                                        <span> </span>
+                                        <span className={styles.area_bot_text_helper}> Caso queiras, poderás ativar o modo profissional na tua conta noutra altura.</span>
+                                    </div>
+                                </div>
+                                :null
+                            }
+                            
+                            
+                            <div className={styles.area_bot_upper_wrapper} style={{borderColor:workerMode||registarTab>2?"#FF785A":"#ffffff"}}>
+                                <div className={styles.area_bot} style={{marginTop:'-40px'}}>
+                                    {
+                                        loading&&<div className={styles.verification_backdrop}/>
+                                    }
+                                    <Loader loading={loading}/>
+                                    {   registarTab===0?
+                                            o2auth()
+                                        :null
+                                    }
+                                    <div className={styles.area_bot_wrapper} style={{backgroundColor:workerMode?"#FF785A30":""}}>
+                                        {
+                                            workerMode||registarTab>2?
+                                            <p className={styles.modo_box} style={{marginBottom:'5px'}}>
+                                                modo profissional
+                                            </p>
+                                            :null
+                                        }
+                                        {
+                                            registarTab<=2?
+                                            <p className={styles.area_bot_title}>Criar conta com e-mail</p>
+                                            :
+                                            <div>
+                                                <p className={styles.area_bot_title} style={{backgroundColor:"#FF785A"}}>Preencher detalhes</p>
+                                            </div>
+                                        }
+                                        {
+                                            registarTab<=2?
+                                            <p className={styles.area_bot_title_helper}>({registarTab+1}/3)</p>
+                                            :
+                                            <p className={styles.area_bot_title_helper} style={{color:"#FF785A"}}>({registarTab-2}/4)</p>
+                                        }
+                                        <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Detalhes do cliente', 'Palavra-passe'][registarTab]}</p>
+                                        <div className={styles.login_div}>
+                                            {
+                                                registarTab<=2?
+                                                <AuthCarousel 
+                                                    type={workerMode?'worker':null}
+                                                    registarTab={registarTab}
+                                                    email={email}
+                                                    emailWrong={emailWrong}
+                                                    name={name}
+                                                    nameWrong={nameWrong}
+                                                    password={password}
+                                                    passwordWrong={passwordWrong}
+                                                    passwordRepeat={passwordRepeat}
+                                                    passwordRepeatWrong={passwordRepeatWrong}
+                                                    phone={phone}
+                                                    phoneVisual={phoneVisual}
+                                                    phoneWrong={phoneWrong}
+                                                    setEmailHandler={val => setEmailHandler(val)}
+                                                    handleKeyDownRegister={(from, e) => handleKeyDownRegister(from, e)}
+                                                    setPasswordRepeat={val => setPasswordRepeat(val)}
+                                                    setPassword={val => setPassword(val)}
+                                                    setNameHandler={val => setNameHandler(val)}
+                                                    setPhoneHandler={val => setPhoneHandler(val)}
+                                                    setTosAccepted={val => setTosAccepted(val)}
+                                                    tosAccepted={tosAccepted}
+                                                    setTosBanner={() => setTosBanner(true)}
+                                                />
+                                                :
+                                                <AuthCarouselWorker
+                                                    registarTab={registarTab}
+                                                    email={email}
+                                                    phone={phone}
+                                                    name={name}
+                                                    phoneVisual={phoneVisual}
+                                                    selectedProf={selectedProf}
+                                                    selectedProfWrong={selectedProfWrong}
+                                                    selectedReg={selectedReg}
+                                                    selectedRegWrong={selectedRegWrong}
+                                                    selectedType={selectedType}
+                                                    selectedTypeWrong={selectedTypeWrong}
+                                                    entityName={entityName}
+                                                    entityNameWrong={entityNameWrong}
+                                                    updateSelectedProfessions={list => setSelectedProf(list)}
+                                                    updateSelectedRegions={list => setSelectedReg(list)}
+                                                    updateSelectedType={val => setSelectedType(val)&&setEntityNameWrong(false)}
+                                                    updateEntityName={val => setEntityNameHandler(val)}
+                                                    verifySelectedProfessions={() => verifySelectedProfessions()}
+                                                    verifySelectedRegions={() => verifySelectedRegions()}
+                                                    verifySelectedType={() => verifySelectedType()}
+                                                />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className={styles.buttons}>
+                                        {
+                                            registarTab===0?
+                                            <div className={email.length>0&&!emailWrong?workerMode?styles.login_button_worker:styles.login_button_job:styles.login_button_disabled}
+                                                style={{marginTop:0}}
+                                                onClick={() => {!emailWrong&&validateEmailHandler()&&checkEmail()}}>
+                                                <p className={styles.login_text}>Continuar</p>
+                                            </div>
+                                            :
+                                            registarTab===1?
+                                            <div className={styles.buttons_flex}>
+                                                <div className={styles.login_button_voltar}
+                                                    onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                                <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                                </div>
+                                                <div className={!phoneWrong&&!nameWrong?workerMode?styles.login_button_worker:styles.login_button_job:styles.login_button_disabled}
+                                                    style={{marginLeft:'10px', marginTop:0}}
+                                                    onClick={() => {!phoneWrong&&validateNameHandler()&&validatePhoneHandler()&&clearWarnings()}}>
+                                                    <p className={styles.login_text}>Continuar</p>
+                                                </div>
+                                            </div>
+                                            :registarTab===2?
+                                            <div className={styles.buttons_flex}>
+                                                <div className={styles.login_button_voltar}
+                                                    onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                                <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                                </div>
+                                                <div className={tosAccepted&&password.length>7&&passwordRepeat.length>0&&!passwordRepeatWrong?workerMode?styles.login_button_worker:styles.login_button_job:styles.login_button_disabled}
+                                                    style={{marginLeft:'10px', marginTop:0}}
+                                                    onClick={() => {tosAccepted&&password.length>7&&passwordRepeat.length>0&&!passwordRepeatWrong&&validatePasswordHandler()}}>
+                                                    <p className={styles.login_text}>Criar Conta</p>
+                                                </div>
+                                            </div>
+                                            :
+                                            registarTab===3?
+                                            <div className={styles.buttons_flex}>
+                                                <div className={selectedType===0||(selectedType===1&&entityName.length>1)?styles.login_button_worker:styles.login_button_disabled}
+                                                    style={{marginTop:0}}
+                                                    onClick={() => {verifySelectedType()&&clearWarnings()}}>
+                                                    <p className={styles.login_text}>Continuar</p>
+                                                </div>
+                                            </div>
+                                            :
+                                            registarTab===4?
+                                            <div className={styles.buttons_flex}>
+                                                <div className={styles.login_button_voltar}
+                                                    onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                                <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                                </div>
+                                                <div className={selectedProf.length>0?styles.login_button_worker:styles.login_button_disabled}
+                                                    style={{marginTop:0, marginLeft:'10px'}}
+                                                    onClick={() => {verifySelectedProfessions()&&clearWarnings()}}>
+                                                    <p className={styles.login_text}>Continuar</p>
+                                                </div>
+                                            </div>
+                                            :
+                                            registarTab===5?
+                                            <div className={styles.buttons_flex}>
+                                                <div className={styles.login_button_voltar}
+                                                    onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                                <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                                </div>
+                                                <div className={selectedReg.length>0?styles.login_button_worker:styles.login_button_disabled}
+                                                    style={{marginLeft:'10px', marginTop:0}}
+                                                    onClick={() => {verifySelectedRegions()&&clearWarnings()}}>
+                                                    <p className={styles.login_text}>Continuar</p>
+                                                </div>
+                                            </div>
+                                            :
+                                            registarTab===6?
+                                            <div className={styles.buttons_flex}>
+                                                <div className={styles.login_button_voltar}
+                                                    onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                                <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                                </div>
+                                                <div className={selectedReg.length>0?styles.login_button_worker:styles.login_button_disabled}
+                                                    style={{marginLeft:'10px', marginTop:0}}
+                                                    onClick={() => {updateWorkerDetails()}}>
+                                                    <p className={styles.login_text}>Concluir detalhes</p>
+                                                </div>
+                                            </div>
+                                            :null
+                                            
+                                        }  
+                                    </div>
+                                            
+                                    {
+                                        registarTab<=2?
+                                        <div className={styles.bottom_switch}>
+                                            <span className={styles.bottom_switch_text}>Já tens conta? </span>
+                                            <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(1)}>Iniciar Sessão</span>
+                                        </div>
+                                        :<div style={{marginBottom:'20px'}}/>
+                                    }
                                 </div>
                             </div>
-                            <div className={styles.buttons}>
-                                {
-                                    registarTab===0?
-                                    <div className={!emailWrong?styles.login_button:styles.login_button_disabled}
-                                        style={{marginTop:0}}
-                                        onClick={() => {!emailWrong&&validateEmailHandler()&&checkEmail()}}>
-                                        <p className={styles.login_text}>Continuar</p>
-                                    </div>
-                                    :
-                                    registarTab===1?
-                                    <div className={styles.buttons_flex}>
-                                        <div className={styles.login_button_voltar}
-                                            onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
-                                        <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
-                                        </div>
-                                        <div className={!nameWrong?styles.login_button:styles.login_button_disabled}
-                                            style={{marginLeft:'10px', marginTop:0}}
-                                            onClick={() => {validateNameHandler()&&validatePhoneHandler()&&clearWarnings()}}>
-                                            <p className={styles.login_text}>Continuar</p>
-                                        </div>
-                                    </div>
-                                    :registarTab===2?
-                                    <div className={styles.buttons_flex}>
-                                        <div className={styles.login_button_voltar}
-                                            onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
-                                        <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
-                                        </div>
-                                        <div className={tosAccepted?styles.login_button:styles.login_button_disabled}
-                                            style={{marginLeft:'10px', marginTop:0}}
-                                            onClick={() => {tosAccepted&&validatePasswordHandler()}}>
-                                            <p className={styles.login_text}>Criar Conta</p>
-                                        </div>
-                                    </div>
-                                    :null
-                                    
-                                }  
-                            </div>
-                                      
-                            <div className={styles.bottom_switch}>
-                                <span className={styles.bottom_switch_text}>Já tens conta? </span>
-                                <span className={styles.bottom_switch_button} onClick={() => setSelectedAuth(1)}>Iniciar Sessão</span>
-                            </div>
+                            
                         </div>
+                        
                         :null
                     }
                 </div>
@@ -984,7 +1312,7 @@ const Auth = (props) => {
                     null
                 }
 
-                {
+                {/* {
                     selectedAuth===2 || loginTab===1?
                     null
                     :
@@ -1002,16 +1330,16 @@ const Auth = (props) => {
                     <div className={styles.button_area}>
                         <span className={styles.worker_button} onClick={() => navigate('/authentication/worker?type=1')}>Área Profissional</span>
                     </div>
-                }
+                } */}
             </div>
-            <div className={styles.top_right}>
+            {/* <div className={styles.top_right}>
                 <span className={styles.top_right_button} 
                     style={{color:"#0358e5", 
                             fontWeight:!(selectedAuth===2 || loginTab===1)?700:500}} onClick={() => navigate('/authentication/user?type=1')}>Área Cliente</span>
                 <span className={styles.top_right_button} 
                     style={{color:"#FF785A", marginLeft:'5px', 
                             fontWeight:(selectedAuth===2 || loginTab===1)?700:500}} onClick={() => navigate('/authentication/worker?type=1')}>Área Profissional</span>
-            </div>
+            </div> */}
         </div>
     )
 }

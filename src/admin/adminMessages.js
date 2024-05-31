@@ -134,7 +134,7 @@ const Messages = (props) => {
         }
 
         var userWithAdminChat = await axios.get(`${props.api_url}/user/get_user_by_mongo_id`, { params: {_id: selectedChat.user_id} })
-        var workerWithAdminChat = await axios.get(`${props.api_url}/worker/get_worker_by_mongo_id`, { params: {_id: selectedChat.user_id} })
+        // var workerWithAdminChat = await axios.get(`${props.api_url}/worker/get_worker_by_mongo_id`, { params: {_id: selectedChat.user_id} })
 
         let chatId = ObjectID()
         await axios.post(`${props.api_url}/admin_chats/create_or_update_chat`, {
@@ -145,7 +145,7 @@ const Messages = (props) => {
             user_name: selectedChat.user_name,
             text: text_object,
             updated: time,
-            chat_id: userWithAdminChat?.data?.admin_chat || workerWithAdminChat?.data?.admin_chat || chatId
+            chat_id: userWithAdminChat?.data?.admin_chat || chatId
             })
 
         // s.emit("send-message", {

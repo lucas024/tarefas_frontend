@@ -1579,10 +1579,15 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     }
 }
 .verificar_top_wrapper{
-    width: 90%;
+    width: 100%;
     background-color: var(--brand);
     border-radius: 3px;
     margin-top: 10px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 .verificar_top{
     width: 100%;
@@ -1594,6 +1599,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     animation-name: yellow;
     animation-duration: 2s;
     animation-iteration-count: infinite;
+    padding: 3px 0;
     
 }
 .input_div_button_text_no_animation{

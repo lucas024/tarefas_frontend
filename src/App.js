@@ -34,7 +34,6 @@ import {
       } from './store';
 import ProtectedRoute from './protectedRoute';
 import ConfirmEmail from './general/confirmEmail';
-import Tos from './general/tos.js';
 import Pp from './general/pp.js';
 import Landing from './general/landing.js';
 
@@ -92,7 +91,7 @@ const checkWorkerComplete = (worker, userGoogle) => {
     dispatch(user_update_email_verified(true))
     if(worker?.email_verified === false || worker.email_verified == null)
     {
-      axios.post(`${api_url}/worker/verify_email`, {user_id: worker._id})
+      axios.post(`${api_url}/user/verify_email`, {user_id: worker._id})
     }
   }
 }
@@ -262,7 +261,7 @@ const refreshWorker = () => {
                   <ProtectedRoute
                     redirectPath='/'
                     isAllowed={
-                      user?.type===0&&
+                      // user?.type===0&&
                       parseInt(window.localStorage.getItem('loggedIn'))
                     }>
                     <Publicar
@@ -278,7 +277,7 @@ const refreshWorker = () => {
                   <ProtectedRoute
                     redirectPath='/'
                     isAllowed={
-                      user?.type===0&&
+                      // user?.type===0&&
                       parseInt(window.localStorage.getItem('loggedIn'))
                     }>
                     <Publicar
@@ -303,12 +302,12 @@ const refreshWorker = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route exact path="/authentication/worker" 
+              {/* <Route exact path="/authentication/worker" 
                 element={<AuthWorker
                   refreshWorker={() => refreshWorker()}
                   loading={loading}
                   loadingHandler={bool => setLoading(bool)}/>}
-              />
+              /> */}
               <Route path="/authentication/*" 
                 element={<Auth
                   loading={loading}

@@ -54,13 +54,12 @@
     background-color: #00000060;
 }
 .area{
-    padding-bottom: 20px;
-    width: 400px;
+    width: 412px;
     background-color: var(--neutral);
     margin: auto;
     margin-top: 80px;
     border-radius: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 60px;
     position: relative;
 }
 .area_top{
@@ -132,6 +131,86 @@
     flex-direction: column;
     justify-content: center;
 }
+.modo_box{
+    background-color: var(--action);
+    color: var(--neutral);
+    border-radius: 3px;
+    padding: 3px 5px;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    width: fit-content;
+    margin: 0 auto;
+    transition: 150ms all;
+    font-weight: 500;
+}
+.mode{
+    width: 100%;
+    height: 60px;
+    background-color: #FF785A80;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* opacity: 0.6; */
+    cursor: pointer;
+    border: 6px solid var(--action);
+    box-sizing: border-box;
+    border-top: none;
+    border-bottom: 2px solid transparent;
+}
+.mode:hover{
+    background-color: #FF785Aaa;
+    transition: 150ms all;
+}
+.mode:hover > .mode_text{
+    text-decoration: underline;
+    transition: 150ms all;
+}
+.mode_text{
+    font-weight: 600;
+    color: var(--brand);
+    transition: 150ms all;
+}
+.area_bot_upper{
+    border: 6px solid white;
+    border-top: none;
+    border-bottom: none;
+    transition: 150ms all;
+    display: flex;
+    justify-content: center;
+    /* display: flex; */
+    /* justify-content: center; */
+}
+.area_bot_text_wrapper{
+    width: fit-content;
+    text-align: center;
+}
+.area_bot_text{
+    font-size: 0.9rem;
+    /* text-transform: uppercase; */
+    color: var(--action);
+    /* text-align: center; */
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.area_bot_text:hover{
+    opacity: 0.7;
+    transition: 150ms all;
+}
+.area_bot_text_helper{
+    color: var(--brand);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.area_bot_upper_wrapper{
+    border: 6px solid white;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding-top: 40px;
+    border-top: none;
+    transition: 150ms all;
+    box-sizing: border-box;
+}
 .area_bot{
     width: 80%;
     margin: auto;
@@ -140,7 +219,7 @@
     border-radius: 5px;
     background-color: #0358e530;
     padding: 10px 10px;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 .text_brand_wrapper{
     display: flex;
@@ -148,14 +227,13 @@
     /* border-bottom: 1px solid #ccc; */
 }
 .text_brand{
-    width: 120px;
-    margin: 0 auto;
-    
+    width: 230px;
+    margin: 30px auto 20px auto;
 }
 .area_bot_title{
     text-align: center;
     font-weight: 600;
-    background-color: var(--job);
+    background-color: var(--brand);
     padding: 5px;
     border-radius: 5px;
     color: var(--neutral);
@@ -163,7 +241,7 @@
 .area_bot_title_helper{
     text-align: center;
     font-size: 0.9rem;
-    color: var(--job);
+    color: var(--brand);
     font-weight: 600;
     margin-top: 5px;
     font-family: 'Roboto Mono', monospace;
@@ -180,6 +258,7 @@
     margin: 10px 0px;
     font-weight: 400;
     font-size: 0.9rem;
+    margin-top: 0px;
 }
 .area_bot_intro_strong{
     font-weight: 600;
@@ -328,6 +407,7 @@
     height: 50px;
     display: flex;
     align-items: center;
+    margin-top: 5px;
 }
 .input_wrapper{
     display: flex;
@@ -383,6 +463,13 @@
     background-color: var(--brand);
     margin: 0 10px;
 }
+.area_show_letters{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    align-items: center;
+    cursor: pointer;
+}
 .area_password{
     position: relative;
 }
@@ -435,6 +522,36 @@
     align-items: center;
 }
 .login_button:hover{
+    opacity: 0.8;
+    transition: 'opacity' 0.15s ease-in-out;
+}
+.login_button_job{
+    width: 100%;
+    border-radius: 5px;
+    margin-top: 5px;
+    background-color: var(--job);
+    cursor: pointer;
+    color: var(--neutral);
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+.login_button_job:hover{
+    opacity: 0.8;
+    transition: 'opacity' 0.15s ease-in-out;
+}
+.login_button_worker{
+    width: 100%;
+    border-radius: 5px;
+    margin-top: 5px;
+    background-color: var(--job);
+    cursor: pointer;
+    color: var(--neutral);
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+.login_button_worker:hover{
     opacity: 0.8;
     transition: 'opacity' 0.15s ease-in-out;
 }
@@ -505,6 +622,7 @@
     margin-top: 10px;
     font-size: 0.9rem;
     text-align: right;
+    margin-bottom: 20px;
 }
 .bottom_switch_text{
     cursor: default;
@@ -852,6 +970,28 @@
     width: 0;
 }
 
+.container_2 {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size: 1.2rem;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 20px;
+}
+/* Hide the browser's default checkbox */
+.container_2 input {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
 /* Create a custom checkbox */
 .checkmark {
     position: absolute;
@@ -913,6 +1053,11 @@
 background-color: var(--job);
 }
 
+/* When the checkbox is checked, add a blue background */
+.container_2 input:checked ~ .checkmark {
+    background-color: var(--brand);
+    }
+
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
 content: "";
@@ -937,6 +1082,25 @@ border-width: 0 3px 3px 0;
 -ms-transform: rotate(45deg);
 transform: rotate(45deg);
 }
+
+/* Show the checkmark when checked */
+.container_2 input:checked ~ .checkmark:after {
+    display: block;
+    }
+    
+    /* Style the checkmark/indicator */
+.container_2 .checkmark:after {
+    left: 7px;
+    top: 5px;
+    width: 3px;
+    height: 7px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+    
 
     
 /* When the checkbox is checked, add a blue background */
@@ -1273,6 +1437,12 @@ transform: rotate(45deg);
         font-size: 0.9rem;
     }
     .login_button{
+        height: 40px;
+    }
+    .login_button_job{
+        height: 40px;
+    }
+    .login_button_worker{
         height: 40px;
     }
     .login_button_worker{

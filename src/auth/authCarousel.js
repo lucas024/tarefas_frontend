@@ -12,6 +12,9 @@ import PhoneIcon from '@mui/icons-material/Phone';
 
 
 const AuthCarousel = props => {
+
+    const [showLetters, setShowLetters] = useState(false)
+
     return (
         <Carousel 
             swipeable={false}
@@ -42,7 +45,7 @@ const AuthCarousel = props => {
 
             <div className={styles.login}>
                 <span className={styles.area_bot_intro_wrapper} style={{marginBottom:'20px'}}>
-                    <EmailIcon className={styles.area_bot_intro_icon}/>
+                    <EmailIcon className={styles.area_bot_intro_icon} style={{color:props.type==='worker'?"#FF785A":"#0358e5"}}/>
                     <span className={styles.area_bot_intro_strong_two}>{props.email}</span>
                 </span>
                 
@@ -89,22 +92,35 @@ const AuthCarousel = props => {
 
             <div className={styles.login}>
                 <span className={styles.area_bot_intro_wrapper}>
-                    <EmailIcon className={styles.area_bot_intro_icon}/>
+                    <EmailIcon className={styles.area_bot_intro_icon} style={{color:props.type==='worker'?"#FF785A":"#0358e5"}}/>
                     <span className={styles.area_bot_intro_strong_two}>{props.email}</span>
                 </span>
 
                 <span className={styles.area_bot_intro_wrapper}>
-                    <PersonIcon className={styles.area_bot_intro_icon}/>
+                    <PersonIcon className={styles.area_bot_intro_icon} style={{color:props.type==='worker'?"#FF785A":"#0358e5"}}/>
                     <span className={styles.area_bot_intro_strong_two}>{props.name}</span>
                 </span>
                 <span className={styles.area_bot_intro_wrapper} style={{marginBottom:'20px'}}>
-                    <PhoneIcon className={styles.area_bot_intro_icon}/>
+                    <PhoneIcon className={styles.area_bot_intro_icon} style={{color:props.type==='worker'?"#FF785A":"#0358e5"}}/>
                     <span className={styles.area_bot_intro_strong_two}>{props.phoneVisual}</span>
                 </span>
+                
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                    <p className={styles.register_title}>Palavra-passe</p>
+                    <div className={styles.area_show_letters} onClick={() => setShowLetters(!showLetters)}>
+                        <span className={styles.checkbox_text} style={{fontSize:'0.8rem', marginRight:'5px'}}>Ver caracteres</span>
+                            <div style={{cursor:"pointer", marginTop:'0'}} className={styles.container_2}>
+                                
+                                <input tabindex={'-1'} type="checkbox" readOnly checked={showLetters}/>
+                                <span className={styles.checkmark} style={{borderRadius:'20px', height:'20px', width:'20px'}}></span>
 
-                <p className={styles.register_title}>Palavra-passe</p>
+                            </div>
+                    </div>
+                </div>
+                
                 <span className={styles.area_bot_intro}>Estás a criar uma palavra-passe para o email <span className={styles.area_bot_intro_strong}>{props.email}</span>.</span>
                 <div className={styles.area_password}>
+
                     <div className={styles.area_password_min_wrapper}>
                         <span className={styles.area_password_min}>mín. 8 caracteres</span>
                         <CheckIcon className={styles.area_password_min_icon} style={{color:props.password?.length>7?props.type==='worker'?"#FF785A":"#0358e5":""}}/>
@@ -113,7 +129,7 @@ const AuthCarousel = props => {
                         tabindex={props.registarTab===2?'1':'-1'}
                         autoComplete="new-password"
                         maxLength={40} 
-                        type="password"
+                        type={showLetters?"none":"password"}
                         onChange={e => props.setPassword(e.target.value)} 
                         className={styles.login_input} 
                         placeholder="Palavra-passe" 
@@ -130,7 +146,7 @@ const AuthCarousel = props => {
                     onKeyDown={e => props.handleKeyDownRegister('password', e)}
                     autoComplete="new-password"
                     maxLength={40} 
-                    type="password"
+                    type={showLetters?"none":"password"}
                     onChange={e => props.setPasswordRepeat(e.target.value)} 
                     className={styles.login_input} 
                     placeholder="Repetir palavra-passe" 
@@ -151,12 +167,6 @@ const AuthCarousel = props => {
                         e.stopPropagation()
                     }} style={{color:"#0358e5", cursor:'pointer'}}>Termos e Condições.</span></span>
                 </div>
-
-                {
-                    props.type==="worker"?
-                    <p className={styles.info_bottom}>Se no futuro quiser publicar uma tarefa, terá que o fazer <strong>criando uma conta de cliente com um e-mail diferente</strong>.</p>
-                    :null
-                }
             </div>
         </Carousel>
     )

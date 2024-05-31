@@ -110,6 +110,7 @@ const profissoesPngs = {
     profissoes_vestuario: require('../assets/professions/clothes.png'),
     advogado: require('../assets/professions/line.png'),
     ar_condicionado: require('../assets/professions/air-conditioner.png'),
+    old: require('../assets/professions/old.png'),
     baby_sitter: require('../assets/professions/baby.png'),
     cooking: require('../assets/professions/frying-pan.png'),
     lamp: require('../assets/professions/table-lamp.png'),
@@ -174,6 +175,7 @@ const profissoesMap = {
     advogado: { value: 'advogado', label: 'Advogado',  img: profissoesPngs['advogado'], solo: true},
     arquiteto: { value: 'arquiteto', label: 'Arquiteto', img: profissoesPngs['arquiteto'], solo: true},
     ar_condicionados: { value: 'ar_condicionados', label: 'Ar-Condicionados', img: profissoesPngs['ar_condicionado'], solo: true },
+    assistencia_a_idosos: { value: 'assistencia_a_idosos', label: 'Assistência a Idosos', img: profissoesPngs['old'], solo: true },
     baby_sitter: { value: 'baby_sitter', label: 'Baby-sitter', img: profissoesPngs['baby_sitter'], solo: true },
     canalizador: { value: 'canalizador', label: 'Canalizador', img: profissoesPngs['canalizador'], solo: true },
     carpinteiro: { value: 'carpinteiro', label: 'Carpinteiro', img: profissoesPngs['carpinteiro'], solo: true },
@@ -319,6 +321,10 @@ const profissoesGrouped = [
     {
         label: 'no-label',
         options: [profissoesMap.ar_condicionados],
+    },
+    {
+        label: 'no-label',
+        options: [profissoesMap.assistencia_a_idosos],
     },
     {
         label: 'no-label',

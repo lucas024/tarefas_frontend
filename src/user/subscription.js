@@ -2,15 +2,12 @@ import React, {useState, useEffect, useRef} from 'react'
 import styles from './subscription.module.css'
 import Check from '@mui/icons-material/Check';
 import chip from '../assets/chip.png'
-import validator from 'validator'
 import basic from '../assets/basic.png'
 import medium from '../assets/real_medium.png'
 import pro from '../assets/medium.png'
 import hand from '../assets/hand.png'
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
-import CircleIcon from '@mui/icons-material/Circle';
 import axios from 'axios'
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import visa from '../assets/visa.png'
 import mastercard from '../assets/mastercard_2.jpg'
 import american from '../assets/american-express.png'
@@ -26,14 +23,9 @@ import {
     useElements
 } from '@stripe/react-stripe-js';
 import Loader from '../general/loader';
-import ClearIcon from '@mui/icons-material/Clear';
-import NoPage from '../general/noPage';
 import SubscriptionAlterar from './subscription_alterar';
 import ConfirmBanner from '../general/confirmBanner';
 import { useSelector } from 'react-redux'
-import TitleIcon from '@mui/icons-material/Title';
-import PersonIcon from '@mui/icons-material/Person';
-import MessageIcon from '@mui/icons-material/Message';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { 
     worker_update_is_subscribed,
@@ -92,6 +84,8 @@ const Subscription = props => {
     const [applyDiscount, setApplyDiscount] = useState(false)
     const [discountSubscriber, setDiscountSubscriber] = useState(false)
     const [trialActive, setTrialActive] = useState(false)
+
+    const test_mode = true
 
     const stripe = useStripe();
     const elements = useElements();
@@ -246,11 +240,6 @@ const Subscription = props => {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                 }
             })
 
             console.log(sub_obj)
@@ -298,7 +287,7 @@ const Subscription = props => {
                             _id: user._id,
                             name: cardName,
                             sub_id: sub_obj.data.subscriptionId,
-                            price_id: getAmountPay(selectedPlan),
+                            price_id: selectedPlan&&getFuturePay(selectedPlan),
                             discount: discountSubscriber||applyDiscount
                         })
                         props.refreshWorker()
@@ -341,34 +330,68 @@ const Subscription = props => {
     }
 
     const getPlanFromPriceId = priceId => {
-        if(priceId === ("price_1PIoZ3KC1aov6F9pqIDTD2VU"||"price_1PIoZ3KC1aov6F9pOWGt2QVr")) return 2
-        else if(priceId === ("price_1PIoYsKC1aov6F9pvUQj1ee4"||"price_1PIoYsKC1aov6F9prY0S3Bw3")) return 3
-        else return 1
+        if(test_mode)
+        {
+            if(priceId === ("price_1LKQUyKC1aov6F9pTpM3gn0l"||"price_1P6rPWKC1aov6F9pIJWMdRNq")) return 2
+            else if(priceId === ("price_1LKQVEKC1aov6F9p4RgyXAqj"||"price_1P6rOpKC1aov6F9pQ9twSRv7")) return 3
+            else return 1
+        }
+        else
+        {
+            if(priceId === ("price_1PIoZ3KC1aov6F9pqIDTD2VU"||"price_1PIoZ3KC1aov6F9pOWGt2QVr")) return 2
+            else if(priceId === ("price_1PIoYsKC1aov6F9pvUQj1ee4"||"price_1PIoYsKC1aov6F9prY0S3Bw3")) return 3
+            else return 1
+        }
     }
 
     const getFuturePay = plan => {
-        if(plan===1)
+        if(test_mode)
         {
-            return discountSubscriber||applyDiscount?"price_1PIoZ8KC1aov6F9p615as8bo"
-                                                    // "price_1PJI3fKC1aov6F9pbLQDFWlj"
-                                                    :
-                                                    "price_1PIoZ8KC1aov6F9p1538vD7u"
+            if(plan===1)
+                {
+                    return discountSubscriber||applyDiscount?"price_1P6rPxKC1aov6F9pVup1aLnE"
+                                                            :
+                                                            "price_1LKQUSKC1aov6F9p9gL1euLW"
+                }
+                else if(plan===2)
+                {
+                    return discountSubscriber||applyDiscount?"price_1P6rPWKC1aov6F9pIJWMdRNq":"price_1LKQUyKC1aov6F9pTpM3gn0l"
+                }
+                else{
+                    return discountSubscriber||applyDiscount?"price_1P6rOpKC1aov6F9pQ9twSRv7":"price_1LKQVEKC1aov6F9p4RgyXAqj"
+                }
         }
-        else if(plan===2)
+        else
         {
-            return discountSubscriber||applyDiscount?"price_1PIoZ3KC1aov6F9pOWGt2QVr":"price_1PIoZ3KC1aov6F9pqIDTD2VU"
-        }
-        else{
-            return discountSubscriber||applyDiscount?"price_1PIoYsKC1aov6F9prY0S3Bw3":"price_1PIoYsKC1aov6F9pvUQj1ee4"
+            if(plan===1)
+                {
+                    return discountSubscriber||applyDiscount?"price_1PIoZ8KC1aov6F9p615as8bo"
+                                                            // "price_1PJI3fKC1aov6F9pbLQDFWlj"
+                                                            :
+                                                            "price_1PIoZ8KC1aov6F9p1538vD7u"
+                }
+                else if(plan===2)
+                {
+                    return discountSubscriber||applyDiscount?"price_1PIoZ3KC1aov6F9pOWGt2QVr":"price_1PIoZ3KC1aov6F9pqIDTD2VU"
+                }
+                else{
+                    return discountSubscriber||applyDiscount?"price_1PIoYsKC1aov6F9prY0S3Bw3":"price_1PIoYsKC1aov6F9pvUQj1ee4"
+                }
         }
     }
+
+    
 
     const getAmountPay = subscription => {
         if(subscription.new_price_id !== null && subscription.new_price_id !== undefined)
         {
-            if(new Date(subscription.new_price_date) < new Date())
+            if(new Date(subscription.new_price_date*1000) < new Date())
             {
                 return subscription.new_price_id
+            }
+            else
+            {
+                return subscription.price_id
             }
         }
         else
@@ -513,27 +536,42 @@ const Subscription = props => {
             return;
         }
 
-        let val = await axios.post(`${api_url}/cancel-subscription`, {
-            subscription: user.subscription,
-            current_amount: getAmountPay(user.subscription),
-        })
-
-        switch (val.status) {
-            case 200:
-                props.refreshWorker()
-                setLoading(false)
-                setCancelSubscriptionPopin(true)
-                setTimeout(() => setCancelSubscriptionPopin(false), 4000)
-                break;
-  
-        //     // case 'processing':
-        //     //   setMessage("Payment processing. We'll update you when payment is received.");
-        //     //   break;
-  
-            default:
-                setLoading(false)
-                break;
+        try
+        {
+            let val = await axios.post(`${api_url}/cancel-subscription`, {
+                subscription: user.subscription,
+                current_amount: getAmountPay(user.subscription),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            
+            console.log(val)
+            switch (val.status) {
+                case 200:
+                    props.refreshWorker()
+                    setLoading(false)
+                    setCancelSubscriptionPopin(true)
+                    setTimeout(() => setCancelSubscriptionPopin(false), 4000)
+                    break;
+      
+            //     // case 'processing':
+            //     //   setMessage("Payment processing. We'll update you when payment is received.");
+            //     //   break;
+      
+                default:
+                    setLoading(false)
+                    break;
+            }
         }
+        catch (err)
+        {
+            console.log(err)
+            setGeneralFail(true)
+            setTimeout(() => setGeneralFail(false), 4000)
+            setLoading(false)
+        }
+        
     }
 
     const cardValidHanlder = val => {
@@ -637,21 +675,18 @@ const Subscription = props => {
                                 />
                             :null
                     }
-                    <div className={styles.subscription_title}>
-                        <span className={styles.top_title}>Subscrição</span>
-                    </div>
                     {
-                        display!==-1?
+                        display!==-1&&isCanceled?
                         <div className={styles.display}>
                             <div className={styles.display_top}>
                                 <div className={styles.display_user}>
                                     <div className={styles.user_top_flex}>
-                                        <span className={styles.user_desc_top}>Estado da Subscrição</span>
+                                        {/* <span className={styles.user_desc_top}>Estado da Subscrição</span>
                                         {
                                             endDate>currentDate || trialActive&&daysTillCharge?
                                             <span className={styles.user_desc} style={{color:"#0358e5"}}>ATIVADA</span>
                                             :<span className={styles.user_desc_dark} style={{color:"#fdd835"}}>DESATIVADA</span>
-                                        }
+                                        } */}
                                         
                                         {
                                             isCanceled?
@@ -693,7 +728,7 @@ const Subscription = props => {
                             display===4||display===1?
                             <div className={styles.sub_info_main}>
                                 {/* <span ref={scrolltopref}/> */}
-                                <div className={styles.sub_info_wrap}>
+                                {/* <div className={styles.sub_info_wrap}>
                                     <div className={styles.verificar_top_wrapper}>
                                         <div className={styles.verificar_top}>
                                             <span className={styles.input_div_button_text_no_animation} style={{textTransform:'uppercase', backgroundColor:"transparent"}}>Ativar Subscrição</span>
@@ -738,11 +773,19 @@ const Subscription = props => {
                                         }
                                         
                                     </div>
+                                </div> */}
+                                <div className={styles.verificar_top_wrapper}>
+                                    <div className={styles.verificar_top}>
+                                        <span className={styles.input_div_button_text_no_animation} style={{textTransform:'uppercase', backgroundColor:"transparent"}}>Ativar Subscrição</span>
+                                    </div>
                                 </div>
+
                                 {
                                     display===4?
                                     <div className={styles.sub_info_bottom_wrapper}>
+                                        
                                         <div className={styles.sub_info_bottom}>
+      
                                             {
                                                 !user.trial?
                                                 <div>

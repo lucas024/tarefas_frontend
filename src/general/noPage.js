@@ -11,17 +11,18 @@ const NoPage = (props) => {
     return (
         <div className={styles.blank} style={{borderTop:props.object==="no_search"?"none":""}}>
             {
-                props.object==="mensagens"?
+                props.object==="mensagens_worker"?
                 <div className={styles.blank_flex}>
-                    <span className={styles.blank_text} style={{color:"white"}}>Ainda não tens mensagens</span>
+                    <span className={styles.blank_text} style={{color:"white"}}>Ainda não tens mensagens...</span>
                     <ChatIcon className={styles.blank_face} style={{color:"white"}}/>
                     <span className={styles.blank_request} style={{color:"white"}}>
                         Procurar <span className={styles.blank_request_click} style={{color:"#0358e5"}} onClick={() => navigate('/main/publications/trabalhos')}>tarefas</span>
+                        <span> ou </span> <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/profissionais')}>profissionais</span>
                     </span>
                 </div>
                 :props.object==="mensagens_user"?
                 <div className={styles.blank_flex}>
-                    <span className={styles.blank_text} style={{color:"white"}}>Ainda não tens mensagens</span>
+                    <span className={styles.blank_text} style={{color:"white"}}>Ainda não tens mensagens...</span>
                     <ChatIcon className={styles.blank_face} style={{color:"white"}}/>
                     <span className={styles.blank_request} style={{color:"white"}}>
                         Procurar <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/profissionais')}>profissionais</span>
@@ -45,7 +46,7 @@ const NoPage = (props) => {
                 </div>
                 :props.object==="no_search"?
                 <div className={styles.blank_flex} style={{marginTop:"100px"}}>
-                    <span className={styles.blank_text} style={{color:"#ffffff"}}>Sem resultados para esta pesquisa</span>
+                    <span className={styles.blank_text} style={{color:"#ffffff"}}>Sem resultados para esta pesquisa...</span>
                     <Sad className={styles.blank_face_small} style={{color:"white"}}/>
                     <span className={styles.button} style={{backgroundColor:props.type==="trabalhos"?"#0358e5":"#FF785A"}} onClick={() => props.limparPesquisa()}>
                         Limpar Pesquisa

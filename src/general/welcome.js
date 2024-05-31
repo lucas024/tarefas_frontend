@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from './welcome.module.css'
-import logo_text from '../assets/logo_text_mix_3.png'
+import logo_text from '../assets/logo_text_mix_4.png'
 import {CSSTransition}  from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
 import image1 from '../assets/1.png'

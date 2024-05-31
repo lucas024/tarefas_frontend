@@ -236,6 +236,15 @@
     animation-duration: 2s;
     animation-iteration-count: infinite;
 }
+.notification_flex{
+    display: flex;
+}
+.notification_notification{
+    height: 20px !important;
+    width: 20px !important;
+    align-self: center;
+    color: var(--yellow);
+}
 .worker_text_div{
     color: var(--neutral);
     font-weight: 400;
@@ -272,6 +281,10 @@
 @media (max-width: 1024px){
     .prox{
         font-size: 0.9rem;
+    }
+    .notification_notification{
+        width: 15px !important;
+        height: 15px !important;
     }
 }
 

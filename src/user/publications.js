@@ -181,7 +181,7 @@ const Publications = (props) => {
         <div className={styles.reserva_list}>
             <Loader loading={loading}/>
             <div className={styles.list_title}>
-                <span className={styles.top_title}>As minhas Tarefas</span>
+                <span className={styles.top_title}>Tarefas</span>
             </div>
 
             <div className={styles.list}>
@@ -196,9 +196,9 @@ const Publications = (props) => {
                         loaded?
                         <div className={styles.item_none} style={{padding:"30px 0"}}>
                             <div className={styles.item_flex}>
-                                <span className={styles.item_type_tbd}>Sem Tarefas activas</span>
+                                <span className={styles.item_type_tbd}>Sem tarefas activas</span>
                                 <span className={styles.publicar} onClick={() => {navigate('/publicar/novo', {replace: true})}}>
-                                    PUBLICAR
+                                    NOVA TAREFA
                                 </span>
                             </div>
                         </div>

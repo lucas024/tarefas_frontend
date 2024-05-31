@@ -14,17 +14,19 @@ import ChatIcon from '@mui/icons-material/Chat';
 import CircleIcon from '@mui/icons-material/Circle';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import Loader from '../general/loader';
-import AssignmentdIcon from '@mui/icons-material/Assignment';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import TitleIcon from '@mui/icons-material/Title';
 import { useSelector } from 'react-redux'
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
-
+import SettingsIcon from '@mui/icons-material/Settings';
+import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
+import EmailUnverified from '@mui/icons-material/UnsubscribeOutlined';
 
 const UserSidebar = (props) => {
     const user_phone_verified = useSelector(state => {return state.user_phone_verified})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
     const user = useSelector(state => {return state.user})
     const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
+    const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
 
     const [searchParams] = useSearchParams()
     const [selectedSidebar, setSelectedSidebar] = useState("pedidos")
@@ -35,7 +37,7 @@ const UserSidebar = (props) => {
 
     useEffect(() => {
         let val = Object.fromEntries([...searchParams]).t
-        if(val === "publications" || val === "support" ||  val === "personal" ||  val === "messages" || val === "subscription"){
+        if(val === "publications" || val === "support" ||  val === "conta" ||  val === "messages" || val === "profissional"){
             setSelectedSidebar(val)
         }
     }, [searchParams])
@@ -63,7 +65,7 @@ const UserSidebar = (props) => {
                         user&&user.photoUrl?
                         <img className={styles.sidebar_img} src={user.photoUrl}/>
                         :!loading?
-                        user?.type===0?
+                        !user?.worker?
                         <FaceIcon className={styles.sidebar_img_icon}/>
                         :
                         <EmojiPeopleIcon className={styles.sidebar_img_icon} style={{transform: 'scaleX(-1)', padding:'5px', boxSizing:'border-box'}}/>
@@ -79,70 +81,43 @@ const UserSidebar = (props) => {
                 <div>
                 <List
                     component="nav" className={styles.sidebar_list}
-                >
-                    {
-                        user?.type?
-                        null:
-                        <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("publications")}>
-                            {
-                                selectedSidebar==="publications"?
-                                    <div className={styles.sidebar_item_opacity}/>
-                                :null
-                            }
-                            <ListItemIcon>
-                                <AssignmentdIcon sx={{color:"#ffffff", zIndex:1}} className={styles.sidebar_small_icon}/>
-                            </ListItemIcon>
-                            <ListItemText primary={<span className={styles.prox}>Minhas Tarefas</span>} sx={{color:"#ffffff", zIndex:1}}/>
-                        </ListItemButton >
-                    }
-                    
-                    <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("personal")}>
+                >   
+                    <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("conta")}>
                         {
-                            selectedSidebar==="personal"?
+                            selectedSidebar==="conta"?
                                 <div className={styles.sidebar_item_opacity}/>
                             :null
                         }
                         <ListItemIcon>
-                            <AccountCircleIcon sx={{color:"#ffffff", zIndex:1}} className={styles.sidebar_small_icon}/>
+                            <SettingsIcon sx={{color:"#ffffff", zIndex:1}} className={styles.sidebar_small_icon}/>
                         </ListItemIcon>
                         <ListItemText primary={
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
-                                <span className={styles.prox}>Perfil</span>
+                                <span className={styles.prox}>Conta</span>
                                 {
-                                    user.type===0&&!(user_phone_verified&&user_email_verified)?
+                                    !user.worker&&!(user_phone_verified&&user_email_verified)?
                                     <span className={styles.drop_div_notification}/>
                                     :
-                                    user.type===1&&!(user.regioes?.length>0&&user.trabalhos?.length>0&&user_phone_verified&&user_email_verified)?
-                                    <span className={styles.drop_div_notification}/>
+                                    user.worker&&!(user_phone_verified&&user_email_verified)?
+                                    <EmailUnverified className={styles.notification_notification}/>
                                     :null
                                 }
                             </div>
                             } sx={{color:"#ffffff"}}/>
                     </ListItemButton >
-                    {
-                        user?.type?
-                        <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("subscription")}>
-                            {
-                                selectedSidebar==="subscription"?
-                                    <div className={styles.sidebar_item_opacity}/>
-                                :null
-                            }
-                            <ListItemIcon>
-                                <CardMembershipIcon sx={{color:"#fff", zIndex:1}} className={styles.sidebar_small_icon}/>
-                            </ListItemIcon>
-                            <ListItemText primary={
-                                <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
-                                    <span className={styles.prox}>Subscrição</span>
-                                    {
-                                    !worker_is_subscribed?
-                                    <span className={styles.drop_div_notification}/>
-                                    :null
-                                    }
-                                </div>
-                            } sx={{color:"#fff", zIndex:1}}/>
-                        </ListItemButton >
-                        :null
-                    }
+
+                    <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("publications")}>
+                        {
+                            selectedSidebar==="publications"?
+                                <div className={styles.sidebar_item_opacity}/>
+                            :null
+                        }
+                        <ListItemIcon>
+                            <TitleIcon sx={{color:"#ffffff", zIndex:1}} className={styles.sidebar_small_icon}/>
+                        </ListItemIcon>
+                        <ListItemText primary={<span className={styles.prox}>Tarefas</span>} sx={{color:"#ffffff", zIndex:1}}/>
+                    </ListItemButton >
+
                     <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("messages")}>
                         {
                             selectedSidebar==="messages"?
@@ -159,9 +134,38 @@ const UserSidebar = (props) => {
                             </span>
                         } sx={{color:"#fff", zIndex:1}}/>
                     </ListItemButton >
+
+                    <ListItemButton className={styles.sidebar_item} onClick={() => sidebarNavigate("profissional")}>
+                        {
+                            selectedSidebar==="profissional"?
+                                <div className={styles.sidebar_item_opacity}/>
+                            :null
+                        }
+                        <ListItemIcon>
+                            <EmojiPeopleIcon className={styles.sidebar_small_icon} style={{color:'#FF785A', transform: 'scaleX(-1)', zIndex:1}}/>
+                        </ListItemIcon>
+                        <ListItemText primary={
+                            <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
+                                <span className={styles.prox} style={{color:"#FF785A"}}>Profissional</span>
+                                <div className={styles.notification_flex}>
+                                    {
+                                        !worker_profile_complete?
+                                        <DisplaySettingsIcon className={styles.notification_notification}/>
+                                        :null
+                                    }
+                                    {
+                                        !worker_is_subscribed?
+                                        <CardMembershipIcon className={styles.notification_notification}/>
+                                        :null
+                                    }
+                                    
+                                </div>
+                            </div>
+                        } sx={{color:"#fff", zIndex:1}}/>
+                    </ListItemButton >
                 </List>
                 {
-                    user?.type?
+                    user?.worker?
                     <div className={styles.status} style={{borderColor:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
                         <Loader loading={loadingSub}/>
                         <div className={styles.status_top}>
@@ -173,19 +177,31 @@ const UserSidebar = (props) => {
                                 }
                             </p>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("personal")} style={{backgroundColor:(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?"#0358e540":"#fdd83540"}}>
-                            <AccountCircleIcon sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("conta")} style={{backgroundColor:(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?"#0358e540":"#fdd83540"}}>
+                            <EmailUnverified sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>
                             <div className={styles.status_div_flex}>
                                 <span className={styles.status_div_val} style={{color:(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?"#0358e5":"#fdd835"}}>
                                 {
                                     (user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?
-                                    "PERFIL COMPLETO"
-                                    :"PERFIL INCOMPLETO"
+                                    "EMAIL VERIFICADO"
+                                    :"EMAIL NÃO VERIFICADO"
                                 }
                                 </span>
                             </div>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("subscription")} style={{backgroundColor:worker_is_subscribed?"#0358e540":"#fdd83540"}}>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("profissional")} style={{backgroundColor:worker_is_subscribed?"#0358e540":"#fdd83540"}}>
+                            <DisplaySettingsIcon sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>
+                            <div className={styles.status_div_flex}>
+                                <span className={styles.status_div_val} style={{color:worker_is_subscribed?"#0358e5":"#fdd835"}}>
+                                {
+                                    worker_is_subscribed?
+                                    "DETALHES PREENCHIDOS"
+                                    :"DETALHES NÃO PREENCHIDOS"
+                                }
+                                </span>
+                            </div>
+                        </div>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("profissional")} style={{backgroundColor:worker_is_subscribed?"#0358e540":"#fdd83540"}}>
                             <CardMembershipIcon sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>
                             <div className={styles.status_div_flex}>
                                 <span className={styles.status_div_val} style={{color:worker_is_subscribed?"#0358e5":"#fdd835"}}>
@@ -201,7 +217,7 @@ const UserSidebar = (props) => {
                     :null
                 }
                 {
-                    user?.type && !worker_is_subscribed && ((user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0)?
+                    user?.worker && !worker_is_subscribed && ((user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0)?
                     <div className={styles.worker_text_div}>
                         Ativa a tua conta tendo o teu
                         <span className={styles.worker_text_text}> perfil completo </span>

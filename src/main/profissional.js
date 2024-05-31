@@ -46,7 +46,11 @@ const Profissional = props => {
         paramsAux.region&&setLocationActive(paramsAux.region)
         paramsAux.work&&setWorkerActive(paramsAux.work)
         user?._id===paramsAux.id&&setOwnPost(true)
-        axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: paramsAux.id} }).then(res => {
+        // axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: paramsAux.id} }).then(res => {
+        //     res.data!=""&&setWorker(res.data)
+        //     setLoading(false)
+        // })
+        axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: paramsAux.id} }).then(res => {
             res.data!=""&&setWorker(res.data)
             setLoading(false)
         })

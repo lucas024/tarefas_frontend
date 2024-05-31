@@ -76,6 +76,10 @@ const WorkerBanner = (props) => {
                 </div>
                 <div className={styles.divider} style={{marginTop:'15px'}}/>
                 <div className={styles.popup_inner}>
+                    <span className={styles.title}>
+                        Queres encontrar tarefas para realizar, receber contacto dos utlizadores e expôr o teu négocio?
+                        <p style={{fontWeight:'400'}}>Torna-te um profissional criando a tua conta e ativando o modo profissional.</p>
+                    </span>
                     <span className={styles.line_title} style={{marginTop:'15px'}}>Benefícios</span>
                     <div className={styles.line}>
                         <img className={styles.line_image} src={tarefas}/>
@@ -146,10 +150,10 @@ const WorkerBanner = (props) => {
                     <span className={styles.line_title} style={{marginBottom:'10px'}}>3 passos</span>
                     <div className={styles.steps}>
                         
-                        <p className={styles.info_bottom_text} style={{marginBottom:'10px', fontWeight:500}}>Ser um profissional no TAREFAS é simples.<br/>Segue os passos abaixo e começa a encontrar tarefas.</p>
+                        <p className={styles.info_bottom_text} style={{marginBottom:'10px', fontWeight:500}}>Ser um profissional no TAREFAS é simples.<br/>Segue os passos abaixo e começa a realizar tarefas.</p>
                         <div className={styles.steps_line}>
                             <span className={styles.steps_line_number}>1</span>
-                            <p className={styles.steps_line_text}>Cria a tua conta de profissional</p>
+                            <p className={styles.steps_line_text}>Cria a tua conta e ativa o modo profissional</p>
                         </div>
                         <div className={styles.steps_line}>
                             <span className={styles.steps_line_number}>2</span>
@@ -168,14 +172,13 @@ const WorkerBanner = (props) => {
                 <span className={styles.confirm_button} onClick={() => props.confirm()}>
                     {
                         props.authPage?
-                        'CONTINUAR PARA CRIAÇÃO DE CONTA'
+                        'ATIVAR MODO PROFISSIONAL'
                         :
-                        'CRIAR CONTA DE PROFISSIONAL'
+                        'CONTINUAR PARA CRIAÇÃO DE CONTA'
                     }
-                    
                 </span>
                 {
-                    !props.authPage?
+                    props.authPage?
                     <span className={styles.cancel} onClick={() => props.cancel()}>fechar</span>
                     :null
                 }

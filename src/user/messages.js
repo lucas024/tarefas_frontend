@@ -142,49 +142,49 @@ const AdminMessages = () => {
         if(user){
             setLoading(true)
             setLoadingChats(true)
-            if(user.type===1){
-                axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: user._id} })
-                .then(res => {
-                    if(res.data!==''){
-                        setIsLoaded(true)
-                        setLoadingChats(false)
-                        setLoading(false)
-                        if(res.data?.chats?.length>0)
-                        {
-                            setChats(JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp)))))
-                            for(let el of res.data.chats)
-                            {
-                                if(el.chat_id === selectedChatId)
-                                {
-                                    setChatDisplayInformation(el)
-                                }
-                            }
-                        }
+            // if(user.type===1){
+            //     axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: user._id} })
+            //     .then(res => {
+            //         if(res.data!==''){
+            //             setIsLoaded(true)
+            //             setLoadingChats(false)
+            //             setLoading(false)
+            //             if(res.data?.chats?.length>0)
+            //             {
+            //                 setChats(JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp)))))
+            //                 for(let el of res.data.chats)
+            //                 {
+            //                     if(el.chat_id === selectedChatId)
+            //                     {
+            //                         setChatDisplayInformation(el)
+            //                     }
+            //                 }
+            //             }
                             
-                    } 
-                })
-            }
-            else{
-                axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
-                .then(res => {
-                    if(res.data!==''){
-                        setIsLoaded(true)
-                        setLoadingChats(false)
-                        setLoading(false)
-                        if(res.data?.chats?.length>0)
+            //         } 
+            //     })
+            // }
+            // else{
+            axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
+            .then(res => {
+                if(res.data!==''){
+                    setIsLoaded(true)
+                    setLoadingChats(false)
+                    setLoading(false)
+                    if(res.data?.chats?.length>0)
+                    {
+                        setChats(JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp)))))
+                        for(let el of res.data.chats)
                         {
-                            setChats(JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp)))))
-                            for(let el of res.data.chats)
+                            if(el.chat_id === selectedChatId)
                             {
-                                if(el.chat_id === selectedChatId)
-                                {
-                                    setChatDisplayInformation(el)
-                                }
+                                setChatDisplayInformation(el)
                             }
                         }
-                    } 
-                })
-            }         
+                    }
+                } 
+            })
+            // }         
 
             // const newSocket = io(
             //     'https://socket-dot-vender-344408.ew.r.appspot.com:65080',
@@ -863,9 +863,9 @@ const AdminMessages = () => {
                                     </div>
                                 </div>
                             </div>
-                            :(!chats||chats?.length===0)&&user?.type===1?
-                            <NoPage object={"mensagens"}/>
-                            :(!chats||chats?.length===0)&&user?.type===0?
+                            :(!chats||chats?.length===0)&&user?.worker?
+                            <NoPage object={"mensagens_worker"}/>
+                            :(!chats||chats?.length===0)&&!user?.worker?
                             <NoPage object={"mensagens_user"}/>
                             :!selectedChat?<NoPage object={"select_message"}/>
                             :null

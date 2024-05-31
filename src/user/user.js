@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import styles from './user.module.css'
 import UserSidebar from './userSidebar'
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Publications from './publications';
 import Personal from './personal';
 import Suporte from './suporte';
 import Messages from './messages';
-import Subscription from './subscription';
-import {Elements} from '@stripe/react-stripe-js';
-import {loadStripe} from '@stripe/stripe-js';
 import Loader from '../general/loader';
 import { useSelector } from 'react-redux'
-
-const stripePromise = loadStripe('pk_live_ypMbNWLAJDZYOWG4JqncBktA00qBx03bOR');
+import UserProfissional from './user_profissional';
 
 const User = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -52,20 +48,16 @@ const User = (props) => {
 
     const displayCurrentArea = () => {
         let val = Object.fromEntries([...searchParams]).t
-        if(val === "publications" && user?.type!==1)
+        if(val === "publications")
             return <Publications reservations={reservations} user={user} refreshPublications={() => updateReservations()} loaded={loaded}/>
-        else if(val === "personal")
+        else if(val === "conta")
             return <Personal loaded={loaded}/>
         else if(val === "support")
             return <Suporte/>
         else if(val === "messages")
             return <Messages/>
-        else if(val === "subscription" && user?.type===1)
-            return (
-                <Elements stripe={stripePromise}>
-                    <Subscription refreshWorker={() => props.refreshWorker()}/>
-                </Elements>
-            ) 
+        else if(val === "profissional")
+            return <UserProfissional refreshWorker={props.refreshWorker}/>
         return null
     }
 

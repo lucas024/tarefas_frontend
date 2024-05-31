@@ -314,6 +314,12 @@
     font-size: 1.5rem;
     color: var(--neutral);
 }
+.title{
+    font-weight: 600;
+    text-align: center;
+    width: 80%;
+    margin: 5px auto 10px auto;
+}
 .discount{
     background-color: var(--brand);
     padding: 1px 6px;

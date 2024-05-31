@@ -34,7 +34,7 @@ const VerificationBannerEmail = (props) => {
                 {
                     props.next===1?
                     <div className={styles.main_inner}>
-                        <p className={styles.phone_description}>O e-mail verificado permite o acesso a todas as funcionalidades da plataforma TAREFAS.</p>
+                        <p className={styles.phone_description}>Este passo é importante para o acesso a todas as funcionalidades da plataforma.</p>
                         <div className={styles.phone_wrapper}>
                             <span className={styles.phone_value}>{props.email}</span>
                         </div>
@@ -47,7 +47,7 @@ const VerificationBannerEmail = (props) => {
                         <div className={expired?styles.button:styles.button_disabled} style={{marginTop:props.sendingError?'10px':'40px'}} onClick={() => {
                                 handleSendEmail()
                             }}>
-                            <span className={styles.button_text}>{expired?'Enviar e-mail de verificação':<Timer deadline={deadline} setExp={() => setExpired(true)}/>}</span>
+                            <span className={styles.button_text} style={{color:"#161F28"}}>{expired?'Enviar e-mail de verificação':<Timer deadline={deadline} setExp={() => setExpired(true)}/>}</span>
                         </div>
                     </div>
                     :

@@ -12,9 +12,7 @@ import SelectHome from '../selects/selectHome';
 import {profissoesGrouped, regioes, regioesOptions} from './util'
 import InstagramIcon from '@mui/icons-material/Instagram';
 import {Tooltip} from 'react-tooltip';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import SearchIcon from '@mui/icons-material/Search';
-import BackHandIcon from '@mui/icons-material/BackHand';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import TitleIcon from '@mui/icons-material/Title';
@@ -28,7 +26,11 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import ChatIcon from '@mui/icons-material/Chat';
 import FaceIcon from '@mui/icons-material/Face';
 import axios from 'axios';
-import logo_text_mix from '../assets/logo_text_mix_3.png'
+import logo_text_mix from '../assets/logo_text_mix_4.png'
+
+import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
+import CardMembershipIcon from '@mui/icons-material/CardMembership';
+import EmailUnverified from '@mui/icons-material/UnsubscribeOutlined';
 
 
 import {
@@ -58,6 +60,11 @@ const Home = (props) => {
     const chats = useSelector(state => {return state.chats})
     const api_url = useSelector(state => {return state.api_url})
 
+    const user_email_verified = useSelector(state => {return state.user_email_verified})
+    const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
+    const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
+
+
     const [workerBanner, setWorkerBanner] = useState(false)
     const [tosBanner, setTosBanner] = useState(false)
     const [ppBanner, setPpBanner] = useState(false)
@@ -72,7 +79,7 @@ const Home = (props) => {
     const [registerPopup, setRegisterPopup] = useState(false)
     const [loaded, setLoaded] = useState(false)
 
-    const [first, setFirst] = useState({ value: 'profissionais', label: 'Profissionais' })
+    const [first, setFirst] = useState({ value: 'trabalhos', label: 'Tarefas' })
     const [second, setSecond] = useState(null)
     const [third, setThird] = useState(null)
 
@@ -92,8 +99,10 @@ const Home = (props) => {
         if(!parseInt(localStorage.getItem('firstAccessMade')))
             navigate('/landing')
             
-        if(user?.type===1) setFirst({ value: 'trabalhos', label: 'Tarefas' })
-        else if(location.state?.carry==="login"){
+        if(user?.worker) setFirst({ value: 'trabalhos', label: 'Tarefas' })
+        else if(user!=null && user?._id!=null) setFirst({ value: 'profissionais', label: 'Profissionais' })
+
+        if(location.state?.carry==="login"){
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
             navigate(location.pathname, {}); 
@@ -121,31 +130,31 @@ const Home = (props) => {
 
     useEffect(() => {
         if(user){
-            if(user.type===1){
-                axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: user._id} })
-                .then(res => {
-                    if(res.data!==''){
-                        if(res.data?.chats?.length>0)
-                        {
-                            let chats_aux = JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp))))
-                            dispatch(user_update_chats(chats_aux))
-                        }
+            // if(user.type===1){
+            //     axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: user._id} })
+            //     .then(res => {
+            //         if(res.data!==''){
+            //             if(res.data?.chats?.length>0)
+            //             {
+            //                 let chats_aux = JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp))))
+            //                 dispatch(user_update_chats(chats_aux))
+            //             }
                             
-                    } 
-                })
-            }
-            else{
-                axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
-                .then(res => {
-                    if(res.data!==''){
-                        if(res.data?.chats?.length>0)
-                        {
-                            let chats_aux = JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp))))
-                            dispatch(user_update_chats(chats_aux))
-                        }
+            //         } 
+            //     })
+            // }
+            // else{
+            axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
+            .then(res => {
+                if(res.data!==''){
+                    if(res.data?.chats?.length>0)
+                    {
+                        let chats_aux = JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp))))
+                        dispatch(user_update_chats(chats_aux))
                     }
-                })
-            }         
+                }
+            })
+            // }         
         }
 
     }, [user])
@@ -258,7 +267,45 @@ const Home = (props) => {
         return val.slice(0,5)
     }
 
-    const mapNotifications = () => {
+    const mapWrapper = () => {
+        
+        if(unreadTexts.length===0 && (!user?.worker || worker_profile_complete&&worker_is_subscribed&&user_email_verified))
+            return (
+                <div className={styles.notification_empty}>
+                    <p className={styles.notification_empty_text}>Sem mensagens novas ou outras notificações, por enquanto.</p>
+                </div>
+            )
+        else{
+            return(
+                <div>
+                    {
+                        unreadTexts.length>0?
+                        <div>
+                            <div className={styles.banner}>
+                                <p className={styles.banner_text}>Mensagens</p>
+                                {mapMessages()}
+                            </div>
+                        </div>
+                        :
+                        null
+                    }
+                    {
+                        (user?.worker&&(!worker_profile_complete||!worker_is_subscribed))||!user_email_verified?
+                        <div>
+                            <div className={styles.banner}>
+                                <p className={styles.banner_text}>Notificações de conta</p>
+                            </div>
+                            {mapNotifications()}
+                        </div>
+                        :null
+                    }
+                </div>
+            )
+        }
+                                        
+    }
+
+    const mapMessages = () => {
         return unreadTexts.map(el => {
             return (
                 <div className={styles.notification} onClick={() => navigate(`/user?t=messages&id=${el.chat_id}`)}>
@@ -303,6 +350,52 @@ const Home = (props) => {
             )
         })
     }
+
+    const mapNotifications = () => {
+            return (
+                <div>
+                    
+                    {                    
+                    !user_email_verified?
+                        <div className={styles.notification} onClick={() => navigate(`/user?t=conta`)}>
+                            <div className={styles.notification_left}>
+                                <EmailUnverified className={styles.notification_left_icon}/>
+                            </div>
+                            <div className={styles.notification_short}>
+                                <p className={styles.notification_short_text}>VERIFICA O TEU E-MAIL</p>
+                            </div>
+                        </div>
+                    :null
+                    }
+                                        {                    
+                    user.worker&&!worker_profile_complete?
+                        <div className={styles.notification} onClick={() => navigate(`/user?t=profissional`)}>
+                            <div className={styles.notification_left}>
+                                <DisplaySettingsIcon className={styles.notification_left_icon}/>
+                            </div>
+                            <div className={styles.notification_short}>
+                                <p className={styles.notification_short_text}>PREENCHE OS DETALHES DE PROFISSIONAL</p>
+                            </div>
+                        </div>
+                    :null
+                    }
+                    {                    
+                    user.worker&&!worker_is_subscribed?
+                        <div className={styles.notification} onClick={() => navigate(`/user?t=profissional&st=subscription`)}>
+                            <div className={styles.notification_left}>
+                                <CardMembershipIcon className={styles.notification_left_icon}/>
+                            </div>
+                            <div className={styles.notification_short}>
+                                <p className={styles.notification_short_text}>ATIVA A TUA SUBSCRIÇÃO</p>
+                            </div>
+                        </div>
+                    :null
+                    }
+
+                </div>
+                
+            )
+    }
     
     return(
         <div className={styles.home}>
@@ -336,7 +429,7 @@ const Home = (props) => {
                 <WorkerBanner 
                     confirm={() => {
                         setWorkerBanner(false)
-                        navigate('/authentication/worker?type=0')
+                        navigate('/authentication?type=0', {state : {workerMode: true}})
                     }}
                     cancel={() => setWorkerBanner(false)}/>
                 :null
@@ -405,12 +498,20 @@ const Home = (props) => {
                         <div className={styles.upper_wrapper}>
                             <div className={styles.upper_wrapper_text}>
                                 <p className={styles.upper_wrapper_text_title}>NOVO NO TAREFAS?</p>
-                                <p className={styles.upper_wrapper_text_subtitle}>Esta é uma plataforma que junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> que querem publicar tarefas a <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span> que querem realizar tarefas e expôr o seu negócio.</p>
+                                <p className={styles.upper_wrapper_text_subtitle}>Esta plataforma junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span>.</p>
+                                <p className={styles.upper_wrapper_text_subtitle}>O cliente publica as tarefas que quer ver realizadas e espera o contacto de profissionais. O profissional encontra as tarefas e contacta os clientes, simultaneamente expondo o seu negócio.</p>
                                 
                             </div>
                             <div className={styles.upper}>
                                 <div className={styles.upper_side_wrapper}>
-                                    <p className={styles.upper_side_text}>Quero publicar tarefas e encontrar profissionais</p>
+                                    <p className={styles.upper_side_text}>Quero publicar a minha tarefa e ser contactado por profissionais</p>
+                                </div>
+                                <div className={styles.upper_side_wrapper}>
+                                    <p className={styles.upper_side_text}>Quero realizar tarefas e expôr o meu negócio</p>
+                                </div>
+                            </div>
+                            <div className={styles.upper} style={{marginTop:'5px'}}>
+                                <div className={styles.upper_side_wrapper}>
                                     <div className={styles.upper_side}>
                                         <div className={styles.upper_button} style={{backgroundColor:"#ffffff", borderColor:"#ffffff"}} onClick={() => handleMoveAuth(1)} >
                                             <FaceIcon className={styles.section_img_mini_mini} style={{color:"#0358e5"}}/>
@@ -419,7 +520,6 @@ const Home = (props) => {
                                     </div>
                                 </div>
                                 <div className={styles.upper_side_wrapper}>
-                                    <p className={styles.upper_side_text}>Quero realizar tarefas e expôr o meu negócio</p>
                                     <div className={styles.upper_side}>
                                         <span className={styles.upper_button} onClick={() => setWorkerBanner(true)} style={{backgroundColor:"#ffffff",  borderColor:"#ffffff"}}>
                                         <EmojiPeopleIcon className={styles.section_img_mini_mini} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
@@ -428,7 +528,6 @@ const Home = (props) => {
                                     </div>
                                 </div>
                             </div>
-
                             <span className={styles.upper_wrapper_close} onClick={() => setNewPopup(false)}>FECHAR</span>
                         </div>
                         
@@ -436,12 +535,12 @@ const Home = (props) => {
                 <div className={styles.home_back_top_wrapper}>
                     <div className={styles.home_back_top}>
                         <img className={styles.text_brand} src={logo_text_mix}/>
-                        <p className={styles.text_brand_helper}>Plataforma que junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> a <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span></p>
+                        <p className={styles.text_brand_helper}>Plataforma que junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span></p>
                         
                         {/* <div className={styles.upper_divider}/> */}
                         <div className={styles.home_back_publish_special_wrapper} style={{borderTop:user!==null?"none":""}}>
                             <div className={styles.home_back_publish_special}>
-                                <p className={styles.back_publish_title_special} style={{marginTop:"50px", textAlign:'center'}}>PROCURAR</p>
+                                <p className={styles.back_publish_title_special} style={{marginTop:"50px", textAlign:'center'}}>PROCURAR TAREFAS OU PROFISSIONAIS</p>
                             </div>
                         </div>
                         
@@ -474,25 +573,9 @@ const Home = (props) => {
                                                 changeOption={val => setFirst(val)}
                                                 placeholder={"Tipo"}/> */}
                                             <div className={styles.zone_select_buttons}>
-                                                <span className={first?.value==="profissionais"?styles.zone_select_button:styles.zone_select_button_off_profissional}
-                                                    onClick={() => setFirst({ value: 'profissionais', label: 'Profissionais' })}
-                                                    style={{marginRight:'2px',
-                                                            width:first?.value==="profissionais"?"80%":"20%",
-                                                            backgroundColor:first?.value==="profissionais"?"#FF785A":"#FF785A20",
-                                                            fontWeight:first?.value==="profissionais"?600:600,
-                                                            color:first?.value==="profissionais"?'white':'#FF785Abb',
-                                                            fontSize: first?.value==="profissionais"?'0.9rem':'0.8rem',
-                                                            borderColor:"#FF785A"}}>
-                                                                <span style={{position:'absolute', zIndex:3}}>{
-                                                                first?.value==="profissionais"?
-                                                                'PROFISSIONAIS'
-                                                                :<EmojiPeopleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)'}}/>
-                                                            }</span>
-                                                            </span>
-
                                                 <span className={first?.value==="trabalhos"?styles.zone_select_button:styles.zone_select_button_off} 
                                                     onClick={() => setFirst({ value: 'trabalhos', label: 'Trabalhos' })}
-                                                    style={{marginLeft:'2px', 
+                                                    style={{marginRight:'2px', 
                                                             width:first?.value==="trabalhos"?"80%":"20%",
                                                             backgroundColor:first?.value==="trabalhos"?"#0358e5":"#0358e520", 
                                                             fontWeight:first?.value==="trabalhos"?600:600,
@@ -506,6 +589,22 @@ const Home = (props) => {
                                                                     :<TitleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)'}}/>
                                                                 }
                                                                 </span>
+                                                            </span>
+
+                                                <span className={first?.value==="profissionais"?styles.zone_select_button:styles.zone_select_button_off_profissional}
+                                                    onClick={() => setFirst({ value: 'profissionais', label: 'Profissionais' })}
+                                                    style={{marginLeft:'2px',
+                                                            width:first?.value==="profissionais"?"80%":"20%",
+                                                            backgroundColor:first?.value==="profissionais"?"#FF785A":"#FF785A20",
+                                                            fontWeight:first?.value==="profissionais"?600:600,
+                                                            color:first?.value==="profissionais"?'white':'#FF785Abb',
+                                                            fontSize: first?.value==="profissionais"?'0.9rem':'0.8rem',
+                                                            borderColor:"#FF785A"}}>
+                                                                <span style={{position:'absolute', zIndex:3}}>{
+                                                                first?.value==="profissionais"?
+                                                                'PROFISSIONAIS'
+                                                                :<EmojiPeopleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)'}}/>
+                                                            }</span>
                                                             </span>
                                             </div>
                                         </div>
@@ -625,13 +724,10 @@ const Home = (props) => {
                     {
                         loaded?
                         <div className={`${styles.home_back_publish}`} style={{marginTop:'0px'}}>
+
+                            <p className={styles.back_publish_title} style={{textAlign:'center'}}>PUBLICAR A MINHA TAREFA</p>
                             {
-                                user?.type!==1?
-                                <p className={styles.back_publish_title} style={{textAlign:'center'}}>PUBLICAR TAREFA</p>
-                                :null
-                            }
-                            {
-                                user?._id!==null&&user?.type===0?
+                                user?._id!=null?
                                 <div className={styles.back_publish_div} style={{backgroundColor:"#0358e520", border:"2px solid #0358e5"}} onClick={() => navigate('/publicar/novo')}>
                                     <div className={styles.home_back_publish_wrapper}>
                                         <PostAddIcon className={styles.section_img_mini}/>
@@ -686,13 +782,8 @@ const Home = (props) => {
                     <div className={styles.home_back_publish} style={{marginTop:'0px'}}>
                     {
                         <div className={styles.notification_area}>
-                            {
-                                unreadTexts.length>0?
-                                mapNotifications()
-                                :
-                                <div className={styles.notification_empty}>
-                                    <p className={styles.notification_empty_text}>Sem mensagens novas ou outras notificações, por enquanto.</p>
-                                </div>
+                            {   
+                                mapWrapper()
                             }
                         </div>
                     }
@@ -709,7 +800,7 @@ const Home = (props) => {
                     }
                     
                     {
-                        user?.type===0&&loaded?
+                        !user?.worker&&loaded?
                         <div className={styles.home_back_bottom}>
                             <div className={styles.section_content}>
                                 <div className={styles.section_image_wrapper}>
@@ -758,7 +849,7 @@ const Home = (props) => {
                             </div>
                             <span className={styles.section_spacer}></span>
                             {
-                                user?.type===1&&loaded?
+                                user?.worker&&loaded?
                                 <div className={styles.section_two}>
                                     <div className={styles.section_content}>
                                         <div className={styles.section_image_wrapper}>

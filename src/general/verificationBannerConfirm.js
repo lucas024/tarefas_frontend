@@ -13,7 +13,7 @@ const VerificationBannerConfirm = (props) => {
     return (
         <div className={styles.verification}>
             <div className={styles.main} style={{borderColor:"#0358e5"}} onClick={e => e.stopPropagation()}>
-                <p className={styles.title}>PUBLICAR</p>
+                <p className={styles.title}>PUBLICAR TAREFA</p>
                 <span className={styles.title_separator}/>
                 {
                     next===0?
@@ -69,7 +69,7 @@ const VerificationBannerConfirm = (props) => {
                                         margin: 'auto'
                                     }}
                                 />
-                                <p className={styles.phone_description}>Publicação enviada para análise pela equipa do Tarefas. Poderás seguir o processo de publicação na tua area pessoal.</p>
+                                <p className={styles.phone_description}>Publicação enviada para análise pela equipa do TAREFAS. Poderás seguir o processo de publicação na tua area pessoal.</p>
                                 <div style={{display:'flex', justifyContent:'center'}}>
                                     <div 
                                         className={styles.button}

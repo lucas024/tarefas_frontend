@@ -481,7 +481,6 @@ const AuthWorker = (props) => {
             setTimeout(() => setDetailsPopup(false), 4000)
             setSelectedAuth(2)
         })
-
     }
 
     ////////////////////////////////// TIMER //////////////////////////////////
@@ -876,9 +875,9 @@ const AuthWorker = (props) => {
                                             onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
                                         <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                         </div>
-                                        <div className={(!passwordWrong||!passwordRepeatWrong)&&tosAccepted?styles.login_button_worker:styles.login_button_disabled}
+                                        <div className={(password.length>7&&passwordRepeat.length>0&&!passwordRepeatWrong)&&tosAccepted?styles.login_button_worker:styles.login_button_disabled}
                                             style={{marginLeft:'10px', marginTop:0}}
-                                            onClick={() => {tosAccepted&&validatePasswordHandler()}}>
+                                            onClick={() => {(password.length>7&&passwordRepeat.length>0&&!passwordRepeatWrong)&&tosAccepted&&validatePasswordHandler()}}>
                                             <p className={styles.login_text}>Criar Conta</p>
                                         </div>
                                     </div>

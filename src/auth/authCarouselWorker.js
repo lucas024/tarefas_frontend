@@ -69,7 +69,10 @@ const AuthCarouselWorker = props => {
         return options?.map((trab, i) => {
             return (
                 listValue.length===0||trab.value.toLowerCase().includes(listValue.toLowerCase())?
-                <div key={i} style={{cursor:!fullList?"pointer":"default"}} className={`${styles.container} ${styles.subcontainer}`} onClick={() => setCheckedProf(trab.value)}>
+                <div key={i} style={{cursor:!fullList?"pointer":"default"}} className={`${styles.container} ${styles.subcontainer}`} onClick={() => {
+                    setCheckedProf(trab.value)
+                    setListValue('')
+                }}>
                     <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
                     <span className={styles.checkmark}></span>
                     <div className={styles.checkbox_flex}>
@@ -88,7 +91,9 @@ const AuthCarouselWorker = props => {
             return (
                 trab.label==='no-label'?
                     listValue.length===0||trab.options[0].value.toLowerCase().includes(listValue.toLowerCase())?
-                    <div key={i} style={{cursor:!fullList?"pointer":"default"}} className={styles.container} onClick={() => setCheckedProf(trab.options[0].value)}>
+                    <div key={i} style={{cursor:!fullList?"pointer":"default"}} className={styles.container} onClick={() => {
+                        setCheckedProf(trab.options[0].value)
+                        setListValue('')}}>
                         <input type="checkbox" readOnly checked={getCheckedProf(trab.options[0].value)}/>
                         <span className={styles.checkmark}></span>
                         <div className={styles.checkbox_flex}>

@@ -39,12 +39,13 @@ const PublicarDetails = props => {
     const [typed, setTyped] = useState(false)
 
     useEffect(() => {
-        props.setDistrictHelper(null)
+        // props.setDistrictHelper(null)
         props.setLat(null)
         props.setLng(null)
-        props.setPorta('')
-        props.setAndar('')
+        // props.setPorta('')
+        // props.setAndar('')
         setSelectedAddress(null)
+        props.setAddressParent(address)
 
         address.length>0&&setLoadingMore(true)
 
