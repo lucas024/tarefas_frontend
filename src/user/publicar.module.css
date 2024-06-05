@@ -778,10 +778,10 @@ input::placeholder{
     background-color: #fdd83590;
     border: 2px solid var(--yellow);
 }
-/* .verify_box_no:hover{
+.verify_box_no:hover{
     background-color: var(--yellow);
     cursor: pointer;
-} */
+}
 .verify_box_incomplete{
     width: 60px;
     height: 100%;

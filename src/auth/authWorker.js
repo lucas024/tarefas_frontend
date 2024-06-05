@@ -400,7 +400,7 @@ const AuthWorker = (props) => {
                 entity: 0,
                 entity_name: "",
                 registerMethod: from_signup?from_signup.register_type:"email",
-                email_verified: false
+                email_verified: false,
             })
         let res = await axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: user_uid} })
         if(res.data !== null){
@@ -996,7 +996,7 @@ const AuthWorker = (props) => {
                     null
                     :
                     <div className={styles.button_area}>
-                        <span className={styles.user_button} onClick={() => navigate('/authentication?type=1')}>Área Cliente</span>
+                        <span className={styles.user_button} onClick={() => navigate('/authentication/user?type=1')}>Área Cliente</span>
                     </div>
                 }
             </div>
@@ -1007,7 +1007,7 @@ const AuthWorker = (props) => {
                             fontWeight:(selectedAuth===2)?700:400}} onClick={() => navigate('/authentication/user?type=1')}>Área Cliente</span>
                 <span className={styles.top_right_button} 
                     style={{color:"#FF785A", marginLeft:'5px',
-                            fontWeight:!(selectedAuth===2)?700:400}} onClick={() => navigate('/authentication/worker?type=1')}>Área Profissional</span>
+                            fontWeight:!(selectedAuth===2)?700:400}} onClick={() => navigate('/authentication/user?type=1')}>Área Profissional</span>
             </div>
         </div>
     )

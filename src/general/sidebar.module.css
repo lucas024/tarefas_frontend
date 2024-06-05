@@ -155,10 +155,10 @@
     margin-left: 5%;
     position: relative;
     margin-bottom: 10px;
-    border: 2px solid var(--yellow);
+    border: 2px solid var(--neutral);
     box-sizing: border-box;
     margin-top: 20px;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 .status_top{
     display: flex;
@@ -202,7 +202,7 @@
     color: white;
     font-size: 0.8rem;
     text-align: center;
-    max-width: 130px;
+    max-width: 120px;
 }
 .status_icon{
     color: white;

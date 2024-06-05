@@ -407,19 +407,29 @@ const Auth = (props) => {
     }
 
     const registerHelper = async (user_uid, from_signup) => {
+        const obj = await axios.post(`${api_url}/create-customer`, {
+            name: from_signup?from_signup.name:name,
+            phone: from_signup?from_signup.phone:phone,
+            email: from_signup?from_signup.email.toLocaleLowerCase():email.toLocaleLowerCase(),
+        })
         await axios.post(`${api_url}/auth/register`, 
             {
                 name: from_signup?from_signup.name:name,
                 phone: phone,
                 email: from_signup?from_signup.email:email.toLocaleLowerCase(),
                 google_uid: user_uid,
-                address: "",
                 photoUrl: from_signup?from_signup.photoURL:"",
                 type: 0,
                 email_verified: false,
                 phone_verified: false,
                 registerMethod: from_signup?from_signup.register_type:"email",
-                worker: workerMode
+                worker: workerMode,
+                stripe_id: obj.data.customer.id,
+                entity: 0,
+                entity_name: "",
+                regioes: [],
+                trabalhos: [],
+                state: 0
             })
         let res = await axios.get(`${api_url}/auth/get_user`, { params: {google_uid: user_uid} })
         if(res.data !== null){

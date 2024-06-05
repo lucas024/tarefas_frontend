@@ -31,18 +31,15 @@ const User = (props) => {
 
     const updateReservations = () => {
         setLoading(true)
-        if(user?.type===0)
-        {
-            axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} }).then(res => {
-                for(let el of res.data){
-                    if(el.type<2){
-                        setNextReservation(el)
-                    }
+        axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: user._id} }).then(res => {
+            for(let el of res.data){
+                if(el.type<2){
+                    setNextReservation(el)
                 }
-                setReservations(res.data)
-                setLoading(false)
-            })
-        }
+            }
+            setReservations(res.data)
+            setLoading(false)
+        })
         
     }
 

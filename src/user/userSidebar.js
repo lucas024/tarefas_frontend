@@ -63,7 +63,7 @@ const UserSidebar = (props) => {
                 <div className={styles.align}>
                     {
                         user&&user.photoUrl?
-                        <img className={styles.sidebar_img} src={user.photoUrl}/>
+                        <img className={styles.sidebar_img} src={user.photoUrl} referrerPolicy="no-referrer"/>
                         :!loading?
                         !user?.worker?
                         <FaceIcon className={styles.sidebar_img_icon}/>
@@ -95,10 +95,7 @@ const UserSidebar = (props) => {
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
                                 <span className={styles.prox}>Conta</span>
                                 {
-                                    !user.worker&&!(user_phone_verified&&user_email_verified)?
-                                    <span className={styles.drop_div_notification}/>
-                                    :
-                                    user.worker&&!(user_phone_verified&&user_email_verified)?
+                                    !(user_phone_verified&&user_email_verified)?
                                     <EmailUnverified className={styles.notification_notification}/>
                                     :null
                                 }
@@ -145,6 +142,7 @@ const UserSidebar = (props) => {
                             <EmojiPeopleIcon className={styles.sidebar_small_icon} style={{color:'#FF785A', transform: 'scaleX(-1)', zIndex:1}}/>
                         </ListItemIcon>
                         <ListItemText primary={
+                            user?.worker?
                             <div style={{display:"flex", position:"relative", alignItems:"center", justifyContent:"space-between"}}>
                                 <span className={styles.prox} style={{color:"#FF785A"}}>Profissional</span>
                                 <div className={styles.notification_flex}>
@@ -161,6 +159,10 @@ const UserSidebar = (props) => {
                                     
                                 </div>
                             </div>
+                            :
+                            <span style={{display:"flex"}}>
+                                <span className={styles.prox} style={{width:'max-content', color:"#FF785A"}}>Tornar-me profissional</span>
+                            </span>
                         } sx={{color:"#fff", zIndex:1}}/>
                     </ListItemButton >
                 </List>
@@ -177,31 +179,34 @@ const UserSidebar = (props) => {
                                 }
                             </p>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("conta")} style={{backgroundColor:(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?"#0358e540":"#fdd83540"}}>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("conta")} style={{backgroundColor:(user_phone_verified&&user_email_verified)?"#0358e540":"#fdd83540"}}>
                             <EmailUnverified sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>
                             <div className={styles.status_div_flex}>
-                                <span className={styles.status_div_val} style={{color:(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?"#0358e5":"#fdd835"}}>
+                                <span className={styles.status_div_val} style={{color:(user_phone_verified&&user_email_verified)?"#0358e5":"#fdd835"}}>
                                 {
-                                    (user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)?
-                                    "EMAIL VERIFICADO"
+                                    (user_phone_verified&&user_email_verified)?
+                                    `EMAIL VERIFICADO`
                                     :"EMAIL NÃO VERIFICADO"
                                 }
                                 </span>
                             </div>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("profissional")} style={{backgroundColor:worker_is_subscribed?"#0358e540":"#fdd83540"}}>
+                        <div className={styles.status_div} onClick={() => sidebarNavigate("profissional")} style={{backgroundColor:worker_profile_complete?"#0358e540":"#fdd83540"}}>
                             <DisplaySettingsIcon sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>
                             <div className={styles.status_div_flex}>
-                                <span className={styles.status_div_val} style={{color:worker_is_subscribed?"#0358e5":"#fdd835"}}>
+                                <span className={styles.status_div_val} style={{color:worker_profile_complete?"#0358e5":"#fdd835"}}>
                                 {
-                                    worker_is_subscribed?
+                                    worker_profile_complete?
                                     "DETALHES PREENCHIDOS"
                                     :"DETALHES NÃO PREENCHIDOS"
                                 }
                                 </span>
                             </div>
                         </div>
-                        <div className={styles.status_div} onClick={() => sidebarNavigate("profissional")} style={{backgroundColor:worker_is_subscribed?"#0358e540":"#fdd83540"}}>
+                        <div className={styles.status_div} onClick={() => navigate({
+                                    pathname: `/user`,
+                                    search: `?t=profissional&st=subscription`
+                                })} style={{backgroundColor:worker_is_subscribed?"#0358e540":"#fdd83540", borderBottom:'none'}}>
                             <CardMembershipIcon sx={{color:"#fff", zIndex:1}} className={styles.status_icon}/>
                             <div className={styles.status_div_flex}>
                                 <span className={styles.status_div_val} style={{color:worker_is_subscribed?"#0358e5":"#fdd835"}}>

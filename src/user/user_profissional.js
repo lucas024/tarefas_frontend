@@ -5,14 +5,23 @@ import {loadStripe} from '@stripe/stripe-js';
 import Details from './details';
 import {Elements} from '@stripe/react-stripe-js';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import WorkerBannerContent from '../general/workerBannerContent';
+import Loader from '../general/loader';
+import axios from 'axios';
+import Sessao from '../transitions/sessao';
+import {CSSTransition}  from 'react-transition-group';
 
 const stripePromise = loadStripe('pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd');
 
 
 const UserProfissional = props => {
-
+    const dispatch = useDispatch()
     const user = useSelector(state => {return state.user})
+    const api_url = useSelector(state => {return state.api_url})
+
+    const [loading, setLoading] = useState(false)
+    const [modeActivated, setModeActivated] = useState(false)
 
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
@@ -42,20 +51,79 @@ const UserProfissional = props => {
         }
     }
 
+    const userSetMode = () => {
+        // dispatch(user_update_field([{field: 'lol', value: true}]))
+        setLoading(true)
+        axios.post(`${api_url}/user/update_worker`, {
+            user_id : user._id,
+        }).then(() => {
+            props.refreshWorker()
+            // dispatch(
+            //     user_update_field(
+            //         [
+            //             {field: 'phone', value: phone},
+            //             {field: 'description', value: description||""}
+            //         ]
+            //     )
+            // )
+            // dispatch(user_update_phone_verified(false))
+            // if(auth.currentUser.phoneNumber!=null)
+            //     unlink(auth.currentUser, "phone")
+            setLoading(false)
+            setModeActivated(true)
+            setTimeout(() => setModeActivated(false), 4000)
+        })
+    }
+
     return (
         <div className={styles.user}>
-            <div className={styles.top_title_wrapper}>
+            <CSSTransition 
+                in={modeActivated}
+                timeout={1000}
+                classNames="transition"
+                unmountOnExit
+                >
+                <Sessao text={"Modo Profissional ativado com sucesso!"}/>
+
+            </CSSTransition>
+
+            {
+                loading?
+                <div className={styles.backdrop}/>
+                :null
+            }
+            <Loader loading={loading}/>
+            <div className={styles.top_title_wrapper} style={{borderBottom:!user?.worker?"1px solid white":""}}>
                 <span className={styles.top_title}>Profissional</span>
             </div>
-            <div className={styles.aba}>
-                <span className={subTab==='details'?styles.aba_side_selected:styles.aba_side} onClick={() => navigate('/user?t=profissional')}>
-                    Detalhes de Profissional
-                </span>
-                <span className={subTab==='subscription'?styles.aba_side_selected:styles.aba_side} onClick={() => navigate('/user?t=profissional&st=subscription')}>
-                    Subscrição
-                </span>
-            </div>
-            {displayCurrentArea()}
+            {
+                user?.worker?
+                <div className={styles.aba}>
+                    <span className={subTab==='details'?styles.aba_side_selected:styles.aba_side} onClick={() => navigate('/user?t=profissional')}>
+                        Detalhes de Profissional
+                    </span>
+                    <span className={subTab==='subscription'?styles.aba_side_selected:styles.aba_side} onClick={() => navigate('/user?t=profissional&st=subscription')}>
+                        Subscrição
+                    </span>
+                </div>
+                :null
+            }
+            {
+                user?.worker?
+                displayCurrentArea()
+                :
+                <div className={styles.worker_wrapper_wrapper}>
+                    <div className={styles.worker_wrapper}>
+                        <WorkerBannerContent workerPage={true}/>
+                        
+                    </div>
+                    <span className={styles.edit}  onClick={() => userSetMode()}>
+                        ATIVAR MODO PROFISSIONAL
+                    </span>
+                </div>
+                
+            }
+            
         </div>
     )
 }

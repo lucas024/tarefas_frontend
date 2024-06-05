@@ -41,7 +41,6 @@ const Personal = (props) => {
     const [name, setName] = useState("")
     const [phone, setPhone] = useState("")
     const [description, setDescription] = useState("")
-    const [descriptionWrong, setDescriptionWrong] = useState(false)
     const [phoneVisual, setPhoneVisual] = useState("")
     const [phoneWrong, setPhoneWrong] = useState(false)
     const [phoneCorrect, setPhoneCorrect] = useState(false)
@@ -113,12 +112,8 @@ const Personal = (props) => {
         if(!validator.isMobilePhone(phone, "pt-PT")){
             setPhoneWrong(true)
         }
-        else if(description?.length===0){
-            setDescriptionWrong(true)
-        }
         else{
             setPhoneWrong(false)
-            setDescriptionWrong(false)
             setEdit(false)
             if(phone!==user.phone || description!==user.description){
                 setLoadingRight(true)
@@ -141,16 +136,16 @@ const Personal = (props) => {
                 //     })
                 // }
                 // else {
-                axios.post(`${api_url}/user/update_phone_and_description`, {
+                axios.post(`${api_url}/user/update_phone`, {
                     user_id : user._id,
                     phone: phone,
-                    description: description
+                    description: description||""
                 }).then(() => {
                     dispatch(
                         user_update_field(
                             [
                                 {field: 'phone', value: phone},
-                                {field: 'description', value: description}
+                                {field: 'description', value: description||""}
                             ]
                         )
                     )
@@ -320,7 +315,7 @@ const Personal = (props) => {
     return (
         <div className={styles.personal}>
             {
-                loading?
+                loading||deleteBanner?
                 <div className={styles.backdrop}/>
                 :null
             }
@@ -350,7 +345,7 @@ const Personal = (props) => {
                         user?.worker?
                         <Sessao text={"Número de telefone e/ou descrição atualizados com sucesso!"}/>
                         :
-                        <Sessao text={"Número de telefone atualizado com sucesso! Por favor, volta a verificar."}/>
+                        <Sessao text={"Número de telefone atualizado com sucesso!"}/>
                     }
                 </CSSTransition>
                 {/* {
@@ -432,7 +427,7 @@ const Personal = (props) => {
                         }}
                         confirmDelete={() => {
                             setLoading(true)
-                            if(user?.type===1&&user?.subscription?.plan!==null&&user?.subscription?.plan!==undefined)
+                            if(user?.worker&&user?.subscription?.plan!==null&&user?.subscription?.plan!==undefined)
                             {
                                 axios.post(`${api_url}/cancel-subscription`, {
                                     subscription: user.subscription,
@@ -488,7 +483,7 @@ const Personal = (props) => {
                             <Loader loading={loadingPhoto}/>
                                 {
                                     user&&photo!==""?
-                                    <img className={styles.image} src={photo} alt='photo_google'/>
+                                    <img className={styles.image} src={photo} alt='photo_google' referrerPolicy="no-referrer"/>
                                     :
                                     !user?.worker?
                                     <FaceIcon className={styles.image_tbd} style={{color: "#161F28"}}/>
@@ -549,16 +544,16 @@ const Personal = (props) => {
                                                 :null
                                             } */}
                                             
-                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:edit?'#FF785A':!user_phone_verified?'#fdd835':'#0358e5', borderTopRightRadius:!user_phone_verified?'0px':'3px'}}>
+                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:user?.phone==""?"#fdd835":edit?'#FF785A':!user_phone_verified?'#fdd835':'#0358e5', borderTopRightRadius:!user_phone_verified?'0px':'3px'}}>
                                                 <div className={styles.input_icon_div}>
                                                     {
                                                         user_phone_verified?
-                                                        <PhoneVerified className={styles.input_icon} style={{color:edit?'#FF785A':'#0358e5'}}/>
+                                                        <PhoneVerified className={styles.input_icon} style={{color:user?.phone==""?"#fdd835":edit?'#FF785A':'#0358e5'}}/>
                                                         :
-                                                        <PhoneUnverified className={styles.input_icon} style={{color:edit?'#FF785A':'#fdd835'}}/>
+                                                        <PhoneUnverified className={styles.input_icon} style={{color:user?.phone==""?"#fdd835":edit?'#FF785A':'#fdd835'}}/>
                                                     }
                                                 </div>
-                                                <span className={styles.input_icon_seperator} style={{backgroundColor:edit?'#FF785A':!user_phone_verified?'#fdd835':'#0358e5'}}>.</span>
+                                                <span className={styles.input_icon_seperator} style={{backgroundColor:user?.phone==""?"#fdd835":edit?'#FF785A':!user_phone_verified?'#fdd835':'#0358e5'}}>.</span>
                                                 <input className={styles.input_input}
                                                         style={{color:edit?"#ffffff":"#71848d"}}
                                                         value={phoneVisual}
@@ -567,16 +562,16 @@ const Personal = (props) => {
                                                         disabled={!edit}>
                                                 </input>
                                             </div>
-                                            {
-                                                !edit?
-                                                    <span className={user?.type===0?styles.edit_top:styles.edit_top_worker}  onClick={() => setEdit(true)}>
-                                                        EDITAR
-                                                    </span>
+                                            <div className={styles.input_div}>
+                                                {
+                                                    edit&&phone?.length!==9?
+                                                        <span className={styles.helper} style={{marginBottom:'0px'}}>Introduz o teu número de contacto.</span>
                                                     :
-                                                    <span className={user?.type===0?styles.save_top:styles.save_top_worker} onClick={() => editDoneHandler()}>
-                                                        GUARDAR
-                                                    </span>
-                                            }
+                                                    edit&&!validator.isMobilePhone(phone, "pt-PT")?
+                                                        <span className={styles.helper} style={{marginBottom:'0px'}}>Número de contacto inválido.</span>
+                                                    :null
+                                                }
+                                            </div>
                                         </div>
                                         <div className={styles.edit_area_left}>
                                             {
@@ -585,39 +580,28 @@ const Personal = (props) => {
                                                 :null
                                             }
                                         </div>
-                                        <div className={styles.edit_area_right}>
-
-                                            {
-                                                user?.worker?
-                                                <textarea
-                                                    style={{marginTop:"5px", resize:"none"}}
-                                                    className={descriptionWrong?styles.textarea_wrong
-                                                                :edit?styles.textarea_input_edit
-                                                                :styles.textarea_input}
-                                                    value={description}
-                                                    maxLength={150}
-                                                    rows={5}
-                                                    onChange={e => setDescription(e.target.value)}
-                                                    disabled={!edit}
-                                                    placeholder="Uma breve descrição sobre ti/a tua empresa e o tipo de trabalhos exercicidos, anos de experiência...">
-                                                </textarea>
-                                                :null
-                                            }
-                                            
-                                        </div>
+                                        {
+                                        user?.worker?
+                                            <div className={styles.edit_area_right}>
+                                                    <textarea
+                                                        style={{marginTop:"5px", resize:"none", border:description.length===0&&!edit?"1px solid #fdd835":""}}
+                                                        className={edit?styles.textarea_input_edit
+                                                                    :styles.textarea_input}
+                                                        value={description}
+                                                        maxLength={150}
+                                                        rows={5}
+                                                        onChange={e => setDescription(e.target.value)}
+                                                        disabled={!edit}
+                                                        placeholder="Uma descrição sobre ti/a tua empresa, trabalhos passados, anos de experiência...">
+                                                    </textarea>
+                                            </div>
+                                            :null
+                                        }
                                     </div>
                                     <div className={styles.input_div}>
                                         {
-                                            edit&&phone?.length!==9?
-                                                <span className={styles.helper}>Introduz o teu número de contacto.</span>
-                                            :
-                                            edit&&!validator.isMobilePhone(phone, "pt-PT")?
-                                                <span className={styles.helper}>Número de contacto inválido.</span>
-                                            :null
-                                        }
-                                        {
-                                            edit&&description?.length===0?
-                                                <span className={styles.helper}>Introduz uma descrição sobre ti/a tua empresa e a experiência</span>
+                                            user?.worker&&description?.length===0?
+                                                <span className={styles.helper}>Introduz uma descrição sobre ti/a tua empresa, trabalhos passados, experiência geral.</span>
                                             :null
                                         }
                                     </div>
@@ -625,16 +609,32 @@ const Personal = (props) => {
                             </div>
                         </div>
                     </div>
-
-                    <div className={styles.delete_account_divider}/>
                     
-                    <div className={styles.delete_account_wrapper} onClick={() => setDeleteBanner(true)}>
+                    {
+                        user?.worker?
+                        <div className={styles.delete_account_divider_always}/>
+                        :
+                        <div className={styles.delete_account_divider}/>
+                    }
+                    
+                    <span className={styles.personal_subtitle}>Outras Operações</span>
+                    <div className={styles.delete_account_wrapper} style={{marginTop:user?.worker&&edit?'0px':''}} onClick={() => setDeleteBanner(true)}>
                         <span className={styles.delete_account_button}>Eliminar Conta</span>
                     </div>
                 </div>
                 </div>
                 :null
 
+            }
+            {
+                !edit?
+                    <span className={styles.edit} style={{zIndex:deleteBanner?0:10}}  onClick={() => setEdit(true)}>
+                        EDITAR
+                    </span>
+                    :
+                    <span className={styles.edit} onClick={() => editDoneHandler()}>
+                        GUARDAR
+                    </span>
             }
         </div>
     )

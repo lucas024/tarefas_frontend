@@ -69,7 +69,7 @@ onAuthStateChanged(auth, (user_google) => {
 
 const checkWorkerComplete = (worker, userGoogle) => {
   // if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.phoneNumber === null||userGoogle?.emailVerified === false)
-  if(worker.regioes?.length===0||worker.trabalhos?.length===0||userGoogle?.emailVerified === false)
+  if(worker.regioes?.length===0||worker.trabalhos?.length===0)
   {
     dispatch(worker_update_profile_complete(false))
     if(worker.state!==0)
@@ -121,71 +121,59 @@ useEffect(() => {
       if(res.data != null){
         dispatch(user_load(res.data))
         setIsAdmin(res.data.admin)
-        checkUserComplete(userGoogle, res.data)
+        if(res.data.worker)
+        {
+          checkWorkerComplete(userGoogle)
+          if(res.data.subscription){
+            setLoading(true)
+            axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
+                subscription_id: res.data.subscription.id,
+                schedule_id: res.data.subscription.sub_schedule
+            })
+            .then(res2 => {
+                if(res2.data.schedule){
+                    if(new Date().getTime() < new Date(res2.data.schedule.current_phase?.end_date*1000)){
+                      dispatch(worker_update_is_subscribed(true))
+                      checkWorkerComplete(res.data, userGoogle)
+                    }
+                    else{
+                      dispatch(worker_update_is_subscribed(false))
+                      checkWorkerComplete(res.data, userGoogle)
+                      if(res.data.state!==0)
+                        axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
+                    }
+                }
+            })
+          }
+          else if(new Date(res.data.trial?.end_date) > new Date())
+          {
+            dispatch(worker_update_is_subscribed(true))
+            checkWorkerComplete(res.data, userGoogle)
+          }
+          else
+          {
+            dispatch(worker_update_is_subscribed(false))
+            checkWorkerComplete(res.data, userGoogle)
+            if(res.data.state!==0)
+              axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
+          }
+        }
+        else checkUserComplete(userGoogle, res.data)
         setUserLoadAttempt(true)
         setLoading(false)
-      }
-      else{
-        axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle?.uid} }).then(res => {
-          if(res.data !== null){
-            dispatch(user_load(res.data))
-            checkWorkerComplete(userGoogle)
-            if(res.data.subscription){
-              setLoading(true)
-              axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
-                  subscription_id: res.data.subscription.id,
-                  schedule_id: res.data.subscription.sub_schedule
-              })
-              .then(res2 => {
-                  if(res2.data.schedule){
-                      if(new Date().getTime() < new Date(res2.data.schedule.current_phase?.end_date*1000)){
-                        dispatch(worker_update_is_subscribed(true))
-                        checkWorkerComplete(res.data, userGoogle)
-                      }
-                      else{
-                        dispatch(worker_update_is_subscribed(false))
-                        checkWorkerComplete(res.data, userGoogle)
-                        if(res.data.state!==0)
-                          axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
-                      }
-                  }
-              })
-            }
-            else if(new Date(res.data.trial?.end_date) > new Date())
-            {
-              dispatch(worker_update_is_subscribed(true))
-              checkWorkerComplete(res.data, userGoogle)
-            }
-            else
-            {
-              dispatch(worker_update_is_subscribed(false))
-              checkWorkerComplete(res.data, userGoogle)
-              if(res.data.state!==0)
-                axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
-            }
-            
-            setUserLoadAttempt(true)
-            setLoading(false)
-          }
-          else{
-            dispatch(worker_update_is_subscribed(false))
-            setLoading(false)
-          }
-        })
       }
     }).catch(err => {
       setLoading(false)
     })
   }
   else{
-    // dispatch(worker_update_is_subscribed(false))
     setLoading(false)
   }
 }, [userGoogle])
 
 const refreshWorker = () => {
   window.history.replaceState({}, document.title)
-  axios.get(`${api_url}/auth/get_worker`, { params: {google_uid: userGoogle?.uid} }).then(res => {
+  axios.get(`${api_url}/auth/get_user`, { params: {google_uid: userGoogle?.uid} }).then(res => {
     if(res.data !== null){
       dispatch(user_load(res.data))
       if(res.data.subscription){

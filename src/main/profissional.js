@@ -66,7 +66,7 @@ const Profissional = props => {
 
             let time = new Date().getTime()
             let text_object = {
-                origin_type : 0,
+                origin_type : user?._id,
                 timestamp : time,
                 text: text,
             }
@@ -79,20 +79,23 @@ const Profissional = props => {
 
                 for(let chat of chatsCopy)
                 {
-                    console.log(chat.worker_id === worker._id)
-                    if(chat.worker_id === worker._id && chat.reservation_id === null)
+                    if(
+                        ((chat.approacher_id===user?._id&&(chat.approached_id === worker._id))|| 
+                            (chat.approached_id===user?._id&&(chat.approacher_id === worker._id)))
+                                && chat.reservation_id === null)
                     {
-                        console.log('yes')
                         repeated=true
                         await axios.post(`${api_url}/chats/update_common_chat`, {
-                            worker_read: false,
-                            user_read: true,
+                            approacher_id: chat.approacher_id===user?._id?chat.approacher_id:chat.approached_id,
+                            approached_id: chat.approached_id===user?._id?chat.approached_id:chat.approacher_id,
+                            approacher_read: chat.approacher_id===user?._id,
+                            approached_read: chat.approached_id===user?._id,
                             chat_id: chat.chat_id,
                             text: text_object,
                             updated: time
                         })
-                        chat.worker_read = false
-                        chat.user_read = true
+                        chat.approacher_read = chat.approacher_id===user?._id
+                        chat.approached_read = chat.approached_id===user?._id
                         chat.last_text = text_object
                         dispatch(user_update_chats(chatsCopy))
                         setLocalChatSent(chat.chat_id)
@@ -107,22 +110,24 @@ const Profissional = props => {
             {
                 let chatId = ObjectID()
 
-                await axios.post(`${api_url}/chats/create_chat`, {
-                    worker_name: worker.name,
-                    worker_surname: worker.surname,
-                    worker_photoUrl: worker.photoUrl,
-                    worker_phone: worker.phone,
-                    worker_id: worker._id,
-                    user_name: user?.name,
-                    user_surname: user?.surname,
-                    user_photoUrl: user?.photoUrl,
-                    user_phone: user?.phone,
-                    user_id: user?._id,
-                    user_read: true,
-                    worker_read: false,
+                await axios.post(`${api_url}/chats/create_chat`, {                    
+                    approached_id: worker._id,
+                    approached_name: worker.name,
+                    approached_photoUrl: worker.photoUrl,
+                    approached_phone: worker.phone,
+                    approached_read: false,
+                    approached_type: worker.worker?'worker':'user',
+
+                    approacher_id: user?._id,
+                    approacher_name: user?.name,
+                    approacher_photoUrl: user?.photoUrl,
+                    approacher_phone: user?.phone,
+                    approacher_read: true,
+                    approacher_type: user?.worker?'worker':'user',
+                    
                     text: text_object,
                     updated: time,
-                    chat_id: chatId
+                    chat_id: chatId,
                 })
                 setLocalChatSent(chatId)
             }
@@ -336,7 +341,7 @@ const Profissional = props => {
                                 <div className={styles.frontdrop}>
                                     <span className={styles.frontdrop_text}>Para enviares uma mensagem a <span style={{textTransform:"capitalize", fontWeight:700}}>{worker?.name?.split(" ")[0]}</span>,</span>
                                     <span className={styles.frontdrop_text}>inicia sessão ou cria uma conta!</span>
-                                    <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication?type=1')}>autenticar</span>
+                                    <span className={styles.frontdrop_text_action} onClick={() => navigate('/authentication/user?type=1')}>autenticar</span>
                                 </div>
                             </div>
                             :

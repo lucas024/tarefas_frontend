@@ -52,14 +52,12 @@ const Navbar = (props) => {
         if(chats?.length>0){
             let clear = true
             for(const el of chats){
-                //user
-                if(user?.type===0&&!el.user_read){
+                if(user?._id===el.user1_id&&!el.user1_read){
                     setHasUnreadTexts(true)
                     clear = false
                     break
                 }
-                //worker
-                else if(user?.type===1&&!el.worker_read){
+                else if(user?._id===el.user2_id&&!el.user2_read){
                     setHasUnreadTexts(true)
                     clear = false
                     break
@@ -200,13 +198,14 @@ const Navbar = (props) => {
                                                                 <SettingsIcon className={styles.drop_div_flex_icon}/>
                                                                 <span className={styles.drop_div_text}>Conta</span>
                                                             </div>
-                                                            <div className={styles.disabled_wrapper}>
-                                                                {
-                                                                    user&&user_email_verified&&user_phone_verified?
-                                                                    null
-                                                                    :<EmailUnverified className={styles.disabled_icon_small}/>
-                                                                }
-                                                            </div>
+                                                            {
+                                                                !(user_email_verified&&user_phone_verified)?
+                                                                <div className={styles.disabled_wrapper}>
+                                                                    <EmailUnverified className={styles.disabled_icon_small}/>
+                                                                </div>
+                                                                :null
+                                                            }
+                                                            
                                                             
                                                     </div>  
                                                 </div>
@@ -261,7 +260,7 @@ const Navbar = (props) => {
                                                             </div>
                                                         }
                                                         {
-                                                            user.worker?
+                                                            user.worker&&(!worker_profile_complete||!worker_is_subscribed)?
                                                             <div className={styles.disabled_wrapper}>
                                                                 {
                                                                     !worker_profile_complete?
@@ -306,7 +305,7 @@ const Navbar = (props) => {
                                     :loaded?
                                     <div>
                                         <p className={styles.user_login} 
-                                            onClick={() => navigate('/authentication?type=1')}>
+                                            onClick={() => navigate('/authentication/user?type=1')}>
                                             Iniciar Sessão</p>
                                         <div className={styles.user_login_short} onClick={() => navigate('/authentication?type=1')}>
                                             <LoginIcon className={styles.user_login_icon} />

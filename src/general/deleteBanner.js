@@ -13,6 +13,7 @@ const DeleteBanner = (props) => {
     const [passwordError, setPasswordError] = useState(false)
     const [state, setState] = useState(0)
     const user = useSelector(state => {return state.user})
+    const [showLetters, setShowLetters] = useState(false)
 
     const handleDelete = () => {
         props.confirmDelete()
@@ -56,7 +57,7 @@ const DeleteBanner = (props) => {
                 <span className={styles.title_separator}/>
                 <div className={styles.main_inner}>
                     {
-                        props.type===0?
+                        !user?.worker?
                         <p className={styles.phone_description} style={{textAlign:"left"}}>Ao eliminares a tua conta, todas as tuas publicações e mensagens serão eliminadas. Esta ação não é reversível.</p>
                         :
                         <div>
@@ -86,12 +87,20 @@ const DeleteBanner = (props) => {
                             user?.registerMethod === 'email'?
                             <div className={styles.email}>
                                 <div className={styles.email_flex}>
-                                    <p className={styles.email_input_title} style={{marginBottom:'-5px'}}>E-mail</p>
+                                    <div style={{marginBottom:'-5px'}} className={styles.show_flex}>
+                                        <p className={styles.email_input_title}>E-mail</p>
+                                        <div className={styles.area_show_letters} onClick={() => setShowLetters(!showLetters)}>
+                                            <span className={showLetters?styles.area_show_letters_value:styles.area_show_letters_value_no}>{
+                                                showLetters?'Esconder palavra-passe':'Mostrar palavra-passe'
+                                            }</span>
+                                        </div>
+                                    </div>
+                                    
                                     <input className={styles.email_input} style={{borderColor:"#fdd8357c"}} disabled={true} value={user?.email}></input>
                                 </div>
                                 <div className={styles.email_flex}>
                                     <p className={styles.email_input_title}>Palavra-passe</p>
-                                    <input className={styles.email_input} placeholder='Palavra-passe...' type='password' value={password} onChange={e => {setPassword(e.target.value)
+                                    <input className={styles.email_input} style={{color:showLetters?"#0358e5":"#000000", fontWeight:showLetters?600:500}} placeholder='Introduzir a palavra-passe...' type={showLetters?"none":"password"} value={password} onChange={e => {setPassword(e.target.value)
                                         setPasswordError(false)}}></input>
                                 </div>
                                 
@@ -119,8 +128,8 @@ const DeleteBanner = (props) => {
                     <div 
                         className={styles.button}
                         style={{backgroundColor:password.length>0&&passwordError===false?"#fdd835":"#ccc"}}
-                        onClick={() => passwordError===false&&handleEmailSignIn()}>
-                        <span className={styles.button_text} style={{color:"white"}}>CONTINUAR</span>
+                        onClick={() => passwordError===false&&password.length>0&&handleEmailSignIn()}>
+                        <span className={styles.button_text} style={{color:"#161F28"}}>CONTINUAR</span>
                     </div>
                     :
                     <div 

@@ -251,8 +251,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 2px solid var(--yellow);
-    padding: 10px;
+    /* border: 1px solid var(--yellow); */
+    padding: 10px 0px;
     border-radius: 3px;
 }
 .email_flex{
@@ -276,7 +276,7 @@
     font-size: 1rem;
     width: 100%;
     box-sizing: border-box;
-    border: 2px solid var(--yellow);
+    border: none;
     border-radius: 5px;
 }
 .email_input:disabled{
@@ -284,6 +284,8 @@
     margin-top: 10px;
     color: #ffffff90;
     font-weight: 400;
+    background-color: var(--grey);
+    border: none;
 }
 .email_input::placeholder{
     font-style: normal;
@@ -291,8 +293,14 @@
 }
 .email_error{
     color: var(--red);
-    margin-left: 50px;
-    margin-top: 5px;
+    /* margin-left: 50px; */
+    margin-top: -5px;
+    font-style: italic;
+}
+.show_flex{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .o2_button{
     display: flex;
@@ -321,6 +329,24 @@
     margin-left: 10px;
     font-size: 1.1rem;
 }
+.area_show_letters{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+    color: var(--neutral);
+}
+.area_show_letters_value{
+    font-size: 0.9rem;
+    text-decoration: underline;
+    color: var(--job);
+    font-weight: 600;
+}
+.area_show_letters_value_no{
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
 @media (max-width: 500px){
     .main{
         width: 80%;

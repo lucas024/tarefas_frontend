@@ -164,13 +164,11 @@ const Home = (props) => {
             let clear = true
             let aux = []
             for(const el of chats){
-                //user
-                if(user?.type===0&&!el.user_read){
+                if(user?._id===el.user1_id&&!el.user1_read){
                     aux.push(el)
                     clear = false
                 }
-                //worker
-                else if(user?.type===1&&!el.worker_read){
+                else if(user?._id===el.user2_id&&!el.user2_read){
                     aux.push(el)
                     clear = false
                 }
@@ -427,10 +425,6 @@ const Home = (props) => {
             {
                 workerBanner?
                 <WorkerBanner 
-                    confirm={() => {
-                        setWorkerBanner(false)
-                        navigate('/authentication?type=0', {state : {workerMode: true}})
-                    }}
                     cancel={() => setWorkerBanner(false)}/>
                 :null
             }
@@ -513,9 +507,9 @@ const Home = (props) => {
                             <div className={styles.upper} style={{marginTop:'5px'}}>
                                 <div className={styles.upper_side_wrapper}>
                                     <div className={styles.upper_side}>
-                                        <div className={styles.upper_button} style={{backgroundColor:"#ffffff", borderColor:"#ffffff"}} onClick={() => handleMoveAuth(1)} >
+                                        <div className={styles.upper_button} style={{backgroundColor:"#ffffff", borderColor:"#ffffff"}} onClick={() => handleMoveAuth(0)} >
                                             <FaceIcon className={styles.section_img_mini_mini} style={{color:"#0358e5"}}/>
-                                            <span className={styles.section_publicar_mini} style={{color:"#0358e5"}}>CRIAR CONTA CLIENTE</span>
+                                            <span className={styles.section_publicar_mini} style={{color:"#0358e5"}}>CRIAR CONTA</span>
                                         </div>
                                     </div>
                                 </div>
@@ -523,7 +517,7 @@ const Home = (props) => {
                                     <div className={styles.upper_side}>
                                         <span className={styles.upper_button} onClick={() => setWorkerBanner(true)} style={{backgroundColor:"#ffffff",  borderColor:"#ffffff"}}>
                                         <EmojiPeopleIcon className={styles.section_img_mini_mini} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
-                                            <span className={styles.section_publicar_mini} style={{color:"#FF785A"}}>CRIAR CONTA PROFISSIONAL</span>
+                                            <span className={styles.section_publicar_mini} style={{color:"#FF785A"}}>CRIAR CONTA MODO PROFISSIONAL</span>
                                         </span>
                                     </div>
                                 </div>
@@ -856,14 +850,14 @@ const Home = (props) => {
                                             <AccessibilityIcon className={styles.section_img} style={{color:"#ffffff"}}/>
                                         </div>
                                         <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
-                                            PERFIL
+                                            CONTA
                                         </span>
                                         <span className={styles.section_image_text}>
-                                            Ver ou editar perfil
+                                            Ver ou editar conta
                                         </span>
-                                        <div className={styles.section_button_right} onClick={() => navigate('/user?t=personal')}>
+                                        <div className={styles.section_button_right} onClick={() => navigate('/user?t=conta')}>
                                             <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
-                                                VER PERFIL
+                                                VER CONTA
                                             </p>
                                         </div>
                                     </div>
@@ -907,7 +901,7 @@ const Home = (props) => {
                     <div className={`${styles.home_back_publish}`} style={{marginTop:'30px'}}>
                         {
                             user?._id===null||!user?
-                            <p className={styles.back_publish_title}>TORNAR-ME UM PROFISSIONAL</p>
+                            <p className={styles.back_publish_title}>TORNAR-ME PROFISSIONAL</p>
                             :null
                         }
                         {
@@ -938,7 +932,7 @@ const Home = (props) => {
                             <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dá uma sugestão</p>
                             <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
                             <p className={styles.footer_div_text} onClick={() => setPpBanner(true)}>Política de privacidade</p>
-                            <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>
+                            <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me profissional</p>
                         </div>
                         <div className={styles.footer_div_column}>
                             <div>

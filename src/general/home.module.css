@@ -994,6 +994,7 @@
 }
 .notification_short_text{
     font-weight: 600;
+    text-align: left;
 }
 .notification_right_text{
     width: 90%;
@@ -1095,6 +1096,8 @@
     text-transform: uppercase;
     font-size: 0.9rem;
     font-weight: 600;
+    text-align: left;
+    border-radius: 2px;
 }
 @keyframes welcome {
     0% {
@@ -1377,6 +1380,7 @@
     .section_publicar_mini{
         /* font-size: 0.8rem; */
         max-width: 150px;
+        height: 32px;
     }
     .upper_side_text{
         max-width: 260px;
@@ -1385,6 +1389,12 @@
 }
 
 @media (max-width: 500px){
+    .notification_short_text{
+        font-size: 0.8rem;
+    }
+    .banner_text{
+        font-size: 0.7rem;
+    }
     .upper_wrapper_close{
         font-size: 0.8rem;
     }
@@ -1400,7 +1410,8 @@
     }
     .section_publicar_mini{
         font-size: 0.8rem;
-        max-width: 140px;
+        max-width: 120px;
+        height: 46px;
     }
     .text_brand_helper{
         font-size: 0.8rem;

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import styles from './personal.module.css'
 import { useSelector, useDispatch } from 'react-redux'
 import CheckIcon from '@mui/icons-material/Check';
@@ -20,6 +20,7 @@ import { user_update_field, worker_update_profile_complete } from '../store';
 const Details = props => {
     const dispatch = useDispatch()
     
+    const shakeError = useRef(null)
 
     const api_url = useSelector(state => {return state.api_url})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
@@ -49,7 +50,6 @@ const Details = props => {
 
             setSelectedProf(user.trabalhos)
             setSelectedReg(user.regioes)
-            console.log(user.entity)
             if(user.entity!==undefined) {
                 setRadioSelected(user.entity)
                 setEntityName(user.entity_name)
@@ -117,7 +117,7 @@ const Details = props => {
     const checkExistsInSearch = options => {
         for(let el of options)
         {
-            if(listValue.length===0||el.value.toLowerCase().includes(listValue.toLowerCase()))
+            if(listValue?.length===0||el.value.toLowerCase().includes(listValue.toLowerCase()))
                 return true
         }
         return false
@@ -126,8 +126,11 @@ const Details = props => {
     const subMapTrabalhos = options => {
         return options?.map((trab, i) => {
             return (
-                listValue.length===0||trab.value.toLowerCase().includes(listValue.toLowerCase())?
-                <div key={i} style={{cursor:(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?"pointer":"default"}} className={`${styles.container} ${styles.subcontainer}`} onClick={() => setCheckedProf(trab.value)}>
+                listValue?.length===0||trab.value.toLowerCase().includes(listValue.toLowerCase())?
+                <div key={i} style={{cursor:(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?"pointer":"default"}} className={`${styles.container} ${styles.subcontainer}`} onClick={() => {
+                    setCheckedProf(trab.value)
+                    setListValue('')
+                }}>
                     <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
                     <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkmark:styles.checkmark_disabled}></span>
                     <div style={{display:'flex', alignItems:'center'}}>
@@ -145,8 +148,10 @@ const Details = props => {
         return profissoesGrouped?.map((trab, i) => {
             return (
                 trab.label==='no-label'?
-                    listValue.length===0||trab.options[0].value.toLowerCase().includes(listValue.toLowerCase())?
-                    <div key={i} style={{cursor:(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.options[0].value)?"pointer":"default"}} className={styles.container} onClick={() => setCheckedProf(trab.options[0].value)}>
+                    listValue?.length===0||trab.options[0].value.toLowerCase().includes(listValue.toLowerCase())?
+                    <div key={i} style={{cursor:(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.options[0].value)?"pointer":"default"}} className={styles.container} onClick={() => {
+                        setCheckedProf(trab.options[0].value)
+                        setListValue('')}}>
                         <input type="checkbox" readOnly checked={getCheckedProf(trab.options[0].value)}/>
                         <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.options[0].value)?styles.checkmark:styles.checkmark_disabled}></span>
                         <div style={{display:'flex', alignItems:'center'}}>
@@ -193,7 +198,7 @@ const Details = props => {
         if(radioSelected===1 && entityName.length<=1){
             setEntityWrong(true)
         }
-        else if(selectedProf.length>0 && selectedReg.length>0){
+        else if(selectedProf?.length>0 && selectedReg?.length>0){
             if((radioSelected===1 && entityName.length>1)||radioSelected===0){
                 setEditBottom(false)
                 setListValue('')
@@ -215,22 +220,29 @@ const Details = props => {
                             ]
                         )
                     )
+                    dispatch(worker_update_profile_complete(true))
                     setLoadingBottom(false)
                     setBottomPop(true)
                     setTimeout(() => setBottomPop(false), 4000)
-                    if(user_phone_verified&&user_email_verified&&user.regioes?.length>0&&user.trabalhos?.length>0)
+                    if(user_phone_verified&&user_email_verified&&worker_is_subscribed)
                     {
-                        dispatch(worker_update_profile_complete(true))
-                        if(user.state!==1 && worker_is_subscribed)
+                        console.log('yes')
+                        if(user.state!==1)
+                        {
+                            console.log('yes2')
                             axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: user._id})
+                        }
+                            
                     }
                         
                 })
             }
         }
         else{
-            setShake(true);
-            setTimeout(() => setShake(false), 1000);
+            console.log('yes')
+            shakeError.current?.scrollIntoView({behavior: 'smooth'})
+            setShake(true)
+            setTimeout(() => setShake(false), 1000)
         }
     }
 
@@ -364,6 +376,7 @@ const Details = props => {
                             <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor define a tua situação de trabalho.</span>
                             :null
                         }
+                        
                     </div>
                     {   
                         !editBottom?
@@ -380,10 +393,10 @@ const Details = props => {
                 <div className={styles.flex_bottom}>
                     
                     <div className={styles.flex_left}>
-                        <span className={styles.flex_title}>Serviços que exerço <span className={shakeTarefas?`${styles.selected_number} ${styles.shake}`:styles.selected_number}>({selectedProf?selectedProf.length:0}/9)</span></span>
+                        <span ref={shakeError} className={styles.flex_title}>Serviços que exerço <span className={shakeTarefas?`${styles.selected_number} ${styles.shake}`:styles.selected_number}>({selectedProf?selectedProf?.length:0}/9)</span></span>
                         {
-                            editBottom&&selectedProf.length===0||!selectedProf?
-                            <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos um tipo de serviço!</span>
+                            editBottom&&selectedProf?.length===0||editBottom&&!selectedProf?
+                            <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper} style={{marginBottom:'0'}}>Por favor escolhe pelo menos um tipo de serviço!</span>
                             :null
                         }
                         <span className={editBottom?styles.divider_active:styles.divider}></span>
@@ -399,10 +412,10 @@ const Details = props => {
                         
                     </div>
                     <div className={`${styles.flex_left} ${styles.flex_left_mobile}`}>
-                        <span className={styles.flex_title}>Regiões ou distritos onde trabalho</span>
+                        <span ref={shakeError} className={styles.flex_title}>Regiões ou distritos onde trabalho</span>
                         {
-                            (editBottom&&selectedReg.length===0)||!selectedReg?
-                            <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor escolhe pelo menos uma região ou distrito!</span>
+                            (editBottom&&selectedReg?.length===0)||editBottom&&!selectedReg?
+                            <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper} style={{marginBottom:'0'}}>Por favor escolhe pelo menos uma região ou distrito!</span>
                             :null
                         }
                         <span className={editBottom?styles.divider_active:styles.divider}></span>

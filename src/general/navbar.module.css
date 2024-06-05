@@ -84,7 +84,7 @@
     border-radius: 50%;
     position: absolute;
     right: -4px;
-    top: 5px;
+    top: 18px;
     background-color: var(--yellow);
 }
 .chat_div:hover > *{
@@ -134,7 +134,7 @@
     align-items: center;
     padding: 0 10px;
     font-weight: 700;
-    color: var(--brand);
+    color: var(--action);
     margin-right: 20px;
     flex-direction: column;
     /* background-color: var(--brand); */
