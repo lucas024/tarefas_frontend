@@ -53,11 +53,11 @@ const WorkerBannerContent = props => {
         <div className={props.workerPage?styles.popup_wrapper_worker:styles.popup_wrapper} style={{padding:props.workerPage?'20px':''}}>
             <div className={styles.value_brand_wrapper}>
                 <img className={styles.value_brand_img} src={logo_full_orange}/>
-                <p className={styles.value_brand_text}>PROFISSIONAL</p>
-                <div className={styles.discount}>
+                <p className={styles.value_brand_text} style={{color:props.workerPage?'#ffffff':''}}>PROFISSIONAL</p>
+                <div className={styles.discount} style={{color:props.workerPage?'#161F28':'', backgroundColor:props.workerPage?'#ffffff':''}}>
                     {
                         props.workerPage?
-                        <p className={styles.discount_text}>3 meses subscrição grátis</p>
+                        <p className={styles.discount_text} style={{color:props.workerPage?'#161F28':''}}>3 meses subscrição grátis</p>
                         :
                         <p className={styles.discount_text}>3 meses subscrição grátis*</p>
                     }
@@ -65,25 +65,25 @@ const WorkerBannerContent = props => {
             </div>
             <div className={styles.divider} style={{marginTop:'15px'}}/>
             <div className={props.workerPage?styles.popup_inner_worker:styles.popup_inner}>
-                <span className={styles.title}>
+                <span className={styles.title} style={{color:props.workerPage?'#ffffff':''}}>
                     Queres encontrar tarefas para realizar, receber contacto dos utlizadores e expôr o teu négocio?
                     <p style={{fontWeight:'400'}}>Torna-te um profissional criando a tua conta e ativando o modo profissional.</p>
                 </span>
-                <span className={styles.line_title} style={{marginTop:'15px'}}>Benefícios</span>
+                <span className={styles.line_title} style={{marginTop:'15px', color:props.workerPage?'#ffffff':''}}>Benefícios</span>
                 <div className={styles.line}>
                     <img className={styles.line_image} src={tarefas}/>
                     <span className={styles.helper_text}>Tarefas</span>
-                    <span className={styles.line_text}>Acesso desbloqueado aos detalhes de <span className={styles.action}>contacto</span> e <span className={styles.action}>localização</span> de <span className={styles.bold}>todas as tarefas publicadas</span>.</span>
+                    <span className={styles.line_text} style={{color:props.workerPage?'#ffffff':''}}>Acesso desbloqueado aos detalhes de <span className={styles.action}>contacto</span> e <span className={styles.action}>localização</span> de <span className={styles.bold}>todas as tarefas publicadas</span>.</span>
                 </div>
                 <div className={styles.line}>
                     <img className={styles.line_image} src={mensagens}/>
                     <span className={styles.helper_text}>Mensagens</span>
-                    <span className={styles.line_text}>Acesso à <span className={styles.action}>plataforma de mensagens</span> onde podes contactar os teus clientes de forma <span className={styles.bold}>fácil</span> e <span className={styles.bold}>direta</span>.</span>
+                    <span className={styles.line_text} style={{color:props.workerPage?'#ffffff':''}}>Acesso à <span className={styles.action}>plataforma de mensagens</span> onde podes contactar os teus clientes de forma <span className={styles.bold}>fácil</span> e <span className={styles.bold}>direta</span>.</span>
                 </div>
                 <div className={styles.line} style={{borderBottom:props.workerPage?'':'1px solid #71848d', paddingBottom:props.workerPage?'':"25px"}}>
                     <img className={styles.line_image} src={perfil}/>
                     <span className={styles.helper_text}>Perfil</span>
-                    <span className={styles.line_text}>Criação do teu <span className={styles.action}>perfil de profissional</span> que será acessível a todos clientes do TAREFAS.</span>
+                    <span className={styles.line_text} style={{color:props.workerPage?'#ffffff':''}}>Criação do teu <span className={styles.action}>perfil de profissional</span> que será acessível a todos clientes do TAREFAS.</span>
                 </div>
                 {
                     props.workerPage?

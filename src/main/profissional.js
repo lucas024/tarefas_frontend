@@ -61,7 +61,7 @@ const Profissional = props => {
     }, [props.userLoadAttempt])
 
     const sendMessageHandler = async () => {
-        if(text!==""&&worker.type!==user?.type&&worker._id!==user?._id){
+        if(text!==""&&worker._id!==user?._id){
             setLoadingChat(true)
 
             let time = new Date().getTime()
@@ -86,8 +86,6 @@ const Profissional = props => {
                     {
                         repeated=true
                         await axios.post(`${api_url}/chats/update_common_chat`, {
-                            approacher_id: chat.approacher_id===user?._id?chat.approacher_id:chat.approached_id,
-                            approached_id: chat.approached_id===user?._id?chat.approached_id:chat.approacher_id,
                             approacher_read: chat.approacher_id===user?._id,
                             approached_read: chat.approached_id===user?._id,
                             chat_id: chat.chat_id,
@@ -355,7 +353,7 @@ const Profissional = props => {
                                         />
                                 <div className={styles.frontdrop}>
                                     <span className={styles.frontdrop_text}>Mensagem enviada!</span>
-                                    <span className={styles.frontdrop_text_action} onClick={() => navigate(`/user?t=messages&id=${localChatSent}`)}>Ver conversa</span>
+                                    <span className={styles.frontdrop_text_action} onClick={() => navigate(`/user?t=messages`)}>Ver mensagens</span>
                                 </div>
                             </div>
                             :

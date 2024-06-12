@@ -12,10 +12,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
 import ScrollToBottom, { useScrollToBottom, useSticky, useAtBottom, useAtEnd, useAtStart } from 'react-scroll-to-bottom';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useSelector, useDispatch } from 'react-redux'
 import {user_update_chats} from '../store'
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import TitleIcon from '@mui/icons-material/Title';
 
 
 const AdminMessages = () => {
@@ -118,6 +118,9 @@ const AdminMessages = () => {
                                 else if(aux.length>0)
                                 {
                                     let last = aux.slice(0)[0]
+                                    console.log(last)
+                                    updateReadLocal(selectedChat, last)
+                                    updateReadDatabaseAndNavigate(selectedChat)
                                     setLastUpdated(last.timestamp)
                                     let newItems = [...selectedChatTexts].concat(aux.reverse())
                                     setSelectedChatTexts(newItems)
@@ -171,27 +174,29 @@ const AdminMessages = () => {
             //     })
             // }
             // else{
-            // axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
-            // .then(res => {
-            //     if(res.data!==''){
+            axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
+            .then(res => {
+                if(res.data!==''){
+                    setIsLoaded(true)
+                    setLoadingChats(false)
+                    setLoading(false)
 
-            if(user.chats?.length>0)
-            {
-                setChats(JSON.parse(JSON.stringify(([...user.chats].sort(sortByTimestamp)))))
-                for(let el of user.chats)
-                {
-                    if(el.chat_id === selectedChatId)
+                    if(res.data?.chats?.length>0)
                     {
-                        setChatDisplayInformation(el)
+                        setChats(JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp)))))
+                        for(let el of res.data.chats)
+                        {
+                            if(el.chat_id === selectedChatId)
+                            {
+                                setChatDisplayInformation(el)
+                            }
+                        }
                     }
-                }
-            }
-            setIsLoaded(true)
-            setLoadingChats(false)
-            setLoading(false)
-            //     } 
-            // })
-            // }         
+                    setIsLoaded(true)
+                    setLoadingChats(false)
+                    setLoading(false)
+                } 
+            })   
 
             // const newSocket = io(
             //     'https://socket-dot-vender-344408.ew.r.appspot.com:65080',
@@ -237,13 +242,15 @@ const AdminMessages = () => {
     const sendSynchronousAndUpdateDatabaseHandler = async (new_text) => {
         const sent_timestamp = new Date().getTime()
         const text = {
-            origin_type : user.type,
+            origin_type : user._id,
             timestamp : sent_timestamp,
             text: new_text
         }
         await axios.post(`${api_url}/chats/update_common_chat`, {
-            user1_read: user._id===selectedChat.user1_id?true:false,
-            user2_read: user._id===selectedChat.user2_id?true:false,
+            approacher_read: user._id===selectedChat.approacher_id,
+            approached_read: user._id===selectedChat.approached_id,
+            approacher_id: selectedChat.approacher_id,
+            approached_id: selectedChat.approached_id,
             chat_id: selectedChatId,
             text: text,
             updated: sent_timestamp
@@ -272,8 +279,17 @@ const AdminMessages = () => {
         {
           if(el.chat_id===chat.chat_id)
           {
-            el.user1_read = user._id===el.user1_id
-            el.user2_read = user._id===el.user2_id
+            if(last_text !== null)
+            {
+                el.approacher_read = user._id===el.approacher_id
+                el.approached_read = user._id===el.approached_id
+            }
+            else
+            {
+                el.approacher_read = user._id===el.approacher_id?true:el.approacher_read
+                el.approached_read = user._id===el.approached_id?true:el.approached_read
+            }
+
             if(last_text !== null)
                 el.last_text = last_text
             break
@@ -292,8 +308,8 @@ const AdminMessages = () => {
             {
                 if(el.chat_id===chat.chat_id)
                 {
-                el.user1_read = user._id===el.user1_id
-                el.user2_read = user._id===el.user2_id
+                el.approacher_read = user._id===el.approacher_id?true:el.approacher_read
+                el.approached_read = user._id===el.approached_id?true:el.approached_read
                 if(last_text !== null)
                     el.last_text = last_text
                 break
@@ -306,7 +322,7 @@ const AdminMessages = () => {
     const messageHandler = () => {
         if(currentText !== ""){
             let text = {
-                origin_type : user.type,
+                origin_type : user._id,
                 timestamp : new Date().getTime(),
                 text: currentText
             }
@@ -327,93 +343,7 @@ const AdminMessages = () => {
         return prev.getDate() !== curr.getDate()
     }
 
-    const workerMessageDisplay = () => {
-        return selectedChatTexts?.map((msg, i) => {
-            return (
-                <div key={i}>
-                    {
-                        i===0&&displayLoadingNew?
-                        <div className={styles.day_splitter}>
-                            <span className={styles.day_value}>
-                                <Loader nofrontdrop={true} loading={displayLoadingNew} small={true}/>
-                            </span>
-                        </div>
-                        :
-                        i===0?
-                        <div className={styles.day_splitter}>
-                            <span className={styles.day_value}>{extenseDate(msg.timestamp)}</span>
-                        </div>
-                        :i>0&&getDiffDate(selectedChatTexts[i-1].timestamp, msg.timestamp)?
-                        <div className={styles.day_splitter}>
-                            <span className={styles.day_value}>{extenseDate(msg.timestamp)}</span>
-                        </div>
-                        :null
-                    }
-                    
-                    <div ref={i===limit?onLoadBubbleRef:null} className={msg.origin_type===user?._id?styles.chatbox_wrapper_send:styles.chatbox_wrapper_receive}>   
-                        <div className={msg.origin_type===user?._id?styles.send:styles.receive}>
-                            {
-                                (selectedChatTexts[i+1])&&(selectedChatTexts[i+1].origin_type!==msg.origin_type)
-                                ||(!selectedChatTexts[i+1])? 
-                                <div className={styles.chatbox_user}>
-                                    {
-                                        msg.origin_type===user?._id?
-                                            chatInformation.worker_photo!==""?
-                                            <img src={chatInformation.worker_photo} className={styles.chatbox_user_img}/>
-                                            :
-                                            <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
-                                        :
-                                            chatInformation.user_photo!==""?
-                                            <img src={chatInformation.user_photo} className={styles.chatbox_user_img}/>
-                                            :
-                                            <FaceIcon className={styles.chatbox_user_img}/>
-                                    }
-                                    <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
-                                </div>
-                                :<div className={styles.chatbox_user_opacity}>
-                                    {
-                                        msg.origin_type===1?
-                                        chatInformation.worker_photo!==""?
-                                        <img src={chatInformation.worker_photo} className={styles.chatbox_user_img}/>
-                                        :
-                                        <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
-                                    :
-                                    chatInformation.user_photo!==""?
-                                        <img src={chatInformation.user_photo} className={styles.chatbox_user_img}/>
-                                        :
-                                        <FaceIcon className={styles.chatbox_user_img}/>
-                                    }
-                                    <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
-                                </div>
-
-                            }
-                            {
-                                msg.starter?
-                                <div className={styles.chatbox_text_starter} style={{borderBottomRightRadius:0}}>
-                                    <span className={styles.chatbox_starter}>
-                                        <span className={styles.chatbot_template}>Interesse na tarefa!</span>
-                                        <div className={styles.chatbox_template_title_wrapper}>
-                                            <p className={styles.chatbox_template_title} onClick={() => navigate(`/main/publications/publication?id=${chatInformation.reservation_id}`)}>{chatInformation.reservation_title}</p>
-                                        </div>
-                                        <p className={styles.chatbot_template}>Mensagem</p>
-                                        <span className={styles.chatbox_text_value}>{msg.text}</span>
-                                    </span>
-                                </div>
-                                :
-                                <div className={msg.origin_type===1?styles.chatbox_text_send:styles.chatbox_text_receive}>
-                                    <span className={styles.chatbox_text_value}>{msg.text}</span>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-                
-                
-            )
-        })
-    }
-
-    const userMessageDisplay = () => {
+    const userMessageDisplay = (approached) => {
         return selectedChatTexts?.map((msg, i) => {
             return (
                 <div key={i} className={styles.chatbox_wrapper}>
@@ -447,42 +377,82 @@ const AdminMessages = () => {
                         <div className={msg.origin_type===user?._id?styles.send:styles.receive}>
                             {
                                 (selectedChatTexts[i+1])&&(selectedChatTexts[i+1].origin_type!==msg.origin_type)
-                                ||(!selectedChatTexts[i+1])? 
+                                ||(!selectedChatTexts[i+1])?
                                 <div className={styles.chatbox_user}>
                                     {
-                                        user?._id===chatInformation.user1_id&&chatInformation.user1_photo!==""?
-                                        <img src={chatInformation.user1_photo} className={styles.chatbox_user_img} referrerPolicy="no-referrer"/>
+                                        msg.origin_type===user?._id?
+                                        user?.photoUrl!==""?
+                                        <img src={user?.photoUrl} className={styles.chatbox_user_img} referrerPolicy="no-referrer"/>
                                         :
-                                        chatInformation.user2_photo!==""?
-                                        <img src={chatInformation.user2_photo} className={styles.chatbox_user_img} referrerPolicy="no-referrer"/>
-                                        :
-                                        user?._id===chatInformation.publiction_user_id || user?._id!==chatInformation.worker_user_id?
+                                        user?.type==='user'?
                                         <FaceIcon className={styles.chatbox_user_img} style={{color:'#0358e5'}}/>
                                         :
                                         <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)', color:'#FF785A'}}/>
+
+                                        :
+
+                                        
+                                        approached?
+                                        chatInformation.approacher!==""?
+                                        <img src={chatInformation.approacher_photo} className={styles.chatbox_user_img} referrerPolicy="no-referrer"/>
+                                        :
+                                        chatInformation.approacher_type==='user'?
+                                        <FaceIcon className={styles.chatbox_user_img} style={{color:'#0358e5'}}/>
+                                        :
+                                        <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)', color:'#FF785A'}}/>
+                                        :
+                                        
+                                        chatInformation.approached!==""?
+                                        <img src={chatInformation.approached_photo} className={styles.chatbox_user_img} referrerPolicy="no-referrer"/>
+                                        :
+                                        chatInformation.approached_type==='user'?
+                                        <FaceIcon className={styles.chatbox_user_img} style={{color:'#0358e5'}}/>
+                                        :
+                                        <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)', color:'#FF785A'}}/>
+
+                                        
                                     }
                                     <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
                                 </div>
                                 :<div className={styles.chatbox_user_opacity}>
                                     {
-                                        user?._id===chatInformation.user1_id&&chatInformation.user1_photo!==""?
-                                        <img src={chatInformation.user1_photo} className={styles.chatbox_user_img} referrerPolicy="no-referrer"/>
+                                        msg.origin_type===user?._id?
+                                        user?.photoUrl!==""?
+                                        <img src={user?.photoUrl} className={styles.chatbox_user_img_small} referrerPolicy="no-referrer"/>
                                         :
-                                        chatInformation.user2_photo!==""?
-                                        <img src={chatInformation.user2_photo} className={styles.chatbox_user_img} referrerPolicy="no-referrer"/>
+                                        user?.type==='user'?
+                                        <FaceIcon className={styles.chatbox_user_img_small} style={{color:'#0358e5'}}/>
                                         :
-                                        user?._id===chatInformation.publiction_user_id || user?._id!==chatInformation.worker_user_id?
-                                        <FaceIcon className={styles.chatbox_user_img} style={{color:'#0358e5'}}/>
+                                        <EmojiPeopleIcon className={styles.chatbox_user_img_small} style={{transform: 'scaleX(-1)', color:'#FF785A'}}/>
+
                                         :
-                                        <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)', color:'#FF785A'}}/>
+
+                                        
+                                        approached?
+                                        chatInformation.approacher!==""?
+                                        <img src={chatInformation.approacher_photo} className={styles.chatbox_user_img_small} referrerPolicy="no-referrer"/>
+                                        :
+                                        chatInformation.approacher_type==='user'?
+                                        <FaceIcon className={styles.chatbox_user_img_small} style={{color:'#0358e5'}}/>
+                                        :
+                                        <EmojiPeopleIcon className={styles.chatbox_user_img_small} style={{transform: 'scaleX(-1)', color:'#FF785A'}}/>
+                                        :
+                                        
+                                        chatInformation.approached!==""?
+                                        <img src={chatInformation.approached_photo} className={styles.chatbox_user_img_small} referrerPolicy="no-referrer"/>
+                                        :
+                                        chatInformation.approached_type==='user'?
+                                        <FaceIcon className={styles.chatbox_user_img_small} style={{color:'#0358e5'}}/>
+                                        :
+                                        <EmojiPeopleIcon className={styles.chatbox_user_img_small} style={{transform: 'scaleX(-1)', color:'#FF785A'}}/>
                                     }
-                                    <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp}>{getDisplayTime(msg.timestamp)}</span>
+                                    <span ref={i+1===selectedChatTexts.length?chatareaRef:null} className={styles.chatbox_user_timestamp_small}>{getDisplayTime(msg.timestamp)}</span>
                                 </div>
 
                             }
                             {
                                 msg.starter?
-                                <div className={styles.chatbox_text_starter} style={{borderBottomLeftRadius:0}}>
+                                <div className={styles.chatbox_text_starter} style={{borderBottomLeftRadius:msg.origin_type===user?._id?'10px':'0px', borderBottomRightRadius:msg.origin_type===user?._id?0:'10px'}}>
                                     <span className={styles.chatbox_starter}>
                                         <span className={styles.chatbot_template}>Interesse na tarefa!</span>
                                         <div className={styles.chatbox_template_title_wrapper}>
@@ -493,7 +463,7 @@ const AdminMessages = () => {
                                     </span>
                                 </div>
                                 :
-                                <div className={msg.origin_type===0?styles.chatbox_text_send:styles.chatbox_text_receive} style={{backgroundColor:msg.origin_type===0?'#0358e5aa':'#ffffff', color:msg.origin_type===0?'#ffffff':'#161F28'}}>
+                                <div className={msg.origin_type===user?._id?styles.chatbox_text_send:styles.chatbox_text_receive} style={{backgroundColor:msg.origin_type===user?._id?'#0358e5aa':'#ffffff', color:msg.origin_type===user?._id?'#ffffff':'#161F28'}}>
                                     <span className={styles.chatbox_text_value}>{msg.text}</span>
                                 </div>
                             }
@@ -533,8 +503,8 @@ const AdminMessages = () => {
             console.log(chat)
             await axios.post(`${api_url}/chats/update_text_read`, {
                 chat_id: chat.chat_id,
-                user1_read: chat.user1_id===user._id,
-                user2_read: chat.user2_id===user._id,
+                approacher_read: chat.approacher_id===user?._id?true:chat.approacher_read,
+                approached_read: chat.approached_id===user?._id?true:chat.approached_read,
             })
             // navigate({
             //     pathname: `/user`,
@@ -544,70 +514,30 @@ const AdminMessages = () => {
     }
 
     const setChatDisplayInformation = chat => {
-        console.log(chat)
+        console.log()
         setChatInformation(
             {
-                user1_name: chat.user1_name,
-                user1_photo: chat.user1_photoUrl,
-                user2_name: chat.user2_name,
-                user2_photo: chat.user2_photoUrl,
+                approacher_id: chat.approacher_id,
+                approacher_name: chat.approacher_name,
+                approacher_photo: chat.approacher_photoUrl,
+                approacher_type: chat.approacher_type,
+
+                approached_id: chat.approached_id,
+                approached_name: chat.approached_name,
+                approached_photo: chat.approached_photoUrl,
+                approached_type: chat.approached_type,
+
                 reservation_title: chat.reservation_title,
                 reservation_id: chat.reservation_id,
+
                 chat_id: chat.chat_id,
-                publiction_user_id: chat.publiction_user_id,
-                worker_user_id: chat.worker_user_id,
             }
         )
     }
 
-    // const workerChatsDisplay = () => {
-    //     return chats?.map((item, i) => {
-    //         return (
-    //             <div onClick={() => {
-    //                 if(selectedChatId!==item.chat_id)
-    //                 {
-    //                     updateReadLocal(item, null)
-    //                     setChatDisplayInformation(item)
-    //                     setAllLoaded(false)
-    //                     triggerChatLoad(item.chat_id, true, false, true)
-    //                 }
-    //                 }} key={i} className={selectedChatId===item.chat_id?styles.row_selected:styles.row}>
-    //                 {
-    //                     item.reservation_title?
-    //                     <div className={styles.row_icon_wrapper}>
-    //                         <AssignmentIcon className={styles.row_icon}/>
-    //                     </div>
-    //                     :item.user_photoUrl!==""?
-    //                     <img className={styles.row_img} src={item.user_photoUrl}/>
-    //                     :
-    //                     <FaceIcon className={styles.chatbox_user_img} style={{color:"#0358e5"}}/>
-    //                 }
-    //                 <div className={styles.row_main}>
-    //                     <div className={styles.main_top}>
-    //                         <span className={styles.top_name} style={{textTransform:item.reservation_title?"uppercase":""}}>{item.reservation_title?item.reservation_title:item.user_name}</span>
-    //                         <span className={styles.top_hour} style={{color:selectedChat?._id===item._id?"black":"#ccc"}}>{getDisplayTime(item.last_text.timestamp)}</span>
-    //                     </div>
-    //                     <div className={styles.main_bottom}>
-    //                         <span className={styles.bot_text} style={{fontWeight:item.last_text.origin_type==0&&!item.worker_read?600:400, color:item.last_text.origin_type==0&&!item.worker_read?"#FF785A":"#ccc"}}>{item.last_text.text}</span>
-    //                         {
-    //                             item.last_text.origin_type==0&&!item.worker_read?
-    //                             <div className={styles.bot_not}>
-    //                                 <CircleIcon className={styles.bot_not_icon}/>
-    //                             </div>
-    //                             :
-    //                             item.last_text.origin_type===1&&item.user_read?
-    //                             <div className={styles.bot_not}>
-    //                                 <CheckIcon className={styles.bot_not_icon}/>
-    //                             </div>
-    //                             :null
-                                
-    //                         }
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         )
-    //     })
-    // }
+    const isApproacher = (item) => {
+        return user?._id===item.approacher_id
+    }
 
     const chatsDisplay = () => {
         return chats?.map((item, i) => {
@@ -628,29 +558,65 @@ const AdminMessages = () => {
                     {   
                         item.reservation_title?
                         <div className={styles.row_icon_wrapper}>
-                            <AssignmentIcon className={styles.row_icon}/>
+                            <TitleIcon className={styles.row_icon}/>
                         </div>
-                        :item.worker_photoUrl!==""?
-                        <img className={styles.row_img} src={item.worker_photoUrl}/>
+                        :!isApproacher(item)&&
+                            item.approacher_photoUrl!==""?
+                        <img className={styles.row_img} src={item.approacher_photoUrl} referrerPolicy="no-referrer"/>
                         :
-                        <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
+                        isApproacher(item)&&
+                            item.approached_photoUrl!==""?
+                        <img className={styles.row_img} src={item.approached_photoUrl} referrerPolicy="no-referrer"/>
+                        :
+                        isApproacher(item)&&
+                            item.approached_photoUrl===""?
+                            item.approached_type==='worker'?
+                            <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
+                            :
+                            <FaceIcon className={styles.chatbox_user_img}/>
+                        :
+                        !isApproacher(item)&&
+                            item.approacher_photoUrl===""&&item.approached_type==='worker'?
+                            <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
+                            :
+                            <FaceIcon className={styles.chatbox_user_img}/>
                     }
                     <div className={styles.row_main}>
                         <div className={styles.main_top}>
-                            <span className={styles.top_name} style={{textTransform:item.reservation_title?"uppercase":""}}>{item.reservation_title?item.reservation_title:item.worker_name}</span>
+                            <span className={styles.top_name} style={{textTransform:item.reservation_title?"uppercase":""}}>{
+                            item.reservation_title?item.reservation_title
+                            :
+                            item.approached_id===user?._id?
+                            item.approacher_name
+                            :
+                            item.approacher_name}</span>
                             <span className={styles.top_hour} style={{color:selectedChat?._id===item._id?"black":"#ccc"}}>{getDisplayTime(item.last_text.timestamp)}</span>
                         </div>
                         <div className={styles.main_bottom}>
-                            <span className={styles.bot_text} style={{fontWeight:item.last_text.origin_type===1&&!item.user_read?600:400, color:item.last_text.origin_type===1&&!item.user_read?"#FF785A":"#ccc"}}>{item.last_text.text}</span>
+                            <span className={styles.bot_text} 
+                                style={{fontWeight:item.last_text.origin_type!==user?._id
+                                    &&((isApproacher(item)&&!item.approacher_read) 
+                                        || (!isApproacher(item)&&!item.approached_read))?600:400, 
+                                        
+                                        color:item.last_text.origin_type!==user?._id
+                                        &&((isApproacher(item)&&!item.approacher_read) 
+                                            || (!isApproacher(item)&&!item.approached_read))?"#FF785A":"#ccc"}}>{item.last_text.text}</span>
                             {
-                                item.last_text.origin_type===1&&!item.user_read?
+                                item.last_text.origin_type!==user?._id
+                                &&((isApproacher(item)&&!item.approacher_read) 
+                                    || (!isApproacher(item)&&!item.approached_read))?
                                 <div className={styles.bot_not}>
                                     <CircleIcon className={styles.bot_not_icon}/>
                                 </div>
                                 :
-                                item.last_text.origin_type==0&&item.worker_read?
+                                item.last_text.origin_type===user?._id&&((isApproacher(item)&&item.approached_read) || !isApproacher(item)&&item.approacher_read)?
                                 <div className={styles.bot_not}>
                                     <CheckIcon className={styles.bot_not_icon}/>
+                                </div>
+                                :
+                                item.last_text.origin_type===user?._id?
+                                <div className={styles.bot_not}>
+                                    <CheckIcon className={styles.bot_not_icon} style={{color:"#71848d"}}/>
                                 </div>
                                 :null
                                 
@@ -754,43 +720,19 @@ const AdminMessages = () => {
                     setSkip(1)
             }
         }, [sticky, atEnd])
-        
-        let user_aux = ""
-        let worker_aux = ""
 
-        //publication
-        // if(selectedChat.publication_user_id!=="")
-        // {
-        //     if(selectedChat.publication_user_id === selectedChat.user1_id)
-        //     {
-        //         user_aux = selectedChat.user1_id
-        //         worker_aux = selectedChat.user2_id
-        //     }
-        //     else
-        //     {
-        //         user_aux = selectedChat.user2_id
-        //         worker_aux = selectedChat.user1_id
-        //     }
-        // }
-        // else
-        // {
-        //     if(selectedChat.worker_user_id === selectedChat.user1_id)
-        //     {
-        //         user_aux = selectedChat.user2_id
-        //         worker_aux = selectedChat.user1_id
-        //     }
-        //     else
-        //     {
-        //         user_aux = selectedChat.user1_id
-        //         worker_aux = selectedChat.user2_id
-        //     }
-        // }
+        // user is approached
+        let approached = true
 
-
+        if(selectedChat.approached_id !== user?._id)
+        {
+            // other is approached
+            approached = false
+        }
 
         return(
                 selectedChatTexts?
-                userMessageDisplay()
+                userMessageDisplay(approached)
                 :null
         )
     }
@@ -822,57 +764,87 @@ const AdminMessages = () => {
                                 <div className={styles.chat_wrapper}>
                                     <div className={styles.top}>
                                         <div 
-                                            className={user?.type===0?styles.top_left_flex_for_user:styles.top_left_flex}
-                                            onClick={() => navigate(`/main/publications/profissional?id=${chatInformation.worker_id}`)}
+                                            className={chatInformation.approacher_id===user?._id?
+                                                chatInformation.approached_type==="worker"?styles.top_left_flex_for_user:styles.top_left_flex
+                                                :
+                                                chatInformation.approacher_type==="worker"?styles.top_left_flex_for_user:styles.top_left_flex
+                                                }
+                                            onClick={() => 
+                                                chatInformation.approacher_id===user?._id?
+                                                chatInformation.approached_type==="worker"?navigate(`/main/publications/profissional?id=${chatInformation.approached_id}`):{}
+                                                :
+                                                chatInformation.approacher_type==="worker"?navigate(`/main/publications/profissional?id=${chatInformation.approacher_id}`):{}
+
+                                                
+                                            }
                                             >
                                             {/* <span className={styles.top_left_indicator} style={{backgroundColor:isUserOnline()?"#6EB241":"white", border:!isUserOnline()?"1px solid #F40009":"1px solid transparent"}}></span> */}
                                             {/* drena do ultima vez online */}
                                             {
-                                                chatInformation.user2_photo!==""&&
-                                                chatInformation.user1_id===user?._id?
+                                                
+                                                chatInformation.approacher_id===user?._id&&
+                                                chatInformation.approached_photo!=""?
                                                 <img 
-                                                    style={{marginLeft:"5px", border:"2px solid #ffffff"}} 
+                                                    style={{marginLeft:"5px", border:chatInformation.approached_type==='worker'?"2px solid #FF785A":"2px solid #ffffff"}} 
                                                     className={styles.chatbox_user_img} 
-                                                    src={chatInformation.user2_photo}/>
+                                                    src={chatInformation.approached_photo}
+                                                    referrerPolicy="no-referrer"/>
                                                 :
-                                                chatInformation.user1_photo!==""&&
-                                                chatInformation.user2_id===user?._id?
+                                                chatInformation.approacher_photo!=""?
                                                 <img 
-                                                    style={{marginLeft:"5px", border:"2px solid #ffffff"}} 
+                                                    style={{marginLeft:"5px", border:chatInformation.approacher_type==='worker'?"2px solid #FF785A":"2px solid #ffffff"}} 
                                                     className={styles.chatbox_user_img} 
-                                                    src={chatInformation.user1_photo}/>
+                                                    src={chatInformation.approacher_photo}
+                                                    referrerPolicy="no-referrer"/>
                                                 :
-                                                user?._id===chatInformation.publiction_user_id?
+                                                user?._id===chatInformation.approacher_id?
+                                                chatInformation.approached_type==='user'?
+                                                <FaceIcon style={{marginLeft:"5px", border:"2px solid #ffffff"}} className={styles.chatbox_user_img}/>
+                                                :
                                                 <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)', marginLeft:"5px", border:"2px solid #ffffff"}}/>
-                                                :(user?._id===chatInformation.worker_user_id)?
-                                                <FaceIcon style={{marginLeft:"5px", border:"2px solid #ffffff"}} className={styles.chatbox_user_img}/>
-                                                :chatInformation.worker_user_id===null&&user?._id!==chatInformation.publiction_user_id?
+                                                
+                                                :
+                                                
+                                                chatInformation.approacher_type==='user'?
                                                 <FaceIcon style={{marginLeft:"5px", border:"2px solid #ffffff"}} className={styles.chatbox_user_img}/>
                                                 :
-                                                <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)', marginLeft:"5px", border:"2px solid #ffffff"}}/>                                           
+                                                <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)', marginLeft:"5px", border:"2px solid #ffffff"}}/>
+                                                
                                             }
                                             {
-                                                ((user?._id===chatInformation.worker_user_id)||(chatInformation.worker_user_id===null&&user?._id!==chatInformation.publiction_user_id))?
+                                                
                                                 <div className={styles.name_indicator}>
-                                                    <span className={styles.top_left_name}>{chatInformation.user_name}</span>
+                                                    <span className={styles.top_left_name}>{user?._id===chatInformation.approacher_id?chatInformation.approached_name:chatInformation.approacher_name}</span>
                                                     <span className={styles.type_indicator}>
                                                         {
                                                             <div className={styles.indicator_div}>
-                                                                <span className={styles.indicator_name} style={{color:'#0358e5'}}>CLIENTE</span>
+                                                                {
+                                                                    user?._id===chatInformation.approacher_id?
+                                                                    chatInformation.approached_type==='worker'?
+                                                                    <span className={styles.indicator_name}>PROFISSIONAL</span>
+                                                                    :
+                                                                    <span className={styles.indicator_name} style={{color:'#ffffff'}}>CLIENTE</span>
+                                                                    :
+                                                                    chatInformation.approacher_type==='worker'?
+                                                                    <span className={styles.indicator_name}>PROFISSIONAL</span>
+                                                                    :
+                                                                    <span className={styles.indicator_name} style={{color:'#ffffff'}}>CLIENTE</span>
+                                                                }
+                                                                
                                                             </div>
                                                         }
                                                     </span>
                                                 </div>
-                                                :
-                                                <div className={styles.name_indicator}>
-                                                    <span className={styles.top_left_name}>{chatInformation.worker_name}</span>
-                                                    <span className={styles.type_indicator}>
-                                                            <div className={styles.indicator_div}>
-                                                                {/* <BackHandIcon className={styles.indicator_icon}/> */}
-                                                                <span className={styles.indicator_name}>PROFISSIONAL</span>
-                                                            </div>
-                                                    </span>
-                                                </div>                                               
+                                                // :
+                                                // <div className={styles.name_indicator}>
+                                                //     <span className={styles.top_left_name}>{chatInformation.worker_name}</span>
+                                                //     <span className={styles.type_indicator}>
+                                                //             <div className={styles.indicator_div}>
+                                                //                 {/* <BackHandIcon className={styles.indicator_icon}/> */}
+                                                                
+                                                //             </div>
+                                                //     </span>
+                                                // </div>                                               
                                             }                             
                                         </div>
                                         {
@@ -910,10 +882,18 @@ const AdminMessages = () => {
                                 </div>
                             </div>
                             :(!chats||chats?.length===0)&&user?.worker?
-                            <NoPage object={"mensagens_worker"}/>
+                            <div className={styles.chat}>
+                                <NoPage object={"mensagens_worker"}/>
+                            </div>
+                            
                             :(!chats||chats?.length===0)&&!user?.worker?
-                            <NoPage object={"mensagens_user"}/>
-                            :!selectedChat?<NoPage object={"select_message"}/>
+                            <div className={styles.chat}>
+                                <NoPage object={"mensagens_user"}/>
+                            </div>
+                            :!selectedChat?
+                            <div className={styles.chat}>
+                                <NoPage object={"select_message"}/>
+                            </div>
                             :null
                         }
                         

@@ -33,7 +33,9 @@ const PpBanner = (props) => {
                 </div>
 
 
-                <span className={styles.cancel} style={{marginTop:"20px"}} onClick={() => props.cancel()}>fechar</span>
+                <div className={styles.cancel_wrapper}>
+                    <span className={styles.cancel} onClick={() => props.cancel()}>fechar</span>
+                </div>
             </div>
             </CSSTransition>
         </div>

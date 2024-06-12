@@ -20,7 +20,7 @@ const VerificationBannerEmail = (props) => {
             props.initiateEmailVerification()
             props.clearCodeStatus()
             const time = new Date()
-            time.setSeconds(time.getSeconds() + 9)
+            time.setSeconds(time.getSeconds() + 59)
             setDeadline(time)
             setExpired(false)
         }

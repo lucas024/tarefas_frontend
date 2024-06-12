@@ -876,12 +876,12 @@ const Trabalho = (props) => {
                                         <div className={styles.frontdrop}>
                                             <span className={styles.frontdrop_text}>Mensagem Enviada.</span>
                                             <span className={styles.frontdrop_text_action} onClick={() => 
-                                            navigate(`/user?t=messages&id=${chatId}`, {
+                                            navigate(`/user?t=messages`, {
                                                 state: {
                                                     from_page: true,
                                                     worker_id: user?._id,
                                                     user_id: reservation.user_id
-                                                }})}>Ir para Conversa</span>
+                                                }})}>Ver mensagens</span>
                                         </div>
                                     </div>
                                     :

@@ -27,7 +27,9 @@ import { useDispatch } from 'react-redux'
 import { 
     user_load,
     user_update_phone_verified,
-    user_update_field
+    user_update_field,
+    worker_update_profile_complete,
+    user_update_email_verified
   } from '../store';
 import AuthCarousel from './authCarousel'
 import AuthCarouselVerification from './authCarouselVerification'
@@ -41,6 +43,7 @@ import Lottie from "lottie-react";
 import * as sendEmail from '../assets/lotties/plane-email.json'
 import WorkerBanner from '../general/workerBanner';
 import AuthCarouselWorker from './authCarouselWorker';
+import Switch from "react-switch";
 
 
 const Auth = (props) => {
@@ -48,6 +51,8 @@ const Auth = (props) => {
     const user = useSelector(state => {return state.user})
 
     const dispatch = useDispatch()
+
+    const [createdWithGoogle, setCreatedWithGoogle] = useState(false)
 
     const [selectedAuth, setSelectedAuth] = useState(0)
 
@@ -429,7 +434,8 @@ const Auth = (props) => {
                 entity_name: "",
                 regioes: [],
                 trabalhos: [],
-                state: 0
+                state: 0,
+                created: new Date().getTime()
             })
         let res = await axios.get(`${api_url}/auth/get_user`, { params: {google_uid: user_uid} })
         if(res.data !== null){
@@ -453,6 +459,7 @@ const Auth = (props) => {
                     if(!workerMode)
                     {
                         setSelectedAuth(2)
+                        initiateEmailVerification()
                         setRegistarTab(0)
                     }
                     else
@@ -519,6 +526,7 @@ const Auth = (props) => {
             // let existing_worker = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: res.user.email.toLocaleLowerCase()} })
 
             if(existing_user.data == null){
+                setCreatedWithGoogle(true)
                 //conta nao existe - criar
                 let from_signup = {
                     name: res.user.displayName,
@@ -530,10 +538,18 @@ const Auth = (props) => {
                 {
                     navigate('/', {
                         state: {
-                            carry: 'login'
+                            carry: 'register',
+                            skippedVerification: false
                         }
                     })
                     setLoading(false)
+                }
+                else
+                {
+                    setLoading(false)
+                    setRegisterPopup(true)
+                    setTimeout(() => setRegisterPopup(false), 4000)
+                    setRegistarTab(3)
                 }
 
             }
@@ -627,11 +643,22 @@ const Auth = (props) => {
             })
     }
 
-    const completeEmailVerification = () => {
+
+    const completeEmailVerification = async () => {
         setEmailCodeStatus(null)
-        if(auth.currentUser.emailVerified === true)
+        
+        await auth.currentUser?.reload()
+        if(auth?.currentUser?.emailVerified === true)
         {
             setEmailCodeStatus(true)
+            dispatch(user_update_email_verified(true))
+            axios.post(`${api_url}/user/verify_email`, {user_id: user._id})
+            navigate('/', {
+                state: {
+                    carry: 'register',
+                    skippedVerification: true
+                }
+            })
         }
         else
         {
@@ -735,14 +762,14 @@ const Auth = (props) => {
 
     const o2auth = () => {
         return(
-            <div className={styles.area_o2}>
+            <div className={styles.area_o2} style={{borderBottom:selectedAuth===0?'none':''}}>
                 {/* <div className={styles.o2_button} onClick={() => signInWithPopupHandler("facebook")}>
                     <img src={facebook} className={styles.o2_img}></img>
                     <span className={styles.align_vert}>
                         <span className={styles.o2_text}>Entrar com Facebook</span>
                     </span>
                 </div> */}
-                <div className={styles.o2_button} style={{marginTop:"0px"}}  onClick={() => signInWithPopupHandler("google")}>
+                <div className={styles.o2_button} onClick={() => signInWithPopupHandler("google")}>
                     <img src={google} className={styles.o2_img}></img>
                     <span className={styles.align_vert}>
                         <span className={styles.o2_text}>
@@ -762,7 +789,7 @@ const Auth = (props) => {
                         </span>
                     </span>
                 </div>
-                <span className={styles.ou}>
+                <span className={styles.ou} style={{backgroundColor:selectedAuth===0?'transparent':''}}>
                     ou
                 </span>
             </div>
@@ -859,10 +886,24 @@ const Auth = (props) => {
                     ]
                 )
             )
+            dispatch(worker_update_profile_complete(true))
             setLoading(false)
             setDetailsPopup(true)
             setTimeout(() => setDetailsPopup(false), 4000)
-            setSelectedAuth(2)
+            if(createdWithGoogle)
+            {
+                navigate('/', {
+                    state: {
+                        carry: 'register',
+                        skippedVerification: false
+                    }
+                })
+            }
+            else
+            {
+                setSelectedAuth(2)
+                initiateEmailVerification()
+            }
         })
     }
 
@@ -910,7 +951,7 @@ const Auth = (props) => {
                 <div ref={recaptchaWrapperRef}>
                     <div id='recaptcha-container' className={styles.recaptcha_container}></div>
                 </div>
-                <div className={styles.area} style={{backgroundColor:selectedAuth===2?'#161F28':'#fff',}}>
+                <div className={styles.area} style={{backgroundColor:selectedAuth===2?'#161F28':'#fff'}}>
                     {
                         selectedAuth!==2?
                         <div className={styles.area_top}>
@@ -939,7 +980,7 @@ const Auth = (props) => {
                     {
                         selectedAuth===1?
                         loginTab===0?
-                        <div style={{border:'6px solid white', borderTop:'none', borderBottom:'none'}}>
+                        <div style={{border:'6px solid white', borderTop:'none', borderBottom:'none', marginTop:'20px'}}>
                         <div className={styles.area_bot}>
                             {
                                 loading&&<div className={styles.verification_backdrop}/>
@@ -1084,8 +1125,14 @@ const Auth = (props) => {
                         <div>
                             {
                                 registarTab<=2?
-                                <div className={styles.mode} style={{backgroundColor:workerMode?"#FF785A":""}} onClick={() => setWorkerModeHelper(!workerMode)}>
-                                    <span className={styles.mode_text} style={{color:workerMode?"white":""}}>{workerMode?'DESATIVAR MODO PROFISSIONAL':'ATIVAR MODO PROFISSIONAL'}</span>
+                                <div className={styles.mode} style={{backgroundColor:workerMode?"#FF785A":""}}>
+                                    <span className={styles.mode_text} style={{color:workerMode?"white":""}}>MODO PROFISSIONAL</span>
+                                    <Switch  
+                                        onChange={val => {
+                                            setWorkerModeHelper(val)
+                                        }} 
+                                        checked={workerMode}
+                                        onColor='#161F28'/>
                                 </div>
                                 :null
                             }
@@ -1102,8 +1149,8 @@ const Auth = (props) => {
                             }
                             
                             
-                            <div className={styles.area_bot_upper_wrapper} style={{borderColor:workerMode||registarTab>2?"#FF785A":"#ffffff"}}>
-                                <div className={styles.area_bot} style={{marginTop:'-40px'}}>
+                            <div className={styles.area_bot_upper_wrapper} style={{borderColor:workerMode||registarTab>2?"#FF785A":"#ffffff", paddingTop:registarTab>2?'0px':''}}>
+                                <div className={styles.area_bot} style={{backgroundColor:workerMode?"#FF785A30":"#0358e530"}}>
                                     {
                                         loading&&<div className={styles.verification_backdrop}/>
                                     }
@@ -1112,7 +1159,7 @@ const Auth = (props) => {
                                             o2auth()
                                         :null
                                     }
-                                    <div className={styles.area_bot_wrapper} style={{backgroundColor:workerMode?"#FF785A30":""}}>
+                                    <div className={styles.area_bot_wrapper}>
                                         {
                                             workerMode||registarTab>2?
                                             <p className={styles.modo_box} style={{marginBottom:'5px'}}>

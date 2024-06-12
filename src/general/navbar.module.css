@@ -75,6 +75,26 @@
     align-items: center;
     margin-right: 20px;
 }
+.mode_active{
+    background-color: var(--job);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.6rem;
+    width: fit-content;
+    margin: 0 auto;
+    color: white;
+    text-transform: uppercase;
+}
+.mode_deactive{
+    background-color: var(--yellow);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.6rem;
+    width: fit-content;
+    margin: 0 auto;
+    color: white;
+    text-transform: uppercase;
+}
 .chat{
     color: var(--brand);
 }
@@ -134,12 +154,13 @@
     align-items: center;
     padding: 0 10px;
     font-weight: 700;
-    color: var(--action);
+    color: var(--brand);
     margin-right: 20px;
     flex-direction: column;
     /* background-color: var(--brand); */
     border-bottom: 1px solid white;
     box-sizing: border-box;
+    font-size: 0.9rem;
 }
 
 @keyframes brand {
@@ -455,6 +476,8 @@
     .mode_icon{
         width: 20px !important;
         height: 20px !important;
+        display: none;
+        font-size: 0.7rem;
     }
     .mode{
         font-size: 0.7rem;

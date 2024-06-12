@@ -72,7 +72,7 @@ const Welcome = (props) => {
                                         unmountOnExit
                                         >
                                         <div style={{height:'30px'}}>
-                                            <p className={styles.sub_title}>Plataforma que junta <span style={{color:"#0358e5", fontWeight:600}}>clientes</span> a <span style={{color:"#FF785A", fontWeight:600}}>profissionais</span></p>
+                                            <p className={styles.sub_title}>Plataforma que junta <span style={{color:"#0358e5", fontWeight:600}}>clientes</span> e <span style={{color:"#FF785A", fontWeight:600}}>profissionais</span></p>
                                         </div>
                                     </CSSTransition>
                                 </div>

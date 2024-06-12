@@ -184,8 +184,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    align-self: flex-end;
-    margin-bottom: -20px;
+    align-self: center;
+    margin-bottom: -10px;
     opacity: 0;
 }
 .send:hover > .chatbox_user_opacity{
@@ -200,8 +200,19 @@
     border-radius: 50%;
     color: white;
 }
+.chatbox_user_img_small{
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50%;
+    color: white;
+    margin: 0 5px;
+}
 .chatbox_user_timestamp{
     font-size: 0.9rem;
+    color: white;
+}
+.chatbox_user_timestamp_small{
+    font-size: 0.7rem;
     color: white;
 }
 .chatbox_text_send{
@@ -376,6 +387,7 @@
     align-items: center;
     padding: 5px;
     cursor: pointer;
+    border-bottom: 2px solid var(--job);
 }
 .row:hover{
     background-color: #0358e520;
@@ -385,6 +397,7 @@
     align-items: center;
     padding: 5px;
     cursor: pointer;
+    border-bottom: 2px solid var(--action);
 }
 .row_just_worker:hover{
     background-color: #FF785A20;
@@ -396,6 +409,7 @@
     padding: 5px;
     cursor: pointer;
     border-radius: 2px;
+    border-bottom: 2px solid var(--job);
 }
 .row_selected_just_worker{
     display: flex;
@@ -404,6 +418,7 @@
     padding: 5px;
     cursor: pointer;
     border-radius: 2px;
+    border-bottom: 2px solid var(--action);
 }
 .row_icon_wrapper{
     min-width: 40px;
@@ -584,6 +599,13 @@
         width: 20px !important;
         height: 20px !important;
     }
+    .chatbox_user_img_small{
+        width: 15px !important;
+        height: 15px !important;
+        border-radius: 50%;
+        color: white;
+        margin: 0 2.5px;
+    }
     .row_img{
         width: 20px !important;
         min-width: 20px;
@@ -673,8 +695,18 @@
         width: 15px !important;
         height: 15px !important;
     }
+    .chatbox_user_img_small{
+        width: 10px !important;
+        height: 10px !important;
+        border-radius: 50%;
+        color: white;
+        margin-left: 5px;
+    }
     .chatbox_user_timestamp{
         font-size: 0.5rem;
+    }
+    .chatbox_user_timestamp_small{
+        font-size: 0.3rem;
     }
     .chatbox_text_starter{
         padding: 5px;

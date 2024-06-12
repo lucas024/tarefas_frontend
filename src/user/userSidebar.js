@@ -174,8 +174,8 @@ const UserSidebar = (props) => {
                             <p className={styles.status_top_val} style={{color:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
                                 {
                                     user.state!==2&&user_phone_verified&&user_email_verified&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?
-                                    "CONTA ATIVADA"
-                                    :"CONTA DESATIVADA"
+                                    "ATIVADO"
+                                    :"DESATIVADO"
                                 }
                             </p>
                         </div>

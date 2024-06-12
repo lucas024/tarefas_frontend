@@ -86,13 +86,21 @@ const Navbar = (props) => {
                         <div className={styles.flex_right}>
                             {
                                 user?.admin?
-                                <span className={styles.user_button} onClick={() => {navigate('/admin')}}>
-                                        ADMIN
+                                <span className={styles.mode} style={{marginRight:0}}>
+                                    <span className={styles.user_button} onClick={() => {navigate('/admin')}}>
+                                            ADMIN
+                                    </span>
                                 </span>
                                 :loaded&&user?.worker?
                                 <span className={styles.mode}>
                                         <EmojiPeopleIcon className={styles.mode_icon} style={{transform: 'scaleX(-1)'}}/>
-                                        <span>MODO PROFISSIONAL</span>
+                                        <span style={{textAlign:'center'}}>MODO PROFISSIONAL</span>
+                                        {
+                                            (worker_is_subscribed && worker_profile_complete && user_phone_verified && user_email_verified)?
+                                            <span className={styles.mode_active}>Ativado</span>
+                                            :
+                                            <span className={styles.mode_deactive}>Desativado</span>
+                                        }
                                 </span> 
                                 :loaded?
                                 // <div className={styles.user_button_disabled} data-tooltip-id='navbar' data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
@@ -121,7 +129,10 @@ const Navbar = (props) => {
                                 :loaded?
                                 null
                                 :
-                                <span className={styles.skeleton_message}></span>
+                                <div className={styles.chat_div} onClick={() => navigate('/user?t=messages')}>
+                                    <span className={styles.skeleton_message}></span>
+                                </div>
+                                
                             }
                             <div className={styles.flex_end}>
                                 {
@@ -137,14 +148,19 @@ const Navbar = (props) => {
                                             <div className={styles.user}>
                                                 <p className={styles.user_text} onClick={() => navigate('/user?t=conta')}>Área Pessoal</p>
                                                 <div className={styles.user_short}>
-                                                    <span className={styles.drop_div_notification}/>
+                                                    {
+                                                        (user?.worker&&!worker_is_subscribed || user?.worker&&!worker_profile_complete || !(user_phone_verified&&user_email_verified))?
+                                                        <span className={styles.drop_div_notification}/>
+                                                        :null
+                                                    }
+                                                    
                                                     <MenuIcon />
                                                     
                                                 </div>
                                             </div>
                                             <div className={styles.disabled_icons_wrapper}>
                                                 {
-                                                    (user?.worker&&!worker_is_subscribed || user?.worker&&!worker_profile_complete || user?.worker&&!(user_phone_verified&&user_email_verified))?
+                                                    (user?.worker&&!worker_is_subscribed || user?.worker&&!worker_profile_complete || !(user_phone_verified&&user_email_verified))?
                                                     <div className={styles.disabled_icons}>
                                                         {
                                                             !user_email_verified?
@@ -168,13 +184,6 @@ const Navbar = (props) => {
                                                             :null
                                                         }
                                                     </div>
-                                                    :
-                                                    (!user?.worker&&!(user_phone_verified&&user_email_verified))?
-                                                    <div className={styles.disabled_icons}>
-                                                        <EmailUnverified className={styles.disabled_icon} onClick={() => {
-                                                            setDropdown(false)
-                                                            navigate('/user?t=conta')}}/>     
-                                                    </div>                                    
                                                     :null
                                                 }
                                             </div>

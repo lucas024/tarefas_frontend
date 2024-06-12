@@ -151,24 +151,22 @@
     justify-content: center;
     align-items: center;
     /* opacity: 0.6; */
-    cursor: pointer;
+    /* cursor: pointer; */
     border: 6px solid var(--action);
     box-sizing: border-box;
     border-top: none;
     border-bottom: 2px solid transparent;
+    flex-direction: column;
 }
 .mode:hover{
     background-color: #FF785Aaa;
-    transition: 150ms all;
-}
-.mode:hover > .mode_text{
-    text-decoration: underline;
     transition: 150ms all;
 }
 .mode_text{
     font-weight: 600;
     color: var(--brand);
     transition: 150ms all;
+    margin-bottom: 2px;
 }
 .area_bot_upper{
     border: 6px solid white;
@@ -206,20 +204,21 @@
     border: 6px solid white;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    padding-top: 40px;
     border-top: none;
     transition: 150ms all;
     box-sizing: border-box;
+    padding-top: 30px;
 }
 .area_bot{
     width: 80%;
     margin: auto;
+    padding: 0px 10px;
 }
 .area_bot_wrapper{
     border-radius: 5px;
-    background-color: #0358e530;
-    padding: 10px 10px;
-    margin-top: 40px;
+    /* background-color: #0358e530; */
+    padding: 10px 0;
+    margin-top: 30px;
 }
 .text_brand_wrapper{
     display: flex;
@@ -301,8 +300,8 @@
     height: 20px !important;
 }
 .area_o2{
-    margin-top: 40px;
     padding-bottom: 40px;
+    padding-top: 5px;
     border-bottom: 1px solid #161F2850;
     position: relative;
 }
@@ -317,6 +316,8 @@
     margin: auto;
     cursor: pointer;
     background-color: white;
+    margin-top: 10px;
+    box-sizing: border-box;
 }
 .o2_img{
     height: 25px;
@@ -623,6 +624,7 @@
     font-size: 0.9rem;
     text-align: right;
     margin-bottom: 20px;
+    padding-bottom: 10px;
 }
 .bottom_switch_text{
     cursor: default;
@@ -742,6 +744,26 @@
     opacity: 0.8;
     transition: 150ms ease-in-out;
 }
+
+.resend_button{
+    display: flex;
+    align-items: center;
+    width: max-content;
+    background-color: var(--job);
+    height: 20px;
+    padding: 0 15px;
+    color: white;
+    margin: 100px auto 0 auto;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: var(--brand);
+}
+.resend_button:hover{
+    opacity: 0.8;
+    transition: 150ms ease-in-out;
+}
 .verification_button_helper_or{
     margin: 20px 0;
     color: var(--grey);
@@ -784,7 +806,7 @@
     background-color: var(--yellow);
     height: 30px;
     padding: 0 20px;
-    color: white;
+    color: var(--brand);
     margin: 5px auto 0 auto;
     border-radius: 3px;
     font-weight: 600;
@@ -1384,6 +1406,70 @@ transform: rotate(45deg);
     text-transform: uppercase;
     font-size: 0.9rem;
 }
+
+/* Remove this container when use*/
+.component-title {
+    width: 100%;
+    position: absolute;
+    z-index: 999;
+    top: 30px;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #888;
+    text-align: center;
+  }
+  
+  /* The switch - the box around the slider */
+  .container_slider {
+    width: 51px;
+    height: 31px;
+    position: relative;
+  }
+  
+  /* Hide default HTML checkbox */
+  .checkbox_slider {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+  
+  .switch {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: #e9e9eb;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+  }
+  
+  /* The slider */
+  .slider {
+    width: 27px;
+    height: 27px;
+    position: absolute;
+    left: calc(50% - 27px/2 - 10px);
+    top: calc(50% - 27px/2);
+    border-radius: 50%;
+    background: #FFFFFF;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15), 0px 3px 1px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease-out;
+    cursor: pointer;
+  }
+  
+  .checkbox:checked + .switch {
+    background-color: #34C759;
+  }
+  
+  .checkbox:checked + .switch .slider {
+    left: calc(50% - 27px/2 + 10px);
+    top: calc(50% - 27px/2);
+  }
+  
 @media (max-height: 850px){
     .top_right{
         display: flex;

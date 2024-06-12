@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './auth.module.css'
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase/firebase'
 import { useDispatch } from 'react-redux';
 import { user_update_phone_verified, user_update_email_verified } from '../store';
+import Timer from '../general/timer';
 
 const AuthCarouselVerification = props => {
 
@@ -18,6 +19,8 @@ const AuthCarouselVerification = props => {
     const dispatch = useDispatch()
 
     const [newCodeSent, setNewCodeSent] = useState(false)
+    const [expired, setExpired] = useState(true)
+    const [deadline, setDeadline] = useState(null)
 
     const updateVerification = async () => {
         await auth.currentUser?.reload()
@@ -29,7 +32,21 @@ const AuthCarouselVerification = props => {
         {
             dispatch(user_update_email_verified(true))
         }
-        else dispatch(user_update_email_verified(false))
+        else{
+            dispatch(user_update_email_verified(false))
+            
+        } 
+    }
+
+    const handleSendEmail = () => {
+        if(expired)
+        {
+            props.initiateEmailVerification()
+            const time = new Date()
+            time.setSeconds(time.getSeconds() + 59)
+            setDeadline(time)
+            setExpired(false)
+        }
     }
 
     return (
@@ -203,8 +220,8 @@ const AuthCarouselVerification = props => {
                     
                     <Lottie 
                         animationData={props.emailCodeStatus===true?successLottie:JSON.parse(JSON.stringify(sendEmail))}
-                        loop={false}
-                        autoplay={props.emailSent===true}
+                        loop={!props.emailCodeStatus}
+                        autoplay={true}
                         rendererSettings={{preserveAspectRatio: 'xMidYMid slice'}}
                         style={{
                             width:'150px',
@@ -214,18 +231,13 @@ const AuthCarouselVerification = props => {
                         }}
                     />
                     {
-                        props.emailSent===true?
-                        <p className={styles.verification_desc}>
-                            Envíamos um e-mail de verificação para o <span className={styles.verification_desc_strong}>{props.email}</span>, por favor acede ao teu e-mail e procede com a verificação.
-                        </p>
-                        :
                         props.emailSent===false?
                         <p className={styles.wrong_code_text} style={{marginTop:'40px', marginBottom:'-40px'}}>
                             Erro a enviar o e-mail de verificação. Por favor, tenta mais tarde.
                         </p>
                         :
                         <p className={styles.verification_desc}>
-                            Enviaremos um e-mail de verificação para o <span className={styles.verification_desc_strong}>{props.email}</span>.
+                            Enviámos um e-mail de verificação para o <span className={styles.verification_desc_strong}>{props.email}</span>, por favor acede ao teu e-mail e procede com a verificação.
                         </p>
                     }
                     {
@@ -236,29 +248,13 @@ const AuthCarouselVerification = props => {
                         :null
                     }
                     {
-                        props.emailSent===true&&props.emailCodeStatus===false?
+                        !props.emailSent===true&&props.emailCodeStatus===false?
                         <p className={styles.wrong_code_text} style={{marginTop:'40px', marginBottom:'-40px'}}>
                             O e-mail ainda não se encontra verificado.
                         </p>
                         :null
                     }
                     {
-                        props.emailSent===true?
-                        <p className={styles.verification_button} 
-                            onClick={async () => {
-                                props.clearEmailAndPhone()
-                                await updateVerification()
-                                navigate('/user?t=subscription', {
-                                    state: {
-                                        carry: 'register',
-                                        // skippedVerification: props.skippedVerification CHANGE
-                                        skippedVerification: false
-                                    }
-                                })}
-                            }>
-                            Continuar
-                        </p>
-                        :
                         props.emailSent===false?
                         <p className={styles.verification_button} 
                             onClick={async () => {
@@ -274,31 +270,49 @@ const AuthCarouselVerification = props => {
                             Verificar Depois
                         </p>
                         :
-                        <p className={styles.verification_button} onClick={() => props.initiateEmailVerification()}>
-                            Enviar email de verificação
-                        </p>
-                    }
-                    {
-                        props.emailSent===null?
                         <div>
-                            <p className={styles.verification_button_helper_or}>
-                                OU
-                            </p>
-                            <p className={styles.verification_button_helper} 
+                            <p className={styles.verification_button} 
                                 onClick={async () => {
                                     props.clearEmailAndPhone()
-                                    await updateVerification()
-                                    navigate('/user?t=conta', {
-                                        state: {
-                                            carry: 'register',
-                                            skippedVerification: true
-                                        }
-                                    })}}>
-                                Verificar depois
+                                    props.completeEmailVerification()}
+                                }>
+                                Já verifiquei
                             </p>
+                            {
+                                expired?
+                                <span className={styles.resend_button} 
+                                    onClick={async () => {
+                                        handleSendEmail()}
+                                    }>
+                                    <span className={styles.resend_text_value}>Re-enviar e-mail</span>
+                                </span>
+                                :
+                                <span className={styles.resend_button_disabled}>
+                                    <span className={styles.resend_seconds}><Timer deadline={deadline} setExp={() => setExpired(true)}/></span>
+                                    <div className={styles.resend_seconds_separator}></div>
+                                    <span className={styles.resend_text_value}>Re-enviar e-mail</span>
+                                </span>
+                            }
                         </div>
-                        :null
                     }
+
+                    <div>
+                        <p className={styles.verification_button_helper_or}>
+                            OU
+                        </p>
+                        <p className={styles.verification_button_helper} 
+                            onClick={async () => {
+                                props.clearEmailAndPhone()
+                                await updateVerification()
+                                navigate('/user?t=conta', {
+                                    state: {
+                                        carry: 'register',
+                                        skippedVerification: true
+                                    }
+                                })}}>
+                            Verificar depois
+                        </p>
+                    </div>
                     
                 </div>
             </div>

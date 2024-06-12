@@ -124,20 +124,21 @@ const DeleteBanner = (props) => {
                 }
                 
                 {
-                    state===0?
+                    user?.registerMethod === 'email' && state === 0?
                     <div 
                         className={styles.button}
                         style={{backgroundColor:password.length>0&&passwordError===false?"#fdd835":"#ccc"}}
                         onClick={() => passwordError===false&&password.length>0&&handleEmailSignIn()}>
                         <span className={styles.button_text} style={{color:"#161F28"}}>CONTINUAR</span>
                     </div>
-                    :
+                    :state===1?
                     <div 
                         className={styles.button}
                         style={{backgroundColor:"#ff3b30"}}
                         onClick={() => handleDelete()}>
                         <span className={styles.button_text} style={{color:"white"}}>ELIMINAR</span>
                     </div>
+                    :null
                 }
 
                 <p className={styles.cancel} onClick={() => props.cancel()}>cancelar</p>

@@ -44,9 +44,13 @@ const Details = props => {
     const [shake, setShake] = useState(false)
 
     useEffect(() => {
+        console.log(user.regioes)
         if(user){
-            if(!user_email_verified||!user_phone_verified||user.regioes?.length===0||user.trabalhos?.length===0)
+            if(!user_email_verified||!user_phone_verified||user.regioes?.length===0||user.trabalhos?.length===0||!user.regioes||!user.trabalhos)
+            {
+                console.log('true')
                 setDisplayTop(true)
+            }
 
             setSelectedProf(user.trabalhos)
             setSelectedReg(user.regioes)
@@ -77,8 +81,8 @@ const Details = props => {
     
     const setCheckedProf = trab => {
         if(editBottom){
-            let arr = [...selectedProf]
-            if(selectedProf.includes(trab)){
+            let arr = selectedProf?[...selectedProf]:[]
+            if(selectedProf?.includes(trab)){
                 arr.splice(arr.indexOf(trab), 1) 
                 setFullList(false)
             }
@@ -103,8 +107,8 @@ const Details = props => {
     
     const setCheckedReg = reg => {
         if(editBottom){
-            let arr = [...selectedReg]
-            if(selectedReg.includes(reg)){
+            let arr = selectedReg?[...selectedReg]:[]
+            if(selectedReg?.includes(reg)){
                 arr.splice(arr.indexOf(reg), 1) 
             }
             else{

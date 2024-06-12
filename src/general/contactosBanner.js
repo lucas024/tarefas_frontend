@@ -44,7 +44,9 @@ const ContactosBanner = (props) => {
                     <span className={styles.contact_text}>tarefaspt</span>
                 </div>
                 
-                <span className={styles.cancel} style={{marginTop:'30px'}} onClick={() => props.cancel()}>fechar</span>
+                <div className={styles.cancel_wrapper} style={{marginTop:'30px'}}>
+                    <span className={styles.cancel} onClick={() => props.cancel()}>fechar</span>
+                </div>
             </div>
             </CSSTransition>
         </div>

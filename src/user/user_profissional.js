@@ -11,17 +11,21 @@ import Loader from '../general/loader';
 import axios from 'axios';
 import Sessao from '../transitions/sessao';
 import {CSSTransition}  from 'react-transition-group';
+import ModeBanner from '../general/modeBanner';
 
 const stripePromise = loadStripe('pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd');
 
 
 const UserProfissional = props => {
     const dispatch = useDispatch()
+    const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
+    const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
     const user = useSelector(state => {return state.user})
     const api_url = useSelector(state => {return state.api_url})
 
     const [loading, setLoading] = useState(false)
     const [modeActivated, setModeActivated] = useState(false)
+    const [preMode, setPreMode] = useState(false)
 
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
@@ -72,11 +76,25 @@ const UserProfissional = props => {
             setLoading(false)
             setModeActivated(true)
             setTimeout(() => setModeActivated(false), 4000)
+            setPreMode(false)
         })
     }
 
     return (
         <div className={styles.user}>
+            <div className={preMode?styles.backdrop:null}/>
+            <CSSTransition
+                in={preMode?true:false}
+                timeout={1000}
+                classNames="transition"
+                unmountOnExit
+                >
+                <ModeBanner
+                    cancel={() => setPreMode(false)}
+                    confirm={() => userSetMode()}
+                    profissional={true}
+                    />
+            </CSSTransition>
             <CSSTransition 
                 in={modeActivated}
                 timeout={1000}
@@ -99,10 +117,13 @@ const UserProfissional = props => {
             {
                 user?.worker?
                 <div className={styles.aba}>
-                    <span className={subTab==='details'?styles.aba_side_selected:styles.aba_side} onClick={() => navigate('/user?t=profissional')}>
+                    <span className={subTab==='details'?styles.aba_side_selected:styles.aba_side} 
+                        style={{borderBottom:worker_profile_complete?'':'2px solid #fdd835'}}
+                        onClick={() => navigate('/user?t=profissional')}>
                         Detalhes de Profissional
                     </span>
-                    <span className={subTab==='subscription'?styles.aba_side_selected:styles.aba_side} onClick={() => navigate('/user?t=profissional&st=subscription')}>
+                    <span className={subTab==='subscription'?styles.aba_side_selected:styles.aba_side}
+                        style={{borderBottom:worker_is_subscribed?'':'2px solid #fdd835'}} onClick={() => navigate('/user?t=profissional&st=subscription')}>
                         Subscrição
                     </span>
                 </div>
@@ -117,7 +138,7 @@ const UserProfissional = props => {
                         <WorkerBannerContent workerPage={true}/>
                         
                     </div>
-                    <span className={styles.edit}  onClick={() => userSetMode()}>
+                    <span className={styles.edit}  onClick={() => setPreMode(true)}>
                         ATIVAR MODO PROFISSIONAL
                     </span>
                 </div>

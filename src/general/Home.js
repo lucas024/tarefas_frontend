@@ -722,9 +722,9 @@ const Home = (props) => {
                             <p className={styles.back_publish_title} style={{textAlign:'center'}}>PUBLICAR A MINHA TAREFA</p>
                             {
                                 user?._id!=null?
-                                <div className={styles.back_publish_div} style={{backgroundColor:"#0358e520", border:"2px solid #0358e5"}} onClick={() => navigate('/publicar/novo')}>
+                                <div className={styles.back_publish_div} style={{backgroundColor:"#ffffff"}} onClick={() => navigate('/publicar/novo')}>
                                     <div className={styles.home_back_publish_wrapper}>
-                                        <PostAddIcon className={styles.section_img_mini}/>
+                                        <PostAddIcon className={styles.section_img_mini} style={{color:"#0358e5"}}/>
                                         <span className={styles.section_publicar} style={{color:"#0358e5"}}>NOVA TAREFA</span>
                                     </div>
                                 </div>
@@ -733,7 +733,7 @@ const Home = (props) => {
                                 <div className={styles.back_publish_div} style={{backgroundColor:"#ffffff"}} onClick={() => handleMoveAuth(1)} 
                                     data-tooltip-id={'home'} data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
                                     <FaceIcon className={styles.section_img_mini} style={{color:"#0358e5"}}/>
-                                    <span className={styles.section_publicar} style={{color:"#0358e5"}}>CRIAR CONTA CLIENTE</span>
+                                    <span className={styles.section_publicar} style={{color:"#0358e5"}}>CRIAR CONTA</span>
                                 </div>
                                 :null
                             }
@@ -794,7 +794,7 @@ const Home = (props) => {
                     }
                     
                     {
-                        !user?.worker&&loaded?
+                        user!=null&&user?._id!==null&&!user?.worker&&loaded?
                         <div className={styles.home_back_bottom}>
                             <div className={styles.section_content}>
                                 <div className={styles.section_image_wrapper}>
@@ -807,7 +807,7 @@ const Home = (props) => {
                                     Ver todos os profissionais disponíveis
                                 </span>
                                 <div className={styles.section_button_right} onClick={() => navigate('/main/publications/profissionais')}>
-                                    <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
+                                    <p className={styles.section_title_right} style={{fontSize: '0.9rem', color:"#FF785A"}}>
                                         VER PROFISSIONAIS
                                     </p>
                                 </div>
@@ -829,7 +829,7 @@ const Home = (props) => {
                                             Ver todas as tarefas disponíveis
                                         </span>
                                         <div className={styles.section_button} onClick={() => navigate('/main/publications/trabalhos')}>
-                                            <p className={styles.section_title} style={{fontSize: '0.9rem'}}>
+                                            <p className={styles.section_title} style={{fontSize: '0.9rem', color:"#0358e5"}}>
                                                 VER TAREFAS
                                             </p>
                                         </div>
@@ -876,7 +876,7 @@ const Home = (props) => {
                                             Ver todos os profissionais disponíveis
                                         </span>
                                         <div className={styles.section_button_right} onClick={() => navigate('/main/publications/profissionais')}>
-                                            <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
+                                            <p className={styles.section_title_right} style={{fontSize: '0.9rem', color:"#FF785A"}}>
                                                 VER PROFISSIONAIS
                                             </p>
                                         </div>
@@ -910,7 +910,7 @@ const Home = (props) => {
                                 onClick={() => setWorkerBanner(true)}
                                 >
                                 <EmojiPeopleIcon className={styles.section_img_mini} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
-                                <span className={styles.section_publicar} style={{color:"#FF785A"}}>CRIAR CONTA PROFISSIONAL</span>
+                                <span className={styles.section_publicar} style={{color:"#FF785A"}}>CRIAR CONTA MODO PROFISSIONAL</span>
                             </div>
                             :null
                         }
@@ -936,7 +936,7 @@ const Home = (props) => {
                         </div>
                         <div className={styles.footer_div_column}>
                             <div>
-                                <p className={styles.footer_div_text} style={{fontWeight:400}}>Segue-nos nas redes:</p>
+                                <p className={styles.footer_div_text} style={{fontWeight:400, textDecoration:'none', cursor:"default"}}>Segue-nos nas redes:</p>
                                 <div className={styles.footer_icon_div}>
                                     <InstagramIcon className={styles.footer_icon} onClick={() => window.open('https://instagram.com/tarefaspt', "_blank", "noreferrer")}/>
                                     <FacebookIcon className={styles.footer_icon} onClick={() => window.open('https://www.facebook.com/profile.php?id=61559666542359', "_blank", "noreferrer")}/>
