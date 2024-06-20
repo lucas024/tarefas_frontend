@@ -13,7 +13,8 @@ import Sessao from '../transitions/sessao';
 import {CSSTransition}  from 'react-transition-group';
 import ModeBanner from '../general/modeBanner';
 
-const stripePromise = loadStripe('pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd');
+// const stripePromise = loadStripe('pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd');
+const stripePromise = loadStripe('pk_live_ypMbNWLAJDZYOWG4JqncBktA00qBx03bOR')
 
 
 const UserProfissional = props => {
@@ -56,23 +57,11 @@ const UserProfissional = props => {
     }
 
     const userSetMode = () => {
-        // dispatch(user_update_field([{field: 'lol', value: true}]))
         setLoading(true)
         axios.post(`${api_url}/user/update_worker`, {
             user_id : user._id,
         }).then(() => {
             props.refreshWorker()
-            // dispatch(
-            //     user_update_field(
-            //         [
-            //             {field: 'phone', value: phone},
-            //             {field: 'description', value: description||""}
-            //         ]
-            //     )
-            // )
-            // dispatch(user_update_phone_verified(false))
-            // if(auth.currentUser.phoneNumber!=null)
-            //     unlink(auth.currentUser, "phone")
             setLoading(false)
             setModeActivated(true)
             setTimeout(() => setModeActivated(false), 4000)

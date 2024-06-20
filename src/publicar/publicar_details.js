@@ -188,7 +188,7 @@ const PublicarDetails = props => {
                                     <div className={styles.bot_input_div_search} style={{flex:1}}>
                                         <div className={styles.input_address_wrapper}>
                                             <input 
-                                                placeholder='Pesquisar a tua morada ou a morada da tarefa...' 
+                                                placeholder='Pesquisar a tua rua ou a rua da tarefa...' 
                                                 type="text" 
                                                 autoComplete='off' 
                                                 value={selectedAddress||address} 
@@ -208,7 +208,7 @@ const PublicarDetails = props => {
                                         <span 
                                             style={{borderColor:props.badAddress||props.wrongAddress?"red":!props.badAddress&&!props.wrongAddress&&optionIndex!==null?"#0358e5":"", borderBottomRightRadius:'5px', padding:"2px 5px 0px 5px"}}
                                             className={styles.area_label_inverse}>
-                                                Morada
+                                                Rua
                                         <span className={styles.asterisc}>*</span></span>
                                     </div>
                                     <div className={styles.bot_input_div_search_select}>
@@ -309,7 +309,7 @@ const PublicarDetails = props => {
                     <span className={styles.diff_right_title} style={{marginTop:'-5px'}}>
                         Detalhes de Contacto<span className={styles.action}>*</span>
                     </span>
-                    <div className={styles.top_check} style={{backgroundColor:props.phone.length!==9?"#71848d":props.correct_phone&&props.correct_email?'#0358e5':"#fdd835", top:0, right:0}}>
+                    <div className={styles.top_check} style={{backgroundColor:!props.correct_email?"#fdd835":!props.correct_phone?"#71848d":props.correct_phone&&props.correct_email?'#0358e5':"#fdd835", top:0, right:0}}>
                         <DoneIcon className={styles.top_check_element}/>
                     </div>
                 </div>
@@ -317,7 +317,7 @@ const PublicarDetails = props => {
                     <div className={styles.bot_input_div_contact} style={{marginTop:'5px'}}>
                         <span 
                             style={{borderColor:"#0358e5", color:"#71848d"}} 
-                            className={styles.area_label_inverse}>Nome<span className={styles.asterisc}>*</span></span>
+                            className={styles.area_label_inverse}>Nome</span>
                         <input 
                             tabindex={props.selectedTab===2?'1':'-1'}
                             style={{borderColor:"#0358e5", width:"100%", color:"#71848d"}}
@@ -347,7 +347,7 @@ const PublicarDetails = props => {
                             </div>
                             :
                             props.expired?
-                            <div className={props.phone.length!==9?styles.verify_box_incomplete:styles.verify_box_no}
+                            <div className={props.phone.length!==9?styles.verify_box_incomplete:styles.verify_box_no_hover}
                                 // onClick={() => props.phone.length===9&&props.setVerifyPhone(1)}
                                 >
                                 <PhonelinkEraseIcon className={styles.verify_box_icon}/>
@@ -359,11 +359,18 @@ const PublicarDetails = props => {
                         }
                         
                     </div>
+                    {
+                        !props.correct_phone&&props.phone.length===9?
+                        <div className={styles.incorrect_phone}>
+                            <span>Número de contacto inválido.</span>
+                        </div>
+                        :null
+                    }
                     <div className={styles.bot_input_div_contact} style={{marginTop:"5px"}}>
                         <div style={{position:'relative', width:"100%"}}>
                             <span 
                                 style={{borderColor:props.correct_email?"#0358e5":"#fdd835", color:"#71848d"}} 
-                                className={styles.area_label_inverse}>E-mail<span className={styles.asterisc}>*</span></span>
+                                className={styles.area_label_inverse}>E-mail</span>
                             <input 
                                 tabindex={props.selectedTab===2?'1':'-1'}
                                 style={{borderColor:props.correct_email?"#0358e5":"#fdd835", width:"100%", color:"#71848d"}} 

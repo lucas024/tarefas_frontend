@@ -759,7 +759,7 @@ const Trabalho = (props) => {
                                         <div 
                                             className={styles.help_wrapper}
                                             data-tooltip-id='help' 
-                                            data-tooltip-content="Disponível para se deslocar a uma oficina, escritório ou outro local perto da morada.">
+                                            data-tooltip-content="Disponível para se deslocar a uma oficina, escritório ou outro local perto da localização.">
                                             <QuestionMarkIcon className={styles.help}/>
                                         </div>
                                     </div>
@@ -772,19 +772,19 @@ const Trabalho = (props) => {
                                     reservation.task_type===2?
                                     null
                                     :
-                                    reservation.task_type===1?
+                                    reservation.task_type===1 || reservation?.lat===null || reservation?.lng===null?
                                     <div className={styles.no_map_div}>
                                         <ExploreOffIcon className={styles.no_map_icon}/>
                                         <span className={styles.no_map}>Sem mapa disponível para esta localização</span>
                                     </div>
                                     :
                                     <div className={styles.map_div}>
-                                        <MapContainer center={[reservation.lat, reservation.lng]} zoom={14} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
+                                        <MapContainer center={[reservation?.lat, reservation?.lng]} zoom={14} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
                                             <TileLayer
                                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                             />
-                                            <Marker position={[reservation.lat, reservation.lng]} icon={myIcon}>
+                                            <Marker position={[reservation?.lat, reservation?.lng]} icon={myIcon}>
                                                 <Popup>
                                                     A pretty CSS3 popup. <br /> Easily customizable.
                                                 </Popup>

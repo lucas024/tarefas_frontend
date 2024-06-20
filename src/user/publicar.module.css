@@ -767,6 +767,26 @@ input::placeholder{
     background-color: var(--job);
     border: 2px solid var(--job);
 }
+.incorrect_phone{
+    align-self: flex-start;
+    text-align: left;
+    color: var(--brand);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: var(--yellow);
+}
+.verify_box_no_hover{
+    width: 60px;
+    height: 100%;
+    margin-left: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    background-color: #fdd835;
+    border: 2px solid var(--yellow);
+}
 .verify_box_no{
     width: 60px;
     height: 100%;

@@ -797,7 +797,7 @@ const Publicar = () => {
                                     selectedTab={selectedTab}
                                     correct_location={checkAddressCorrect()&&porta.length>0}
                                     correct_location_online={checkAddressCorrect()}
-                                    correct_phone={user.phone===phone||validator.isMobilePhone(phone, "pt-PT")}
+                                    correct_phone={(user.phone===phone||validator.isMobilePhone(phone, "pt-PT"))&&phone.length>0}
                                     correct_email={user_email_verified}
                                     setVerifyPhone={val => {
                                         scrolltopref.current.scrollIntoView({behavior: 'smooth'})
@@ -922,9 +922,9 @@ const Publicar = () => {
                                         onClick={() => {setSelectedTab(selectedTab-1)}}>
                                     <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                     </div>
-                                    <div className={((user.phone===phone&&user_phone_verified)&&user_email_verified)&&checkAddressCorrect()?styles.login_button:styles.login_button_disabled}
+                                    <div className={(((user.phone===phone||validator.isMobilePhone(phone, "pt-PT"))&&phone.length>0)&&user_email_verified)&&checkAddressCorrect()?styles.login_button:styles.login_button_disabled}
                                         style={{marginLeft:'10px', marginTop:0}}
-                                        onClick={() => {((user.phone===phone&&user_phone_verified)&&user_email_verified)&&checkAddressCorrect()&&setSelectedTab(selectedTab+1)}}>
+                                        onClick={() => {(((user.phone===phone||validator.isMobilePhone(phone, "pt-PT"))&&phone.length>0)&&user_email_verified)&&checkAddressCorrect()&&setSelectedTab(selectedTab+1)}}>
                                         <p className={styles.login_text}>Continuar</p>
                                     </div>
                                 </div>

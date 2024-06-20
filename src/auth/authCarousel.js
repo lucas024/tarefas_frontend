@@ -82,10 +82,10 @@ const AuthCarousel = props => {
                     </input>
                 </div>
                 {
-                        props.phoneWrong?
-                        <span className={styles.field_error}>O número de telemóvel não é valido.</span>
-                        :null
-                    }
+                    props.phoneWrong?
+                    <span className={styles.field_error}>O número de telemóvel não é valido.</span>
+                    :null
+                }
                 
             </div>
             

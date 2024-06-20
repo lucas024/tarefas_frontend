@@ -181,6 +181,7 @@
 .area_bot_text_wrapper{
     width: fit-content;
     text-align: center;
+    margin-top: 5px;
 }
 .area_bot_text{
     font-size: 0.9rem;
@@ -213,6 +214,65 @@
     width: 80%;
     margin: auto;
     padding: 0px 10px;
+}
+.choose{
+    margin-top: 30px;
+    height: 100%;
+    background-color: var(--neutral);
+    border-radius: 10px;
+}
+.choose_side{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 150px;
+    cursor: pointer;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: #0358e5bb;
+    border: 4px solid var(--job);
+    border-bottom: none;
+}
+.choose_side:hover{
+    background-color: #0358e5;
+    transition: 150ms all;
+}
+.choose_side_bottom{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 150px;
+    cursor: pointer;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: #FF785Abb;
+    border: 4px solid var(--action);
+    border-top: none;
+}
+.choose_side_bottom:hover{
+    background-color: #FF785A;
+    transition: 150ms all;
+}
+.choose_side_title{
+    color: var(--neutral);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: center;
+}
+.choose_side_button{
+    color: var(--brand);
+    background-color: var(--neutral);
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 5px;
 }
 .area_bot_wrapper{
     border-radius: 5px;
@@ -688,6 +748,7 @@
 }
 .buttons{
     margin-top: 20px;
+    padding-bottom: 5px;
 }
 .buttons_flex{
     display: flex;
@@ -1665,5 +1726,20 @@ transform: rotate(45deg);
     }
     .verification_backdrop{
         border-radius: 0px;
+    }
+    .choose_side_title{
+        font-size: 0.9rem;
+    }
+    .area_bot_text{
+        font-size: 0.8rem;
+    }
+    .area_bot_text_helper{
+        font-size: 0.8rem;
+    }
+    .choose_side{
+        height: 100px;
+    }
+    .choose_side_bottom{
+        height: 100px;
     }
 }

@@ -187,7 +187,7 @@ const AuthCarouselWorker = props => {
             showStatus={false} 
             showIndicators={false} 
             showThumbs={false}
-            selectedItem={props.registarTab-3}>
+            selectedItem={props.registarTab-4}>
             <div className={styles.login}>
                 <p className={styles.register_title}>Particular ou Empresa</p>
                 <div className={styles.radio_div}>

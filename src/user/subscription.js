@@ -5,7 +5,7 @@ import chip from '../assets/chip.png'
 import basic from '../assets/basic.png'
 import medium from '../assets/real_medium.png'
 import pro from '../assets/medium.png'
-import hand from '../assets/hand.png'
+import hand from '../assets/free-trial.png'
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import axios from 'axios'
 import visa from '../assets/visa.png'
@@ -39,6 +39,7 @@ const Subscription = props => {
     const user = useSelector(state => {return state.user})
     const user_phone_verified = useSelector(state => {return state.user_phone_verified})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
+    const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
     const scrolltopref = useRef(null)
 
@@ -242,7 +243,6 @@ const Subscription = props => {
                 }
             })
 
-            console.log(sub_obj)
 
             
             const paymentConfirmation = await stripe.confirmCardPayment(
@@ -258,7 +258,6 @@ const Subscription = props => {
             
             if(paymentConfirmation.error !== null && paymentConfirmation.error !== undefined)
             {
-                console.log(paymentConfirmation.error)
                 if(paymentConfirmation.error.code === "payment_intent_authentication_failure")
                 {
                     setTimeout(() => setCanceledHighlight(false), 4000)
@@ -546,7 +545,6 @@ const Subscription = props => {
                 }
             })
             
-            console.log(val)
             switch (val.status) {
                 case 200:
                     props.refreshWorker()
@@ -774,11 +772,16 @@ const Subscription = props => {
                                         
                                     </div>
                                 </div> */}
-                                <div className={styles.verificar_top_wrapper}>
-                                    <div className={styles.verificar_top}>
-                                        <span className={styles.input_div_button_text_no_animation} style={{textTransform:'uppercase', backgroundColor:"transparent"}}>Ativar Subscrição</span>
+                                {
+                                    !worker_is_subscribed?
+                                    <div className={styles.verificar_top_wrapper}>
+                                        <div className={styles.verificar_top}>
+                                            <span className={styles.input_div_button_text_no_animation} style={{textTransform:'uppercase', backgroundColor:"transparent"}}>Ativar Subscrição</span>
+                                        </div>
                                     </div>
-                                </div>
+                                    :null
+                                }
+                                
 
                                 {
                                     display===4?
@@ -868,14 +871,14 @@ const Subscription = props => {
                                                         <span className={styles.trial_button_text}>VER PLANOS EXCLUSIVOS FUNDADOR</span>
                                                     </div>
                                                     <p className={styles.info_bottom_or}>OU</p>
-                                                    <p className={styles.info_bottom_text_title}>Plano Gratuito</p>
+                                                    <p className={styles.info_bottom_text_title}>Plano Experimental</p>
                                                     <div className={styles.discount_2}>
                                                         <p className={styles.discount_text_2}>3 meses subscrição grátis</p>
                                                     </div>
                                                     <div className={styles.info_bottom_text_wrapper}>
                                                         
                                                         <div className={styles.info_bottom_text}>
-                                                            <p style={{textAlign:'left'}}>Ativa a tua subscrição durante <strong>90 dias de forma gratuita</strong>.</p>
+                                                            <p style={{textAlign:'left'}}>Ativa a tua subscrição experimental durante <strong>90 dias de forma gratuita</strong>.</p>
                                                             <p style={{fontWeight:300, marginTop:'3px'}}>Depois continua a usar a tua conta com um plano regular.</p>
                                                         </div>
                                                     </div>
@@ -923,7 +926,7 @@ const Subscription = props => {
                                             <div className={styles.subtitle_sub}>
                                                 {
                                                     trialActive?
-                                                    <span className={styles.ya} style={{color:daysTillCharge?"#0358e5":"#fdd835"}}>GRATUÍTO</span>
+                                                    <span className={styles.ya} style={{color:daysTillCharge?"#0358e5":"#fdd835"}}>EXPERIMENTAL</span>
                                                     :
                                                     <span className={styles.ya}>{
                                                         schedule.phases.length===2&&subscriptionPlanObj.selected_plan===1?"MENSAL"
@@ -1183,9 +1186,14 @@ const Subscription = props => {
                                     </div>
                                     :display===1?
                                     <div className={styles.display_one}>
-                                        <span className={styles.subtitle_sub} style={{marginTop:"20px"}}>
-                                            <span style={{color:"#71848d"}}>Ativar Subscrição <span style={{color:'#71848d'}}>{selectedMenu+1}/2</span></span>
-                                        </span>
+                                        {
+                                            !worker_is_subscribed?
+                                            <span className={styles.subtitle_sub} style={{marginTop:"20px"}}>
+                                                <span style={{color:"#71848d"}}>Ativar Subscrição <span style={{color:'#71848d'}}>{selectedMenu+1}/2</span></span>
+                                            </span>
+                                            :null
+                                        }
+                                        
                                         <div className={styles.indicator_div}>
                                                 <div className={styles.indicator_subdiv} onClick={() => setSelectedMenu(0)}>
                                                     <p className={styles.indicator_text} style={{color:selectedMenu===0||(selectedPlan&&selectedMenu===null)?"#ffffff":"#0358e5"}}>1 - PLANO</p>

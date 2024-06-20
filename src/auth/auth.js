@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import styles from './auth.module.css'
 import facebook from '../assets/facebook.png'
 import google from '../assets/google.png'
-import validator from 'validator'
+import validator, { toString } from 'validator'
 import axios from 'axios'
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -29,7 +29,8 @@ import {
     user_update_phone_verified,
     user_update_field,
     worker_update_profile_complete,
-    user_update_email_verified
+    user_update_email_verified,
+    user_update_phone
   } from '../store';
 import AuthCarousel from './authCarousel'
 import AuthCarouselVerification from './authCarouselVerification'
@@ -43,8 +44,7 @@ import Lottie from "lottie-react";
 import * as sendEmail from '../assets/lotties/plane-email.json'
 import WorkerBanner from '../general/workerBanner';
 import AuthCarouselWorker from './authCarouselWorker';
-import Switch from "react-switch";
-
+import portugal from '../assets/portugal.png'
 
 const Auth = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -94,7 +94,6 @@ const Auth = (props) => {
 
     const location = useLocation()
 
-    const [workerMode, setWorkerMode] = useState(false)
 
 
     const codePlaceholder = [0,0,0,0,0,0]
@@ -124,6 +123,8 @@ const Auth = (props) => {
     const [sendingError, setSendingError] = useState(null)
     const [showWorker, setShowWorker] = useState(false)
 
+    const [phoneGood, setPhoneGood] = useState(false)
+
 
 
     // worker addtions
@@ -146,7 +147,6 @@ const Auth = (props) => {
             setPhone(location.state.phoneCarry)
             setEmail(location.state.emailCarry)
         }
-        if(location.state?.workerMode) setWorkerMode(true)
     }, [location])
 
     useEffect(() => {
@@ -171,6 +171,8 @@ const Auth = (props) => {
                 setPhoneWrong(false)
             }
         }
+
+        subPhoneValidate()
     }, [phone])
 
     useEffect(() => {
@@ -261,6 +263,36 @@ const Auth = (props) => {
         
     }
 
+    const subPhoneValidate = async () => {
+        if(phone!==null)
+        {
+            if(validator.isMobilePhone(phone, "pt-PT")){
+                // dispatch(
+                //     user_update_field(
+                //         [{field: 'phone', value: phone}]
+                //     )
+                // )
+                let res = await axios.post(`${api_url}/user/update_phone`, {
+                    user_id : user?._id,
+                    phone: phone,
+                    description: ""
+                })
+                if(res.data?.value !== null){
+                  dispatch(user_load(res.data.value))
+                }
+                
+                setPhoneGood(true)
+                setPhoneWrong(false)
+                return true
+            }
+            else if(phone.length===9){
+                setPhoneWrong(true)
+                return false
+            }
+        }
+        return false
+    }
+
     const validateEmailHandler = () => {
         if(validator.isEmail(email)){
             setEmailWrong(false)
@@ -330,20 +362,6 @@ const Auth = (props) => {
             setRegistarTab(1)
             clearWarnings()
         }
-        // else
-        // {
-        //     res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: email.toLocaleLowerCase()} })
-        //     if(res.data){
-        //         setEmailWrong('Este e-mail já se encontra registado a uma conta de profissional.')
-        //         setLoading(false)
-        //     }
-        //     else{
-        //         setLoading(false)
-        //         setEmailWrong(false)
-        //         setRegistarTab(1)
-        //         clearWarnings()
-        //     }
-        // }
     }
 
     const clearWarnings = () => {
@@ -358,11 +376,6 @@ const Auth = (props) => {
         setEmailLoginWrong(false)
         setLoading(true)
 
-        // let res = await axios.get(`${api_url}/auth/get_worker_by_email`, { params: {email: emailLogin} })
-        // if(res.data != null){
-        //     setLoginError("Este e-mail já se encontra associado a uma conta de PROFISSIONAL. Inicia a Sessão na Área Profissional.")
-        //     setLoading(false)
-        // }
         if(validator.isEmail(emailLogin)){
             fetchSignInMethodsForEmailHandler(emailLogin)
                 .then(res => {
@@ -428,7 +441,7 @@ const Auth = (props) => {
                 email_verified: false,
                 phone_verified: false,
                 registerMethod: from_signup?from_signup.register_type:"email",
-                worker: workerMode,
+                worker: false,
                 stripe_id: obj.data.customer.id,
                 entity: 0,
                 entity_name: "",
@@ -456,17 +469,8 @@ const Auth = (props) => {
                     setLoading(false)
                     setRegisterPopup(true)
                     setTimeout(() => setRegisterPopup(false), 4000)
-                    if(!workerMode)
-                    {
-                        setSelectedAuth(2)
-                        initiateEmailVerification()
-                        setRegistarTab(0)
-                    }
-                    else
-                    {
-                        setRegistarTab(3)
-                    }
-                    
+                    setRegistarTab(3)
+                    setPhoneHandler('')
                 }
                 catch (err) {
                     if(err.code == "auth/email-already-in-use"){
@@ -534,23 +538,12 @@ const Auth = (props) => {
                     photoURL: res.user.photoURL
                 }
                 await registerHelper(res.user.uid, from_signup)
-                if(!workerMode)
-                {
-                    navigate('/', {
-                        state: {
-                            carry: 'register',
-                            skippedVerification: false
-                        }
-                    })
-                    setLoading(false)
-                }
-                else
-                {
-                    setLoading(false)
-                    setRegisterPopup(true)
-                    setTimeout(() => setRegisterPopup(false), 4000)
-                    setRegistarTab(3)
-                }
+                dispatch(user_update_email_verified(true))
+                setLoading(false)
+                setRegisterPopup(true)
+                setTimeout(() => setRegisterPopup(false), 4000)
+                setSelectedAuth(0)
+                setRegistarTab(3)
 
             }
             else{
@@ -629,6 +622,7 @@ const Auth = (props) => {
     const initiateEmailVerification = () => {
         setSendingError(null)
         setEmailSent(null)
+        setEmailCodeStatus(null)
         var actionCodeSettings = {
             url: 'https://pt-tarefas.pt/confirm-email',
             handleCodeInApp: false
@@ -652,11 +646,12 @@ const Auth = (props) => {
         {
             setEmailCodeStatus(true)
             dispatch(user_update_email_verified(true))
-            axios.post(`${api_url}/user/verify_email`, {user_id: user._id})
+            clearFields()
+            axios.post(`${api_url}/user/verify_email`, {user_id: user?._id})
             navigate('/', {
                 state: {
                     carry: 'register',
-                    skippedVerification: true
+                    skippedVerification: false
                 }
             })
         }
@@ -664,6 +659,7 @@ const Auth = (props) => {
         {
             setEmailCodeStatus(false)
         }
+        
     }
 
     const initiatePhoneVerification = () => {
@@ -774,13 +770,6 @@ const Auth = (props) => {
                     <span className={styles.align_vert}>
                         <span className={styles.o2_text}>
                             {
-                                workerMode?
-                                <p className={styles.modo_box}>
-                                    modo profissional
-                                </p>
-                                :null
-                            }
-                            {
                                 selectedAuth===0?
                                 "Criar conta com Google":
                                 "Entrar com Google"
@@ -796,8 +785,7 @@ const Auth = (props) => {
         )
     }
 
-    const setWorkerModeHelper = (wm) => {
-        setWorkerMode(wm)
+    const setWorkerModeHelper = () => {
         setRegistarTab(0)
         setPassword('')
         setPasswordRepeat('')
@@ -814,7 +802,7 @@ const Auth = (props) => {
     const verifySelectedType = () => {
         if(selectedType===0||(selectedType===1&&entityName.length>1)){
             setSelectedTypeWrong(false)
-            setRegistarTab(4)
+            setRegistarTab(5)
             return true
         }
         else
@@ -828,7 +816,7 @@ const Auth = (props) => {
     const verifySelectedProfessions = () => {
         if(selectedProf.length>0){
             setSelectedProfWrong(false)
-            setRegistarTab(5)
+            setRegistarTab(6)
             return true
         }
         else
@@ -842,7 +830,7 @@ const Auth = (props) => {
     const verifySelectedRegions = () => {
         if(selectedReg.length>0){
             setSelectedRegWrong(false)
-            setRegistarTab(6)
+            setRegistarTab(7)
             return true
         }
         else
@@ -869,55 +857,61 @@ const Auth = (props) => {
         verifySelectedRegions()&&
         verifySelectedProfessions()&&
         verifySelectedType()&&
-        axios.post(`${api_url}/worker/update_selected`, {
+        axios.post(`${api_url}/user/update_worker`, {
             user_id : user._id,
-            trabalhos : selectedProf,
-            regioes: selectedReg,
-            entity: selectedType,
-            entity_name: entityName
-        }).then(() => {
-            dispatch(
-                user_update_field(
-                    [
-                        {field: 'trabalhos', value: selectedProf},
-                        {field: 'regioes', value: selectedReg},
-                        {field: 'entity', value: selectedType},
-                        {field: 'entity_name', value: entityName}
-                    ]
+        })
+        .then(() => {
+            axios.post(`${api_url}/worker/update_selected`, {
+                user_id : user._id,
+                trabalhos : selectedProf,
+                regioes: selectedReg,
+                entity: selectedType,
+                entity_name: entityName
+            }).then(() => {
+                dispatch(
+                    user_update_field(
+                        [
+                            {field: 'trabalhos', value: selectedProf},
+                            {field: 'regioes', value: selectedReg},
+                            {field: 'entity', value: selectedType},
+                            {field: 'entity_name', value: entityName},
+                            {field: 'worker', value: true}
+                        ]
+                    )
                 )
-            )
-            dispatch(worker_update_profile_complete(true))
-            setLoading(false)
-            setDetailsPopup(true)
-            setTimeout(() => setDetailsPopup(false), 4000)
-            if(createdWithGoogle)
-            {
-                navigate('/', {
-                    state: {
-                        carry: 'register',
-                        skippedVerification: false
-                    }
-                })
-            }
-            else
-            {
-                setSelectedAuth(2)
-                initiateEmailVerification()
-            }
+                dispatch(worker_update_profile_complete(true))
+                setLoading(false)
+                setDetailsPopup(true)
+                setTimeout(() => setDetailsPopup(false), 4000)
+                if(createdWithGoogle)
+                {
+                    navigate('/', {
+                        state: {
+                            carry: 'register',
+                            skippedVerification: false
+                        }
+                    })
+                }
+                else
+                {
+                    setSelectedAuth(2)
+                    initiateEmailVerification()
+                }
+            })
         })
     }
 
 
     return (
         <div className={styles.auth}>
-            <CSSTransition 
+            {/* <CSSTransition 
                 in={registerPopup}
                 timeout={1000}
                 classNames="transition"
                 unmountOnExit
                 >
                 <Sessao text={"Conta criada com sucesso!"}/>
-            </CSSTransition>
+            </CSSTransition> */}
 
             <CSSTransition 
                     in={detailsPopup}
@@ -939,10 +933,9 @@ const Auth = (props) => {
             {
                 showWorker?
                 <WorkerBanner 
-                    authPage={true}
+                    registerPage={true}
                     confirm={() => {
                         setShowWorker(false)
-                        setWorkerMode(true)
                     }}
                     cancel={() => setShowWorker(false)}/>
                 :null
@@ -962,12 +955,11 @@ const Auth = (props) => {
                                 loginTab===0?
                                 <ul>
                                     <li onClick={() => {setSelectedAuth(1)
-                                        setWorkerModeHelper(false)
+                                        setWorkerModeHelper()
                                         }} className={selectedAuth?styles.li_active:""}>
                                         <span className={selectedAuth?styles.li_text_active:styles.li_text}>Iniciar Sessão</span>
                                     </li>
-                                    <li onClick={() => {setSelectedAuth(0)
-                                        setWorkerMode(false)}} className={!selectedAuth?styles.li_active:""}>
+                                    <li onClick={() => setSelectedAuth(0)} className={!selectedAuth?styles.li_active:""}>
                                         <span className={!selectedAuth?styles.li_text_active:styles.li_text}>Criar Conta</span>
                                     </li>
                                 </ul>
@@ -1123,34 +1115,10 @@ const Auth = (props) => {
                         :selectedAuth===0?
                         //registar
                         <div>
-                            {
-                                registarTab<=2?
-                                <div className={styles.mode} style={{backgroundColor:workerMode?"#FF785A":""}}>
-                                    <span className={styles.mode_text} style={{color:workerMode?"white":""}}>MODO PROFISSIONAL</span>
-                                    <Switch  
-                                        onChange={val => {
-                                            setWorkerModeHelper(val)
-                                        }} 
-                                        checked={workerMode}
-                                        onColor='#161F28'/>
-                                </div>
-                                :null
-                            }
-                            {
-                                registarTab<=2?
-                                <div className={styles.area_bot_upper} style={{borderColor:workerMode?"#FF785A":"#ffffff"}}>
-                                    <div className={styles.area_bot_text_wrapper}>
-                                        <span className={styles.area_bot_text} onClick={() => setShowWorker(true)}>O que é o modo profissional?</span>
-                                        <span> </span>
-                                        <span className={styles.area_bot_text_helper}> Caso queiras, poderás ativar o modo profissional na tua conta noutra altura.</span>
-                                    </div>
-                                </div>
-                                :null
-                            }
                             
                             
-                            <div className={styles.area_bot_upper_wrapper} style={{borderColor:workerMode||registarTab>2?"#FF785A":"#ffffff", paddingTop:registarTab>2?'0px':''}}>
-                                <div className={styles.area_bot} style={{backgroundColor:workerMode?"#FF785A30":"#0358e530"}}>
+                            <div className={styles.area_bot_upper_wrapper} style={{borderColor:registarTab>3?"#FF785A":"#ffffff", paddingTop:registarTab>2?'0px':''}}>
+                                <div className={styles.area_bot} style={{backgroundColor:registarTab===3?'transparent':"#0358e530", padding:registarTab===3?'0px':''}}>
                                     {
                                         loading&&<div className={styles.verification_backdrop}/>
                                     }
@@ -1159,9 +1127,70 @@ const Auth = (props) => {
                                             o2auth()
                                         :null
                                     }
-                                    <div className={styles.area_bot_wrapper}>
+                                    {
+                                        registarTab===3?
+                                            !phoneGood&&createdWithGoogle?
+                                                <div className={styles.choose}>
+                                                    <p className={styles.area_bot_title} style={{marginBottom:'5px'}}>Insere o teu número de telemóvel</p>
+                                                    <div className={styles.input_wrapper} 
+                                                        style={{borderColor:phoneWrong?"red":!phoneWrong&&phone?.length===9?"#0358e5":""}}>
+                                                        <img src={portugal} className={styles.flag}/>
+                                                        <span className={styles.input_wrapper_divider}>.</span>
+                                                        <input
+                                                        onKeyDown={e => handleKeyDownRegister('name', e)}
+                                                        tabindex={registarTab===3?'1':'-1'}
+                                                        autoComplete="new-password"
+                                                        maxLength={11} 
+                                                        onChange={e => setPhoneHandler(e.target.value)} 
+                                                        value={phoneVisual} 
+                                                        className={styles.login_input_new} 
+                                                        placeholder="912345678">
+                                                        </input>
+                                                    </div>
+                                                    {
+                                                        phoneWrong?
+                                                        <span className={styles.field_error}>O número de telemóvel não é valido.</span>
+                                                        :null
+                                                    }
+                                                </div>
+                                            :
+                                            <div className={styles.choose}>
+                                                <p className={styles.area_bot_title}>Continuar com conta normal ou ativar modo profissional?</p>
+                                                <div className={styles.choose_side} style={{marginTop:"10px"}} onClick={() => 
+                                                    {
+                                                        if(createdWithGoogle)
+                                                        {
+                                                            navigate('/', {
+                                                                state: {
+                                                                    carry: 'register',
+                                                                    skippedVerification: false
+                                                                }
+                                                            })
+                                                        }
+                                                        else
+                                                        {
+                                                            setSelectedAuth(2)
+                                                            initiateEmailVerification()
+                                                            setRegistarTab(0)
+                                                        }
+                                                    }}>
+                                                                                        
+                                                    <p className={styles.choose_side_title}>Continuar com conta normal</p>
+                                                </div>
+                                                <div className={styles.choose_side_bottom} onClick={() => setRegistarTab(4)}>
+                                                    <p className={styles.choose_side_title}>ativar modo profissional</p>
+                                                </div>
+                                                <div className={styles.area_bot_text_wrapper}>
+                                                    <span className={styles.area_bot_text} onClick={() => setShowWorker(true)}>O que é o modo profissional?</span>
+                                                    <span> </span>
+                                                    <span className={styles.area_bot_text_helper}> Caso queiras, poderás ativar o modo profissional na tua conta noutra altura.</span>
+                                                </div>
+                                            </div>
+                                            :null
+                                    }
+                                    <div className={styles.area_bot_wrapper} style={{display:registarTab===3?'none':'block'}}>
                                         {
-                                            workerMode||registarTab>2?
+                                            registarTab>3?
                                             <p className={styles.modo_box} style={{marginBottom:'5px'}}>
                                                 modo profissional
                                             </p>
@@ -1171,6 +1200,9 @@ const Auth = (props) => {
                                             registarTab<=2?
                                             <p className={styles.area_bot_title}>Criar conta com e-mail</p>
                                             :
+                                            registarTab===3?
+                                            null
+                                            :
                                             <div>
                                                 <p className={styles.area_bot_title} style={{backgroundColor:"#FF785A"}}>Preencher detalhes</p>
                                             </div>
@@ -1179,14 +1211,17 @@ const Auth = (props) => {
                                             registarTab<=2?
                                             <p className={styles.area_bot_title_helper}>({registarTab+1}/3)</p>
                                             :
-                                            <p className={styles.area_bot_title_helper} style={{color:"#FF785A"}}>({registarTab-2}/4)</p>
+                                            registarTab===3?
+                                            null
+                                            :
+                                            <p className={styles.area_bot_title_helper} style={{color:"#FF785A"}}>({registarTab-3}/4)</p>
                                         }
                                         <p className={styles.area_bot_title_helper_mini}>{['E-mail', 'Detalhes do cliente', 'Palavra-passe'][registarTab]}</p>
                                         <div className={styles.login_div}>
                                             {
                                                 registarTab<=2?
                                                 <AuthCarousel 
-                                                    type={workerMode?'worker':null}
+                                                    type={null}
                                                     registarTab={registarTab}
                                                     email={email}
                                                     emailWrong={emailWrong}
@@ -1209,6 +1244,9 @@ const Auth = (props) => {
                                                     tosAccepted={tosAccepted}
                                                     setTosBanner={() => setTosBanner(true)}
                                                 />
+                                                :
+                                                registarTab===3?
+                                                null
                                                 :
                                                 <AuthCarouselWorker
                                                     registarTab={registarTab}
@@ -1238,7 +1276,7 @@ const Auth = (props) => {
                                     <div className={styles.buttons}>
                                         {
                                             registarTab===0?
-                                            <div className={email.length>0&&!emailWrong?workerMode?styles.login_button_worker:styles.login_button_job:styles.login_button_disabled}
+                                            <div className={email.length>0&&!emailWrong?styles.login_button_job:styles.login_button_disabled}
                                                 style={{marginTop:0}}
                                                 onClick={() => {!emailWrong&&validateEmailHandler()&&checkEmail()}}>
                                                 <p className={styles.login_text}>Continuar</p>
@@ -1250,7 +1288,7 @@ const Auth = (props) => {
                                                     onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
                                                 <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                                 </div>
-                                                <div className={!phoneWrong&&!nameWrong?workerMode?styles.login_button_worker:styles.login_button_job:styles.login_button_disabled}
+                                                <div className={!phoneWrong&&!nameWrong?styles.login_button_job:styles.login_button_disabled}
                                                     style={{marginLeft:'10px', marginTop:0}}
                                                     onClick={() => {!phoneWrong&&validateNameHandler()&&validatePhoneHandler()&&clearWarnings()}}>
                                                     <p className={styles.login_text}>Continuar</p>
@@ -1262,7 +1300,7 @@ const Auth = (props) => {
                                                     onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
                                                 <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                                 </div>
-                                                <div className={tosAccepted&&password.length>7&&passwordRepeat.length>0&&!passwordRepeatWrong?workerMode?styles.login_button_worker:styles.login_button_job:styles.login_button_disabled}
+                                                <div className={tosAccepted&&password.length>7&&passwordRepeat.length>0&&!passwordRepeatWrong?styles.login_button_job:styles.login_button_disabled}
                                                     style={{marginLeft:'10px', marginTop:0}}
                                                     onClick={() => {tosAccepted&&password.length>7&&passwordRepeat.length>0&&!passwordRepeatWrong&&validatePasswordHandler()}}>
                                                     <p className={styles.login_text}>Criar Conta</p>
@@ -1270,15 +1308,22 @@ const Auth = (props) => {
                                             </div>
                                             :
                                             registarTab===3?
+                                            null
+                                            :
+                                            registarTab===4?
                                             <div className={styles.buttons_flex}>
+                                                <div className={styles.login_button_voltar}
+                                                    onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
+                                                <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
+                                                </div>
                                                 <div className={selectedType===0||(selectedType===1&&entityName.length>1)?styles.login_button_worker:styles.login_button_disabled}
-                                                    style={{marginTop:0}}
+                                                    style={{marginTop:0, marginLeft:'10px'}}
                                                     onClick={() => {verifySelectedType()&&clearWarnings()}}>
                                                     <p className={styles.login_text}>Continuar</p>
                                                 </div>
                                             </div>
                                             :
-                                            registarTab===4?
+                                            registarTab===5?
                                             <div className={styles.buttons_flex}>
                                                 <div className={styles.login_button_voltar}
                                                     onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
@@ -1291,7 +1336,7 @@ const Auth = (props) => {
                                                 </div>
                                             </div>
                                             :
-                                            registarTab===5?
+                                            registarTab===6?
                                             <div className={styles.buttons_flex}>
                                                 <div className={styles.login_button_voltar}
                                                     onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>
@@ -1304,7 +1349,7 @@ const Auth = (props) => {
                                                 </div>
                                             </div>
                                             :
-                                            registarTab===6?
+                                            registarTab===7?
                                             <div className={styles.buttons_flex}>
                                                 <div className={styles.login_button_voltar}
                                                     onClick={() => {setRegistarTab(registarTab-1)&&clearWarnings()}}>

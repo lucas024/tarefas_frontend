@@ -52,20 +52,22 @@
     font-size: 1rem;
     color: #00000070;
     font-weight: 500;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
+    text-align: center;
 }
 .blank_request_click{
     color: var(--action);
     text-decoration: underline;
     cursor: pointer;
     font-weight: 600;
+    text-transform: uppercase;
 }
 .blank_request_click:hover{
     opacity: 0.6;
 }
 
 
-@media (max-width: 500px){
+/* @media (max-width: 500px){
     .blank_text{
         font-size: 0.8rem;
     }
@@ -82,4 +84,4 @@
         font-size: 0.7rem;
         margin: 30px auto;
     }
-}
+} */

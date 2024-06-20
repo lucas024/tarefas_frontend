@@ -52,12 +52,12 @@ const Navbar = (props) => {
         if(chats?.length>0){
             let clear = true
             for(const el of chats){
-                if(user?._id===el.user1_id&&!el.user1_read){
+                if(user?._id===el.approacher_id&&!el.approacher_read){
                     setHasUnreadTexts(true)
                     clear = false
                     break
                 }
-                else if(user?._id===el.user2_id&&!el.user2_read){
+                else if(user?._id===el.approached_id&&!el.approached_read){
                     setHasUnreadTexts(true)
                     clear = false
                     break
@@ -170,14 +170,14 @@ const Navbar = (props) => {
                                                             :null
                                                         }
                                                         {
-                                                            !worker_profile_complete?
+                                                            user?.worker&&!worker_profile_complete?
                                                             <DisplaySettingsIcon className={styles.disabled_icon} style={{margin:'0px 3px'}} onClick={() => {
                                                                 setDropdown(false)
                                                                 navigate('/user?t=profissional')}}/> 
                                                             :null
                                                         }
                                                         {
-                                                            !worker_is_subscribed?
+                                                            user?.worker&&!worker_is_subscribed?
                                                             <CardMembershipIcon className={styles.disabled_icon} style={{margin:'0px 3px'}} onClick={() => {
                                                                 setDropdown(false)
                                                                 navigate('/user?t=profissional&st=subscription')}}/> 

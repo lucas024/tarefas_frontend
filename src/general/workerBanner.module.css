@@ -142,11 +142,12 @@
 }
 .cancel{
     margin: auto;
-    margin-top: 10px;
+    margin-top: 15px;
     color: var(--grey);
     font-size: 0.9rem;
     cursor: pointer;
     text-transform: uppercase;
+    font-weight: 600;
 }
 .cancel:hover{
     opacity: 0.5;

@@ -67,7 +67,13 @@ const WorkerBannerContent = props => {
             <div className={props.workerPage?styles.popup_inner_worker:styles.popup_inner}>
                 <span className={styles.title} style={{color:props.workerPage?'#ffffff':''}}>
                     Queres encontrar tarefas para realizar, receber contacto dos utlizadores e expôr o teu négocio?
-                    <p style={{fontWeight:'400'}}>Torna-te um profissional criando a tua conta e ativando o modo profissional.</p>
+                    {
+                        props.registerPage?
+                        <p style={{fontWeight:'400'}}>Torna-te um profissional ativando o modo profissional.</p>
+                        :
+                        <p style={{fontWeight:'400'}}>Torna-te um profissional criando a tua conta e ativando o modo profissional.</p>
+                    }
+                    
                 </span>
                 <span className={styles.line_title} style={{marginTop:'15px', color:props.workerPage?'#ffffff':''}}>Benefícios</span>
                 <div className={styles.line}>
@@ -174,7 +180,7 @@ const WorkerBannerContent = props => {
                         <div className={styles.steps_line}>
                             <span className={styles.steps_line_number}>1</span>
                             {
-                                user?._id?
+                                user?._id || props.registerPage?
                                 <p className={styles.steps_line_text}>Ativa o modo profissional</p>
                                 :
                                 <p className={styles.steps_line_text}>Cria a tua conta e ativa o modo profissional</p>
@@ -185,9 +191,9 @@ const WorkerBannerContent = props => {
                             <span className={styles.steps_line_number}>2</span>
                             {
                                 user?._id&&user?.email_verified?
-                                <span className={styles.steps_line_text} style={{color:"#0358e5"}}>Verifica o teu e-mail (já se encontra verificado)</span>
+                                <span className={styles.steps_line_text} style={{color:"#0358e5"}}>Verifica o tua conta/email (já se encontra verificado)</span>
                                 :
-                                <p className={styles.steps_line_text}>Verifica o teu e-mail</p>
+                                <p className={styles.steps_line_text}>Verifica a tua conta/email</p>
                             }
                             
                         </div>
@@ -207,7 +213,7 @@ const WorkerBannerContent = props => {
             
 
             {
-                user?.worker || props.workerPage?
+                user?.worker || props.workerPage || props.registerPage?
                 null
                 :
                 <span className={styles.confirm_button} onClick={() => {

@@ -16,8 +16,8 @@ const NoPage = (props) => {
                     <span className={styles.blank_text} style={{color:"white"}}>Ainda não tens mensagens...</span>
                     <ChatIcon className={styles.blank_face} style={{color:"white"}}/>
                     <span className={styles.blank_request} style={{color:"white"}}>
-                        Procurar <span className={styles.blank_request_click} style={{color:"#0358e5"}} onClick={() => navigate('/main/publications/trabalhos')}>tarefas</span>
-                        <span> ou </span> <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/profissionais')}>profissionais</span>
+                        Procurar <span className={styles.blank_request_click} style={{color:"#0358e5", textDecoration:'none'}} onClick={() => navigate('/main/publications/trabalhos')}>tarefas</span>
+                        <span> ou </span> <span className={styles.blank_request_click} style={{textDecoration:'none'}} onClick={() => navigate('/main/publications/profissionais')}>profissionais</span>
                     </span>
                 </div>
                 :props.object==="mensagens_user"?
@@ -25,7 +25,7 @@ const NoPage = (props) => {
                     <span className={styles.blank_text} style={{color:"white"}}>Ainda não tens mensagens...</span>
                     <ChatIcon className={styles.blank_face} style={{color:"white"}}/>
                     <span className={styles.blank_request} style={{color:"white"}}>
-                        Procurar <span className={styles.blank_request_click} onClick={() => navigate('/main/publications/profissionais')}>profissionais</span>
+                        Procurar <span className={styles.blank_request_click} style={{textDecoration:'none'}} onClick={() => navigate('/main/publications/profissionais')}>profissionais</span>
                     </span>
                 </div>
                 :props.object==="no_subscritption"?
@@ -65,7 +65,23 @@ const NoPage = (props) => {
                     <span className={styles.blank_text} style={{color:"#ffffff"}}>Esta tarefa já não existe...</span>
                     <Sad className={styles.blank_face} style={{color:"#ffffff"}}/>
                     <span className={styles.blank_request} style={{color:"#ffffff"}}>
-                        Voltar à <span className={styles.blank_request_click} onClick={() => navigate('/')}>página inícial</span>
+                        Voltar à <span className={styles.blank_request_click} style={{textDecoration:'none'}} onClick={() => navigate('/')}>página inícial</span>
+                    </span>
+                </div>
+                :props.object==="worker"?
+                <div className={styles.blank_flex}>
+                    <span className={styles.blank_text} style={{color:"#ffffff"}}>Este profissional já não existe...</span>
+                    <Sad className={styles.blank_face} style={{color:"#ffffff"}}/>
+                    <span className={styles.blank_request} style={{color:"#ffffff"}}>
+                        Voltar à <span className={styles.blank_request_click} style={{color:"#161F28", textDecoration:'none'}} onClick={() => navigate('/')}>página inícial</span>
+                    </span>
+                </div>
+                :props.object==="no_user_chat"?
+                <div className={styles.blank_flex}>
+                    <span className={styles.blank_text} style={{color:"#ffffff"}}>Esta conta foi apagada...</span>
+                    <Sad className={styles.blank_face} style={{color:"#ffffff"}}/>
+                    <span className={styles.blank_request} style={{color:"#ffffff"}}>
+                        Apagámos agora esta conversa.
                     </span>
                 </div>
                 :

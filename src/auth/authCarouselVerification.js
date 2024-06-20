@@ -34,8 +34,8 @@ const AuthCarouselVerification = props => {
         }
         else{
             dispatch(user_update_email_verified(false))
-            
-        } 
+        }
+        props.clearEmailAndPhone()
     }
 
     const handleSendEmail = () => {
@@ -219,8 +219,8 @@ const AuthCarouselVerification = props => {
                     <p className={styles.verification_title} style={{marginBottom:'20px'}}>Verificar o e-mail</p>
                     
                     <Lottie 
-                        animationData={props.emailCodeStatus===true?successLottie:JSON.parse(JSON.stringify(sendEmail))}
-                        loop={!props.emailCodeStatus}
+                        animationData={props.emailCodeStatus===true?successLottie:props.emailCodeStatus===false?wrongCode:JSON.parse(JSON.stringify(sendEmail))}
+                        loop={false}
                         autoplay={true}
                         rendererSettings={{preserveAspectRatio: 'xMidYMid slice'}}
                         style={{
@@ -248,7 +248,7 @@ const AuthCarouselVerification = props => {
                         :null
                     }
                     {
-                        !props.emailSent===true&&props.emailCodeStatus===false?
+                        props.emailCodeStatus===false?
                         <p className={styles.wrong_code_text} style={{marginTop:'40px', marginBottom:'-40px'}}>
                             O e-mail ainda não se encontra verificado.
                         </p>
@@ -258,7 +258,6 @@ const AuthCarouselVerification = props => {
                         props.emailSent===false?
                         <p className={styles.verification_button} 
                             onClick={async () => {
-                                props.clearEmailAndPhone()
                                 await updateVerification()
                                 navigate('/user?t=conta', {
                                     state: {
@@ -273,7 +272,6 @@ const AuthCarouselVerification = props => {
                         <div>
                             <p className={styles.verification_button} 
                                 onClick={async () => {
-                                    props.clearEmailAndPhone()
                                     props.completeEmailVerification()}
                                 }>
                                 Já verifiquei
@@ -296,23 +294,27 @@ const AuthCarouselVerification = props => {
                         </div>
                     }
 
-                    <div>
-                        <p className={styles.verification_button_helper_or}>
-                            OU
-                        </p>
-                        <p className={styles.verification_button_helper} 
-                            onClick={async () => {
-                                props.clearEmailAndPhone()
-                                await updateVerification()
-                                navigate('/user?t=conta', {
-                                    state: {
-                                        carry: 'register',
-                                        skippedVerification: true
-                                    }
-                                })}}>
-                            Verificar depois
-                        </p>
-                    </div>
+                    {
+                        props.emailSent!==false?
+                        <div>
+                            <p className={styles.verification_button_helper_or}>
+                                OU
+                            </p>
+                            <p className={styles.verification_button_helper} 
+                                onClick={async () => {
+                                    await updateVerification()
+                                    navigate('/user?t=conta', {
+                                        state: {
+                                            carry: 'register',
+                                            skippedVerification: true
+                                        }
+                                    })}}>
+                                Verificar depois
+                            </p>
+                        </div>
+                        :null
+                    }
+                    
                     
                 </div>
             </div>

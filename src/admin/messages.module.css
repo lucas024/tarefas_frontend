@@ -525,7 +525,19 @@
     color: #ffffff40;
     font-size: 0.9rem;
 }
-
+.help{
+    width: 90%;
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 5px;
+    font-size: 0.9rem;
+    color: var(--brand);
+    background-color: var(--yellow);
+    text-align: center;
+    font-weight: 600;
+}
 @media (max-width: 1024px){
     .item_wrapper{
         font-size: 0.8rem;
@@ -728,5 +740,8 @@
         width: max-content;
         margin-left: 5px;
         margin-right: -5px;
+    }
+    .help{
+        font-size: 0.7rem;
     }
 }

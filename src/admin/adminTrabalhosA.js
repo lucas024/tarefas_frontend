@@ -44,7 +44,6 @@ const AdminTrabalhosA = (props) => {
         {
             if(el._id === id)
             {
-                console.log('teste')
                 el.type=2
                 break
             }

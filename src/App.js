@@ -87,7 +87,6 @@ const checkWorkerComplete = (worker, userGoogle) => {
 
   if(userGoogle?.emailVerified === true)
   {
-    console.log(worker)
     dispatch(user_update_email_verified(true))
     if(worker?.email_verified === false || worker.email_verified == null)
     {

@@ -27,6 +27,9 @@ import ChatIcon from '@mui/icons-material/Chat';
 import FaceIcon from '@mui/icons-material/Face';
 import axios from 'axios';
 import logo_text_mix from '../assets/logo_text_mix_4.png'
+import home_arrow_right from '../assets/home_arrow_right.png'
+import home_arrow_left from '../assets/home_arrow_left.png'
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
@@ -110,7 +113,7 @@ const Home = (props) => {
         else if(location.state?.carry==="register"){
             setRegisterPopup(location.state?.skippedVerification?"skippedVerification":"didVerification")
             setTimeout(() => setRegisterPopup(false), 4000)
-            navigate(location.pathname, {}); 
+            navigate(location.pathname, {});
         }
         else if(location.state?.refreshWorker){
             props.refreshWorker()
@@ -164,11 +167,11 @@ const Home = (props) => {
             let clear = true
             let aux = []
             for(const el of chats){
-                if(user?._id===el.user1_id&&!el.user1_read){
+                if(user?._id===el.approacher_id&&!el.approacher_read){
                     aux.push(el)
                     clear = false
                 }
-                else if(user?._id===el.user2_id&&!el.user2_read){
+                else if(user?._id===el.approached_id&&!el.approached_read){
                     aux.push(el)
                     clear = false
                 }
@@ -290,7 +293,7 @@ const Home = (props) => {
                     {
                         (user?.worker&&(!worker_profile_complete||!worker_is_subscribed))||!user_email_verified?
                         <div>
-                            <div className={styles.banner}>
+                            <div className={styles.banner} style={{marginTop:hasUnreadTexts?"3px":""}}>
                                 <p className={styles.banner_text}>Notificações de conta</p>
                             </div>
                             {mapNotifications()}
@@ -306,7 +309,19 @@ const Home = (props) => {
     const mapMessages = () => {
         return unreadTexts.map(el => {
             return (
-                <div className={styles.notification} onClick={() => navigate(`/user?t=messages&id=${el.chat_id}`)}>
+                <div className={
+                    el.approached_id !== user?._id?
+                        el.approached_type==='worker'?
+                        `${styles.notification} ${styles.notification_worker}`
+                        :`${styles.notification} ${styles.notification_user}`
+                    :
+                        el.approacher_type==='worker'?
+                        `${styles.notification} ${styles.notification_worker}`
+                        :`${styles.notification} ${styles.notification_user}`
+                    } 
+                // onClick={() => navigate(`/user?t=messages&id=${el.chat_id}`)}
+                onClick={() => navigate(`/user?t=messages`)}
+                >
                     <div className={styles.notification_left}>
                         <ChatIcon className={styles.notification_left_icon}/>
                     </div>
@@ -314,18 +329,22 @@ const Home = (props) => {
                         <div className={styles.notification_right_column}>
                             <div className={styles.notification_right_flex}>
                                 {
-                                    el.last_text.origin_type===1?
-                                    el.worker_photoUrl != ""?
-                                        <img src={el.worker_photoUrl} className={styles.notification_right_image}/>
+                                    el.approached_id !== user?._id?
+                                        el.approached_photoUrl !== ""?
+                                        <img src={el.approached_photoUrl} className={styles.notification_right_image}/>
                                         :
-                                        <EmojiPeopleIcon className={styles.notification_right_image} style={{transform: 'scaleX(-1)'}}/>
+                                        el.approached_type==="worker"?
+                                        <EmojiPeopleIcon className={styles.notification_right_image} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
+                                        :<FaceIcon className={styles.notification_right_image}/>
                                     :
-                                    el.user_photoUrl != ""?
-                                        <img src={el.user_photoUrl} className={styles.notification_right_image}/>
+                                    el.approacher_photoUrl !== ""?
+                                        <img src={el.approacher_photoUrl} className={styles.notification_right_image}/>
                                         :
-                                        <FaceIcon className={styles.notification_right_image}/>
+                                        el.approacher_type==="worker"?
+                                        <EmojiPeopleIcon className={styles.notification_right_image} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
+                                        :<FaceIcon className={styles.notification_right_image}/>
                                 }
-                                <p className={styles.notification_right_name}>{user?.type===0?el.worker_name:el.user_name}</p>
+                                <p className={styles.notification_right_name}>{el.approached_id !== user?._id?el.approached_name:el.approacher_name}</p>
                             </div>
                             <span className={styles.notification_right_text}>
                                 {el.last_text.text}
@@ -492,35 +511,49 @@ const Home = (props) => {
                         <div className={styles.upper_wrapper}>
                             <div className={styles.upper_wrapper_text}>
                                 <p className={styles.upper_wrapper_text_title}>NOVO NO TAREFAS?</p>
-                                <p className={styles.upper_wrapper_text_subtitle}>Esta plataforma junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span>.</p>
+                                {/* <p className={styles.upper_wrapper_text_subtitle}>Esta plataforma junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span>.</p> */}
                                 <p className={styles.upper_wrapper_text_subtitle}>O cliente publica as tarefas que quer ver realizadas e espera o contacto de profissionais. O profissional encontra as tarefas e contacta os clientes, simultaneamente expondo o seu negócio.</p>
                                 
                             </div>
                             <div className={styles.upper}>
+                                    <div className={styles.upper_side_wrapper}>
+                                        <div className={styles.upper_side_text_helper}>
+                                            <p className={styles.upper_side_text}>Quero publicar a minha tarefa e ser contactado por profissionais</p>
+                                        </div>
+                                    </div>
+                                
                                 <div className={styles.upper_side_wrapper}>
-                                    <p className={styles.upper_side_text}>Quero publicar a minha tarefa e ser contactado por profissionais</p>
-                                </div>
-                                <div className={styles.upper_side_wrapper}>
-                                    <p className={styles.upper_side_text}>Quero realizar tarefas e expôr o meu negócio</p>
+                                    <div className={styles.upper_side_text_helper} style={{borderColor:"#FF785A"}}>
+                                        <p className={styles.upper_side_text}>Quero realizar tarefas e expôr o meu negócio</p>
+                                    </div>                                    
                                 </div>
                             </div>
-                            <div className={styles.upper} style={{marginTop:'5px'}}>
+                            <div className={styles.upper_two} style={{marginTop:'0px'}}>
                                 <div className={styles.upper_side_wrapper}>
+                                    <img src={home_arrow_left} className={styles.home_arrow}/>
+                                </div>
+                                
+                                <div className={styles.upper_side_wrapper}>
+                                    <img src={home_arrow_right} className={styles.home_arrow}/>
+                                </div>
+                            </div>
+                            <div className={styles.upper_two}>
+                                <div className={styles.upper_side_wrapper} style={{display:'block', width:"80%"}}>
                                     <div className={styles.upper_side}>
                                         <div className={styles.upper_button} style={{backgroundColor:"#ffffff", borderColor:"#ffffff"}} onClick={() => handleMoveAuth(0)} >
-                                            <FaceIcon className={styles.section_img_mini_mini} style={{color:"#0358e5"}}/>
-                                            <span className={styles.section_publicar_mini} style={{color:"#0358e5"}}>CRIAR CONTA</span>
+                                            <AddBoxIcon className={styles.section_img_mini_mini} style={{color:"#161F28"}}/>
+                                            <span className={styles.section_publicar_mini} style={{color:"#161F28"}}>CRIAR CONTA</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div className={styles.upper_side_wrapper}>
+                                {/* <div className={styles.upper_side_wrapper}>
                                     <div className={styles.upper_side}>
                                         <span className={styles.upper_button} onClick={() => setWorkerBanner(true)} style={{backgroundColor:"#ffffff",  borderColor:"#ffffff"}}>
                                         <EmojiPeopleIcon className={styles.section_img_mini_mini} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
                                             <span className={styles.section_publicar_mini} style={{color:"#FF785A"}}>CRIAR CONTA MODO PROFISSIONAL</span>
                                         </span>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                             <span className={styles.upper_wrapper_close} onClick={() => setNewPopup(false)}>FECHAR</span>
                         </div>
@@ -732,8 +765,8 @@ const Home = (props) => {
                                 user?._id===null||!user?
                                 <div className={styles.back_publish_div} style={{backgroundColor:"#ffffff"}} onClick={() => handleMoveAuth(1)} 
                                     data-tooltip-id={'home'} data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
-                                    <FaceIcon className={styles.section_img_mini} style={{color:"#0358e5"}}/>
-                                    <span className={styles.section_publicar} style={{color:"#0358e5"}}>CRIAR CONTA</span>
+                                    <AddBoxIcon className={styles.section_img_mini} style={{color:"#161F28"}}/>
+                                    <span className={styles.section_publicar} style={{color:"#161F28"}}>CRIAR CONTA</span>
                                 </div>
                                 :null
                             }
@@ -856,7 +889,7 @@ const Home = (props) => {
                                             Ver ou editar conta
                                         </span>
                                         <div className={styles.section_button_right} onClick={() => navigate('/user?t=conta')}>
-                                            <p className={styles.section_title_right} style={{fontSize: '0.9rem'}}>
+                                            <p className={styles.section_title_right} style={{fontSize: '0.9rem', color:"#FF785A"}}>
                                                 VER CONTA
                                             </p>
                                         </div>
@@ -910,7 +943,7 @@ const Home = (props) => {
                                 onClick={() => setWorkerBanner(true)}
                                 >
                                 <EmojiPeopleIcon className={styles.section_img_mini} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
-                                <span className={styles.section_publicar} style={{color:"#FF785A"}}>CRIAR CONTA MODO PROFISSIONAL</span>
+                                <span className={styles.section_publicar} style={{color:"#FF785A"}}>MODO PROFISSIONAL</span>
                             </div>
                             :null
                         }

@@ -11,10 +11,12 @@ import CircleIcon from '@mui/icons-material/Circle';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { TextareaAutosize } from '@mui/material';
 import Loader from '../general/loader';
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import { user_set_admin_chat } from '../store';
+
 
 const Suporte = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -24,11 +26,12 @@ const Suporte = (props) => {
     const [currentText, setCurrentText] = useState("")
     const [loading, setLoading] = useState(true)
     const [chat, setChat] = useState(null)
-    const [firstLoad, setFirstLoad] = useState(true)
 
     const [reservations, setReservations] = useState([])
 
     const scrollToBottom = useScrollToBottom()
+
+    const dispatch = useDispatch()
 
     const textareaRef = useRef(null);
     const chatareaRef = useRef(null);
@@ -43,18 +46,15 @@ const Suporte = (props) => {
     const ObjectID = require("bson-objectid");
 
     useEffect(() => {      
-        if(firstLoad)
-        {
-            setLoading(true)
-            getChats(true)
-        }
+        setLoading(true)
+        getChats(true)
         const interval = setInterval(() => {
             let date = new Date()
-            if(date.getSeconds()===29 || date.getSeconds()===59)
-            {
-                setLoading(true)
-                getChats(false)
-            }
+            // if(date.getSeconds()===29 || date.getSeconds()===59)
+            // {
+            //     setLoading(true)
+            //     getChats(false)
+            // }
         }, 1000)
 
         return () => clearInterval(interval)
@@ -62,7 +62,8 @@ const Suporte = (props) => {
     }, [user])
 
     const getChats = (first) => {
-        if(user && user.admin_chat)
+        console.log(user)
+        if(user)
         {
             axios.get(`${api_url}/admin_chats/get_chat`, { params: {chat_id: user.admin_chat} })
             .then(chat => {
@@ -87,7 +88,6 @@ const Suporte = (props) => {
                     setLoading(false)
                 }
             })
-            setFirstLoad(false)
         }
 
     }
@@ -195,6 +195,12 @@ const Suporte = (props) => {
                 chat_id: user.admin_chat || chatId
             })
 
+            if(user.admin_chat==null)
+            {
+                dispatch(user_set_admin_chat(chatId.toString()))
+            }
+                
+
             scrollToBottom()
 
             // s.emit("send-message", {
@@ -290,10 +296,13 @@ const Suporte = (props) => {
                                 <div className={styles.chatbox_user}>
                                     {
                                         msg.origin_type!==4?
-                                            msg.origin_type===0?
+                                            user?.photoUrl?
+                                            <img className={styles.chatbox_user_img} src={user?.photoUrl} referrerPolicy="no-referrer"/>
+                                            :
+                                            !user?.worker?
                                             <FaceIcon className={styles.chatbox_user_img}/>
                                             :
-                                            <FaceIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
+                                            <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
                                         :
                                             <SupportAgentIcon className={styles.chatbox_user_img}/>
                                     }
@@ -302,10 +311,13 @@ const Suporte = (props) => {
                                 :<div className={styles.chatbox_user_opacity}>
                                     {
                                         msg.origin_type!==4?
-                                        msg.origin_type===0?
+                                        user?.photoUrl?
+                                            <img className={styles.chatbox_user_img} src={user?.photoUrl} referrerPolicy="no-referrer"/>
+                                            :
+                                            !user?.worker?
                                             <FaceIcon className={styles.chatbox_user_img}/>
                                             :
-                                            <FaceIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
+                                            <EmojiPeopleIcon className={styles.chatbox_user_img} style={{transform: 'scaleX(-1)'}}/>
                                     :
                                         <SupportAgentIcon className={styles.chatbox_user_img}/>
                                     }
@@ -416,7 +428,12 @@ const Suporte = (props) => {
                     <div className={styles.top_separator_worker_reservation}/>
                     <ScrollToBottom className={styles.chat_area}>
                         {
+                            messages?.length>0?
                             messageDisplay()
+                            :
+                            <div className={styles.help}>
+                                <span className={styles.help_text}>Se tiveres alguma dúvida sobre a utilização do site, podes entrar em contacto com a Cristina através deste chat de suporte.</span>
+                            </div>
                         }
                         <div ref={chatareaRef}></div>
                     </ScrollToBottom>

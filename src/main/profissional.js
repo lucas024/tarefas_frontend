@@ -11,6 +11,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import { useDispatch, useSelector } from 'react-redux'
 import {user_update_chats} from '../store'
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import NoPage from '../general/noPage';
 
 const ObjectID = require("bson-objectid");
 
@@ -37,6 +38,7 @@ const Profissional = props => {
     const [loadingChat, setLoadingChat] = useState(false)
     const [localChatSent, setLocalChatSent] = useState(false)
     const [successPopin, setSuccessPopin] = useState(false)
+    const [noWorker, setNoWorker] = useState(false)
 
     const [noRepeatedChats, setNoRepeatedChats] = useState(false)
 
@@ -46,12 +48,9 @@ const Profissional = props => {
         paramsAux.region&&setLocationActive(paramsAux.region)
         paramsAux.work&&setWorkerActive(paramsAux.work)
         user?._id===paramsAux.id&&setOwnPost(true)
-        // axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: paramsAux.id} }).then(res => {
-        //     res.data!=""&&setWorker(res.data)
-        //     setLoading(false)
-        // })
         axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: paramsAux.id} }).then(res => {
-            res.data!=""&&setWorker(res.data)
+            if(res.data !== null) setWorker(res.data)
+            else setNoWorker(true)
             setLoading(false)
         })
     }, [searchParams, props])
@@ -209,6 +208,11 @@ const Profissional = props => {
     }
 
     return(
+        noWorker?
+        <div className={styles.worker}>
+            <NoPage object={'worker'}/>
+        </div>
+            :
         <div className={styles.worker}>
             <p className={styles.reservar_upper_title}>PROFISSIONAL</p>
             <div className={styles.normal_back}>
@@ -235,8 +239,8 @@ const Profissional = props => {
                 <div className={styles.main_top}>
                     <div className={styles.main_top_left}>
                         {
-                            worker.photoUrl!=""?
-                            <img src={worker.photoUrl} className={styles.left_img}></img>
+                            worker?.photoUrl!=""?
+                            <img src={worker?.photoUrl} className={styles.left_img}></img>
                             :<EmojiPeopleIcon className={styles.left_img} style={{transform: 'scaleX(-1)'}}/>
                         }
                         <div className={styles.left_div_wrapper}>
@@ -319,7 +323,7 @@ const Profissional = props => {
                         <div className={styles.message_top_flex}>
                             <div className={styles.message_left}>
                                 {
-                                    worker.photoUrl!==""?
+                                    worker?.photoUrl!==""?
                                     <img src={worker?.photoUrl} className={styles.message_img}></img>
                                     :<EmojiPeopleIcon className={styles.message_img} style={{transform: 'scaleX(-1)'}}/>
                                 }

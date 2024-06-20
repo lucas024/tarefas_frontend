@@ -73,8 +73,8 @@ const Personal = (props) => {
             setName(user.name)
             setPhone(user.phone)
             setEmail(user.email)
+            setDescription(user.description)
             if(user.phone===""){
-                setEdit(true)
                 setPhoneWrong(true)
             }
         }
@@ -117,25 +117,6 @@ const Personal = (props) => {
             setEdit(false)
             if(phone!==user.phone || description!==user.description){
                 setLoadingRight(true)
-                // if(user?.type===0){
-                //     axios.post(`${api_url}/user/update_phone`, {
-                //         user_id : user._id,
-                //         phone: phone
-                //     }).then(() => {
-                //         dispatch(
-                //             user_update_field(
-                //                 [{field: 'phone', value: phone}]
-                //             )
-                //         )
-                //         // dispatch(user_update_phone_verified(false))
-                //         // if(auth.currentUser.phoneNumber!=null)
-                //         //     unlink(auth.currentUser, "phone")
-                //         setLoadingRight(false)
-                //         setRightPop(true)
-                //         setTimeout(() => setRightPop(false), 4000)
-                //     })
-                // }
-                // else {
                 axios.post(`${api_url}/user/update_phone`, {
                     user_id : user._id,
                     phone: phone,
@@ -149,9 +130,6 @@ const Personal = (props) => {
                             ]
                         )
                     )
-                    // dispatch(user_update_phone_verified(false))
-                    // if(auth.currentUser.phoneNumber!=null)
-                    //     unlink(auth.currentUser, "phone")
                     setLoadingRight(false)
                     setRightPop(true)
                     setTimeout(() => setRightPop(false), 4000)
@@ -434,19 +412,16 @@ const Personal = (props) => {
                                     current_amount: getAmountPay(user.subscription),
                                 })
                                 .then(suc => {
-                                    console.log(suc)
                                 })
                                 .catch(err => {
                                     console.log(err)
                                 })
                             }
                             axios.post(`${api_url}/general/delete_user`, {
-                                user_id : user._id,
-                                type: user.type
-                            }).then(() => {
+                                user_id : user._id})
+                            .then(() => {
                                 deleteUser(auth.currentUser)
                                 .then(() => {
-                                    let type = user.type
                                     dispatch(user_reset())
                                     window.localStorage.setItem('loggedIn', 0)
                                     setLoading(false)
@@ -544,16 +519,16 @@ const Personal = (props) => {
                                                 :null
                                             } */}
                                             
-                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:user?.phone==""?"#fdd835":edit?'#FF785A':!user_phone_verified?'#fdd835':'#0358e5', borderTopRightRadius:!user_phone_verified?'0px':'3px'}}>
+                                            <div className={styles.input_div_wrapper_editable} style={{borderColor:user?.phone==""&&!edit?"#71848d":edit&&!validator.isMobilePhone(phone, "pt-PT")?'#fdd835':'#0358e5', borderTopRightRadius:!user_phone_verified?'0px':'3px'}}>
                                                 <div className={styles.input_icon_div}>
                                                     {
-                                                        user_phone_verified?
-                                                        <PhoneVerified className={styles.input_icon} style={{color:user?.phone==""?"#fdd835":edit?'#FF785A':'#0358e5'}}/>
+                                                        phone?.length!==9||!validator.isMobilePhone(phone, "pt-PT")?
+                                                        <PhoneUnverified className={styles.input_icon} style={{color:user?.phone==""&&!edit?"#71848d":edit&&!validator.isMobilePhone(phone, "pt-PT")?'#fdd835':'#0358e5'}}/>
                                                         :
-                                                        <PhoneUnverified className={styles.input_icon} style={{color:user?.phone==""?"#fdd835":edit?'#FF785A':'#fdd835'}}/>
+                                                        <PhoneVerified className={styles.input_icon} style={{color:user?.phone==""&&!edit?"#71848d":edit&&!validator.isMobilePhone(phone, "pt-PT")?'#fdd835':'#0358e5'}}/>
                                                     }
                                                 </div>
-                                                <span className={styles.input_icon_seperator} style={{backgroundColor:user?.phone==""?"#fdd835":edit?'#FF785A':!user_phone_verified?'#fdd835':'#0358e5'}}>.</span>
+                                                <span className={styles.input_icon_seperator} style={{backgroundColor:user?.phone==""&&!edit?"#71848d":edit&&!validator.isMobilePhone(phone, "pt-PT")?'#fdd835':'#0358e5'}}>.</span>
                                                 <input className={styles.input_input}
                                                         style={{color:edit?"#ffffff":"#71848d"}}
                                                         value={phoneVisual}
@@ -584,11 +559,11 @@ const Personal = (props) => {
                                         user?.worker?
                                             <div className={styles.edit_area_right}>
                                                     <textarea
-                                                        style={{marginTop:"5px", resize:"none", border:description.length===0&&!edit?"1px solid #fdd835":""}}
+                                                        style={{marginTop:"5px", resize:"none", border:description?.length===0&&!edit?"1px solid #71848d":description?.length===0&&edit?"#fdd835":"#0358e5"}}
                                                         className={edit?styles.textarea_input_edit
                                                                     :styles.textarea_input}
                                                         value={description}
-                                                        maxLength={150}
+                                                        maxLength={500}
                                                         rows={5}
                                                         onChange={e => setDescription(e.target.value)}
                                                         disabled={!edit}
@@ -600,7 +575,7 @@ const Personal = (props) => {
                                     </div>
                                     <div className={styles.input_div}>
                                         {
-                                            user?.worker&&description?.length===0?
+                                            user?.worker&&description?.length===0&&edit?
                                                 <span className={styles.helper}>Introduz uma descrição sobre ti/a tua empresa, trabalhos passados, experiência geral.</span>
                                             :null
                                         }

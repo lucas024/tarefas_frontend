@@ -476,8 +476,7 @@
     .mode_icon{
         width: 20px !important;
         height: 20px !important;
-        display: none;
-        font-size: 0.7rem;
+        display: none !important;
     }
     .mode{
         font-size: 0.7rem;

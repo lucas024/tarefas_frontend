@@ -72,7 +72,6 @@ const Messages = (props) => {
         .then(chat => {
             if(chat.data.texts?.length > selectedChatTexts?.length || selectedChatTexts === undefined || first)
             {
-                console.log('yes')
                 if(chat.data!==''){
                     setSelectedChat(chat.data)
                     setSelectedChatTexts(chat.data.texts)
@@ -82,7 +81,6 @@ const Messages = (props) => {
                 setLoadingChatBox(false)
             }
             else{
-                console.log('no')
                 setLoadingChatBox(false)
             }
         })
@@ -91,14 +89,12 @@ const Messages = (props) => {
     useEffect(() => {
         axios.get(`${api_url}/admin_chats/chats`)
             .then(chats => {
-                console.log(chats)
                 setChats(chats.data)
                 setIsLoaded(true)
             })
     }, [])
 
     const sortByTimestamp = (a, b) => {
-        console.log(a.last_text.timestamp)
         return a.last_text.timestamp < b.last_text.timestamp ? 1 : -1
     }
 
@@ -166,8 +162,6 @@ const Messages = (props) => {
     }
 
     const handleReceiveSocketMessageUpdate = (data, selected_chat_id, selected_chat_texts) => {
-
-        console.log(data)
 
         let arrChats = [...chats]
         const text = {

@@ -44,11 +44,9 @@ const Details = props => {
     const [shake, setShake] = useState(false)
 
     useEffect(() => {
-        console.log(user.regioes)
         if(user){
             if(!user_email_verified||!user_phone_verified||user.regioes?.length===0||user.trabalhos?.length===0||!user.regioes||!user.trabalhos)
             {
-                console.log('true')
                 setDisplayTop(true)
             }
 
@@ -230,10 +228,8 @@ const Details = props => {
                     setTimeout(() => setBottomPop(false), 4000)
                     if(user_phone_verified&&user_email_verified&&worker_is_subscribed)
                     {
-                        console.log('yes')
                         if(user.state!==1)
                         {
-                            console.log('yes2')
                             axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: user._id})
                         }
                             
@@ -243,7 +239,6 @@ const Details = props => {
             }
         }
         else{
-            console.log('yes')
             shakeError.current?.scrollIntoView({behavior: 'smooth'})
             setShake(true)
             setTimeout(() => setShake(false), 1000)

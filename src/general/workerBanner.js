@@ -24,7 +24,7 @@ const WorkerBanner = props => {
                     unmountOnExit
                     >
                 <div className={styles.popup} onClick={e => e.stopPropagation()}>
-                    <WorkerBannerContent confirm={() => props.confirm()} authPage={props.authPage} cancel={() => props.cancel()}/>
+                    <WorkerBannerContent confirm={() => props.confirm()} authPage={props.authPage} registerPage={props.registerPage} cancel={() => props.cancel()}/>
                 </div>
             </CSSTransition>
         </div>
