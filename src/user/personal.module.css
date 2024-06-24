@@ -1256,6 +1256,10 @@ transform: rotate(45deg);
         width: 12px !important;
         height: 12px !important;
     }
+    .top_complete_arrow_show{
+        width: 12px !important;
+        height: 12px !important;
+    }
     .line_icon{
         width: 12px !important;
         height: 12px !important;

@@ -123,31 +123,12 @@ useEffect(() => {
         if(res.data.worker)
         {
           checkWorkerComplete(userGoogle)
+          dispatch(user_load(res.data))
           if(res.data.subscription){
-            setLoading(true)
-            axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
-                subscription_id: res.data.subscription.id,
-                schedule_id: res.data.subscription.sub_schedule
-            })
-            .then(res2 => {
-                if(res2.data.schedule){
-                    if(new Date().getTime() < new Date(res2.data.schedule.current_phase?.end_date*1000)){
-                      dispatch(worker_update_is_subscribed(true))
-                      checkWorkerComplete(res.data, userGoogle)
-                    }
-                    else{
-                      dispatch(worker_update_is_subscribed(false))
-                      checkWorkerComplete(res.data, userGoogle)
-                      if(res.data.state!==0)
-                        axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
-                    }
-                }
-            })
-          }
-          else if(new Date(res.data.trial?.end_date) > new Date())
-          {
-            dispatch(worker_update_is_subscribed(true))
-            checkWorkerComplete(res.data, userGoogle)
+              if(new Date().getTime() < new Date(res.data.subscription.end_date)){
+                dispatch(worker_update_is_subscribed(true))
+                checkWorkerComplete(res.data, userGoogle)
+              }
           }
           else
           {
@@ -176,25 +157,10 @@ const refreshWorker = () => {
     if(res.data !== null){
       dispatch(user_load(res.data))
       if(res.data.subscription){
-        setLoading(true)
-        axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
-            subscription_id: res.data.subscription.id,
-            schedule_id: res.data.subscription.sub_schedule
-        })
-        .then(res2 => {
-            if(res2.data.schedule){
-                if(new Date().getTime() < new Date(res2.data.schedule.current_phase.end_date*1000)){
-                  dispatch(worker_update_is_subscribed(true))
-                  checkWorkerComplete(res.data, userGoogle)
-                }
-                
-            }
-        })
-      }
-      else if(new Date(res.data.trial?.end_date) > new Date())
-      {
-        dispatch(worker_update_is_subscribed(true))
-        checkWorkerComplete(res.data, userGoogle)
+          if(new Date().getTime() < new Date(res.data.subscription.end_date)){
+            dispatch(worker_update_is_subscribed(true))
+            checkWorkerComplete(res.data, userGoogle)
+          }
       }
       else{
         dispatch(worker_update_is_subscribed(false))

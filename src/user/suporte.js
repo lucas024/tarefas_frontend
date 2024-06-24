@@ -346,12 +346,12 @@ const Suporte = (props) => {
                                                 <span className={styles.over_text}>Tarefa Editada</span>
                                                 {
                                                     findReservation(msg.reservation_id)?.type===0?
-                                                    <span className={styles.thing}>(A PROCESSAR)</span>
+                                                    <span className={styles.thing}>(EM ANÁLISE)</span>
                                                     :findReservation(msg.reservation_id)?.type===1?
                                                     <span className={styles.thing}>(COM SUCESSO)</span>
                                                     :findReservation(msg.reservation_id)?.type===2?
                                                     <span className={styles.thing}>(RECUSADO)</span>
-                                                    :<span className={styles.thing}>(PROCESSAR)</span>
+                                                    :<span className={styles.thing}>(EM ANÁLISE)</span>
                                                 }
                                                 <CheckIcon className={styles.over_img}/>
                                                 <span className={styles.ver_public} onClick={() => seePublicationHandler(msg.reservation_id)}>VER TAREFA</span>

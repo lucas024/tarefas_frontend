@@ -941,11 +941,21 @@
     animation-name: blue_two;
     animation-duration: 3s;
     animation-iteration-count: infinite;
+    border-bottom: 2px solid var(--yellow);
+}
+.notification_user:hover{
+    opacity: 0.8;
+    transition: 150ms all;
 }
 .notification_worker{
     animation-name: action;
     animation-duration: 3s;
     animation-iteration-count: infinite;
+    border-bottom: 2px solid var(--yellow);
+}
+.notification_user:hover{
+    opacity: 0.8;
+    transition: 150ms all;
 }
 .notification{
     display: flex;
@@ -956,6 +966,9 @@
     height: 80px;
     max-height: 80px;
     border-radius: 5px;
+    animation-name: yellow;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
     /* border: 2px solid transparent; */
 }
 .notification:hover{

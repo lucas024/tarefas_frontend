@@ -191,7 +191,7 @@ const WorkerBannerContent = props => {
                             <span className={styles.steps_line_number}>2</span>
                             {
                                 user?._id&&user?.email_verified?
-                                <span className={styles.steps_line_text} style={{color:"#0358e5"}}>Verifica o tua conta/email (já se encontra verificado)</span>
+                                <span className={styles.steps_line_text} style={{color:"#0358e5"}}>Verifica a tua conta/email (já se encontra verificada)</span>
                                 :
                                 <p className={styles.steps_line_text}>Verifica a tua conta/email</p>
                             }

@@ -228,10 +228,10 @@
     width: max-content;
 }
 .ya{
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     color: var(--job);
-    margin-left: 5px;
     font-weight: 600;
+    margin: 20px 0 10px 0;
 }
 .subtitle_sub{
     margin: 10px auto;
@@ -399,7 +399,7 @@
     text-transform: uppercase;
     color: var(--neutral);
     margin: auto;
-    margin-top: 30px;
+    margin-top: 50px;
     font-size: 1rem;
     margin-bottom: 5px;
 }
@@ -422,10 +422,27 @@
     font-weight: 600;
 }
 .selected_plan_value_information{
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     margin-top: 10px;
     font-weight: 400;
     color: #ffffff;
+}
+.days_top{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.days_top_value{
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--neutral);
+}
+.days_top_title{
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--neutral);
 }
 .selected_plan_no_value{
     color: var(--neutral);
@@ -473,6 +490,16 @@
     font-weight: 400;
     margin-top: 10px;
 }
+.history{
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+.history_title{
+    color: var(--neutral);
+}
 .info_text_helper{
     font-weight: 400;
     text-transform: uppercase;
@@ -483,11 +510,11 @@
 }
 .info_text_helper_date{
     font-weight: 400;
-    text-transform: uppercase;
     color: var(--neutral);
     font-size: 0.9rem;
     text-align: center;
     margin: 0 auto;
+    font-weight: 400;
 }
 .display_three_canceled{
     margin-top: 50px;
@@ -513,6 +540,11 @@
 }
 .info_text{
     font-size: 1rem;
+    font-weight: 600;
+    color: white;
+}
+.info_text_days{
+    font-size: 1.1rem;
     font-weight: 600;
     color: white;
 }
@@ -883,16 +915,39 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     padding: 5px 0;
     color: white;
 }
+.fontFam{
+    font-family: 'Roboto Mono', monospace;
+}
+.sub_val_subscribed{
+    animation-name: blue;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
 
+
+@keyframes blue {
+    0% {
+      background-color: #0358e540;
+    }
+    50% {
+        background-color: #0358e5aa;
+    }
+    100% {
+        background-color: #0358e540;
+    }
+}
 .buttons{
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 95px;
+    margin-top: 130px;
     padding-bottom: 50px;
 }
 .buttons_plan{
 
+}
+.saver_color{
+    color: #ffffffa0;
 }
 .button_add_disabled{
     width: 70%;
@@ -929,8 +984,9 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     border-radius: 5px;
     background-color: var(--neutral);
     margin-left: 10px;
-    color: var(--grey);
+    color: var(--brand);
     cursor: pointer;
+    font-weight: 600;
 }
 .button_cancel:hover{
     opacity: 0.8;
@@ -969,6 +1025,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     font-size: 0.8rem;
     color: var(--grey);
     text-align: center;
+    font-family: 'Roboto Mono', monospace;
 }
 .indicator_check{
     width: 20px !important;
@@ -1116,6 +1173,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     margin: 0 auto;
     font-size: 0.7rem;
     text-align: center;
+    font-style: italic;
 }
 .section_valor_div{
     display: flex;
@@ -1184,6 +1242,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     margin: 0 auto;
     width: 70px;
     font-weight: 400;
+    text-align: center;
 }
 .section_desc_of_pay_discount{
     color: grey;
@@ -1252,6 +1311,19 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     font-size: 0.8rem;
     margin-top: -2px;
     font-weight: 600;
+}
+.top_complete_arrow{
+    width: 20px !important;
+    height: 20px !important;
+    transition: all 150ms;
+    color: white;
+}
+.top_complete_arrow_show{
+    width: 20px !important;
+    height: 20px !important;
+    transform: rotate(90deg);
+    transition: all 150ms;
+    color: white;
 }
 .initial{
     width: 100%;
@@ -1408,6 +1480,17 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     font-weight: 600;
     color: var(--neutral);
     margin: 5px 0;
+    margin-top: 10px;
+    text-align: center;
+}
+.options_card_title_helper{
+    color: #ffffffaa;
+    margin: 0 auto;
+    font-size: 0.7rem;
+    margin: 0 0;
+    font-style: italic;
+    margin-bottom: 10px;
+    text-align: center;
 }
 .options_card_img{
     width: 35px !important;
@@ -1577,6 +1660,9 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     .alterar_plano{
         font-size: 0.7rem;
     }
+    .options_card_title_helper{
+        font-size: 0.7rem;
+    }
 }
 .verificar_top_wrapper{
     width: 100%;
@@ -1627,6 +1713,14 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
 }
 
 @media (max-width: 500px){
+    .top_complete_arrow{
+        width: 12px !important;
+        height: 12px !important;
+    }
+    .top_complete_arrow_show{
+        width: 12px !important;
+        height: 12px !important;
+    }
     .verificar_top{
         padding: 2px 0;
     }
@@ -1669,7 +1763,10 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         flex-direction: column;
     }
     .options_card_title{
-        font-size: 0.8rem;
+        font-size: 0.7rem;
+    }
+    .options_card_title_helper{
+        font-size: 0.6rem;
     }
     .options_card_img{
         width: 25px !important;
@@ -1812,7 +1909,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         align-items: center;
     }
     .ya{
-        font-size: 0.8rem;
+        font-size: 1rem;
     }
     .sub_info_title{
         font-size: 1rem;
@@ -1926,6 +2023,10 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     }
     .info_text{
         font-size: 0.8rem;
+        width: max-content;
+    }
+    .info_text_days{
+        font-size: 1rem;
         width: max-content;
     }
     .info_text_helper_date{

@@ -618,7 +618,7 @@ const AdminMessages = () => {
             axios.get(`${api_url}/chats/get_chat`, { params: {chat_id: chat_id, skip: new_load?0:skip*limit, limit: limit} })
             .then(res => {
                 //res.data?.texts!==null
-                if(false){
+                if(res.data?.texts!==null){
                     if(new_load)
                     {
                         setLastUpdated(parseInt(res.data.texts.slice(0)[0].timestamp))

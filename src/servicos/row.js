@@ -56,7 +56,7 @@ const Row = (props) => {
                                 {
                                     props.item.type===1?"Activa":
                                     props.item.type===2?"Concluída":
-                                        "A Processar"
+                                        "Em Análise"
                                 }
                             </span>
                         </div>

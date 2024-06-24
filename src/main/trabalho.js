@@ -557,7 +557,7 @@ const Trabalho = (props) => {
                                                     reservation.type===1?"Activa":
                                                     reservation.type===2?"Incorreta":
                                                     reservation.type===3?"Concluída":
-                                                        "A Processar"
+                                                        "Em Análise"
                                                 }
                                             </span>
                                         </div>
@@ -744,7 +744,7 @@ const Trabalho = (props) => {
                                         reservation.task_type===2?
                                         <span className={styles.location} style={{fontWeight:600}}>Online</span>
                                         :
-                                        <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}, ${reservation.andar}`}</span>
+                                        <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}${reservation.andar?`, ${reservation.andar}`:''}`}</span>
                                         :loaded&&(!showFull&&!userView)?
                                         <span className={`${styles.location_blur} ${styles.unselectable}`}>R. Abcdefg Hijklmonpqrstuvxyz 99, Porta 99</span> 
                                         :<span className={styles.skeleton} style={{width:"490px", height:"20px", marginLeft:"10px", borderRadius:"5px"}}></span>

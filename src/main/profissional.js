@@ -199,7 +199,7 @@ const Profissional = props => {
                         key={i} 
                         className={workerActive===val?styles.top_image_div_selected:styles.top_image_div}
                         style={{marginLeft:i===0?'-10px':''}}>
-                        <img className={styles.top_image} src={profissoesMap[val]?.img}/>
+                        <img className={styles.top_image} src={profissoesMap[val]?.img} referrerPolicy="no-referrer"/>
                     </div>
                     
                 )
@@ -240,7 +240,7 @@ const Profissional = props => {
                     <div className={styles.main_top_left}>
                         {
                             worker?.photoUrl!=""?
-                            <img src={worker?.photoUrl} className={styles.left_img}></img>
+                            <img src={worker?.photoUrl} className={styles.left_img} referrerPolicy="no-referrer"/>
                             :<EmojiPeopleIcon className={styles.left_img} style={{transform: 'scaleX(-1)'}}/>
                         }
                         <div className={styles.left_div_wrapper}>
@@ -324,7 +324,7 @@ const Profissional = props => {
                             <div className={styles.message_left}>
                                 {
                                     worker?.photoUrl!==""?
-                                    <img src={worker?.photoUrl} className={styles.message_img}></img>
+                                    <img src={worker?.photoUrl} className={styles.message_img} referrerPolicy="no-referrer"/>
                                     :<EmojiPeopleIcon className={styles.message_img} style={{transform: 'scaleX(-1)'}}/>
                                 }
                                 <span className={styles.message_left_user_name}>{worker.name}</span>

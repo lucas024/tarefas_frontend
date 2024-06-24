@@ -425,11 +425,6 @@ const Auth = (props) => {
     }
 
     const registerHelper = async (user_uid, from_signup) => {
-        const obj = await axios.post(`${api_url}/create-customer`, {
-            name: from_signup?from_signup.name:name,
-            phone: from_signup?from_signup.phone:phone,
-            email: from_signup?from_signup.email.toLocaleLowerCase():email.toLocaleLowerCase(),
-        })
         await axios.post(`${api_url}/auth/register`, 
             {
                 name: from_signup?from_signup.name:name,
@@ -442,7 +437,7 @@ const Auth = (props) => {
                 phone_verified: false,
                 registerMethod: from_signup?from_signup.register_type:"email",
                 worker: false,
-                stripe_id: obj.data.customer.id,
+                // stripe_id: obj.data.customer.id,
                 entity: 0,
                 entity_name: "",
                 regioes: [],
