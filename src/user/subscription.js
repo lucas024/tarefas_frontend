@@ -15,15 +15,11 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from './../transitions/sessao';
 import Popup from './../transitions/popup';
 import moment from 'moment';
-import { 
-    CardNumberElement, 
-    CardExpiryElement, 
-    CardCvcElement,
-    useStripe,
-    useElements
-} from '@stripe/react-stripe-js';
+
+import {Elements} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
+
 import Loader from '../general/loader';
-import SubscriptionAlterar from './subscription_alterar';
 import ConfirmBanner from '../general/confirmBanner';
 import { useSelector } from 'react-redux'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
@@ -31,10 +27,12 @@ import {
     worker_update_is_subscribed,
     worker_update_subscription
   } from '../store';
-  import { useDispatch } from 'react-redux'
-import SubscriptionPlans from './subscription_plans';
+import { useDispatch } from 'react-redux'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import PaymentElementsComponent from './paymentElementsComponent';
 
+const stripePromise = loadStripe('pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd');
+// const stripePromise = loadStripe('pk_live_ypMbNWLAJDZYOWG4JqncBktA00qBx03bOR')
 
 const Subscription = props => {
     const api_url = useSelector(state => {return state.api_url})
@@ -57,7 +55,6 @@ const Subscription = props => {
     const [successPopin, setSuccessPopin] = useState(false)
     const [failPopin, setFailPopin] = useState(false)
     const [generalFail, setGeneralFail] = useState(false)
-    const [successPlanPopin, setSuccessPlanPopin] = useState(false)
     const [failPlanPopin, setFailPlanPopin] = useState(false)
     const [failHighlight, setFailHighlight] = useState(false)
     const [canceledHighlight, setCanceledHighlight] = useState(false)
@@ -67,10 +64,8 @@ const Subscription = props => {
     const [daysTillCharge, setDaysTillCharge] = useState(null)
     const [showHistory, setShowHistory] = useState(false)
 
-    const [validCard, setValidCard] = useState(false)
-    const [validDate, setValidDate] = useState(false)
-    const [validCvc, setValidCvc] = useState(false)
-
+    const [paymentIntentObj, setPaymentIntentObj] = useState(false)
+    const [customerId, setCustomerId] = useState(false)
 
     const [isLoaded, setIsLoaded] = useState(false)
 
@@ -85,9 +80,6 @@ const Subscription = props => {
     const [subscriptionActive, setSubscriptionActive] = useState(false)
 
     const test_mode = true
-
-    const stripe = useStripe();
-    const elements = useElements();
 
     const display_one_ref = useRef(null)
 
@@ -137,8 +129,35 @@ const Subscription = props => {
     const anual = '7495'
     const anual_monthly = '0.20'
 
+    const appearance = {
+        theme: 'flat',
+        variables: {
+            colorPrimary: '#0358e5',
+        },
+        rules: {
+            '.Label': {
+              color: '#ffffff'
+            },
+        }
+      };
+
     const saver = (days) => {
-        return <span className={styles.saver_color}>Sem vínculo, a compra de um pacote de dias é feita num único pagamento, sem qualquer tipo de pagamento recorrente ou subscrição adicional. <br/>A compra deste pacote de dias acrescenta <strong>{days} dias</strong> ao número de dias atual que tens na tua subscrição. <br/>
+        return <span className={styles.saver_color}>Sem vínculo, a compra de um pacote de dias é feita num único pagamento, sem qualquer tipo de pagamento recorrente ou subscrição adicional. <br/>
+            {
+                user.subscription?
+                <span>A compra deste pacote de dias acrescenta <strong>{days} dias</strong> ao número de dias atual que tens na tua subscrição. </span>
+                :
+                <div>
+                    <p>A compra deste pacote de dias dá-te <strong>{days} dias</strong> de subscrição. </p>
+                    {
+                        applyDiscount?
+                        <p>Serás agora um <span style={{color:"#FF785A", fontWeight:'600'}}>profissional fundador</span>, ficando com <span style={{color:"#FF785A", fontWeight:'600'}}>80% de desconto na futura compra de dias, para sempre</span>.</p>
+                        :null
+                    }
+                    
+                </div>
+
+            }
                 {
                     worker_is_subscribed?
                     <span> O teu total de dias será <strong>{daysTillCharge} + {days} = ({daysTillCharge + days} dias)</strong>. </span>
@@ -171,15 +190,10 @@ const Subscription = props => {
         return `${string.slice(-2)}/${string.slice(5,7)}/${string.slice(0,4)}`
     }
 
-    const handlePayment = async () => {
+    const createPaymentIntent = async () => {
         setLoading(true)
-        if (!stripe || !elements) {
-            setLoading(false)
-            return;
-        }
-
+        
         let customer_id = user.stripe_id
-
         if(customer_id===null)
         {
             const obj = await axios.post(`${api_url}/create-customer`, {
@@ -190,134 +204,36 @@ const Subscription = props => {
             customer_id = obj.data.customer.id
         }
 
+        setCustomerId(customer_id)
+
+        let discount_aux = null
+
+        if(user.subscription?.discount_subscriber)
+            discount_aux = user.subscription?.discount_subscriber
+        else
+            discount_aux = applyDiscount
+
         try
         {
-            // let sub_obj = await axios.post(`${api_url}/create-subscription`, {
-            //     stripe_id: obj.data.customer.id,
-            //     amount: selectedPlan&&getFuturePay(selectedPlan),
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     }
-            // })
             let payment_intent_obj = await axios.post(`${api_url}/create-payment-intent`, {
-                    stripe_id: customer_id,
-                    amount: selectedPlan&&getAmount(selectedPlan),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-
-
-            
-            const paymentConfirmation = await stripe.confirmCardPayment(
-                    payment_intent_obj.data.clientSecret, {
-                        payment_method: {
-                            card: elements.getElement(CardNumberElement),
-                            billing_details: {
-                                name: cardName,
-                                email: user.email
-                            }
-                        }
-                    }
-                )
-
-            
-            let purchase_date = new Date()
-            let end_date = purchase_date
-
-            if(user.subscription?.end_date && (new Date(user.subscription?.end_date) > new Date()))
-                end_date = new Date(user.subscription?.end_date)
-        
-            end_date.setDate(end_date.getDate()+getDays(selectedPlan))
-
-            let discount_aux = null
-
-            if(user.subscription?.discount_subscriber)
-                discount_aux = user.subscription?.discount_subscriber
-            else if(discountSubscriber||applyDiscount)
-                discount_aux = '80_off'
-            
-            if(paymentConfirmation.error !== null && paymentConfirmation.error !== undefined)
-            {
-                if(paymentConfirmation.error.code === "payment_intent_authentication_failure")
-                {
-                    setTimeout(() => setCanceledHighlight(false), 4000)
-                    setCanceledHighlight(true)
+                stripe_id: customer_id,
+                amount: selectedPlan&&getAmount(selectedPlan, discount_aux),
+                headers: {
+                    'Content-Type': 'application/json'
                 }
-                else if(paymentConfirmation.error.code === "card_declined")
-                {
-                    setFailPopin(true)
-                    setTimeout(() => setFailPopin(false), 4000)
-                    setFailHighlight(true)
-                }
-                else
-                {
-                    setGeneralFail(true)
-                    setTimeout(() => setGeneralFail(false), 4000)
-                }
-                setLoading(false)
-            }
-            else
-            {
-                switch (paymentConfirmation.paymentIntent?.status) {
-                    case "succeeded":
-                        // await axios.post(`${api_url}/confirm-subscription`, {
-                        //     pm_id: paymentConfirmation.paymentIntent.payment_method,
-                        //     plan: selectedPlan,
-                        //     _id: user._id,
-                        //     name: cardName,
-                        //     sub_id: sub_obj.data.subscriptionId,
-                        //     price_id: selectedPlan&&getFuturePay(selectedPlan),
-                        //     discount: discountSubscriber||applyDiscount
-                        // })
-                        await axios.post(`${api_url}/update-subscription-paid`, {
-                            purchase_date: purchase_date,
-                            end_date: end_date,
-                            pm_id: paymentConfirmation.paymentIntent.payment_method,
-                            plan: selectedPlan,
-                            _id: user._id,
-                            stripe_id: customer_id,
-                            name: cardName,
-                            price_id: selectedPlan&&getAmount(selectedPlan),
-                            discount: discount_aux
-                        })
-
-                        props.refreshWorker()
-                        setLoading(false)
-                        setDisplay(0)
-                        setSuccessPopin(true)
-                        dispatch(worker_update_is_subscribed(true))
-                        if(user_phone_verified&&user_email_verified&&user.regioes.length>0&&user.trabalhos.length>0)
-                        {
-                            axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: user._id})
-                        }
-                        setTimeout(() => setSuccessPopin(false), 4000)
-                        break;
-          
-                    // case 'processing':
-                    //   setMessage("Payment processing. We'll update you when payment is received.");
-                    //   break;
-          
-                    case 'requires_payment_method':
-                        setLoading(false)
-                        setFailPopin(true)
-                        setTimeout(() => setFailPopin(false), 4000)
-                        break;
-          
-                    default:
-                        setLoading(false)
-                        break;
-                  }
-            }
-            
+            })
+            setPaymentIntentObj(payment_intent_obj.data.clientSecret)
+            setSelectedMenu(1)
+            setLoading(false)
         }
         catch (err) {
             console.log(err)
             setGeneralFail(true)
+            setPaymentIntentObj(false)
             setTimeout(() => setGeneralFail(false), 4000)
             setLoading(false)
         }
-        
+
     }
 
     // const getPlanFromPriceId = priceId => {
@@ -336,9 +252,25 @@ const Subscription = props => {
     // }
 
     const getDays = plan => {
-        if(plan === 1) return 30
+        if(plan === 0) return 90
+        else if(plan === 1) return 30
         else if(plan === 2) return 180
         else return 360
+    }
+    
+    const getPrice = price => {
+        if(price)
+        {
+            let toString = price.toString()
+            if(toString.length===3) return `${toString.slice(0,1)}.${toString.slice(1)}`
+            else if(toString.length===4) return `${toString.slice(0,2)}.${toString.slice(2)}`
+            else return `${toString.slice(0,3)}.${toString.slice(3)}`
+        }
+        else
+        {
+            return '0.00'
+        }
+
     }
 
     // const getFuturePay = plan => {
@@ -377,7 +309,7 @@ const Subscription = props => {
     //     }
     // }
 
-    const getAmount = plan => {
+    const getAmount = (plan, discount) => {
         if(test_mode)
         {
             if(plan===1)
@@ -396,37 +328,46 @@ const Subscription = props => {
         {
             if(plan===1)
             {
-                return 299
+                if(discount=== "80_off")
+                    return 299
+                else
+                    return 1495
             }
             else if(plan===2)
             {
-                return 999
+                if(discount=== "80_off")
+                    return 999
+                else
+                    return 5495
             }
             else{
-                return 1499
+                if(discount=== "80_off")
+                    return 1499
+                else
+                    return 7495
             }
         }
     }
 
     
 
-    const getAmountPay = subscription => {
-        if(subscription.new_price_id !== null && subscription.new_price_id !== undefined)
-        {
-            if(new Date(subscription.new_price_date*1000) < new Date())
-            {
-                return subscription.new_price_id
-            }
-            else
-            {
-                return subscription.price_id
-            }
-        }
-        else
-        {
-            return subscription.price_id
-        }
-    }
+    // const getAmountPay = subscription => {
+    //     if(subscription.new_price_id !== null && subscription.new_price_id !== undefined)
+    //     {
+    //         if(new Date(subscription.new_price_date*1000) < new Date())
+    //         {
+    //             return subscription.new_price_id
+    //         }
+    //         else
+    //         {
+    //             return subscription.price_id
+    //         }
+    //     }
+    //     else
+    //     {
+    //         return subscription.price_id
+    //     }
+    // }
 
     // const updateCard = async () => {
     //     setLoading(true)
@@ -506,42 +447,42 @@ const Subscription = props => {
     //     }
     // }
 
-    const cancelPlanChange = async () => {
-        setConfirmBanner(false)
-        setLoading(true)
-        if (!stripe || !elements) {
-            return;
-        }
+    // const cancelPlanChange = async () => {
+    //     setConfirmBanner(false)
+    //     setLoading(true)
+    //     if (!stripe || !elements) {
+    //         return;
+    //     }
 
-        let val = await axios.post(`${api_url}/cancel-subscription-plan-update`, {
-            subscription: user.subscription,
-            current_amount: getAmountPay(user.subscription),
-        })
+    //     let val = await axios.post(`${api_url}/cancel-subscription-plan-update`, {
+    //         subscription: user.subscription,
+    //         current_amount: getAmountPay(user.subscription),
+    //     })
 
-        switch (val.status) {
-            case 200:
-                props.refreshWorker()
-                setDisplay(0)
-                setSelectedMenu(0)
-                setLoading(false)
-                setCancelPlanPopin(true)
-                setTimeout(() => setCancelPlanPopin(false), 4000)
-                axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: user._id})
-                break;
+    //     switch (val.status) {
+    //         case 200:
+    //             props.refreshWorker()
+    //             setDisplay(0)
+    //             setSelectedMenu(0)
+    //             setLoading(false)
+    //             setCancelPlanPopin(true)
+    //             setTimeout(() => setCancelPlanPopin(false), 4000)
+    //             axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: user._id})
+    //             break;
   
-        //     // case 'processing':
-        //     //   setMessage("Payment processing. We'll update you when payment is received.");
-        //     //   break;
+    //     //     // case 'processing':
+    //     //     //   setMessage("Payment processing. We'll update you when payment is received.");
+    //     //     //   break;
   
-            default:
-                props.refreshWorker()
-                setDisplay(1)
-                setLoading(false)
-                setCancelPlanPopin(true)
-                setTimeout(() => setCancelPlanPopin(false), 4000)
-                break;
-        }
-    }
+    //         default:
+    //             props.refreshWorker()
+    //             setDisplay(1)
+    //             setLoading(false)
+    //             setCancelPlanPopin(true)
+    //             setTimeout(() => setCancelPlanPopin(false), 4000)
+    //             break;
+    //     }
+    // }
 
     const extenseDate = date => {
         let iso_date = new Date(date*1000)
@@ -552,36 +493,36 @@ const Subscription = props => {
     }
 
 
-    const cardValidHanlder = val => {
-        if(failHighlight)setFailHighlight(false)
-        setCardIssuer(val?.brand)
-        if(val.complete === true){
-            setValidCard(true)
-            setCardNumberDisplay("**** **** **** ****")
-        }
-        else{
-            setValidCard(false)
-            setCardNumberDisplay("")
-        }
-    }
+    // const cardValidHanlder = val => {
+    //     if(failHighlight)setFailHighlight(false)
+    //     setCardIssuer(val?.brand)
+    //     if(val.complete === true){
+    //         setValidCard(true)
+    //         setCardNumberDisplay("**** **** **** ****")
+    //     }
+    //     else{
+    //         setValidCard(false)
+    //         setCardNumberDisplay("")
+    //     }
+    // }
 
-    const dateValidHanlder = val => {
-        if(val.complete === true){
-            setValidDate(true)
-        }
-        else{
-            setValidDate(false)
-        }
-    }
+    // const dateValidHanlder = val => {
+    //     if(val.complete === true){
+    //         setValidDate(true)
+    //     }
+    //     else{
+    //         setValidDate(false)
+    //     }
+    // }
 
-    const cvcValidHanlder = val => {
-        if(val.complete === true){
-            setValidCvc(true)
-        }
-        else{
-            setValidCvc(false)
-        }
-    }
+    // const cvcValidHanlder = val => {
+    //     if(val.complete === true){
+    //         setValidCvc(true)
+    //     }
+    //     else{
+    //         setValidCvc(false)
+    //     }
+    // }
 
     const setFreePlanHandler = async () => {
         setApplyDiscount(false)
@@ -589,22 +530,24 @@ const Subscription = props => {
         setLoading(true)
 
         let purchase_date = new Date()
-        let end_date = purchase_date
+        let end_date = new Date()
         end_date.setDate(end_date.getDate()+90)
 
         await axios.post(`${api_url}/update-subscription-free`, {
             id: user._id,
             purchase_date: purchase_date,
-            end_date: end_date
+            end_date: end_date,
+            discount: null
         })
         if(user_phone_verified&&user_email_verified&&user.regioes.length>0&&user.trabalhos.length>0)
         {
             axios.post(`${api_url}/worker/update_state`, {state: 1, user_id: user._id})
         }
         dispatch(worker_update_is_subscribed(true))
-        dispatch(worker_update_subscription({
-            end_date: end_date
-        }))
+        // dispatch(worker_update_subscription({
+        //     end_date: end_date
+        // }))
+        props.refreshWorker()
 
         setDaysTillCharge(moment(end_date).diff(moment(new Date().getTime()), 'days'))
         setEndDate(end_date.getTime())
@@ -614,12 +557,35 @@ const Subscription = props => {
         setSuccessPopin(true)
         setTimeout(() => setSuccessPopin(false), 4000)
     }
+    
+    
+    const getTimeAux = (val) => {
+        let time = new Date(val)
+        return time.toISOString().split("T")[1].slice(0,-8)
+    }
+
+    const getDateAux = date => {
+        return <span>{`${date.getDate()} de ${monthNames[date.getMonth()]}, ${date.getFullYear()}`}</span>
+    }
 
     const mapHistory = () => {
-        return user.subscription_history?.map((el, i) => {
+        let reverse = [...user.subscription_history]?.reverse()
+        return reverse?.map((el, i) => {
             return(
-                <div>
-                    
+                <div key={i} className={styles.history_element}>
+                    <div className={styles.history_image}>
+                        <img className={styles.history_image_value} src={el.pacote===1?basic:el.pacote===2?medium:el.pacote===3?pro:hand}/>
+                    </div>
+                    <div className={styles.history_right}>
+                        <div className={styles.history_right_west}>
+                            <span className={styles.history_west_title}>+{getDays(el.pacote)} Dias</span>
+                            <span className={styles.history_west_value}>€{getPrice(el.price_id)}</span>
+                        </div>
+                        <div className={styles.history_right_east}>
+                            <span className={styles.history_east_date}>{getDateAux(new Date(el.purchase_date))}</span>
+                            <span className={styles.history_east_date}>{getTimeAux(el.purchase_date)}</span>
+                        </div>
+                    </div>
                 </div>
             )
         })
@@ -631,14 +597,14 @@ const Subscription = props => {
         <div className={styles.subscription}>
             <Loader loading={loading}/>
             <div className={confirmFreeBanner||confirmBanner||loading?styles.backdrop:null} onClick={() => setConfirmFreeBanner(false)&&setConfirmBanner(false)}/>
-            <CSSTransition 
+            {/* <CSSTransition 
                 in={confirmBanner}
                 timeout={1000}
                 classNames="transition"
                 unmountOnExit
                 >
                 <ConfirmBanner type={'alterar'} cancel={() => setConfirmBanner(false)} confirm={() => cancelPlanChange()} color={'#ffffff'}/>
-            </CSSTransition>
+            </CSSTransition> */}
             <CSSTransition
                 in={confirmFreeBanner}
                 timeout={1000}
@@ -653,7 +619,7 @@ const Subscription = props => {
                     <div className={styles.mid}>
                     
                     <CSSTransition 
-                        in={successPopin||failPopin||successPlanPopin||failPlanPopin||canceledHighlight||generalFail}
+                        in={successPopin||failPopin||failPlanPopin||canceledHighlight||generalFail}
                         timeout={1000}
                         classNames="transition"
                         unmountOnExit
@@ -667,6 +633,8 @@ const Subscription = props => {
                                         :
                                         ""}/>
                     </CSSTransition>
+                        {/* <PaymentElement/> */}
+                        {/* <CardElement/> */}
 
                         {
                             display===4||display===1?
@@ -732,6 +700,21 @@ const Subscription = props => {
                                 {
                                     display===4?
                                     <div className={styles.sub_info_bottom_wrapper}>
+                                        <div>
+                                            <div style={{borderBottom:'4px solid white', paddingBottom:'30px'}}>
+                                                <div style={{display:'flex', justifyContent:'center'}}>
+                                                    <span className={styles.ya} style={{color:"#fdd835"}}>DESATIVADA</span>
+                                                </div>
+                                                <div className={`${styles.sub_val_wrap} ${styles.sub_val_not_subscribed}`} style={{marginTop:'10px'}}>
+                                                    <div className={styles.days_top} style={{marginBottom:'10px'}}>
+                                                        <span className={styles.days_top_value}>0</span>
+                                                        <span className={styles.days_top_title} style={{color:"#fff"}}>DIAS</span>
+                                                    </div>
+                                                    <div style={{display:'flex', justifyContent:'center', width:'80%'}}>
+                                                        <p className={styles.selected_plan_value_information}>Adiciona dias à tua subscrição.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         
                                         <div className={styles.sub_info_bottom}>
       
@@ -811,7 +794,7 @@ const Subscription = props => {
                                                     </div>
                                                     <div className={styles.trial_button}
                                                         onClick={() => {
-                                                            setApplyDiscount(true)
+                                                            setApplyDiscount('80_off')
                                                             setDisplay(1)
                                                             // scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                         }}>
@@ -854,6 +837,7 @@ const Subscription = props => {
                                                     </div>
                                                 </div>
                                             }
+                                        </div>
                                         </div>
                                     </div>
                                     :null
@@ -981,7 +965,7 @@ const Subscription = props => {
                                                 <span className={styles.history_title}>Histórico de transações</span>
                                                 <ArrowForwardIosIcon className={!showHistory?styles.top_complete_arrow:styles.top_complete_arrow_show}/>
                                             </div>
-                                            <div className={styles.history_map}>
+                                            <div className={styles.history_map} style={{display:showHistory?'block':'none'}}>
                                                 {mapHistory()}
                                             </div>
                                             
@@ -990,8 +974,34 @@ const Subscription = props => {
                                     </div>
                                     :display===1?
                                     <div className={styles.display_one}>
+                                        <div style={{borderBottom:'4px solid #fff', paddingBottom:'30px'}}>
+                                            <div className={`${styles.sub_val_wrap} ${daysTillCharge?styles.sub_val_subscribed:styles.sub_val_not_subscribed}`} style={{marginTop:'20px'}}>
+                                                <div className={styles.days_top_small}>
+                                                    <span className={styles.days_top_title_main}>subscrição</span>
+                                                    <span className={styles.days_top_title_help}>Com a compra deste pacote ficarás com:</span>
+                                                    <div className={styles.top_background_flex}>
+                                                        <div className={styles.top_background}>
+                                                            <span className={styles.days_top_value_small_number}>{daysTillCharge||'000'}</span>
+                                                            <span className={styles.days_top_value_small_number}> + </span>
+                                                            <span className={styles.days_top_value_small_number} style={{color:selectedPlan===null?'#71848d':'#FF785A'}}>{selectedPlan===1?'030':selectedPlan===2?180:selectedPlan===3?360:'000'}</span>
+                                                            <span className={styles.days_top_value_small_number} style={{color:selectedPlan===null?'#71848d':''}}> = </span>
+                                                            <span className={styles.days_top_value_small_number} style={{color:selectedPlan===null?'#71848d':"#FF785A"}}>{daysTillCharge+(selectedPlan===1?30:selectedPlan===2?180:selectedPlan===3?360:0)}</span>
+                                                        </div>
+                                                        <span className={styles.days_top_title_small} style={{color:selectedPlan===null?'#71848d':"#FF785A"}}>DIAS TOTAIS de subscrição</span>
+                                                    </div>
+                                                </div>
+                                                {
+                                                    applyDiscount?
+                                                    <div className={styles.days_top_discount}>
+                                                        <span className={styles.days_top_value_small_number}>+</span>
+                                                        <span className={styles.days_top_discount_info}>Desconto vitalício de Fundador 80%</span>
+                                                    </div>
+                                                    :null
+                                                }
+                                            </div>
+                                        </div>
                                         {
-                                            !worker_is_subscribed?
+                                            user?.subscription?
                                             <span className={styles.subtitle_sub} style={{marginTop:"20px"}}>
                                                 <span style={{color:"#71848d"}}>Comprar pacote de dias <span className={styles.fontFam} style={{color:'#71848d'}}>{selectedMenu+1}/2</span></span>
                                             </span>
@@ -1276,15 +1286,14 @@ const Subscription = props => {
                                                             <p className={styles.selected_plan_value_information}>{saver(360)}</p>
                                                         </div>
                                                     </div>
-                                                    :<span className={styles.selected_plan_no_value}>Escolha um pacote</span>
+                                                    :<span className={styles.selected_plan_no_value}>Escolhe um pacote</span>
                                                 }
                                                 
                                             </div>
                                             <div className={styles.buttons}>
                                                 <span className={selectedPlan?styles.button_add:styles.button_add_disabled} 
-                                                    style={{width:'100%'}}
-                                                onClick={() => {
-                                                    selectedPlan&&setSelectedMenu(1)
+                                                onClick={async () => {
+                                                    selectedPlan&&createPaymentIntent()
                                                     // scrolltopref.current.scrollIntoView({behavior: 'smooth'})
                                                     }}>Continuar</span>
                                                     <span className={styles.button_cancel} onClick={() => {
@@ -1299,82 +1308,9 @@ const Subscription = props => {
                                         </div>
                                         {/* CARTAO */}
                                         <div className={selectedMenu?styles.details:`${styles.details} ${styles.details_hide}`}>
-                                        <span className={styles.details_title}>2 - Detalhes de Pagamento</span>
-                                            <div className={styles.details_area}>
-                                                <div>
-                                                    <div className={styles.card} style={{border:failHighlight?'6px solid #ff3b30':""}}>
-                                                        <div className={styles.card_top}>
-                                                            {
-                                                                cardIssuer==="visa"?
-                                                                <img src={visa} className={styles.brand}/>
-                                                                :
-                                                                cardIssuer==="mastercard"?
-                                                                <img src={mastercard} className={styles.brand_master}/>
-                                                                :
-                                                                cardIssuer==="american"?
-                                                                <img src={american} className={styles.brand_american}/>
-                                                                :null
-                                                            }
-                                                        </div>
-                                                        <div className={styles.card_mid}>
-                                                            <img src={chip} className={styles.chip}/>
-                                                        </div>
-                                                        <div className={styles.card_number}>
-                                                            <span className={styles.card_number_value}>{cardNumberDisplay}</span>
-                                                        </div>
-                                                        <div className={styles.card_name_date}>
-                                                            <div className={styles.card_name}>
-                                                                <span className={styles.name_helper}>Nome</span>
-                                                                <span className={styles.name_val}>{cardName}</span>
-                                                            </div>
-                                                            <div className={styles.card_name}>
-                                                                <span className={styles.name_helper}>Data</span>
-                                                                {
-                                                                    validDate?
-                                                                    <div className={styles.name_val}>
-                                                                        <Check style={{width:"20px !important", height:"20px !important", color:"white"}}/>
-                                                                    </div>
-                                                                    :null
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {
-                                                        failHighlight?
-                                                        <span className={styles.card_wrong}>Método de pagamento inválido.</span>
-                                                        :null
-                                                    }
-                                                </div>
-                                                <div className={styles.details_right}>
-                                                    <div className={styles.right_sections_div}>
-                                                        <div className={styles.right_section}>
-                                                            <span className={styles.right_helper}>Nome no Cartão</span>
-                                                            <input className={styles.right_input} maxLength={35} value={cardName} onChange={e => setCardName(e.target.value)} placeholder="Nome Apelido"/>
-                                                        </div>
-                                                        <div className={styles.right_section}>
-                                                            <span className={styles.right_helper}>Número do Cartão</span>
-                                                            <CardNumberElement 
-                                                                onChange={e => cardValidHanlder(e)} 
-                                                                className={styles.right_input} 
-                                                                style={{borderColor:validCard?"#0358e5":!validCard||failHighlight?"#ff3b30":""}}
-                                                                options={{style:{base:{color:"#fff"}}}}/>
-                                                        </div>
-                                                        <div className={styles.right_section_short_div}>
-                                                            <div className={styles.right_section_short}>
-                                                                <span className={styles.right_helper}>Válido até</span>
-                                                                <CardExpiryElement onChange={e => dateValidHanlder(e)} className={styles.right_input_short} options={{style:{base:{color:"#fff"}}}}/>
-                                                            </div>
-                                                            <div className={`${styles.right_section_short} ${styles.right_Section_short_helper}`}>
-                                                                <span className={styles.right_helper}>CVC</span>
-                                                                <CardCvcElement onChange={e => cvcValidHanlder(e)} className={styles.right_input_short} options={{style:{base:{color:"#fff"}}}}/>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                </div>
-                                            </div>
+                                        
                                             <div className={styles.selected_plan}>      
-                                                <span className={styles.selected_plan_title}>Pacote</span>
+                                                <span className={styles.selected_plan_title} style={{marginTop:'10px'}}>Pacote</span>
                                                 {
                                                     selectedPlan===1?
                                                     <div className={`${styles.sub_val_wrap} ${styles.sub_val_wrap_hover}`} onClick={() => setSelectedMenu(0)}>
@@ -1492,17 +1428,23 @@ const Subscription = props => {
                                                             }
                                                         </div>
                                                     </div>
-                                                    :<span className={styles.selected_plan_no_value}>Escolha um pacote de dias</span>
+                                                    :<span className={styles.selected_plan_no_value}>Escolhe um pacote de dias</span>
                                                 }
                                                 
                                             </div>
-                                            <div className={styles.buttons} style={{marginTop:"150px"}}>
-                                                <span></span>
-                                                <span className={cardName.length>2&&validCard&&!failHighlight&&validDate&&validCvc?styles.button_add:styles.button_add_disabled} onClick={() => cardName.length>2&&validCard&&validDate&&!failHighlight&&validCvc&&handlePayment()}>ADICIONAR CARTÃO E FINALIZAR</span>
-                                                <span className={styles.button_cancel} onClick={() => {
-                                                    setSelectedMenu(0)
-                                                    // scrolltopref.current.scrollIntoView({behavior: 'smooth'})
-                                                    }}>VOLTAR</span>
+                                            <span className={styles.details_title}>2 - Pagamento</span>
+                                            <div className={styles.details_area}>
+                                                {
+                                                    paymentIntentObj?
+                                                    <Elements stripe={stripePromise} options={{
+                                                        clientSecret: paymentIntentObj,
+                                                        appearance: appearance,
+                                                        locale: 'pt'
+                                                    }}>
+                                                        <PaymentElementsComponent clientSecret={paymentIntentObj}/>
+                                                    </Elements>
+                                                    :null
+                                                }
                                             </div>
                                         </div>
                                     </div>

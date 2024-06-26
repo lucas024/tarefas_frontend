@@ -135,7 +135,7 @@
     margin-bottom: 60px;
 }
 .sub_info_bottom{
-    margin-top: 50px;
+    margin-top:30px;
     /* border: 1px solid #fff; */
     border-radius: 5px;
     width: 800px;
@@ -231,7 +231,8 @@
     font-size: 1.1rem;
     color: var(--job);
     font-weight: 600;
-    margin: 20px 0 10px 0;
+    margin: 20px 0 0px 0;
+    text-align: center;
 }
 .subtitle_sub{
     margin: 10px auto;
@@ -392,7 +393,6 @@
     align-self: flex-start;
     flex-direction: column;
     width: 100%;
-    height: 100px;
 }
 .selected_plan_title{
     font-weight: 500;
@@ -433,6 +433,70 @@
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
+}
+.days_top_small{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.days_top_value_small{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--neutral);
+}
+.days_top_title_main{
+    color: var(--neutral);
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+.top_background{
+    background-color: var(--brand);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+.days_top_title_help{
+    color: var(--neutral);
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+.days_top_value_small_number_font{
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--neutral);
+    transition: 150ms all;
+}
+.days_top_discount{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.days_top_discount_info{
+    color: var(--action);
+    font-weight: 600;
+    margin-top: 5px;
+}
+.days_top_value_small_number{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--neutral);
+    font-family: 'Roboto Mono', monospace;
+    transition: 150ms all;
+}
+.top_background_flex{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    justify-content: center;
+}
+.days_top_title_small{
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--action);
+    text-transform: uppercase;
+    margin-left: 5px;
 }
 .days_top_value{
     font-size: 1.6rem;
@@ -495,11 +559,76 @@
     border-radius: 5px;
     padding: 5px;
     box-sizing: border-box;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 .history_title{
     color: var(--neutral);
 }
+.history_map{
+    box-sizing: border-box;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.history_element{
+    border-radius: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: var(--neutral);
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.history_element:first-child{
+    margin-top: 5px;
+}
+.history_element:last-child{
+    margin-bottom: 0;
+}
+.history_image{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--action);
+    border-radius: 5px;
+    height: 40px;
+    width: 40px;
+    border: 2px solid var(--action);
+}
+.history_image_value{
+    width: 30px;
+    height: 30px;
+}
+.history_right{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 45px;
+}
+.history_right_west{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 5px;
+}
+.history_west_title{
+    font-weight: 700;
+    color: var(--action);
+}
+.history_west_value{
+    font-weight: 600;
+}
+.history_right_east{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.history_east_date{
+    font-size: 0.9rem;
+}
+
+
 .info_text_helper{
     font-weight: 400;
     text-transform: uppercase;
@@ -757,7 +886,7 @@
 .details_area{
     width: 100%;
     margin: 0 auto;
-    display: flex;
+    margin-top: 20px;
 }
 .card{
     border-radius: 10px;
@@ -923,6 +1052,10 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     animation-duration: 3s;
     animation-iteration-count: infinite;
 }
+.sub_val_not_subscribed{
+    background-color: #fdd83540;
+    border-color: var(--yellow);
+}
 
 
 @keyframes blue {
@@ -940,11 +1073,8 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 130px;
+    margin-top: 20px;
     padding-bottom: 50px;
-}
-.buttons_plan{
-
 }
 .saver_color{
     color: #ffffffa0;
@@ -1167,6 +1297,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     margin: 0 auto;
     font-size: 1.5rem;
     color: var(--neutral);
+    text-align: center;
 }
 .section_type_desc{
     color: #ffffffaa;
@@ -1316,14 +1447,14 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     width: 20px !important;
     height: 20px !important;
     transition: all 150ms;
-    color: white;
+    color: var(--action);
 }
 .top_complete_arrow_show{
     width: 20px !important;
     height: 20px !important;
     transform: rotate(90deg);
     transition: all 150ms;
-    color: white;
+    color: var(--action);
 }
 .initial{
     width: 100%;
@@ -1331,7 +1462,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     justify-content: center;
 }
 .card_right{
-    margin-top: 50px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1355,13 +1486,12 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     text-align: center;
     border-radius: 5px;
     background-color: var(--action);
-    height: 48%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     text-transform: uppercase;
-    margin-top: 5px;
+    margin-top: 0px;
 }
 .card_right_button:hover{
     opacity: 0.8;
@@ -1571,7 +1701,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         width: 600px;
     }
     .mid_content{
-        width: 600px;
+        width: 90%;
     }
     .sub_val_date_discount_small{
         display: block;
@@ -1585,14 +1715,17 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     .discount_letters_small{
         display: block;
     }
+    .days_top_value{
+        font-size: 1.4rem;
+    }
+    .days_top_title{
+        font-size: 1.1rem;
+    }
 }
 
 @media (max-width: 768px){
     .top_title{
         font-size: 1.1rem;
-    }
-    .mid_content{
-        width: 100%;
     }
     .alterar_plano_wrap{
         padding: 0 10px;
@@ -1663,6 +1796,12 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     .options_card_title_helper{
         font-size: 0.7rem;
     }
+    .days_top_value{
+        font-size: 1.3rem;
+    }
+    .days_top_title{
+        font-size: 1rem;
+    }
 }
 .verificar_top_wrapper{
     width: 100%;
@@ -1713,6 +1852,12 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
 }
 
 @media (max-width: 500px){
+    .days_top_value{
+        font-size: 1.1rem;
+    }
+    .days_top_title{
+        font-size: 0.9rem;
+    }
     .top_complete_arrow{
         width: 12px !important;
         height: 12px !important;
@@ -1969,6 +2114,10 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         width: 20px !important;
         height: 20px !important;
     }
+    .sub_val_wrap{
+        width: 90%;
+        margin: auto;
+    }
     .section_img_small{
         width: 20px !important;
         height: 20px !important;
@@ -1993,30 +2142,30 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     }
     .buttons{
         flex-direction: column;
+        margin-top: 120px;
     }
     .button_add{
-        width: 100%;
+        width: 90%;
         box-sizing: border-box;
-        border-radius: 0px;
         font-size: 0.8rem;
+        margin: auto;
     }
     .button_cancel{
-        margin-left: 0;
-        width: 100%;
+        width: 90%;
         box-sizing: border-box;
         padding: 5px 10px;
+        margin: auto;
         margin-top: 5px;
-        border-radius: 0px;
         font-size: 0.8rem;
     }
     .subscription{
         height: 100%;
     }
     .button_add_disabled{
-        width: 100%;
+        width: 90%;
         box-sizing: border-box;
-        border-radius: 0px;
         font-size: 0.8rem;
+        margin: auto;
     }
     .info_text_helper{
         font-size: 0.7rem;
@@ -2026,7 +2175,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         width: max-content;
     }
     .info_text_days{
-        font-size: 1rem;
+        font-size: 0.9rem;
         width: max-content;
     }
     .info_text_helper_date{
@@ -2038,7 +2187,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     .card_right_button{
         padding: 10px;
         font-size: 0.9rem;
-        border-radius: 0px;
+        width: 90%;
     }
     .equivalente{
         font-size: 0.5rem !important;
@@ -2057,16 +2206,19 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         font-size: 0.8rem;
     }
     .card{
-        /* display: none; */
+        display: none;
     }
     .details_right{
         width: 100%;
         box-sizing: border-box;
         margin-left: 0;
         padding: 0 10px;
+        border: 2px solid white;
+        border-radius: 5px;
     }
     .right_section_short_div{
         justify-content: flex-start;
+        margin-bottom: 5px;
     }
     .right_input_short{
         width: 100px;
@@ -2075,13 +2227,44 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         margin-top: 2px;
         margin-left: 10px;
     }
-    .card_right_button_remove{
-        border-radius: 0px;
-    }
     .post_pay{
         margin-top: 20px;
     }
     .canceled_title{
         font-size: 0.8rem;
+    }
+    .top_background_flex{
+        flex-direction: column;
+    }
+    .days_top_title_small{
+        margin-left: 0;
+        margin-top: 2px;
+        font-size: 0.8rem;
+    }
+    .days_top_title_main{
+        font-size: 1rem;
+    }
+    .days_top_title_help{
+        font-size: 0.7rem;
+    }
+    .days_top_value_small_number_font{
+        font-size: 1rem;
+    }
+    .days_top_value_small_number{
+        font-size: 1rem;
+    }
+    .history{
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .history_east_date{
+        font-size: 0.7rem;
+    }
+    .history_west_title{
+        font-size: 0.9rem;
+    }
+    .history_west_value{
+        font-size: 0.9rem;
     }
 }
