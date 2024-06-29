@@ -38,6 +38,8 @@ const UserSidebar = (props) => {
     const navigate = useNavigate()
 
     useEffect(() => {
+        setLoading(true)
+        setLoadingSub(true)
         let val = Object.fromEntries([...searchParams]).t
         if(val === "publications" || val === "support" ||  val === "conta" ||  val === "messages" || val === "profissional"){
             setSelectedSidebar(val)
@@ -45,6 +47,11 @@ const UserSidebar = (props) => {
 
         if(user?.subscription)
             setDaysTillCharge(moment(user.subscription.end_date).diff(moment(new Date().getTime()), 'days'))
+
+        if(user?._id){
+            setLoading(false)
+            setLoadingSub(false)
+        }
 
     }, [searchParams, user])
     
@@ -175,7 +182,7 @@ const UserSidebar = (props) => {
                 {
                     user?.worker?
                     <div className={styles.status} style={{borderColor:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
-                        <Loader loading={loadingSub}/>
+                        {/* <Loader loading={loadingSub}/> */}
                         <div className={styles.status_top}>
                             <p className={styles.status_top_val} style={{color:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
                                 {

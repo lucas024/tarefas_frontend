@@ -236,11 +236,11 @@
 }
 .subtitle_sub{
     margin: 10px auto;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     text-transform: uppercase;
     display: inline-block;
     font-weight: 500;
-    color: var(--grey);
+    color: var(--neutral);
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -560,9 +560,40 @@
     padding: 5px;
     box-sizing: border-box;
     margin-top: 5px;
+    margin-bottom: 30px;
+}
+.operations_wrapper{
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: var(--neutral);
+    text-transform: uppercase;
+}
+.title_operations{
+
+}
+.history_button{
+    width: 100%;
+    padding: 10px 0;
+    position: relative;
+    cursor: pointer;
+}
+.history_button:hover{
+    opacity: 0.8;
+    transition: 150ms all;
 }
 .history_title{
     color: var(--neutral);
+    text-align: center;
+    text-transform: uppercase;
+}
+.history_title_small{
+    color: var(--neutral);
+    text-align: center;
+    text-transform: uppercase;
+    display: none;
 }
 .history_map{
     box-sizing: border-box;
@@ -1126,7 +1157,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     width: 100%;
     display: flex;
     justify-content: space-around;
-    margin-top: 0px;
+    margin-top: 40px;
     background-color: #ffffff10;
     padding: 10px 0;
     border-radius: 2px;
@@ -1284,13 +1315,13 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     transform: scale(1.05);
 }
 .section_img{
-    width: 40px;
-    height: 40px;
+    width: 40px !important;
+    height: 40px !important;
     margin: 20px auto;
 }
 .section_img_small{
-    width: 25px;
-    height: 25px;
+    width: 25px !important;
+    height: 25px !important;
 }
 .section_type{
     font-weight: 700;
@@ -1344,6 +1375,25 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     font-weight: 600;
     text-decoration: line-through;
     color: var(--grey);
+}
+.previous{
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    cursor: pointer;
+    width: fit-content;
+}
+.previous:hover{
+    transition: 150ms all;
+    opacity: 0.8;
+}
+.previous_symbol{
+    color: var(--neutral);
+}
+.previous_text{
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--neutral);
 }
 .section_valor_top_number_decimal_discount{
     font-size: 0.8rem;
@@ -1448,6 +1498,8 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     height: 20px !important;
     transition: all 150ms;
     color: var(--action);
+    position: absolute;
+    right: 5px;
 }
 .top_complete_arrow_show{
     width: 20px !important;
@@ -1455,6 +1507,8 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     transform: rotate(90deg);
     transition: all 150ms;
     color: var(--action);
+    position: absolute;
+    right: 5px;
 }
 .initial{
     width: 100%;
@@ -1462,7 +1516,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     justify-content: center;
 }
 .card_right{
-    margin-top: 30px;
+    margin-top: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1802,6 +1856,9 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     .days_top_title{
         font-size: 1rem;
     }
+    .operations_wrapper{
+        font-size: 1.1rem;
+    }
 }
 .verificar_top_wrapper{
     width: 100%;
@@ -1852,6 +1909,12 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
 }
 
 @media (max-width: 500px){
+    .operations_wrapper{
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 1rem;
+    }
     .days_top_value{
         font-size: 1.1rem;
     }
@@ -1859,12 +1922,14 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         font-size: 0.9rem;
     }
     .top_complete_arrow{
-        width: 12px !important;
-        height: 12px !important;
+        width: 15px !important;
+        height: 15px !important;
+        top: 5px;
     }
     .top_complete_arrow_show{
-        width: 12px !important;
-        height: 12px !important;
+        width: 15px !important;
+        height: 15px !important;
+        top: 5px;
     }
     .verificar_top{
         padding: 2px 0;
@@ -2049,7 +2114,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         font-size: 1rem;
     }
     .subtitle_sub{
-        font-size: 0.8rem;
+        font-size: 1rem;
         justify-content: center;
         align-items: center;
     }
@@ -2059,9 +2124,6 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     .sub_info_title{
         font-size: 1rem;
         margin-top: 15px;
-    }
-    .subtitle_sub{
-        font-size: 0.6rem;
     }
     .indicator_text{
         font-size: 0.6rem;
@@ -2127,6 +2189,17 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     }
     .selected_plan_value{
         font-size: 0.6rem;
+    }
+    .history_title{
+        font-size: 0.9rem;
+        display: none;
+    }
+    .history_title_small{
+        display: block;
+        font-size: 0.9rem;
+    }
+    .history_button{
+        padding: 5px 0;
     }
     .selected_plan_discount_wrap{
         text-align: center;

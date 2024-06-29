@@ -42,6 +42,7 @@ const Navbar = (props) => {
     const [display, setDisplay] = useState(true)
 
     useEffect(() => {
+        console.log(props.userLoadAttempt)
         setLoaded(props.userLoadAttempt)
         if(arr_pathname[1]==='confirm-email') setDisplay(false)
         else setDisplay(true)

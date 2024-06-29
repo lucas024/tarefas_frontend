@@ -136,8 +136,8 @@ const Details = props => {
                     <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
                     <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkmark:styles.checkmark_disabled}></span>
                     <div style={{display:'flex', alignItems:'center'}}>
-                        <img src={trab.img} className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkmark_image:styles.checkmark_image_disabled}/>
-                        <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.label}</span>
+                        {/* <img src={trab.img} className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkmark_image:styles.checkmark_image_disabled}/> */}
+                        <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkbox_text:styles.checkbox_text_disabled} style={{marginLeft:'30px'}}>{trab.label}</span>
                     </div>
                 </div>
                 :null
@@ -163,7 +163,7 @@ const Details = props => {
                     </div>
                     :null
                 :
-                <div className={styles.checkbox_submap}>
+                <div key={i} className={styles.checkbox_submap}>
                     {
                         checkExistsInSearch(trab.options)?
                         <div style={{display:'flex', alignItems:'center', marginBottom:'10px'}}>
@@ -261,7 +261,7 @@ const Details = props => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text={"Detalhes profissional atualizados com sucesso!"}/>
+                <Sessao removePopin={() => setBottomPop(false)} text={"Detalhes profissional atualizados com sucesso!"}/>
             </CSSTransition>
             <div className={styles.top}>
                 <div className={styles.top_info}  onClick={() => setDisplayTop(!displayTop)}>

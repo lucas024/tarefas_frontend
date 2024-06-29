@@ -54,14 +54,16 @@ function App() {
 
 onAuthStateChanged(auth, (user_google) => {
     if (user_google) {
+      console.log('yesss')
       setUserGoogle(user_google)
       setUserLoadAttempt(true)
       window.localStorage.setItem('loggedIn', 1)
     } else {
+      console.log('noooo')
       window.localStorage.setItem('loggedIn', 0)
       setUserGoogle(null)
       dispatch(user_reset())
-      setUserLoadAttempt(true)
+      setTimeout(() => setUserLoadAttempt(true), 2000)
     }
 })
 

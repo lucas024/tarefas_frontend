@@ -473,7 +473,7 @@ const Trabalho = (props) => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text="Mensagem enviada com sucesso!"/>
+                <Sessao removePopin={() => setSuccessPopin(false)} text="Mensagem enviada com sucesso!"/>
             </CSSTransition>
             
             {

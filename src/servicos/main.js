@@ -28,6 +28,17 @@ const Main = (props) => {
     const search_context = useSelector(state => {return state.search_context})
     const search_scroll = useSelector(state => {return state.search_scroll})
     const user = useSelector(state => {return state.user})
+
+    
+    const getWindowDimensions = () => {
+        const { innerWidth: width, innerHeight: height } = window
+        return {
+        width,
+        height
+        }
+    }
+    
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
     
     const dispatch = useDispatch()
 
@@ -49,6 +60,7 @@ const Main = (props) => {
 
     const [selectedType, setSelectedType] = useState(null)
     const [visualSelected, setVisualSelected] = useState(null)
+    const [backdrop, setBackdrop] = useState(false)
 
 
     const myRef = useRef(null)
@@ -403,6 +415,10 @@ const Main = (props) => {
     return (        
         <div className={styles.servicos}>
             <Loader loading={loading}/>
+            {backdrop?
+                <span className={styles.backdrop}/>
+                :null
+            }
             <div className={styles.main}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_left}>
@@ -427,10 +443,14 @@ const Main = (props) => {
                         </div>
                         <div className={styles.search_filter_div_wrapper}>
                             <div className={styles.search_filter_div}>
-                                <div className={styles.search_filter_div_right}>
+                                <div className={backdrop?styles.search_filter_div_right_absolute:styles.search_filter_div_right}>
                                     <SelectPublications
+                                            onMenuOpen={() => setBackdrop(true)}
+                                            onMenuClose={() => setBackdrop(false)}
+                                            smallWindow={windowDimensions.width <= 768}
                                             type="worker"
                                             trabalho={true}
+                                            profs={true}
                                             option={params.work}
                                             selected={selectedType}
                                             valueChanged={val => {
@@ -442,6 +462,8 @@ const Main = (props) => {
                                 
                                 <div className={styles.search_filter_div_left}>
                                     <SelectPublications 
+                                        onMenuOpen={() => {}}
+                                        onMenuClose={() => {}}
                                         type="zona"
                                         regioes={true}
                                         option={params.region}
@@ -563,6 +585,10 @@ const Main = (props) => {
                 }
             </div>
             <div className={styles.num_wrapper} style={{borderTopColor:selectedType==="trabalhos"?'#0358e580':'#FF785A80'}}>
+                {backdrop?
+                    <span className={styles.backdrop}/>
+                    :null
+                }
                 <div className={styles.num}>
                     {
                         currDisplay === "solo"?

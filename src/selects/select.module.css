@@ -17,20 +17,50 @@
 .label{
     display: flex;
     align-items: center;
-    margin-left: 2px;
+    padding: 10px 0;
+    padding-left: 5px;
+}
+.label_profs{
+    display: flex;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center;
     padding: 2px 0;
+
+    padding: 15px 0;
+    border-radius: 5px;
+    margin: 5px 0;
+    width: 100%;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.label:hover{
+    opacity: 0.8;
+    transition: 150ms all;
+}
+.label_profs:hover{
+    opacity: 0.8;
+    transition: 150ms all;
 }
 .label_img{
     width: 20px !important;
     height: 20px !important;
 }
-.label_value{
-    color: black;
-}
+
 .label_label{
     font-weight: 600;
     margin-left: 5px;
     font-size: 0.8rem;
+}
+.label_label_profs{
+    font-weight: 600;
+    margin-left: 5px;
+    font-size: 0.9rem;
+    color: white;
+}
+.label_img_profs{
+    width: 20px !important;
+    height: 20px !important;
 }
 .label_label_online{
     font-weight: 600;
@@ -42,7 +72,23 @@
     display: flex;
     align-items: center;
     margin-left: 2px;
-    padding: 2px 0;
+    padding: 10px 0;
     /* color: var(--job); */
     /* font-style: italic; */
+}
+
+@media (max-width: 768px){
+    .label_img_profs{
+        width: 15px !important;
+        height: 15px !important;
+    }
+    .label_label_profs{
+        font-size: 0.7rem;
+        margin-left: 0;
+        margin-top: 3px;
+    }
+    .label_profs{
+        flex-direction: column;
+        padding: 5px;
+    }
 }

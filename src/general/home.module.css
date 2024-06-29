@@ -184,6 +184,7 @@
     animation-name: blue;
     animation-duration: 3s;
     animation-iteration-count: infinite;
+    z-index: 0;
 }
 
 .zone_select_button_off_profissional{
@@ -202,6 +203,7 @@
     animation-name: orange;
     animation-duration: 3s;
     animation-iteration-count: infinite;
+    z-index: 0;
 }
 
 
@@ -247,6 +249,7 @@
     position: relative;
     overflow: hidden;
     --offset: 2px;
+    z-index: 0;
 }
 /* .zone_select_button::before { 
     content: '';
@@ -937,6 +940,15 @@
     font-style: italic;
     /* margin-top: 22px; */
 }
+.backdrop{
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 70px);
+    background-color: #000000dd;
+    z-index: 1;
+    transition: all 500ms ease-in-out;
+    overflow: hidden;
+}
 .notification_user{
     animation-name: blue_two;
     animation-duration: 3s;
@@ -1146,7 +1158,7 @@
     margin-top: 10px;
 }
 .upper_side_wrapper{
-    width: 50%;
+    width: 45%;
     height: 100%;
     display: flex;
     justify-content: center;

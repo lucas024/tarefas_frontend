@@ -86,6 +86,8 @@ const Home = (props) => {
     const [second, setSecond] = useState(null)
     const [third, setThird] = useState(null)
 
+    const [backdrop, setBackdrop] = useState(false)
+
     const totalNotifications = [1, 2, 3]
     
 
@@ -416,13 +418,17 @@ const Home = (props) => {
     
     return(
         <div className={styles.home}>
+            {backdrop?
+                <span className={styles.backdrop}/>
+                :null
+            }
             <CSSTransition 
                 in={loginPopup}
                 timeout={1000}
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text={"Sessão iniciada com Sucesso!"}/>
+                <Sessao removePopin={() => setLoginPopup(false)} text={"Sessão iniciada com Sucesso!"}/>
             </CSSTransition>
             <CSSTransition 
                 in={registerPopup!==false}
@@ -430,7 +436,7 @@ const Home = (props) => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text={registerPopup==="skippedVerification"?"Conta criada com sucesso! Não te esqueças de verificar o teu e-mail.":"Conta criada com sucesso!"}/>
+                <Sessao removePopin={() => setRegisterPopup(false)} text={registerPopup==="skippedVerification"?"Conta criada com sucesso! Não te esqueças de verificar o teu e-mail.":"Conta criada com sucesso!"}/>
             </CSSTransition>
             <CSSTransition 
                 in={mensagemPopup}
@@ -438,7 +444,7 @@ const Home = (props) => {
                 classNames="transition"
                 unmountOnExit
                 >{
-                <Sessao text={"Completa o teu perfil!"}/>
+                <Sessao removePopin={() => setMensagemPopup(false)} text={"Completa o teu perfil!"}/>
                 }
             </CSSTransition>
             {
@@ -485,11 +491,11 @@ const Home = (props) => {
             }
             {/* <div style={{display:'inline-block'}}></div> */}
             <div ref={top} className={styles.home_back}>
-                {
+                {/* {
                     window.adsbygoogle?
                     <div>
                         <div className={styles.ad}>
-                            <ins class="adsbygoogle"
+                            <ins
                                 className={styles.ad_inner}
                                 data-ad-client="ca-pub-1542751279392735"
                                 data-ad-slot="0"
@@ -501,7 +507,7 @@ const Home = (props) => {
                         
                     </div>
                     :null
-                }
+                } */}
                 <CSSTransition 
                     in={newPopup}
                     timeout={1000}
@@ -516,7 +522,7 @@ const Home = (props) => {
                                 
                             </div>
                             <div className={styles.upper}>
-                                    <div className={styles.upper_side_wrapper}>
+                                    <div className={styles.upper_side_wrapper} style={{marginRight:'20px'}}>
                                         <div className={styles.upper_side_text_helper}>
                                             <p className={styles.upper_side_text}>Quero publicar a minha tarefa e ser contactado por profissionais</p>
                                         </div>
@@ -559,7 +565,7 @@ const Home = (props) => {
                         </div>
                         
                 </CSSTransition>
-                <div className={styles.home_back_top_wrapper}>
+                <div className={styles.home_back_top_wrapper}>                    
                     <div className={styles.home_back_top}>
                         <img className={styles.text_brand} src={logo_text_mix}/>
                         <p className={styles.text_brand_helper}>Plataforma que junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span></p>
@@ -567,7 +573,7 @@ const Home = (props) => {
                         {/* <div className={styles.upper_divider}/> */}
                         <div className={styles.home_back_publish_special_wrapper} style={{borderTop:user!==null?"none":""}}>
                             <div className={styles.home_back_publish_special}>
-                                <p className={styles.back_publish_title_special} style={{marginTop:"50px", textAlign:'center'}}>PROCURAR TAREFAS OU PROFISSIONAIS</p>
+                                <p ref={select_profissionais} className={styles.back_publish_title_special} style={{marginTop:"50px", textAlign:'center'}}>PROCURAR TAREFAS OU PROFISSIONAIS</p>
                             </div>
                         </div>
                         
@@ -642,7 +648,7 @@ const Home = (props) => {
                                             {/* arrow */}
                                         </span>
                                     </div>
-                                    <div className={styles.zone} ref={select_profissionais}>
+                                    <div className={styles.zone}>
                                         <div className={styles.zone_img} style={{borderColor:second?.value?first?.value==="profissionais"?"#FF785A":"#0358e5":"#252d36",
                                                     backgroundColor:second?.value?'#161F28':'#161F28"'}}>
                                             {
@@ -659,18 +665,23 @@ const Home = (props) => {
                                                         setTimeout(() => {
                                                             select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
                                                         }, 200)
+                                                    setBackdrop(true)
                                                 }}
                                                 menuClose={() => {
+                                                    setBackdrop(false)
                                                     if(windowDimensions.width <= 768)
                                                         top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})}}
                                                 home={true}
+                                                profs={true}
                                                 options={profissoesGrouped}
                                                 optionFirst={first} 
                                                 option={second} 
+                                                smallWindow={windowDimensions.width <= 768}
                                                 changeOption={val => {
                                                     if(windowDimensions.width <= 768)
                                                         top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
                                                     setSecond(val)
+                                                    setBackdrop(false)
                                                 }}
                                                 placeholder={'tipo de serviço'}/>
                                         </div>
@@ -710,7 +721,8 @@ const Home = (props) => {
                                                 regioes={true}
                                                 options={regioes}
                                                 optionFirst={first} 
-                                                option={third} 
+                                                option={third}
+                                                second={second}
                                                 changeOption={val => {
                                                     if(windowDimensions.width <= 768)
                                                         top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})

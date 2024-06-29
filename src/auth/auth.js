@@ -899,22 +899,13 @@ const Auth = (props) => {
 
     return (
         <div className={styles.auth}>
-            {/* <CSSTransition 
-                in={registerPopup}
-                timeout={1000}
-                classNames="transition"
-                unmountOnExit
-                >
-                <Sessao text={"Conta criada com sucesso!"}/>
-            </CSSTransition> */}
-
             <CSSTransition 
                     in={detailsPopup}
                     timeout={1000}
                     classNames="transition"
                     unmountOnExit
                     >
-                    <Sessao text={"Detalhes profissional atualizados com sucesso!"}/>
+                    <Sessao removePopin={() => setDetailsPopup(false)} text={"Detalhes profissional atualizados com sucesso!"}/>
             </CSSTransition>
             {
                 tosBanner?

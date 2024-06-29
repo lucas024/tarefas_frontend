@@ -22,39 +22,42 @@ const PaymentElementsComponent = props => {
     const stripe = useStripe()
     const elements = useElements()
 
-    const [validCard, setValidCard] = useState(false)
-    const [validDate, setValidDate] = useState(false)
-    const [validCvc, setValidCvc] = useState(false)
+    const [paymentDataComplete, setPaymentDataComplete] = useState(false)
+
+
+    const handleChange = data => {
+        setPaymentDataComplete(data.complete)
+    }
     
     const handlePayment = async () => {
-    
         props.setLoading(true)
-        if (!stripe || !elements || !props.paymentIntentObj) {
+        if (!stripe || !elements) {
             props.setLoading(false)
             return;
         }
     
-        let discount_aux = null
-    
-        if(props.user.subscription?.discount_subscriber)
-            discount_aux = props.user.subscription?.discount_subscriber
-        else
-            discount_aux = '80_off'
-    
         try
         {            
-            const paymentConfirmation = await stripe.confirmCardPayment(
-                    props.clientSecret, {
-                        payment_method: {
-                            card: elements.getElement(CardNumberElement),
-                            billing_details: {
-                                name: props.cardName,
-                                email: props.user.email
-                            }
-                        }
+            const paymentConfirmation = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: 
+                        props.test_mode?
+                            'http://localhost:3000/user?t=profissional&st=subscription'
+                            :
+                            'https://pt-tarefas.pt/user?t=profissional&st=subscription'
+                },
+                redirect: 'if_required',
+                payment_method_data: {
+                    billing_details: {
+                        name: props.user.name,
+                        email: props.user.email,
+                        phone: props.user.phone?`+351${props.user.phone}`:null
                     }
-                )
-    
+                }
+            })
+            
+            console.log(paymentConfirmation)
             
             let purchase_date = new Date()
             let end_date = new Date()
@@ -76,40 +79,44 @@ const PaymentElementsComponent = props => {
             {
                 if(paymentConfirmation.error.code === "payment_intent_authentication_failure")
                 {
-                    setTimeout(() => props.setCanceledHighlight(false), 4000)
                     props.setCanceledHighlight(true)
+                    setTimeout(() => props.setCanceledHighlight(false), 15000)
+                    
                 }
                 else if(paymentConfirmation.error.code === "card_declined")
                 {
                     props.setFailPopin(true)
-                    setTimeout(() => props.setFailPopin(false), 4000)
+                    setTimeout(() => props.setFailPopin(false), 15000)
                     props.setFailHighlight(true)
                 }
                 else
                 {
                     props.setGeneralFail(true)
-                    setTimeout(() => props.setGeneralFail(false), 4000)
+                    setTimeout(() => props.setGeneralFail(false), 15000)
                 }
                 props.setLoading(false)
             }
             else
             {
+                console.log(paymentConfirmation.paymentIntent)
                 switch (paymentConfirmation.paymentIntent?.status) {
                     case "succeeded":
                         await axios.post(`${props.api_url}/update-subscription-paid`, {
-                            purchase_date: purchase_date,
-                            end_date: end_date,
-                            pm_id: paymentConfirmation.paymentIntent.payment_method,
-                            plan: props.selectedPlan,
-                            _id: props.user._id,
-                            stripe_id: props.customerId,
-                            name: props.cardName,
-                            price_id: props.selectedPlan&&props.getAmount(props.selectedPlan, discount_aux),
-                            discount: discount_aux
+                            payment_intent: paymentConfirmation.paymentIntent,
+                            payment_intent_metadata: {
+                                purchase_date: purchase_date,
+                                end_date: end_date,
+                                plan: parseInt(props.selectedPlan),
+                                user_id: props.user._id,
+                                user_name: props.user.name,
+                                customer_id: props.customerId,
+                                discount: discount_aux
+                            }
                         })
     
                         props.refreshWorker()
                         props.setLoading(false)
+                        props.setSelectedMenu(0)
                         props.setDisplay(0)
                         props.setSuccessPopin(true)
                         dispatch(worker_update_is_subscribed(true))
@@ -117,7 +124,7 @@ const PaymentElementsComponent = props => {
                         {
                             axios.post(`${props.api_url}/worker/update_state`, {state: 1, user_id: props.user._id})
                         }
-                        setTimeout(() => props.setSuccessPopin(false), 4000)
+                        setTimeout(() => props.setSuccessPopin(false), 10000)
                         break;
           
                     // case 'processing':
@@ -127,7 +134,7 @@ const PaymentElementsComponent = props => {
                     case 'requires_payment_method':
                         props.setLoading(false)
                         props.setFailPopin(true)
-                        setTimeout(() => props.setFailPopin(false), 4000)
+                        setTimeout(() => props.setFailPopin(false), 15000)
                         break;
           
                     default:
@@ -140,7 +147,7 @@ const PaymentElementsComponent = props => {
         catch (err) {
             console.log(err)
             props.setGeneralFail(true)
-            setTimeout(() => props.setGeneralFail(false), 4000)
+            setTimeout(() => props.setGeneralFail(false), 15000)
             props.setLoading(false)
         }
         
@@ -148,11 +155,11 @@ const PaymentElementsComponent = props => {
 
     return (
         <div>
-            <PaymentElement />
+            <PaymentElement onChange={val => handleChange(val)}/>
             <div className={styles.buttons}>
             <span 
-                className={!props.failHighlight?styles.button_add:styles.button_add_disabled} 
-                onClick={() => !props.failHighlight&&handlePayment()}>FINALIZAR PAGAMENTO</span>
+                className={paymentDataComplete?styles.button_add:styles.button_add_disabled} 
+                onClick={() => paymentDataComplete&&handlePayment()}>FINALIZAR PAGAMENTO</span>
             <span className={styles.button_cancel} onClick={() => {
                 props.setSelectedMenu(0)
                 // scrolltopref.current.scrollIntoView({behavior: 'smooth'})

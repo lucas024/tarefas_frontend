@@ -27,11 +27,19 @@
     padding: 1px;
     border-radius: 5px;
 }
+.backdrop{
+    position: absolute;
+    width: 100%;
+    height: calc(100%);
+    background-color: #000000dd;
+    z-index: 3;
+    transition: all 500ms ease-in-out;
+    overflow: hidden;
+}
 .main{
     width: 98%;
     height: 100%;
     position: relative;
-    z-index: 4;
     margin: auto;
 }
 .grid{
@@ -202,6 +210,8 @@
 .placeholder{
     display: flex;
     align-items: center;
+    text-transform: uppercase;
+    justify-content: center;
 }
 .placeholder_left{
     display: flex;
@@ -232,6 +242,7 @@
     width: 100%;
     display: flex;
     margin-top: 10px;
+    z-index: 6;
 }
 .search_filter_div{
     width: 100%;
@@ -407,6 +418,13 @@
 .search_filter_div_right{
     width: 250px;
 }
+.search_filter_div_right_absolute{
+    width: 700px;
+    position: absolute;
+    left: calc(50% - 350px);
+    top: 120px;
+}
+
 
 @media (max-width: 1500px){
     .placeholder_left_text{
@@ -463,6 +481,10 @@
     .placeholder_left_icon{
         width: 30px !important;
         height: 30px !important;
+    }
+    .search_filter_div_right_absolute{
+        width: 80%;
+        left: 10%;
     }
 }
 

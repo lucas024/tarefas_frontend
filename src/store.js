@@ -14,8 +14,14 @@ const slice = createSlice({
     user_subscription_active: false,
     user_admin_verified: false,
     chats: [],
-    api_url: "http://localhost:5200",
-    // api_url: "https://vender-344408.ew.r.appspot.com",
+
+    //
+    //LOCALHOST
+    // api_url: "http://localhost:5200",
+
+    //LIVE
+    api_url: "https://vender-344408.ew.r.appspot.com",
+    //
   },
   reducers: {
     user_load: (state, action) => {

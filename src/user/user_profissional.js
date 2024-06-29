@@ -35,7 +35,7 @@ const UserProfissional = props => {
             setSubTab('subscription')
         else
             setSubTab('details')
-        if(user) setLoading(false)
+        if(user._id) setLoading(false)
     }, [searchParams, user])
 
     const displayCurrentArea = () => {
@@ -85,7 +85,7 @@ const UserProfissional = props => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text={"Modo Profissional ativado com sucesso!"}/>
+                <Sessao removePopin={() => setModeActivated(false)} user_page={true} text={"Modo Profissional ativado com sucesso!"}/>
 
             </CSSTransition>
 
