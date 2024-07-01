@@ -943,7 +943,7 @@
 .backdrop{
     position: absolute;
     width: 100%;
-    height: calc(100% - 70px);
+    height: calc(100%);
     background-color: #000000dd;
     z-index: 1;
     transition: all 500ms ease-in-out;
@@ -1147,7 +1147,7 @@
     width: 80%;
     margin: auto;
     justify-content: center;
-    margin-top: 60px;
+    margin-top: 30px;
     height: 45px;
 }
 .upper_two{
@@ -1285,8 +1285,21 @@
     background-color: var(--brand);
     width: fit-content;
 }
-.ou{
+.ou{}
 
+.new{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 30px;
+}
+.new_side{
+    flex: 1;
+}
+.new_title{
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-transform: uppercase;
 }
 @media (min-width: 1440px){
     .section_content{
@@ -1317,6 +1330,9 @@
 }
 
 @media (max-width: 1024px){
+    .new_title{
+        font-size: 1rem;
+    }
     .upper{
         height: 60px;
     }

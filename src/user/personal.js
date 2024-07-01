@@ -311,7 +311,7 @@ const Personal = (props) => {
                     classNames="transition"
                     unmountOnExit
                     >
-                    <Sessao removePopin={() => setPhotoPop(false)} text={"Foto carregada com sucesso!"}/>
+                    <Sessao user_page={true} removePopin={() => setPhotoPop(false)} text={"Foto carregada com sucesso!"}/>
                 </CSSTransition>
                 <CSSTransition 
                     in={rightPop}
@@ -321,9 +321,9 @@ const Personal = (props) => {
                     >
                     {
                         user?.worker?
-                        <Sessao removePopin={() => setRightPop(false)} text={"Número de telefone e/ou descrição atualizados com sucesso!"}/>
+                        <Sessao user_page={true} removePopin={() => setRightPop(false)} text={"Número de telefone e/ou descrição atualizados com sucesso!"}/>
                         :
-                        <Sessao removePopin={() => setRightPop(false)} text={"Número de telefone atualizado com sucesso!"}/>
+                        <Sessao user_page={true} removePopin={() => setRightPop(false)} text={"Número de telefone atualizado com sucesso!"}/>
                     }
                 </CSSTransition>
                 {/* {

@@ -25,9 +25,8 @@
     align-items: center !important;
     justify-content: center !important;
     text-align: center;
-    padding: 2px 0;
 
-    padding: 15px 0;
+    padding: 10px 0;
     border-radius: 5px;
     margin: 5px 0;
     width: 100%;
@@ -58,6 +57,12 @@
     font-size: 0.9rem;
     color: white;
 }
+.label_label_profs_small{
+    font-weight: 600;
+    margin-left: 5px;
+    font-size: 0.8rem;
+    color: white;
+}
 .label_img_profs{
     width: 20px !important;
     height: 20px !important;
@@ -77,6 +82,14 @@
     /* font-style: italic; */
 }
 
+@media (max-width: 1024px){
+    .label_label_profs_small{
+        font-size: 0.7rem;
+    }
+    .group_title{
+        font-size: 0.7rem;
+    }
+}
 @media (max-width: 768px){
     .label_img_profs{
         width: 15px !important;
@@ -87,8 +100,11 @@
         margin-left: 0;
         margin-top: 3px;
     }
+    .label_label_profs_small{
+        font-size: 0.6rem;
+    }
     .label_profs{
         flex-direction: column;
-        padding: 5px;
+        padding: 0px;
     }
 }

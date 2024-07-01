@@ -505,9 +505,19 @@
         margin-left: 0px;
         margin-top: 5px;
     }
+    .placeholder{
+        font-size: 0.8rem;
+    }
 }
 
 @media (max-width: 500px){
+    .placeholder_icon{
+        width: 15px !important;
+        height: 15px !important;
+    }
+    .placeholder{
+        font-size: 0.7rem;
+    }
     .servicos{
         height: calc(100vh - 108px);
     }

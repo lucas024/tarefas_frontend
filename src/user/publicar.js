@@ -19,7 +19,7 @@ import { useTimer } from 'react-timer-hook';
 import PublicarService from '../publicar/publicar_service';
 import PublicarPhoto from '../publicar/publicar_photo';
 import PublicarDetails from '../publicar/publicar_details';
-import {profissoesMap, regioesMap} from '../general/util'
+import {profissoesMap, regioesMap, profissoesGrouped} from '../general/util'
 import Loader2 from '../general/loader';
 import VerificationBannerConfirm from '../general/verificationBannerConfirm';
 import VerificationBannerEditConfirm from '../general/verificationBannerEditConfirm';
@@ -28,6 +28,16 @@ import { auth } from '../firebase/firebase'
 import { user_update_phone_verified, user_update_email_verified } from '../store';
 import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
 import VerificationBannerEmail from '../general/verificationBannerEmail';
+import SelectHome from '../selects/selectHome';
+
+
+const getWindowDimensions = () => {
+    const { innerWidth: width, innerHeight: height } = window
+    return {
+      width,
+      height
+    }
+}
 
 const Publicar = () => {
     const api_url = useSelector(state => {return state.api_url})
@@ -50,6 +60,7 @@ const Publicar = () => {
       )
 
     const [selectedWorker, setSelectedWorker] = useState(null)
+    const [selectedWorkerObject, setSelectedWorkerObject] = useState(null)
     const [titulo, setTitulo] = useState('')
     const [tituloWrong, setTituloWrong] = useState(true)
     const [description, setDescription] = useState('')
@@ -81,6 +92,7 @@ const Publicar = () => {
     const [taskType, setTaskType] = useState(0)
     const [availableToGo, setAvailableToGo] = useState(false)
     const [editAddress, setEditAddress] = useState(null)
+    const [backdrop, setBackdrop] = useState(false)
 
     const [photoPrincipal, setPhotoPrincipal] = useState(null)
     const [expired, setExpired] = useState(true)
@@ -120,6 +132,17 @@ const Publicar = () => {
     const location = useLocation()
 
     const [searchParams] = useSearchParams()
+
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+
+    useEffect(() => {
+        function handleResize() {
+          setWindowDimensions(getWindowDimensions());
+        }
+    
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, [])
 
     useEffect(() => {
         if(window.google){
@@ -543,6 +566,40 @@ const Publicar = () => {
 
     return (
         <div className={styles.reservation}>
+            {backdrop?
+                <span className={styles.backdrop} onClick={() => setBackdrop(false)}/>
+                :null
+            }
+            <div className={styles.select_wrapper}>
+                <CSSTransition 
+                    in={backdrop}
+                    timeout={100}
+                    classNames="banner"
+                    unmountOnExit
+                    >
+                        <SelectHome
+                        publicarNew={true}
+                        menuOpen={() => {
+                            setBackdrop(true)
+                        }}
+                        menuClose={() => {
+                            setBackdrop(false)
+                        }}
+                        home={true}
+                        profs={true}
+                        options={profissoesGrouped}
+                        option={selectedWorkerObject}
+                        optionFirst={{value: 'trabalhos'}} 
+                        smallWindow={windowDimensions.width <= 1024}
+                        changeOption={val => {
+                            console.log(val)
+                            setSelectedWorker(val.value)
+                            setSelectedWorkerObject(val)
+                            setBackdrop(false)
+                        }}
+                        placeholder={'TIPO DE SERVIÇO'}/>
+                </CSSTransition>
+            </div>
             {
                 edit?
                 <div className={styles.previous_voltar} style={{borderBottom:`3px solid #FF785A`}} onClick={() => navigate(-1)}>
@@ -552,6 +609,7 @@ const Publicar = () => {
                 :null
             }
             <div className={styles.flex}>
+
             <div className={verifyPhone||confirmationPopup||confirmationEditPopup||tooManyReservations?styles.backdrop:null} onClick={() => !publicationSent&&(setVerifyPhone(false)||setConfirmationPopup(false)||setConfirmationEditPopup(false)||setTooManyReservations(false))}/>
                 <div className={styles.main}>
                     <div ref={recaptchaWrapperRef}>
@@ -738,6 +796,7 @@ const Publicar = () => {
                             selectedItem={selectedTab}>
                             <div className={styles.carousel_div}>
                                 <PublicarService 
+                                    setBackdrop={val => setBackdrop(val)}
                                     selectedWorker={selectedWorker}
                                     setSelectedWorker={setSelectedWorker}
                                     editReservation={editReservation}

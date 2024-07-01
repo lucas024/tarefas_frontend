@@ -81,6 +81,7 @@
     text-transform: uppercase;
     font-weight: 500;
     color: var(--neutral);
+    text-align: center;
 }
 .aba_side:hover{
     background-color: var(--action);
@@ -104,6 +105,7 @@
     font-weight: 600;
     color: var(--neutral);
     box-sizing: border-box;
+    text-align: center;
 }
 .worker_wrapper_wrapper{
     height: calc(100vh - 170px);

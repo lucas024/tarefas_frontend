@@ -13,40 +13,42 @@ const WorkerBannerContent = props => {
     const user = useSelector(state => {return state.user})
     const navigate = useNavigate()
 
-    const discount_mensal_d = '2.59'
+    const discount_mensal_d = '2.99'
     const discount_mensal_d_euro = '2'
-    const discount_mensal_d_centimo = '59'
-    const discount_mensal = '259'
-    const discount_mensal_monthly = '2.59'
+    const discount_mensal_d_centimo = '99'
+    const discount_mensal = '299'
+    const discount_mensal_2 = '50'
+    const discount_mensal_monthly = '0.10'
 
-    const discount_semestral_d = '13.78'
-    const discount_semestral_d_euro = '13'
-    const discount_semestral_d_centimo = '78'
-    const discount_semestral = '1378'
-    const discount_semestral_monthly = '2.39'
+    const discount_semestral_d = '10.99'
+    const discount_semestral_d_euro = '10'
+    const discount_semestral_d_centimo = '99'
+    const discount_semestral = '1099'
+    const discount_semestral_monthly = '0.06'
 
-    const discount_anual_d = '23.98'
-    const discount_anual_d_euro = '23'
-    const discount_anual_d_centimo = '98'
-    const discount_anual = '2398'
-    const discount_anual_monthly = '1.99'
+    const discount_anual_d = '14.99'
+    const discount_anual_d_euro = '14'
+    const discount_anual_d_centimo = '99'
+    const discount_anual = '1499'
+    const discount_anual_monthly = '0.04'
 
-    const mensal_d = '12.99'
-    const mensal_d_euro = '12'
-    const mensal_d_centimo = '99'
-    const mensal = '1299'
-    const mensal_monthly = '12.99'
+    const mensal_d = '14.95'
+    const mensal_d_euro = '14'
+    const mensal_d_centimo = '95'
+    const mensal = '1495'
+    const mensal_monthly = '0.49'
 
-    const semestral_d = '68.89'
-    const semestral_d_euro = '68'
-    const semestral_d_centimo = '89'
-    const semestral = '6889'
-    const semestral_monthly = '11.49'
-    const anual_d = '119.89'
-    const anual_d_euro = '119'
-    const anual_d_centimo = '89'
-    const anual = '11989'
-    const anual_monthly = '9.99'
+    const semestral_d = '54.95'
+    const semestral_d_euro = '54'
+    const semestral_d_centimo = '95'
+    const semestral = '5495'
+    const semestral_monthly = '0.30'
+
+    const anual_d = '74.95'
+    const anual_d_euro = '74'
+    const anual_d_centimo = '95'
+    const anual = '7495'
+    const anual_monthly = '0.20'
 
 
     return (
@@ -95,15 +97,15 @@ const WorkerBannerContent = props => {
                     props.workerPage?
                     null
                     :
-                    <span className={styles.line_title}>Planos de Subscrição</span>
+                    <span className={styles.line_title}>Pacotes de Subscrição</span>
                 }
                 {
                     props.workerPage?
                     null
                     :
                     <div className={`${styles.info_bottom_text}`}>
-                        <p className={styles.info_bottom_text}>Ativa a tua subscrição com um <strong style={{color:"#FF785A"}}>desconto de 80% </strong> sobre qualquer plano, para sempre.</p>
-                        <p className={styles.info_bottom_text_helper}>O desconto é exclusivo de primeira ativação de subscrição.</p>
+                        <p className={styles.info_bottom_text}>Ativa a tua subscrição com um <strong style={{color:"#FF785A"}}>desconto de 80% </strong> sobre qualquer pacote de dias. Este desconto exclusivo será aplicado em futuras compras de pacotes, <strong>para sempre</strong>.</p>
+                        {/* <p className={styles.info_bottom_text_helper}>O desconto é exclusivo de primeira ativação de subscrição.</p> */}
                     </div>
                 }
                 {
@@ -111,6 +113,9 @@ const WorkerBannerContent = props => {
                     null
                     :
                     <div>
+                    <div style={{display:'flex', justifyContent:'center', marginTop:'20px', marginBottom:'-20px'}}>
+                        <span className={styles.line_title} style={{textDecoration:'none'}}>Pacotes</span>
+                    </div>
                     <SubscriptionPlans 
                         workerBanner={true}
 
@@ -160,7 +165,7 @@ const WorkerBannerContent = props => {
                         <span className={styles.line_discount}><strong>*</strong>Aproveita a oferta de <strong>3 meses de subscrição gratuitos</strong> para novos profissionais.</span>
                         <div style={{display:'flex', justifyContent:'center'}}>
                             <div className={styles.discount_big}>
-                                <p className={styles.discount_text_big}>3 meses subscrição grátis</p>
+                                <p className={styles.discount_text_big}>90 dias subscrição grátis</p>
                             </div>
                         </div>
                     </div>

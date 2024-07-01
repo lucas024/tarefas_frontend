@@ -835,21 +835,26 @@ const Trabalho = (props) => {
                                             placeholder="Escrever mensagem..."
                                         />
                                         <div className={styles.frontdrop}>
-                                            <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"#161F28", textTransform:"capitalize", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>,</span>
+                                            <span className={styles.frontdrop_text} style={{padding:'0 10px', textAlign:'center'}}>Para enviares uma <span className={styles.action}>mensagem</span> e veres os <span className={styles.action}>detalhes de contacto</span> de <span 
+                                                    // style={{color:"#161F28", textTransform:"capitalize", fontWeight:700}}
+                                                    >
+                                                    {reservation.user_name.split(" ")[0]}
+                                                </span>,
                                             {
                                                 noAccountView?
-                                                <span className={styles.frontdrop_text}>cria uma conta e torna-te um profissional.</span>
+                                                <span className={styles.frontdrop_text}> cria uma conta e torna-te um profissional.</span>
                                                 :
                                                 noModeView?
-                                                <span className={styles.frontdrop_text}>ativa o Modo Profissional.</span>
+                                                <span className={styles.frontdrop_text}> ativa o Modo Profissional.</span>
                                                 :noneView?
-                                                <span className={styles.frontdrop_text}>completa os passos em falta para ativares a tua conta.</span>
+                                                <span className={styles.frontdrop_text}> completa os passos em falta para ativares a tua conta.</span>
                                                 :noSubView?
-                                                <span className={styles.frontdrop_text}>activa a tua <span style={{color:"white"}}>subscrição</span>.</span>
+                                                <span className={styles.frontdrop_text}> activa a tua <span style={{color:"white"}}>subscrição</span>.</span>
                                                 :noProfileView?
-                                                <span className={styles.frontdrop_text}>completa o teu <span style={{color:"white"}}>perfil</span>.</span>
+                                                <span className={styles.frontdrop_text}> completa o teu <span style={{color:"white"}}>perfil</span>.</span>
                                                 :null
                                             }
+                                            </span>
                                             {
                                                 noAccountView?
                                                 <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>tornar-me um Profissional</span>
@@ -864,6 +869,7 @@ const Trabalho = (props) => {
                                                 <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=conta')}>completar perfil</span>
                                                 :null
                                             }
+                                            
                                         </div>
                                     </div>
                                     :noRepeatedChats?

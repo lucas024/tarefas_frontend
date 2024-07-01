@@ -402,6 +402,10 @@
     font-size: 0.9rem;
     font-weight: 600;
 }
+.select_wrapper_two{
+    margin-top: 50px;
+    position: relative;
+}
 .login_div{
     width: 100%;
     margin-top: 40px;
@@ -410,6 +414,14 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+}
+.select_wrapper{
+    position: absolute;
+    z-index: 20;
+    width: 80%;
+    margin: auto;
+    margin-top: 150px;
+    margin-left: 10%;
 }
 .login_title{
     font-size: 1rem;
@@ -469,6 +481,7 @@
     display: flex;
     align-items: center;
     margin-top: 5px;
+    text-transform: uppercase;
 }
 .input_wrapper{
     display: flex;
@@ -566,6 +579,7 @@
     height: 50px;
     display: flex;
     align-items: center;
+    text-transform: uppercase;
 }
 .login_button_worker:hover{
     opacity: 0.8;
@@ -581,6 +595,7 @@
     height: 50px;
     display: flex;
     align-items: center;
+    text-transform: uppercase;
 }
 .login_button:hover{
     opacity: 0.8;
@@ -651,6 +666,23 @@
 .login_button_worker:hover{
     opacity: 0.7;
     transition: 150ms ease-in-out;
+}
+.select_yoyo{
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--neutral);
+    background-color: var(--brand);
+    border-radius: 5px;
+    padding: 10px 0;
+    margin-top: 10px;
+    width: 90%;
+    margin-left: 5%;
+    /* border: 2px solid var(--action); */
+    cursor: pointer;
+}
+.select_yoyo:hover{
+    opacity: 0.7;
+    transition: 150ms all;
 }
 .field_error{
     font-size: 0.8rem;
@@ -1133,7 +1165,7 @@
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
-background-color: var(--job);
+background-color: var(--action);
 }
 
 /* When the checkbox is checked, add a blue background */
@@ -1331,7 +1363,7 @@ transform: rotate(45deg);
     width: 49%;
     padding: 10px;
     min-height: 200px;
-    max-height: 200px;
+    max-height: 320px;
     overflow-y: auto;
 }
 .bottom_divider{
@@ -1353,6 +1385,15 @@ transform: rotate(45deg);
     text-transform: uppercase;
     font-size: 0.9rem;
     font-weight: 500;
+}
+.backdrop{
+    position: absolute;
+    width: 100%;
+    height: calc(100%);
+    background-color: #000000dd;
+    z-index: 1;
+    transition: all 500ms ease-in-out;
+    overflow: hidden;
 }
 .verification_backdrop{
     position: absolute;

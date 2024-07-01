@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import styles from '../user/publicar.module.css'
 import QuestionMarkOutlinedIcon from '@mui/icons-material/QuestionMarkOutlined';
 import {profissoesMap} from '../general/util'
@@ -37,8 +37,13 @@ const PublicarService = props => {
                 <div className={styles.left_select}>
                     <TopSelect
                         worker={props.selectedWorker}
-                        changeWorker={val => props.setSelectedWorker(val.value)}
+                        // changeWorker={val => props.setSelectedWorker(val.value)}
+                        changeWorker={val => {}}
                     />
+                    <span className={styles.left_select_fake} onClick={() => props.setBackdrop(true)}/>
+                    {/* <div className={styles.teste} onClick={() => props.setBackdrop(true)}>
+                        tesste
+                    </div> */}
                 </div>
             </div>
         </div>

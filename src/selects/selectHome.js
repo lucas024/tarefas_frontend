@@ -19,7 +19,8 @@ const SelectHome = (props) => {
             // borderBottomRightRadius: "0px",
             borderBottomLeftRadius: state.menuIsOpen? 0: "5px",
             borderBottomRightRadius: state.menuIsOpen? 0: "5px",
-            border: props.home&&state.isSelected?"2px solid white":state.isSelected? "1px solid white":props.home?'2px solid #ffffff40': 0,
+            border: props.details&&props.edit?'1px solid #ffffff':
+                props.home&&props.option?props.optionFirst?.value==='trabalhos'?'2px solid #0358e5':'2px solid #FF785A':state.isSelected? "1px solid white":props.home?'2px solid #ffffff40': 0,
             boxShadow: "white",
             height: "40px",
             "&:hover": {
@@ -30,7 +31,8 @@ const SelectHome = (props) => {
             left: 0,
             zIndex: props.profs?4:'',
             boxShadow: 
-                props.profs&&!props.option?
+                props.auth||props.publicarNew?'0px -1px 5px 0px rgba(255,255,255,0.8)':
+                !props.details&&props.profs&&!props.option?
                     props.optionFirst?.value==='trabalhos'?'0px -1px 10px 0px rgba(3,88,229,0.8)':'0px -1px 10px 0px rgba(255,120,90,0.8)':
                 props.home&&props.second&&!props.option?
                     props.optionFirst?.value==='trabalhos'?'0px -1px 10px 0px rgba(3,88,229,0.8)':'0px -1px 10px 0px rgba(255,120,90,0.8)'
@@ -41,7 +43,7 @@ const SelectHome = (props) => {
             ...base,
             textTransform: props.publicar?"normal":"uppercase",
             width:props.profs&&!props.smallWindow?'33%':'100%',
-            cursor: "pointer",
+            cursor: props.details?props.edit?'pointer':'default':"pointer",
             color: "#161F28",
             fontSize:"0.8rem",
             fontWeight: state.isSelected? 800: 500,
@@ -50,6 +52,12 @@ const SelectHome = (props) => {
             "&:first-of-type": {
                 borderBottom: props.regioes?'1px dashed #ccc':'none',
             },
+            "&:active": {
+                backgroundColor: props.profs?"transparent":''
+            },
+            "&:hover": {
+                backgroundColor: props.profs?"transparent":props.publicar?'#0358e550':props.home?props.optionFirst?.value==='trabalhos'?'#0358e550':'#FF785A50':''
+            }
             
         }),
         menu: base => ({
@@ -59,17 +67,19 @@ const SelectHome = (props) => {
             margin: "auto",
             borderRadius: 0,
             backgroundColor: props.profs?'#161F28aa':"#ffffff",
-            borderTop: 0,
             borderLeft: 0,
+            border: props.details?props.edit?'1px solid #ffffff':'1px solid #ffffff40':'',
+            borderTop: 0,
             borderBottomLeftRadius: "10px",
             borderBottomRightRadius: "10px",
             padding: "0",
             zIndex: 5,
             height: props.profs&&!props.smallWindow?'450px':'300px',
-            position: props.profs?'absolute':'',
+            position: props.profs?'absolute':'absolute',
             left: props.profs?0:'',
             top: props.profs?0:'',
-            boxShadow: props.profs?props.optionFirst?.value==='trabalhos'?'0px 1px 15px 0px rgba(3,88,229,0.8)':'0px 1px 15px 0px rgba(255,120,90,0.8)':''
+            boxShadow: props.auth||props.publicarNew?'0px -1px 5px 0px rgba(255,255,255,0.8)':
+            !props.details&&props.profs?props.optionFirst?.value==='trabalhos'?'0px 1px 15px 0px rgba(3,88,229,0.8)':'0px 1px 15px 0px rgba(255,120,90,0.8)':''
         }),
         menuList: base => ({
             ...base,
@@ -78,7 +88,7 @@ const SelectHome = (props) => {
         }),
         dropdownIndicator : base => ({
             ...base,
-            color: "#ffffff",
+            color: props.details?props.edit?"#ffffff":"#ffffff40":"#ffffff",
             transition: "0.15s all ease-in-out",
             zIndex:0,
             marginTop:props.home?'':'-10px',
@@ -94,7 +104,8 @@ const SelectHome = (props) => {
         input: base => ({
             ...base,
             color: "#ffffff",
-            paddingLeft:"5px"
+            paddingLeft:"5px",
+            fontSize:props.auth?'1rem':''
         }),
         singleValue: base => ({
             ...base,
@@ -138,7 +149,8 @@ const SelectHome = (props) => {
             fontFamily: 'Montserrat, sans-serif !important',
             fontWeight: '400',
             fontSize: '0.9rem',
-            textAlign: props.home?'center':'left'
+            textAlign: props.home?'center':'left',
+            color: props.details?'#ffffff':''
         })
     }
 
@@ -199,10 +211,29 @@ const SelectHome = (props) => {
             </div>
         )
     }
+
+    const formatOptionLabelAuxProfsDetails = data => {
+        return (
+            <div className={styles.label_profs} style={{
+                backgroundColor: 
+                props.selectedArray?.length===0&&props.edit?"#fdd83580":props.selectedArray?.includes(data.value)?props.edit?'#FF785A':'#FF785A80':props.edit?'#FF785A80':'#FF785A30',
+                border: 'none',
+                cursor: props.edit?'pointer':'default',
+            }}>
+                {
+                    data.img?
+                    <img src={data.img} className={styles.label_img} style={{marginLeft:data.solo?'-7px':'', opacity:props.edit?1:0.6}}/>
+                    :null
+                }
+                
+                <p className={styles.label_label_profs_small} style={{opacity:props.edit?1:0.6, marginLeft:props.smallWindow?0:''}}>{data.label}</p>
+            </div>
+        )
+    }
     
     return(
         <Select
-            placeholder={<span style={{marginLeft:'5px', color:'#ffffff80'}}>{props.placeholder}</span>}
+            placeholder={<span style={{marginLeft:'5px', color:props.details&&props.edit?'#ffffff':'#ffffff80'}}>{props.placeholder}</span>}
             styles={stylesSelect}
             options={props.options}
             value={props.option}
@@ -212,12 +243,13 @@ const SelectHome = (props) => {
             onMenuClose={() => props.menuClose()}
             formatGroupLabel={props.profs?formatGroupLabelAuxProfs:formatGroupLabelAux}
             formatOptionLabel={(option, {context}) => {
-                return context==='menu'?props.profs?formatOptionLabelAuxProfs(option):formatOptionLabelAux(option):
+                return context==='menu'?props.details?formatOptionLabelAuxProfsDetails(option):props.profs?formatOptionLabelAuxProfs(option):formatOptionLabelAux(option):
                 formatOptionLabelAux(option, context)
             }}
-            // menuIsOpen={props.profs}
+            menuIsOpen={props.details||props.auth||props.publicarNew}
             onChange={value => {
-                selectChange(value)
+                if(props.details&&props.edit) selectChange(value)
+                else if(!props.details) selectChange(value)
             }}
         />
     )

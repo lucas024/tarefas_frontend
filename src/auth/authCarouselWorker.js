@@ -3,41 +3,12 @@ import styles from './auth.module.css'
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import {regioes, profissoesGrouped, regioesOptions, profissoesMap} from '../general/util'
+import styles_personal from '../user/personal.module.css'
 import SelectWorker from '../selects/selectWorker';
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 
 const AuthCarouselWorker = props => {
-
-    const [listValue, setListValue] = useState('')
-    const [fullList, setFullList] = useState(false)
-
-    const [shake, setShake] = useState(false)
-
-    const getCheckedProf = trab => {
-        if(props.selectedProf?.includes(trab)) return true
-        return false
-    }
-
-    const setCheckedProf = trab => {
-        let arr = [...props.selectedProf]
-        if(props.selectedProf.includes(trab)){
-            arr.splice(arr.indexOf(trab), 1)
-            setFullList(false)
-        }
-        else if(arr.length<=8){
-            if(arr.length===8) setFullList(true)
-            arr.push(trab)
-        }
-
-        else if(arr.length===9)
-        {
-            setShake(true)
-            setTimeout(() => setShake(false), 1000)
-        } 
-
-        props.updateSelectedProfessions(arr)
-    }
     
     const getCheckedReg = trab => {
         if(props.selectedReg?.includes(trab)) return true
@@ -55,73 +26,78 @@ const AuthCarouselWorker = props => {
         props.updateSelectedRegions(arr)
     }
 
-    const checkExistsInSearch = options => {
-        for(let el of options)
-        {
-            if(listValue.length===0||el.value.toLowerCase().includes(listValue.toLowerCase()))
-                return true
-        }
-        return false
+    
+    const mapSelected = (list, type) => {
+        if(list?.length>0)
+            return list?.map((el, i) => {
+                return (
+                    <p key={i} className={styles_personal.map_label}>{profissoesMap[el]?.label}</p>
+                    
+                )
+            })
+
+        return (
+            <p className={styles_personal.map_label_no} style={{fontWeight:'500'}}>{type==='jobs'?'Sem serviços selecionados':'Sem regiões ou distritos selecionados'}</p>
+        )
     }
 
-
-    const subMapTrabalhos = options => {
-        return options?.map((trab, i) => {
-            return (
-                listValue.length===0||trab.value.toLowerCase().includes(listValue.toLowerCase())?
-                <div key={i} style={{cursor:!fullList?"pointer":"default"}} className={`${styles.container} ${styles.subcontainer}`} onClick={() => {
-                    setCheckedProf(trab.value)
-                    setListValue('')
-                }}>
-                    <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
-                    <span className={styles.checkmark}></span>
-                    <div className={styles.checkbox_flex}>
-                        <img src={trab.img} className={styles.checkbox_image}/>
-                        <span className={styles.checkbox_text}>{trab.label}</span>
-                    </div>
-                </div>
-                :null
-            )
+    // const subMapTrabalhos = options => {
+    //     return options?.map((trab, i) => {
+    //         return (
+    //             listValue.length===0||trab.value.toLowerCase().includes(listValue.toLowerCase())?
+    //             <div key={i} style={{cursor:!fullList?"pointer":"default"}} className={`${styles.container} ${styles.subcontainer}`} onClick={() => {
+    //                 setCheckedProf(trab.value)
+    //                 setListValue('')
+    //             }}>
+    //                 <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
+    //                 <span className={styles.checkmark}></span>
+    //                 <div className={styles.checkbox_flex}>
+    //                     <img src={trab.img} className={styles.checkbox_image}/>
+    //                     <span className={styles.checkbox_text}>{trab.label}</span>
+    //                 </div>
+    //             </div>
+    //             :null
+    //         )
             
-        })
-    }
+    //     })
+    // }
 
-    const mapTrabalhos = () => {
-        return profissoesGrouped?.map((trab, i) => {
-            return (
-                trab.label==='no-label'?
-                    listValue.length===0||trab.options[0].value.toLowerCase().includes(listValue.toLowerCase())?
-                    <div key={i} style={{cursor:!fullList?"pointer":"default"}} className={styles.container} onClick={() => {
-                        setCheckedProf(trab.options[0].value)
-                        setListValue('')}}>
-                        <input type="checkbox" readOnly checked={getCheckedProf(trab.options[0].value)}/>
-                        <span className={styles.checkmark}></span>
-                        <div className={styles.checkbox_flex}>
-                            <img src={trab.options[0].img} className={styles.checkbox_image}/>
-                            <span className={styles.checkbox_text}>{trab.options[0].label}</span>
-                        </div>
-                    </div>
-                    :null
-                :
-                <div className={styles.checkbox_submap}>
-                    {
-                        checkExistsInSearch(trab.options)?
-                        <div className={styles.checkbox_flex} style={{marginBottom:'10px'}}>
-                            <img src={trab.img} className={styles.checkbox_image} style={{marginLeft:0}}/>
-                            <span className={styles.checkbox_submap}>{trab.label}</span>
-                        </div>
-                        :null
-                    }
+    // const mapTrabalhos = () => {
+    //     return profissoesGrouped?.map((trab, i) => {
+    //         return (
+    //             trab.label==='no-label'?
+    //                 listValue.length===0||trab.options[0].value.toLowerCase().includes(listValue.toLowerCase())?
+    //                 <div key={i} style={{cursor:!fullList?"pointer":"default"}} className={styles.container} onClick={() => {
+    //                     setCheckedProf(trab.options[0].value)
+    //                     setListValue('')}}>
+    //                     <input type="checkbox" readOnly checked={getCheckedProf(trab.options[0].value)}/>
+    //                     <span className={styles.checkmark}></span>
+    //                     <div className={styles.checkbox_flex}>
+    //                         <img src={trab.options[0].img} className={styles.checkbox_image}/>
+    //                         <span className={styles.checkbox_text}>{trab.options[0].label}</span>
+    //                     </div>
+    //                 </div>
+    //                 :null
+    //             :
+    //             <div className={styles.checkbox_submap}>
+    //                 {
+    //                     checkExistsInSearch(trab.options)?
+    //                     <div className={styles.checkbox_flex} style={{marginBottom:'10px'}}>
+    //                         <img src={trab.img} className={styles.checkbox_image} style={{marginLeft:0}}/>
+    //                         <span className={styles.checkbox_submap}>{trab.label}</span>
+    //                     </div>
+    //                     :null
+    //                 }
                     
-                    <div>
-                        {subMapTrabalhos(trab.options)}
-                    </div>
+    //                 <div>
+    //                     {subMapTrabalhos(trab.options)}
+    //                 </div>
                     
-                </div>
+    //             </div>
                 
-            )
-        })
-    }
+    //         )
+    //     })
+    // }
 
     const mapRegioes = () => {
         return regioes.map((reg, i) => {
@@ -225,10 +201,26 @@ const AuthCarouselWorker = props => {
             </div>
 
             <div className={styles.login}>
-                <p className={styles.register_title}>Os serviços que excerces</p>
-                <span className={shake?`${styles.selected_number} ${styles.shake}`:styles.selected_number}>({props.selectedProf.length}/9)</span>
+                <p className={styles.register_title}>Os serviços em que trabalhas</p>
+                <span className={styles.selected_number}>({props.selectedProf.length}/9)</span>
 
-                <div className={styles.input_wrapper_list}>
+                <div className={styles_personal.area_left_map} style={{
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    overflowY:'hidden',
+                    backgroundColor:props.selectedProf?.length===0?'#a8a8a8a8':'#FF785A', 
+                    border:props.selectedProf?.length===0?'4px solid #a8a8a8a8':'2px solid #FF785A80',
+                    display:props.selectedProf?.length===0?'flex':'block'}}>
+                    {mapSelected(props.selectedProf, 'jobs')}
+                </div>
+                <div onClick={() => props.setShowSelectProfs(true)} className={styles.select_yoyo}>
+                    <span>Selecionar Serviços</span>
+                </div>
+                
+                
+                
+
+
+                {/* <div className={styles.input_wrapper_list}>
                     <input 
                         onChange={e => setListValue(e.target.value)} 
                         placeholder='Pesquisar serviços...' 
@@ -238,7 +230,7 @@ const AuthCarouselWorker = props => {
                 </div>
                 <div className={styles.map_div}>
                     {mapTrabalhos()}
-                </div>
+                </div> */}
             </div>
 
             <div className={styles.login}>

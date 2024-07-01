@@ -69,6 +69,9 @@ const SelectPublications = (props) => {
             },
             backgroundColor: "transparent",
             padding: props.profs?'none':'',
+            "&:hover": {
+                backgroundColor: props.profs?"transparent":props.regioes?props.selected==='trabalhos'?'#0358e550':'#FF785A50':''
+            }
         }),
         menu: (base, state) => ({
             ...base,
@@ -86,8 +89,8 @@ const SelectPublications = (props) => {
             zIndex: 6,
             height: props.profs&&!props.smallWindow?'450px':'300px',
             // position: props.profs?'absolute':'',
-            left: 0,
-            top: 0,
+            left: props.profs?0:'',
+            top: props.profs?0:'',
             boxShadow: props.profs?props.selected==='trabalhos'?
                 '0px -1px 10px 0px rgba(3,88,229,0.8)':
                 '0px 1px 15px 0px rgba(255,120,90,0.8)':
@@ -131,10 +134,10 @@ const SelectPublications = (props) => {
             maxHeight:'36px',
             padding: 0
         }),
-        placeholder: base => ({
-            ...base,
-            // color: "#ccc",
-        }),
+        // placeholder: base => ({
+        //     ...base,
+        //     // color: "#ccc",
+        // }),
         group: base => ({
             ...base,
             padding: "0px 0px 0px 0px",

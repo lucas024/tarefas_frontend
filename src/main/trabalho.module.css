@@ -564,7 +564,10 @@
     margin-top: 10px;
 }
 .action{
-    color: var(--action);
+    /* color: var(--action); */
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: var(--action);
 }
 
 .top_title{
@@ -947,6 +950,10 @@
 }
 
 @media (max-width: 500px){
+    .item_worker_type{
+        width: 20px !important;
+        height: 20px !important;
+    }
     .help_wrapper{
         padding: 0px 3px;
     }

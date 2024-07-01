@@ -216,6 +216,7 @@ const PublicarDetails = props => {
                                             menuOpen={() => {}}
                                             menuClose={() => {}}
                                             publicar={true}
+                                            noOpen={true}
                                             options={regioes_no_online}
                                             option={props.district}
                                             changeOption={val => {

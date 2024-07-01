@@ -134,6 +134,15 @@ const Home = (props) => {
     }
 
     useEffect(() => {
+        function handleResize() {
+          setWindowDimensions(getWindowDimensions());
+        }
+    
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, [])
+
+    useEffect(() => {
         if(user){
             // if(user.type===1){
             //     axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: user._id} })
@@ -428,7 +437,7 @@ const Home = (props) => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao removePopin={() => setLoginPopup(false)} text={"Sessão iniciada com Sucesso!"}/>
+                <Sessao removePopin={() => setLoginPopup(false)} text={"Sessão iniciada com sucesso!"}/>
             </CSSTransition>
             <CSSTransition 
                 in={registerPopup!==false}
@@ -509,7 +518,7 @@ const Home = (props) => {
                     :null
                 } */}
                 <CSSTransition 
-                    in={newPopup}
+                    in={newPopup&&windowDimensions.width>500}
                     timeout={1000}
                     classNames="welcome"
                     unmountOnExit
@@ -518,7 +527,19 @@ const Home = (props) => {
                             <div className={styles.upper_wrapper_text}>
                                 <p className={styles.upper_wrapper_text_title}>NOVO NO TAREFAS?</p>
                                 {/* <p className={styles.upper_wrapper_text_subtitle}>Esta plataforma junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span>.</p> */}
-                                <p className={styles.upper_wrapper_text_subtitle}>O cliente publica as tarefas que quer ver realizadas e espera o contacto de profissionais. O profissional encontra as tarefas e contacta os clientes, simultaneamente expondo o seu negócio.</p>
+                                {/* <p className={styles.upper_wrapper_text_subtitle}>O cliente publica as tarefas que quer ver realizadas e espera o contacto de profissionais. O profissional encontra as tarefas e contacta os clientes, simultaneamente expondo o seu negócio.</p> */}
+                                <p className={styles.upper_wrapper_text_subtitle}>O Tarefas é uma plataforma que permite aos clientes procurar profissionais ou esperar que eles venham até si. Os profissionais, por outro lado, podem encontrar tarefas para realizar ao mesmo tempo que expôem o seu negócio através do seu perfil público.</p>
+                                <div className={styles.new}>
+                                    <div className={styles.new_side} style={{marginRight:'5px'}}>
+                                        <span className={styles.new_title} style={{color:'#0358e5'}}>CLIENTE</span>
+                                        <p className={styles.upper_wrapper_text_subtitle} style={{textDecoration:'underline', textDecorationColor:'#0358e5', textDecorationThickness:'1px'}}>Como cliente, basta abrires a conta e publicares uma tarefa ou procurares um profissional.</p>
+                                    </div>
+                                    <div className={styles.new_side} style={{marginLeft:'5px'}}>
+                                        <span className={styles.new_title} style={{color:'#FF785A'}}>PROFISSIONAL</span>
+                                        <p className={styles.upper_wrapper_text_subtitle} style={{textDecoration:'underline', textDecorationColor:'#FF785A', textDecorationThickness:'1px'}}>Como profissional, depois de abrires a conta segue o passo de ativar o modo profissional e começa a realizar tarefas.</p>
+                                    </div>
+                                </div>
+                                
                                 
                             </div>
                             <div className={styles.upper}>
@@ -669,17 +690,18 @@ const Home = (props) => {
                                                 }}
                                                 menuClose={() => {
                                                     setBackdrop(false)
-                                                    if(windowDimensions.width <= 768)
-                                                        top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})}}
+                                                    // if(windowDimensions.width <= 768)
+                                                    //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                }}
                                                 home={true}
                                                 profs={true}
                                                 options={profissoesGrouped}
                                                 optionFirst={first} 
                                                 option={second} 
-                                                smallWindow={windowDimensions.width <= 768}
+                                                smallWindow={windowDimensions.width <= 1024}
                                                 changeOption={val => {
-                                                    if(windowDimensions.width <= 768)
-                                                        top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                    // if(windowDimensions.width <= 768)
+                                                    //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
                                                     setSecond(val)
                                                     setBackdrop(false)
                                                 }}
@@ -714,7 +736,7 @@ const Home = (props) => {
                                                 }}
                                                 menuClose={() => {
                                                     if(windowDimensions.width <= 768)
-                                                        top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                        select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
                                                 }}
                                                     
                                                 home={true}
@@ -725,7 +747,7 @@ const Home = (props) => {
                                                 second={second}
                                                 changeOption={val => {
                                                     if(windowDimensions.width <= 768)
-                                                        top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                        select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
                                                     setThird(val)}}
                                                 placeholder={'Região'}/>
                                         </div>
@@ -742,7 +764,7 @@ const Home = (props) => {
                                 </div>
                                 <div onClick={() => (second||third)&&clearTopSearch()} className={second||third?styles.search_clear_wrapper:styles.search_clear_wrapper_disabled} style={{borderColor:second||third?'#ffffff':""}}>
                                     {/* <SearchOffIcon className={styles.zone_search_icon} style={{color:second&&third?"#ffffff":"#ffffff90"}}/> */}
-                                    <span className={styles.zone_search_button} style={{color:second||third?'#ffffff':"#ffffff80", fontSize:'0.7rem'}}>LIMPAR</span>
+                                    <span className={styles.zone_search_button} style={{color:second||third?'#ffffff':"#ffffff80", fontSize:'0.7rem'}}>LIMPAR PESQUISA</span>
                                 </div>
                             </div>
                             

@@ -39,6 +39,15 @@ const Main = (props) => {
     }
     
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+
+    useEffect(() => {
+        function handleResize() {
+          setWindowDimensions(getWindowDimensions());
+        }
+    
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, [])
     
     const dispatch = useDispatch()
 
@@ -447,7 +456,7 @@ const Main = (props) => {
                                     <SelectPublications
                                             onMenuOpen={() => setBackdrop(true)}
                                             onMenuClose={() => setBackdrop(false)}
-                                            smallWindow={windowDimensions.width <= 768}
+                                            smallWindow={windowDimensions.width <= 1024}
                                             type="worker"
                                             trabalho={true}
                                             profs={true}

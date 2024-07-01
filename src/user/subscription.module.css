@@ -567,7 +567,7 @@
     justify-content: flex-start;
     margin-top: 40px;
     margin-bottom: 10px;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--neutral);
     text-transform: uppercase;
 }
@@ -1857,7 +1857,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         font-size: 1rem;
     }
     .operations_wrapper{
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 }
 .verificar_top_wrapper{
@@ -1913,7 +1913,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         width: 90%;
         margin-left: auto;
         margin-right: auto;
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
     .days_top_value{
         font-size: 1.1rem;
