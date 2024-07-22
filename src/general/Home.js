@@ -30,6 +30,7 @@ import logo_text_mix from '../assets/logo_text_mix_4.png'
 import home_arrow_right from '../assets/home_arrow_right.png'
 import home_arrow_left from '../assets/home_arrow_left.png'
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
@@ -88,6 +89,9 @@ const Home = (props) => {
 
     const [backdrop, setBackdrop] = useState(false)
 
+    const [showArrow, setShowArrow] = useState(false)
+    const [showArrowFlag, setShowArrowFlag] = useState(true)
+
     const totalNotifications = [1, 2, 3]
     
 
@@ -99,6 +103,18 @@ const Home = (props) => {
     const top = useRef(null)
 
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+
+    useEffect(() => {
+        if(window.localStorage.getItem('exploredHome')===null)
+        {
+            console.log(window.localStorage.getItem('exploredHome'))
+            const interval = setInterval(() => {
+                setShowArrow(true)        
+            }, 5000)
+
+            return () => clearInterval(interval);
+        }
+      }, []);
 
     useEffect(() => {
         if(!parseInt(localStorage.getItem('firstAccessMade')))
@@ -206,15 +222,15 @@ const Home = (props) => {
 
     useEffect(() => {
         props.userLoadAttempt&&setLoaded(true)
-        if(!props.userLoggedIn)
-            {
-                setTimeout(() => {
-                    setNewPopup(true)
-                }, 1000);
-            }
-            else{
-                setNewPopup(false)
-            }
+        if(!props.userLoggedIn&&window.localStorage.getItem('dismissedBanner')===null)
+        {
+            setTimeout(() => {
+                setNewPopup(true)
+            }, 1000);
+        }
+        else{
+            setNewPopup(false)
+        }
     }, [props.userLoadAttempt, props.userLoggedIn])
 
 
@@ -424,6 +440,17 @@ const Home = (props) => {
                 
             )
     }
+
+    const handleScroll = (e) => {
+        const { scrollTop, scrollHeight, clientHeight } = e.target
+        const position = Math.ceil(
+            (scrollTop / (scrollHeight - clientHeight)) * 100
+        )
+        if(position > 50) {
+            window.localStorage.setItem('exploredHome', true)
+            setShowArrowFlag(false)
+        }
+    }
     
     return(
         <div className={styles.home}>
@@ -499,7 +526,19 @@ const Home = (props) => {
                 :null
             }
             {/* <div style={{display:'inline-block'}}></div> */}
-            <div ref={top} className={styles.home_back}>
+            <div ref={top} className={styles.home_back} onScroll={val => {
+                showArrowFlag&&handleScroll(val)
+            }}>
+                {
+                    showArrowFlag?
+                    <div className={styles.arrow_wrapper_2} style={{opacity:showArrow?1:0}}>
+                        <p className={styles.arrow_wrapper_text}>Explora o resto da página!</p>
+                        <div className={styles.arrow_wrapper_div}> 
+                            <ArrowDownwardIcon className={styles.arrow_wrapper_icon}/>
+                        </div>
+                    </div> 
+                    :null
+                }
                 {/* {
                     window.adsbygoogle?
                     <div>
@@ -567,7 +606,10 @@ const Home = (props) => {
                             <div className={styles.upper_two}>
                                 <div className={styles.upper_side_wrapper} style={{display:'block', width:"80%"}}>
                                     <div className={styles.upper_side}>
-                                        <div className={styles.upper_button} style={{backgroundColor:"#ffffff", borderColor:"#ffffff"}} onClick={() => handleMoveAuth(0)} >
+                                        <div className={styles.upper_button} style={{backgroundColor:"#ffffff", borderColor:"#ffffff"}} onClick={() => {
+                                            handleMoveAuth(0)
+                                            window.localStorage.setItem('dismissedBanner', true)
+                                        }} >
                                             <AddBoxIcon className={styles.section_img_mini_mini} style={{color:"#161F28"}}/>
                                             <span className={styles.section_publicar_mini} style={{color:"#161F28"}}>CRIAR CONTA</span>
                                         </div>
@@ -582,21 +624,48 @@ const Home = (props) => {
                                     </div>
                                 </div> */}
                             </div>
-                            <span className={styles.upper_wrapper_close} onClick={() => setNewPopup(false)}>FECHAR</span>
+                            <span className={styles.upper_wrapper_close} onClick={() => {
+                                setNewPopup(false)
+                                window.localStorage.setItem('dismissedBanner', true)
+                            }}>FECHAR</span>
                         </div>
                         
                 </CSSTransition>
-                <div className={styles.home_back_top_wrapper}>                    
+                <div className={styles.home_back_top_wrapper}>
+                    {
+                        showArrowFlag?
+                        <div className={styles.arrow_wrapper} style={{opacity:showArrow?1:0}}>
+                            <p className={styles.arrow_wrapper_text}>Explora o resto da página!</p>
+                            <div className={styles.arrow_wrapper_div}> 
+                                <ArrowDownwardIcon className={styles.arrow_wrapper_icon}/>
+                            </div>
+                        </div> 
+                        :null
+                    }
+                    {
+                        loaded&&!newPopup&&(user===null||user?._id===null)?
+                        <div className={styles.novo} onClick={() => setNewPopup(true)}>   
+                            <p>Sou novo no TAREFAS</p>
+                        </div>
+                        :null
+                    }
+                    
+                               
                     <div className={styles.home_back_top}>
                         <img className={styles.text_brand} src={logo_text_mix}/>
                         <p className={styles.text_brand_helper}>Plataforma que junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span></p>
                         
                         {/* <div className={styles.upper_divider}/> */}
-                        <div className={styles.home_back_publish_special_wrapper} style={{borderTop:user!==null?"none":""}}>
-                            <div className={styles.home_back_publish_special}>
-                                <p ref={select_profissionais} className={styles.back_publish_title_special} style={{marginTop:"50px", textAlign:'center'}}>PROCURAR TAREFAS OU PROFISSIONAIS</p>
+                        {
+                            loaded?
+                            <div className={styles.home_back_publish_special_wrapper} style={{borderTop:user!==null?"none":""}}>
+                                <div className={styles.home_back_publish_special}>
+                                    <p ref={select_profissionais} className={styles.back_publish_title_special} style={{textAlign:'center'}}>PROCURAR TAREFAS OU PROFISSIONAIS</p>
+                                </div>
                             </div>
-                        </div>
+                            :null
+                        }
+                        
                         
 
 
@@ -699,6 +768,7 @@ const Home = (props) => {
                                                 optionFirst={first} 
                                                 option={second} 
                                                 smallWindow={windowDimensions.width <= 1024}
+                                                mediumWindow={windowDimensions.width <= 1440}
                                                 changeOption={val => {
                                                     // if(windowDimensions.width <= 768)
                                                     //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
@@ -745,6 +815,8 @@ const Home = (props) => {
                                                 optionFirst={first} 
                                                 option={third}
                                                 second={second}
+                                                smallWindow={windowDimensions.width <= 1024}
+                                                mediumWindow={windowDimensions.width <= 1440}
                                                 changeOption={val => {
                                                     if(windowDimensions.width <= 768)
                                                         select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})

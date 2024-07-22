@@ -22,7 +22,8 @@ const SelectHome = (props) => {
             border: props.details&&props.edit?'1px solid #ffffff':
                 props.home&&props.option?props.optionFirst?.value==='trabalhos'?'2px solid #0358e5':'2px solid #FF785A':state.isSelected? "1px solid white":props.home?'2px solid #ffffff40': 0,
             boxShadow: "white",
-            height: "40px",
+            height: props.mediumWindow?'30px':"40px",
+            minHeight:props.mediumWindow?'none':'',
             "&:hover": {
                 cursor: "pointer",
             },
@@ -94,12 +95,18 @@ const SelectHome = (props) => {
             marginTop:props.home?'':'-10px',
             "&:hover": {
                 color: "#161F28",
-            }
+            },
+            
+        }),
+        indicatorsContainer: base => ({
+            ...base,
+            display: props.mediumWindow?'none':"",
         }),
         container: base => ({
             ...base,
             width: "100%",
-            position: props.profs?'unset':'relative'
+            position: props.profs?'unset':'relative',
+            height: props.mediumWindow?'30px':"40px",
         }),
         input: base => ({
             ...base,
@@ -124,8 +131,9 @@ const SelectHome = (props) => {
         }),
         valueContainer: base => ({
             ...base,
-            padding: "2px 10px 2px 2px",
-            margin: 'auto',
+            // padding: "2px 10px 2px 2px",
+            // margin: 'auto',
+            // height: props.mediumWindow?'30px':"40px",
         }),
         group: base => ({
             ...base,
