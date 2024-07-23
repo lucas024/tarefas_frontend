@@ -274,21 +274,14 @@ const Subscription = props => {
         else
             discount_aux = applyDiscount
 
-
         let purchase_date = new Date()
-        let end_date = new Date()
-
-        if(user.subscription?.end_date && (new Date(user.subscription?.end_date) > new Date()))
-            end_date = new Date(user.subscription?.end_date)
-    
-        end_date.setDate(end_date.getDate()+getDays(selectedPlan))
 
         try
         {
             let payment_intent_obj = await axios.post(`${api_url}/create-payment-intent`, {
                 amount: getAmount(selectedPlan, discount_aux),
                 purchase_date: purchase_date,
-                end_date: end_date,
+                end_date: user?.subscription?.end_date,
                 customer_id: customer_id,
                 discount: discount_aux||null,
                 plan: parseInt(selectedPlan),

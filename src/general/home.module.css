@@ -129,7 +129,7 @@
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
-    z-index: 15;
+    z-index: 1;
     font-style: italic;
 }
 .novo:hover{
@@ -998,7 +998,7 @@
 .backdrop{
     position: absolute;
     width: 100%;
-    height: calc(100%);
+    height: calc(100vh - 68px);
     background-color: #000000dd;
     z-index: 1;
     transition: all 500ms ease-in-out;

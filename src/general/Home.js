@@ -644,7 +644,7 @@ const Home = (props) => {
                     }
                     {
                         loaded&&!newPopup&&(user===null||user?._id===null)?
-                        <div className={styles.novo} onClick={() => setNewPopup(true)}>   
+                        <div className={styles.novo} style={{zIndex:backdrop?0:''}} onClick={() => setNewPopup(true)}>   
                             <p>Sou novo no TAREFAS</p>
                         </div>
                         :null
@@ -755,6 +755,11 @@ const Home = (props) => {
                                                         setTimeout(() => {
                                                             select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
                                                         }, 200)
+                                                    else
+                                                        setTimeout(() => {
+                                                            top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                        }, 200)
+
                                                     setBackdrop(true)
                                                 }}
                                                 menuClose={() => {
