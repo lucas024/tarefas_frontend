@@ -37,7 +37,7 @@ const PaymentElementsComponent = props => {
         }
     
         try
-        {            
+        {
             const paymentConfirmation = await stripe.confirmPayment({
                 elements,
                 confirmParams: {
@@ -136,7 +136,14 @@ const PaymentElementsComponent = props => {
                         props.setFailPopin(true)
                         setTimeout(() => props.setFailPopin(false), 15000)
                         break;
-          
+
+                    case "requires_action":
+                        props.refreshWorker()
+                        props.setLoading(false)
+                        props.setSelectedMenu(0)
+                        props.setDisplay(0)
+                        props.setMultibancoPopin(true)
+
                     default:
                         props.setLoading(false)
                         break;

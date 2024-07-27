@@ -30,6 +30,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+import multibanco from '../assets/multibanco.png'
+
 
 
 //AQUI
@@ -62,6 +64,7 @@ const Subscription = props => {
     const [selectedPlan, setSelectedPlan] = useState(null)
     const [loading, setLoading] = useState(false)
     const [successPopin, setSuccessPopin] = useState(false)
+    const [multibancoPopin, setMultibancoPopin] = useState(false)
     const [failPopin, setFailPopin] = useState(false)
     const [generalFail, setGeneralFail] = useState(false)
     const [canceledHighlight, setCanceledHighlight] = useState(false)
@@ -76,6 +79,7 @@ const Subscription = props => {
 
     const [confirmBanner, setConfirmBanner] = useState(false)
     const [confirmFreeBanner, setConfirmFreeBanner] = useState(false)
+    const [seeMultibancoDetails, setSeeMultibancoDetails] = useState(false)
     const [applyDiscount, setApplyDiscount] = useState(false)
     const [discountSubscriber, setDiscountSubscriber] = useState(false)
     const [subscriptionActive, setSubscriptionActive] = useState(false)
@@ -409,7 +413,11 @@ const Subscription = props => {
         setTimeout(() => setSuccessPopin(false), 10000)
     }
     
-    
+    const getTime = (val) => {
+        let time = new Date(val)
+        return time.toISOString().split("T")[0]
+    }
+
     const getTimeAux = (val) => {
         let time = new Date(val)
         return time.toISOString().split("T")[1].slice(0,-8)
@@ -422,16 +430,23 @@ const Subscription = props => {
     const mapHistory = () => {
         let reverse = [...user.subscription_history]?.reverse()
         return reverse?.map((el, i) => {
+            if(el.next_action!=null&&!user?.subscription_secrets_used.includes(el.client_secret)||el.next_action==null)
             return(
                 <div key={i} className={styles.history_element}>
-                    <div className={styles.history_image}>
+                    <div className={styles.history_image} style={{backgroundColor:el.next_action!=null?new Date(el.next_action.multibanco_display_details.expires_at*1000) < new Date()?'#ff3b30':"#fdd835":'', borderColor:el.next_action!=null?"#fdd835":''}}>
                         <img className={styles.history_image_value} src={el.pacote===1?basic:el.pacote===2?medium:el.pacote===3?pro:hand}/>
                     </div>
                     <div className={styles.history_right}>
                         <div className={styles.history_right_west}>
-                            <span className={styles.history_west_title}>+{getDays(el.pacote)} Dias</span>
+                            <span className={styles.history_west_title} style={{color:el.next_action!=null?"#fdd835":''}}>+{getDays(el.pacote)} Dias</span>
                             <span className={styles.history_west_value}>€{getPrice(el.amount)}</span>
                         </div>
+                        {
+                            el.next_action!=null?
+                            displayMultibanco(el)
+                            :
+                            null
+                        }
                         <div className={styles.history_right_east}>
                             <span className={styles.history_east_date}>{getDateAux(new Date(el.purchase_date))}</span>
                             <span className={styles.history_east_date}>{getTimeAux(el.purchase_date)}</span>
@@ -442,12 +457,39 @@ const Subscription = props => {
         })
     }
 
+    const displayMultibanco = (sub, full) => {
+        if(!user?.subscription_secrets_used.includes(sub.client_secret))
+            return (
+                <div className={styles.history_temporary} onClick={() => setSeeMultibancoDetails(sub)} style={{backgroundColor:new Date(sub.next_action.multibanco_display_details.expires_at*1000) < new Date()?'#ff3b30':''}}>
+                    <div className={styles.temporary_image}>
+                        <img src={multibanco} className={styles.temporary_image_val}/>
+                    </div>
+
+                    <div className={full?styles.temporary_east_full:styles.temporary_east}>
+                        <span className={styles.temporary_east_title}>
+                            {
+                                new Date(sub.next_action.multibanco_display_details.expires_at*1000) < new Date()?
+                                'Pagamento Expirado'
+                                :
+                                'Pagamento Pendente'
+                            }
+                        </span>
+                        <p className={styles.temporary_east_date}>Expira a {getTime(sub.next_action.multibanco_display_details.expires_at*1000)}</p>
+                    </div>
+                </div>
+            )
+    }
+
     
 
     return (
         <div className={styles.subscription}>
             <Loader loading={loading}/>
-            <div className={confirmFreeBanner||confirmBanner||loading?styles.backdrop:null} onClick={() => setConfirmFreeBanner(false)&&setConfirmBanner(false)}/>
+            <div className={confirmFreeBanner||confirmBanner||seeMultibancoDetails||loading?styles.backdrop:null} onClick={() => {
+                setConfirmFreeBanner(false)
+                setConfirmBanner(false)
+                setSeeMultibancoDetails(false)
+            }}/>
             <CSSTransition
                 in={confirmFreeBanner}
                 timeout={1000}
@@ -455,6 +497,14 @@ const Subscription = props => {
                 unmountOnExit
                 >
                 <ConfirmBanner type={'three_months'} cancel={() => setConfirmFreeBanner(false)} confirm={() => setFreePlanHandler()} color={'#ffffff'}/>
+            </CSSTransition>
+            <CSSTransition
+                in={seeMultibancoDetails}
+                timeout={1000}
+                classNames="transition"
+                unmountOnExit
+                >
+                <ConfirmBanner type={'multibanco'} days={getDays(seeMultibancoDetails?.pacote)} expires={seeMultibancoDetails?.next_action&&`${getTime(seeMultibancoDetails?.next_action?.multibanco_display_details.expires_at*1000)}, ${getTimeAux(new Date(seeMultibancoDetails?.next_action?.multibanco_display_details.expires_at*1000))}`} price={`€${getPrice(seeMultibancoDetails?.amount)}`} data={seeMultibancoDetails} cancel={() => setSeeMultibancoDetails(false)} confirm={() => setSeeMultibancoDetails(false)} color={'#ffffff'}/>
             </CSSTransition>
             {
                 isLoaded?
@@ -473,6 +523,7 @@ const Subscription = props => {
                                 setCanceledHighlight(false)
                                 setGeneralFail(false)
                                 setFailPopin(false)
+                                setMultibancoPopin(false)
                             }}
                             user_page={true}
                             error={failPopin||generalFail||canceledHighlight}
@@ -480,6 +531,7 @@ const Subscription = props => {
                                         :canceledHighlight?"Não conseguimos autenticar o teu método de pagamento, não foste cobrado."
                                         :failPopin?"Método de pagamento inválido. Por-favor tenta de novo mais tarde ou tenta com outro método de pagamento, não foste cobrado."
                                         :generalFail?"Erro a processar a tua acção. Por-favor tenta de novo mais tarde, não foste cobrado."
+                                        :multibancoPopin?"Pagamento multibanco iniciado com sucesso."
                                         :
                                         ""}/>
                     </CSSTransition>
@@ -658,8 +710,13 @@ const Subscription = props => {
                                     showThumbs={false}
                                     selectedItem={display}>
                                     <div className={styles.display_zero}>
-                                        {/* <span className={styles.subtitle}>Subscrição</span>
-                                        <div className={styles.divider}/> */}
+                                        <div style={{display:'flex', justifyContent:'center'}}>
+                                            {user?.subscription_history&&
+                                                user?.subscription_history.at(-1).next_action&&
+                                                    new Date(user?.subscription_history.at(-1).next_action.multibanco_display_details.expires_at*1000) > new Date()&&
+                                                displayMultibanco(user?.subscription_history.at(-1), true)}
+                                        </div>
+                                        
                                         <div>
                                             <div className={styles.subtitle_sub}>
                                                 <span className={styles.ya} style={{color:daysTillCharge?"#0358e5":"#fdd835"}}>ATIVA</span>
@@ -1210,6 +1267,7 @@ const Subscription = props => {
                                                                 setFailPopin={val => setFailPopin(val)}
                                                                 setGeneralFail={val => setGeneralFail(val)}
                                                                 setSuccessPopin={val => setSuccessPopin(val)}
+                                                                setMultibancoPopin={val => setMultibancoPopin(val)}
                                                                 api_url={api_url}
                                                                 customerId={customerId}
                                                                 getAmount={(val1, val2) => getAmount(val1, val2)}
