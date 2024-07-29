@@ -51,12 +51,12 @@ const PublicarService = props => {
         <div className={styles.top_right}>
             <div className={styles.diff_right} style={{marginTop:'10px'}}>
                     {
-                        props.editReservation?.type===2&&props.getFieldWrong('titulo')?
+                        props.editReservation?.type===2&&props.getFieldWrong('titulo')&&!props.editedTitle?
                         <div className={styles.diff_right_title_container}>
                             <span className={styles.diff_right_title}
                                 style={{marginBottom:0}}>Título da TAREFA</span>
                             <span className={styles.diff_right_title_wrong_div}>
-                                <span className={styles.editar_tit}>editar</span> {props.getFieldWrongText('titulo')}
+                                <span className={styles.editar_tit}>ALTERAR</span>
                             </span>
                         </div>
                         :
@@ -67,22 +67,24 @@ const PublicarService = props => {
                 <input placeholder="Título da tarefa..." 
                     tabindex={props.selectedTab===0?'1':'-1'}
                     maxLength={40} 
-                    onChange={e => props.setTitulo(e.target.value)} 
+                    onChange={e => {
+                        props.setEditedTitle(true)
+                        props.setTitulo(e.target.value)}} 
                     value={props.titulo} 
                     className={styles.top_input_short} 
-                    style={{borderColor:!props.tituloWrong?"#0358e5":"", width:'100%', maxWidth:'700px'}}></input>
+                    style={{borderColor:!props.editedTitle&&props.getFieldWrong('titulo')?"#FF785A":!props.tituloWrong?"#0358e5":"", width:'100%', maxWidth:'700px'}}></input>
                 <span className={styles.title_helper} style={{color:props.titulo.length>0&&props.tituloWrong?"#0358e5":"#fff"}}>Titulo demasiado curto.</span>
             </div>
             <div className={styles.diff_right}>
                     {
-                        props.editReservation?.type===2&&props.getFieldWrong('description')?
+                        props.editReservation?.type===2&&props.getFieldWrong('description')&&!props.editedDesc?
                         <div style={{marginTop:"10px"}} className={styles.diff_right_title_container}>
                             <span className={styles.diff_right_title} 
                                 style={{ marginBottom:0}}>Descrição <span className={styles.opcional}> opcional</span>
                                 
                             </span>
                             <span className={styles.diff_right_title_wrong_div}>
-                            <span className={styles.editar_tit}>editar</span> {props.getFieldWrongText('description')}
+                            <span className={styles.editar_tit}>ALTERAR</span>
                             </span>
                         </div>
                         :
@@ -100,6 +102,7 @@ const PublicarService = props => {
                         className={styles.top_desc_area} 
                         placeholder="Descrição da tarefa..."
                         value={props.description} onChange={e => {
+                        props.setEditedDesc(true)
                         props.setDescription(e.target.value)}}>
                     
                     </TextareaAutosize>

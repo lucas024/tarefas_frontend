@@ -539,7 +539,7 @@ const Trabalho = (props) => {
                             reservation.type===2?
                             <div className={styles.wrong}>
                                 <span className={styles.wrong_text}>A tua tarefa encontra-se <span className={styles.wrong_text_special}>INCORRETA</span></span>
-                                <p className={styles.wrong_text} style={{fontSize:'1rem'}}>Mais informações sobre o(s) erro(s) no chat de Suporte.</p>
+                                <p className={styles.wrong_text} style={{fontSize:'1rem'}}>Por-favor edita a tua tarefa a baixo.</p>
                             </div>
                             
                             :null

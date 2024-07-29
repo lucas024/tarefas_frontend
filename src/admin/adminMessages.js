@@ -50,9 +50,9 @@ const Messages = (props) => {
 
     useEffect(() => {
         const paramsAux = Object.fromEntries([...searchParams])
-        setSelectedChatId(paramsAux.id)
+        setSelectedChatId(paramsAux.user_id)
         setLoadingChatBox(true)
-        getChats(true, paramsAux.id)
+        getChats(true, paramsAux.user_id)
         const interval = setInterval(() => {
             let date = new Date()
             if(date.getSeconds()===29 || date.getSeconds()===59)
@@ -68,7 +68,7 @@ const Messages = (props) => {
 
 
     const getChats = (first, id) => {
-        axios.get(`${api_url}/admin_chats/get_chat`, { params: {chat_id: id || selectedChatId} })
+        axios.get(`${api_url}/admin_chats/get_chat`, { params: {user_id: id || selectedChatId} })
         .then(chat => {
             if(chat.data.texts?.length > selectedChatTexts?.length || selectedChatTexts === undefined || first)
             {
@@ -243,8 +243,8 @@ const Messages = (props) => {
             return (
                 <div key={i} className={styles.chatbox_text_value} style={{margin:"10px 0"}}>
                     <CircleIcon className={styles.refusal_icon}/>
-                    <span className={styles.refusal_type}>{types[val.type]}:</span>
-                    <span className={styles.refusal_text}>{val.text}.</span>
+                    <span className={styles.refusal_type}>{types[val.type]}</span><br/>
+                    <span className={styles.refusal_text}> {val.text}</span>
                 </div>
             )
         })
@@ -310,7 +310,7 @@ const Messages = (props) => {
                                        
                                         :null
                                     }
-                                    <p onClick={() => navigate(`/main/publications/publication?id=${msg.reservation_id}`)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Carregua aqui para editares a tarefa.</p>
+                                    <p onClick={() => navigate(`/publicar/editar?editar=true&res_id=${msg.reservation_id}`)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Editar tarefa</p>
                                 </div>
                                 :
                                 <div className={msg.origin_type===4?styles.chatbox_text_receive:styles.chatbox_text_send}>

@@ -430,11 +430,56 @@ input::placeholder{
 }
 .diff_right_title_wrong_div{
     margin-left: 10px;
-    background-color: var(--brand);
+    background-color: var(--action);
     padding: 4px;
     border-radius: 5px;
     color: white;
     font-size: 0.8rem;
+}
+.fieldWrapper_wrapper{
+    display: flex;
+    justify-content: center;
+}
+.fieldWrapper{
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    background-color: var(--neutral);
+    border-radius: 5px;
+    padding: 5px;
+    flex-direction: column;
+}
+.editar_oi{
+    background-color: var(--action);
+    text-align: center;
+    width: fit-content;
+    margin: 0 auto;
+    border-radius: 5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--neutral);
+    font-size: 0.8rem;
+    padding: 4px;
+}
+.refusal_div{
+    display: flex;
+    flex-direction: column;
+}
+.refusal_icon{
+    width: 11px !important;
+    height: 11px !important;
+    color: var(--action);
+}
+.refusal_type{
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-left: 2px;
+    color: var(--action);
+}
+.refusal_text{
+    color: var(--brand);
+    margin-left: 3px;
+    font-weight: 500;
 }
 .help_wrapper{
     margin-left: 5px;
@@ -450,9 +495,9 @@ input::placeholder{
     margin-bottom: 0px;
 }
 .editar_tit{
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
-    color: var(--red);
+    color: var(--neutral);
     font-size: 0.8rem;
 }
 .top_desc_area{
