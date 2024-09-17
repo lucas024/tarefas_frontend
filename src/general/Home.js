@@ -36,6 +36,8 @@ import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import EmailUnverified from '@mui/icons-material/UnsubscribeOutlined';
 
+import { render } from '@react-email/components';
+
 
 import {
     DefineAdSlot,
@@ -43,6 +45,7 @@ import {
     InitializeGPT
   } from '../adsense/google-publisher-tag';
 import PpBanner from './ppBanner';
+import EmailMensagem from '../email/emailMensagem';
 
 
 const firstOptions = [
@@ -160,20 +163,6 @@ const Home = (props) => {
 
     useEffect(() => {
         if(user){
-            // if(user.type===1){
-            //     axios.get(`${api_url}/worker/get_worker_by_mongo_id`, { params: {_id: user._id} })
-            //     .then(res => {
-            //         if(res.data!==''){
-            //             if(res.data?.chats?.length>0)
-            //             {
-            //                 let chats_aux = JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp))))
-            //                 dispatch(user_update_chats(chats_aux))
-            //             }
-                            
-            //         } 
-            //     })
-            // }
-            // else{
             axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
             .then(res => {
                 if(res.data!==''){
@@ -184,7 +173,6 @@ const Home = (props) => {
                     }
                 }
             })
-            // }         
         }
 
     }, [user])
@@ -297,7 +285,7 @@ const Home = (props) => {
 
     const mapWrapper = () => {
         
-        if(unreadTexts.length===0 && (!user?.worker || worker_profile_complete&&worker_is_subscribed&&user_email_verified))
+        if(unreadTexts.length===0 && (!user?.worker || worker_profile_complete&&worker_is_subscribed&&user_email_verified) && props.badPublications?.length===0)
             return (
                 <div className={styles.notification_empty}>
                     <p className={styles.notification_empty_text}>Sem mensagens novas ou outras notificações, por enquanto.</p>
@@ -306,6 +294,26 @@ const Home = (props) => {
         else{
             return(
                 <div>
+                    {
+                        (user?.worker&&(!worker_profile_complete||!worker_is_subscribed))||!user_email_verified?
+                        <div>
+                            <div className={styles.banner} style={{marginTop:hasUnreadTexts?"3px":""}}>
+                                <p className={styles.banner_text}>Notificações de conta</p>
+                            </div>
+                            {mapNotifications()}
+                        </div>
+                        :null
+                    }
+                    {
+                        props.badPublications?.length>0?
+                        <div>
+                            <div className={styles.banner} style={{marginTop:hasUnreadTexts?"3px":"",}}>
+                                <p className={styles.banner_text} style={{backgroundColor:"#ff3b30"}}>Problema na Tarefa</p>
+                            </div>
+                            {mapBadPublications()}
+                        </div>
+                        :null
+                    }
                     {
                         unreadTexts.length>0?
                         <div>
@@ -316,16 +324,6 @@ const Home = (props) => {
                         </div>
                         :
                         null
-                    }
-                    {
-                        (user?.worker&&(!worker_profile_complete||!worker_is_subscribed))||!user_email_verified?
-                        <div>
-                            <div className={styles.banner} style={{marginTop:hasUnreadTexts?"3px":""}}>
-                                <p className={styles.banner_text}>Notificações de conta</p>
-                            </div>
-                            {mapNotifications()}
-                        </div>
-                        :null
                     }
                 </div>
             )
@@ -398,7 +396,6 @@ const Home = (props) => {
     const mapNotifications = () => {
             return (
                 <div>
-                    
                     {                    
                     !user_email_verified?
                         <div className={styles.notification} onClick={() => navigate(`/user?t=conta`)}>
@@ -441,6 +438,27 @@ const Home = (props) => {
             )
     }
 
+    const mapBadPublications = () => {
+        console.log(props.badPublications)
+        return props.badPublications.map((val, i) => {
+            return (
+                <div>
+                    <div className={`${styles.notification} ${styles.notification_red}`} onClick={() => navigate(`/publicar/editar?editar=true&res_id=${val._id}`)}>
+                        <div className={styles.notification_left}>
+                            <TitleIcon className={styles.notification_left_icon}/>
+                        </div>
+                        <div className={styles.notification_short}>
+                        <p className={styles.notification_short_text_helper}>Tens um problema na tua tarefa: <strong>{val.title}</strong></p>
+                            <p className={styles.notification_short_text}>ALTERAR TAREFA</p>
+                        </div>
+                    </div>
+    
+                </div>
+            )
+        })
+
+}
+
     const handleScroll = (e) => {
         const { scrollTop, scrollHeight, clientHeight } = e.target
         const position = Math.ceil(
@@ -450,6 +468,16 @@ const Home = (props) => {
             window.localStorage.setItem('exploredHome', true)
             setShowArrowFlag(false)
         }
+    }
+
+    const emailTest = async () => {
+        const emailHtml = await render(<EmailMensagem from={'Paulox'} to={'Joana'} />);
+
+        console.log(emailHtml)
+
+        axios.post(`${api_url}/send-message-email`, {html: emailHtml}).then(res => {
+            console.log(res)
+        })
     }
     
     return(
@@ -660,7 +688,7 @@ const Home = (props) => {
                             loaded?
                             <div className={styles.home_back_publish_special_wrapper} style={{borderTop:user!==null?"none":""}}>
                                 <div className={styles.home_back_publish_special}>
-                                    <p ref={select_profissionais} className={styles.back_publish_title_special} style={{textAlign:'center'}}>PROCURAR TAREFAS OU PROFISSIONAIS</p>
+                                    <p onClick={() => emailTest()} ref={select_profissionais} className={styles.back_publish_title_special} style={{textAlign:'center'}}>PROCURAR TAREFAS OU PROFISSIONAIS</p>
                                 </div>
                             </div>
                             :null

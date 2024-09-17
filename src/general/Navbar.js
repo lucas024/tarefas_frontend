@@ -43,8 +43,6 @@ const Navbar = (props) => {
 
     useEffect(() => {
         setLoaded(props.userLoadAttempt)
-
-        console.log(arr_pathname)
         if(arr_pathname[1]==='confirm-email') setDisplay(false)
         else setDisplay(true)
 
@@ -148,11 +146,26 @@ const Navbar = (props) => {
                                         <div className={styles.user_wrapper} onMouseMove={() => setDropdown(true)} >
                                             
                                             <div className={styles.user}>
+                                                {
+                                                    props.notifications?.length>0?
+                                                    <span className={styles.drop_div_notification_wide} />
+                                                    :null
+                                                }
+                                                {
+                                                    props.badPublications?.length>0?
+                                                    <span className={styles.drop_div_notification_wide_red}/>
+                                                    :null
+                                                }
                                                 <p className={styles.user_text} onClick={() => navigate('/user?t=conta')}>Área Pessoal</p>
                                                 <div className={styles.user_short}>
                                                     {
-                                                        (user?.worker&&!worker_is_subscribed || user?.worker&&!worker_profile_complete || !(user_phone_verified&&user_email_verified))?
+                                                        (user?.worker&&!worker_is_subscribed || user?.worker&&!worker_profile_complete || !(user_phone_verified&&user_email_verified) || props.notifications?.length>0)?
                                                         <span className={styles.drop_div_notification}/>
+                                                        :null
+                                                    }
+                                                    {
+                                                        props.badPublications?.length>0?
+                                                        <span className={styles.drop_div_notification_red}/>
                                                         :null
                                                     }
                                                     
@@ -231,6 +244,11 @@ const Navbar = (props) => {
                                                             <TitleIcon className={styles.drop_div_flex_icon}/>
                                                             <span className={styles.drop_div_text}>Tarefas</span>
                                                         </div>
+                                                        {
+                                                            props.badPublications?.length>0?
+                                                            <span className={styles.drop_div_notification_tab_red}/>
+                                                            :null
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>                                                
@@ -246,7 +264,7 @@ const Navbar = (props) => {
                                                         </div>
                                                         {
                                                             props.notifications?.length>0?
-                                                            <span className={styles.drop_div_notification} />
+                                                            <span className={styles.drop_div_notification_tab} />
                                                             :null
                                                         }
                                                         

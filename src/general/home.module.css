@@ -1024,6 +1024,11 @@
     opacity: 0.8;
     transition: 150ms all;
 }
+.notification_red{
+    animation-name: red !important;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
 .notification{
     display: flex;
     align-items: center;
@@ -1080,9 +1085,16 @@
     font-weight: 600;
     font-size: 1.1rem;
 }
+.notification_short_text_helper{
+    font-weight: 500;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
 .notification_short_text{
     font-weight: 600;
     text-align: left;
+    font-size: 0.9rem;
 }
 .notification_right_text{
     width: 300px;
@@ -1294,6 +1306,18 @@
     }
     100% {
         background-color: #ffffff;
+    }
+}
+
+@keyframes red {
+    0% {
+      background-color: #ff7c75;
+    }
+    50% {
+        background-color: rgb(255, 199, 199);
+    }
+    100% {
+        background-color: #ff7c75;
     }
 }
 
@@ -1658,6 +1682,9 @@
     }
     .home_arrow{
         width: 100px;
+    }
+    .notification_short_text_helper{
+        font-size: 0.8rem;
     }
     .notification_short_text{
         font-size: 0.8rem;

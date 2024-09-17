@@ -41,7 +41,7 @@ const getWindowDimensions = () => {
     }
 }
 
-const Publicar = () => {
+const Publicar = props => {
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
@@ -335,6 +335,7 @@ const Publicar = () => {
                 })
             }
         })
+        if(edit) props.refreshWorker()
     }
 
     const confirmarHandler = () => {
@@ -791,8 +792,13 @@ const Publicar = () => {
                             </p>
                             {edit?
                                 <div className={styles.fieldWrapper_wrapper}>
-                                    <div className={styles.fieldWrapper}>
-                                    <span className={styles.editar_oi}>ALTERAR</span>
+                                    <div className={styles.fieldWrapper} style={{animationName:
+                                            (getFieldWrong('titulo')?editedTitle:true)
+                                            &&(getFieldWrong('description')?editedDesc:true)
+                                            &&(getFieldWrong('photos')?editedPhotos:true)
+                                            &&(getFieldWrong('location')?editedLocation:true)?'none':null
+                                    }}>
+                                    <span className={styles.editar_oi}>FAZ AS ALTERAÇÕES E <span style={{textDecoration:'underline', textDecorationColor:'#FF785A', textDecorationThickness:'2px'}}>CONFIRMA A EDIÇÃO</span></span>
                                         {mapWrongToField()}
                                     </div>
                                 </div>
@@ -1042,7 +1048,7 @@ const Publicar = () => {
                                 selectedTab===0?
                                 <div data-tooltip- data-tooltip-id={!tituloWrong&&titulo.length>6&&selectedWorker!=null?'':"publicar"} className={(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedDesc:true)&&!tituloWrong&&titulo.length>6&&selectedWorker!=null?styles.login_button:styles.login_button_disabled}
                                     style={{marginTop:0}}
-                                    onClick={() => {(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedTitle:true)&&!tituloWrong&&titulo.length>6&&selectedWorker!=null&&setSelectedTab(1)}}>
+                                    onClick={() => {(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedDesc:true)&&!tituloWrong&&titulo.length>6&&selectedWorker!=null&&setSelectedTab(1)}}>
                                     <p className={styles.login_text}>Continuar</p>
                                 </div>
                                 :

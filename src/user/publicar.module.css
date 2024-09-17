@@ -448,17 +448,33 @@ input::placeholder{
     border-radius: 5px;
     padding: 5px;
     flex-direction: column;
+    border: 4px solid var(--job);
+    animation-name: yellow;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    /* border: 2px solid var(--action); */
+}
+@keyframes yellow {
+    0% {
+      border-color: rgb(255, 235, 235);
+    }
+    50% {
+        border-color: #FF785A;
+    }
+    100% {
+        border-color: rgb(255, 235, 235);
+    }
 }
 .editar_oi{
-    background-color: var(--action);
+    /* background-color: var(--action); */
     text-align: center;
     width: fit-content;
     margin: 0 auto;
-    border-radius: 5px;
-    font-weight: 600;
+    border-radius: 3px;
+    font-weight: 700;
     text-transform: uppercase;
-    color: var(--neutral);
-    font-size: 0.8rem;
+    color: var(--brand);
+    font-size: 0.9rem;
     padding: 4px;
 }
 .refusal_div{

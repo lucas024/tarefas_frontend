@@ -36,6 +36,7 @@ import ProtectedRoute from './protectedRoute';
 import ConfirmEmail from './general/confirmEmail';
 import Pp from './general/pp.js';
 import Landing from './general/landing.js';
+import EmailMensagem from './email/emailMensagem.js';
 
 
 function App() {
@@ -51,15 +52,14 @@ function App() {
   const [userLoadAttempt, setUserLoadAttempt] = useState(false)
   const [userExists, setUserExists] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [badPublications, setBadPublications] = useState([])
 
 onAuthStateChanged(auth, (user_google) => {
     if (user_google) {
-      console.log('yesss')
       setUserGoogle(user_google)
       setUserLoadAttempt(true)
       window.localStorage.setItem('loggedIn', 1)
     } else {
-      console.log('noooo')
       window.localStorage.setItem('loggedIn', 0)
       setUserGoogle(null)
       dispatch(user_reset())
@@ -143,6 +143,16 @@ useEffect(() => {
         else checkUserComplete(userGoogle, res.data)
         setUserLoadAttempt(true)
         setLoading(false)
+
+        axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: res.data._id} }).then(res => {
+          let aux = []
+          for(let el of res.data){
+              if(el.type===2){
+                  aux.push(el)
+              }
+          }
+          setBadPublications([...aux])
+      })
       }
     }).catch(err => {
       setLoading(false)
@@ -170,6 +180,16 @@ const refreshWorker = () => {
           axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
       }
 
+      axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: res.data._id} }).then(res => {
+        let aux = []
+        for(let el of res.data){
+            if(el.type===2){
+                aux.push(el)
+            }
+        }
+        setBadPublications([...aux])
+      })
+
       setUserLoadAttempt(true)
       setLoading(false)
     }
@@ -183,8 +203,12 @@ const refreshWorker = () => {
     <div className="App">
         <BrowserRouter>
           <Navbar 
+            badPublications={badPublications}
             userLoadAttempt={userLoadAttempt}/>
           <Routes>
+          <Route exact path="/email-teste" 
+                element={<EmailMensagem/>}
+              />
               <Route exact path="/landing" 
                 element={<Landing/>}
               />
@@ -220,6 +244,7 @@ const refreshWorker = () => {
                       parseInt(window.localStorage.getItem('loggedIn'))
                     }>
                     <Publicar
+                      refreshWorker={() => refreshWorker()}
                       loading={loading}
                       loadingHandler={bool => setLoading(bool)}
                       />
@@ -257,12 +282,6 @@ const refreshWorker = () => {
                   </ProtectedRoute>
                 }
               />
-              {/* <Route exact path="/authentication/worker" 
-                element={<AuthWorker
-                  refreshWorker={() => refreshWorker()}
-                  loading={loading}
-                  loadingHandler={bool => setLoading(bool)}/>}
-              /> */}
               <Route path="/authentication/*" 
                 element={<Auth
                   loading={loading}
@@ -281,6 +300,7 @@ const refreshWorker = () => {
                 } />
               <Route path="/" 
                 element={<Home
+                  badPublications={badPublications}
                   refreshWorker={() => refreshWorker()}
                   userLoggedIn = {parseInt(window.localStorage.getItem('loggedIn'))}
                   notifications={notifications}

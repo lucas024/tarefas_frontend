@@ -444,9 +444,14 @@ const Trabalho = (props) => {
     return (
         <div style={{position:"relative"}}>
             {
-                loading&&<div className={styles.main_frontdrop}/>
+                loading?
+                <div className={styles.main_frontdrop}>
+                    <div className={styles.main_frontdrop_loader}>
+                        <Loader loading={loading} />
+                    </div>
+                </div>
+                :null
             }
-            {/* <Loader loading={loading}/> */}
             {
                 workerBanner?
                 <WorkerBanner 

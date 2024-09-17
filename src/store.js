@@ -17,10 +17,10 @@ const slice = createSlice({
 
     //
     //LOCALHOST
-    // api_url: "http://localhost:5200",
+    api_url: "http://localhost:5200",
 
     //LIVE
-    api_url: "https://vender-344408.ew.r.appspot.com",
+    // api_url: "https://vender-344408.ew.r.appspot.com",
     //
   },
   reducers: {
