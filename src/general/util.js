@@ -144,6 +144,8 @@ const profissoesPngs = {
     food: require('../assets/professions/food.png'),
     hotel: require('../assets/professions/hotel.png'),
     speaking: require('../assets/professions/speaking.png'),
+    emigration: require('../assets/professions/emigration.png'),
+    revisor_de_texto: require('../assets/professions/text.png'),
 }
 
 const profissoesMap = {
@@ -172,6 +174,7 @@ const profissoesMap = {
     limpeza_domestica: { value: 'limpeza_domestica', label: 'Doméstica', img: profissoesPngs['clean']},
     limpeza_fachadas: { value: 'limpeza_fachadas', label: 'Fachadas', img: profissoesPngs['clean']},
     limpeza_geral: { value: 'limpeza_geral', label: 'Geral (Limpeza)', img: profissoesPngs['clean']},
+    agente_emigracao: { value: 'agente_emigracao', label: 'Agente de Emigração',  img: profissoesPngs['emigration']},
     advogado: { value: 'advogado', label: 'Advogado',  img: profissoesPngs['advogado'], solo: true},
     arquiteto: { value: 'arquiteto', label: 'Arquiteto', img: profissoesPngs['arquiteto'], solo: true},
     ar_condicionados: { value: 'ar_condicionados', label: 'Ar-Condicionados', img: profissoesPngs['ar_condicionado'], solo: true },
@@ -224,6 +227,7 @@ const profissoesMap = {
     restauracao_empregado_mesa: { value: 'restauracao_empregrado_mesa', label: 'Empregrado Mesa', img: profissoesPngs['food']},
     restauracao_empregado_bar: { value: 'restauracao_empregado_bar', label: 'Empregado Bar', img: profissoesPngs['food']},
     restauracao_geral: { value: 'restauracao_geral', label: 'Geral (Restauração)', img: profissoesPngs['food']},
+    revisor_de_texto: { value: 'revisor_de_texto', label: 'Revisão de Textos', img: profissoesPngs['revisor_de_texto'], solo: true},
     hotelaria: { value: 'hotelaria', label: 'Hotelaria', img: profissoesPngs['hotel'], solo: true},
     interprete: { value: 'interprete', label: 'Intérprete', img: profissoesPngs['speaking'], solo: true},
 }
@@ -385,6 +389,11 @@ const profissoesGrouped = [
         options: [profissoesMap.eletricista],
     },
     {
+        label: 'Emigração',
+        options: [profissoesMap.agente_emigracao],
+        img: profissoesPngs['emigration']
+    },
+    {
         label: 'no-label',
         options: [profissoesMap.energias_verdes],
     },
@@ -462,6 +471,10 @@ const profissoesGrouped = [
         label: 'Restauração',
         options: profissoes_restauracao,
         img: profissoesPngs['food']
+    },
+    {
+        label: 'no-label',
+        options: [profissoesMap.revisor_de_texto],
     },
     {
         label: 'no-label',

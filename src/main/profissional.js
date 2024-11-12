@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import {user_update_chats} from '../store'
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import NoPage from '../general/noPage';
+import { render } from '@react-email/components';
+import EmailMensagem from '../email/emailMensagem';
 
 const ObjectID = require("bson-objectid");
 
@@ -53,11 +55,20 @@ const Profissional = props => {
             else setNoWorker(true)
             setLoading(false)
         })
-    }, [searchParams, props])
+
+    }, [searchParams, props, chats])
 
     useEffect(() => {
         props.userLoadAttempt&&setLoaded(true)
     }, [props.userLoadAttempt])
+
+    const emailSend = async () => {
+        const emailHtml = await render(<EmailMensagem from={user?.name.split(' ')[0]} to={worker.name.split(' ')[0]} />);
+
+
+        axios.post(`${api_url}/send-message-email`, {html: emailHtml, email: worker.email}).then(res => {
+        })
+    }
 
     const sendMessageHandler = async () => {
         if(text!==""&&worker._id!==user?._id){
@@ -72,9 +83,9 @@ const Profissional = props => {
 
             var repeated = false
 
-            if(chats?.length>0)
+            if(user.chats?.length>0)
             {
-                let chatsCopy = JSON.parse(JSON.stringify(([...chats])))
+                let chatsCopy = JSON.parse(JSON.stringify(([...user.chats])))
 
                 for(let chat of chatsCopy)
                 {
@@ -83,6 +94,7 @@ const Profissional = props => {
                             (chat.approached_id===user?._id&&(chat.approacher_id === worker._id)))
                                 && chat.reservation_id === null)
                     {
+                        let old_last_text = chat.last_text
                         repeated=true
                         await axios.post(`${api_url}/chats/update_common_chat`, {
                             approacher_read: chat.approacher_id===user?._id,
@@ -95,13 +107,19 @@ const Profissional = props => {
                         chat.approached_read = chat.approached_id===user?._id
                         chat.last_text = text_object
                         dispatch(user_update_chats(chatsCopy))
-                        setLocalChatSent(chat.chat_id)
+                        setLocalChatSent(chat.chat_id)                        
+
+                        if((old_last_text.origin_type !== user?._id) 
+                            && (new Date(old_last_text.timestamp).getTime() + (5*60000)) < new Date().getTime()
+                        )
+                            emailSend()
+
                         break
                     }
+
+                    
                 }
             }
-
-            
 
             if(!repeated)
             {
@@ -111,6 +129,7 @@ const Profissional = props => {
                     approached_id: worker._id,
                     approached_name: worker.name,
                     approached_photoUrl: worker.photoUrl,
+                    approached_email: worker.email,
                     approached_phone: worker.phone,
                     approached_read: false,
                     approached_type: worker.worker?'worker':'user',
@@ -118,6 +137,7 @@ const Profissional = props => {
                     approacher_id: user?._id,
                     approacher_name: user?.name,
                     approacher_photoUrl: user?.photoUrl,
+                    approacher_email: user?.email,
                     approacher_phone: user?.phone,
                     approacher_read: true,
                     approacher_type: user?.worker?'worker':'user',
@@ -127,6 +147,8 @@ const Profissional = props => {
                     chat_id: chatId,
                 })
                 setLocalChatSent(chatId)
+
+                emailSend()
             }
             
 

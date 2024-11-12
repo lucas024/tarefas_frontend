@@ -61,7 +61,7 @@
     transition: all 500ms;
 }
 .text_brand_helper{
-    color: var(--neutral);
+    color: #cccccc99;
     margin-top: 5px;
     margin-bottom: 30px;
     text-align: center;
@@ -1296,6 +1296,22 @@
 }
 .home_back_publish_short{
     margin-top: 100px;
+}
+.has_messages{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+    background-color: var(--yellow);
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+.has_messages:hover{
+    opacity: 0.8;
+    transition: 150ms all;
 }
 @keyframes yellow {
     0% {

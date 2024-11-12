@@ -74,6 +74,7 @@
     position: relative;
     align-items: center;
     margin-right: 20px;
+    cursor: pointer;
 }
 .mode_active{
     background-color: var(--job);
@@ -99,13 +100,15 @@
     color: var(--brand);
 }
 .chat_notification{
-    height: 10px;
-    width: 10px;
+    height: 15px;
+    width: 15px;
     border-radius: 50%;
     position: absolute;
     right: -4px;
     top: 18px;
-    background-color: var(--yellow);
+    animation-name: yellow;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
 }
 .chat_div:hover > *{
     cursor: pointer;

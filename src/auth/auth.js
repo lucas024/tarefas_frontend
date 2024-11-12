@@ -1040,7 +1040,6 @@ const Auth = (props) => {
                         searcheable={true}
                         smallWindow={windowDimensions.width < 1024}
                         changeOption={val => {
-                            console.log(val)
                             setCheckedProf(val.value)
                         }}
                         placeholder={'procurar serviços...'}/>

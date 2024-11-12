@@ -189,23 +189,24 @@ const Publicar = props => {
         if(paramsAux.editar && paramsAux.res_id)
         {   
             setEdit(true)
-            axios.get(`${api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.res_id} }).then(res => {
-                if(res.data){
-                    !editReservation&&setSelectedWorker(res.data.workerType)
-                    setEditReservation(res.data)
-                    setTitulo(res.data.title)
-                    setDescription(res.data.desc)
-                    setEditAddress(res.data.localizacao)
-                    setAddress(res.data.localizacao)
-                    setPorta(res.data.porta)
-                    setAndar(res.data.andar)
-                    setLat(res.data.lat)
-                    setLng(res.data.lng)
-                    setDistrict(regioesMap[res.data.district])
-                    setPhotoPrincipal(res.data.photo_principal)
-                    setImages(res.data.photos)
+            axios.get(`${api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.res_id, inc: false} }).then(res => {
+                console.log(res.data)
+                if(res.data?.value){
+                    !editReservation&&setSelectedWorker(res.data.value.workerType)
+                    setEditReservation(res.data.value)
+                    setTitulo(res.data.value.title)
+                    setDescription(res.data.value.desc)
+                    setEditAddress(res.data.value.localizacao)
+                    setAddress(res.data.value.localizacao)
+                    setPorta(res.data.value.porta)
+                    setAndar(res.data.value.andar)
+                    setLat(res.data.value.lat)
+                    setLng(res.data.value.lng)
+                    setDistrict(regioesMap[res.data.value.district])
+                    setPhotoPrincipal(res.data.value.photo_principal)
+                    setImages(res.data.value.photos)
                     setLoading(false)
-                    setTaskType(res.data.task_type)
+                    setTaskType(res.data.value.task_type)
                     setTituloWrong(false)
                 }
                 else{
@@ -437,7 +438,7 @@ const Publicar = props => {
     }
 
     const getFieldWrong = type => {
-        if(editReservation)
+        if(editReservation?.refusal_object)
             for(let el of editReservation.refusal_object)
             {
                 if(el.type===type) return true
@@ -445,7 +446,7 @@ const Publicar = props => {
     }
 
     const getFieldWrongText = type => {
-        if(editReservation)
+        if(editReservation?.refusal_object)
             for(let el of editReservation.refusal_object)
             {
                 if(el.type===type) return el.text
@@ -565,7 +566,7 @@ const Publicar = props => {
     }
 
     const mapWrongToField = () => {
-        return editReservation?.refusal_object.map((val, i) => {
+        return editReservation?.refusal_object?.map((val, i) => {
             return (
                 <div style={{margin:'5px 0'}}>
                     {
@@ -659,7 +660,6 @@ const Publicar = props => {
                         optionFirst={{value: 'trabalhos'}} 
                         smallWindow={windowDimensions.width <= 1024}
                         changeOption={val => {
-                            console.log(val)
                             setSelectedWorker(val.value)
                             setSelectedWorkerObject(val)
                             setBackdrop(false)

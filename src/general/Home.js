@@ -36,8 +36,6 @@ import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import EmailUnverified from '@mui/icons-material/UnsubscribeOutlined';
 
-import { render } from '@react-email/components';
-
 
 import {
     DefineAdSlot,
@@ -45,7 +43,7 @@ import {
     InitializeGPT
   } from '../adsense/google-publisher-tag';
 import PpBanner from './ppBanner';
-import EmailMensagem from '../email/emailMensagem';
+import Row from '../servicos/row';
 
 
 const firstOptions = [
@@ -72,6 +70,7 @@ const Home = (props) => {
     const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
 
 
+    const [items, setItems] = useState([])
     const [workerBanner, setWorkerBanner] = useState(false)
     const [tosBanner, setTosBanner] = useState(false)
     const [ppBanner, setPpBanner] = useState(false)
@@ -110,13 +109,13 @@ const Home = (props) => {
     useEffect(() => {
         if(window.localStorage.getItem('exploredHome')===null)
         {
-            console.log(window.localStorage.getItem('exploredHome'))
             const interval = setInterval(() => {
                 setShowArrow(true)        
             }, 5000)
 
             return () => clearInterval(interval);
         }
+        fetchJobs()
       }, []);
 
     useEffect(() => {
@@ -163,6 +162,7 @@ const Home = (props) => {
 
     useEffect(() => {
         if(user){
+            setShowArrowFlag(false)
             axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
             .then(res => {
                 if(res.data!==''){
@@ -439,7 +439,6 @@ const Home = (props) => {
     }
 
     const mapBadPublications = () => {
-        console.log(props.badPublications)
         return props.badPublications.map((val, i) => {
             return (
                 <div>
@@ -456,8 +455,7 @@ const Home = (props) => {
                 </div>
             )
         })
-
-}
+    }
 
     const handleScroll = (e) => {
         const { scrollTop, scrollHeight, clientHeight } = e.target
@@ -470,13 +468,38 @@ const Home = (props) => {
         }
     }
 
-    const emailTest = async () => {
-        const emailHtml = await render(<EmailMensagem from={'Paulox'} to={'Joana'} />);
+    const mapRowsToDisplay = () => {
+        return items.map((item, i) => {
+            return(
+                <div key={i} className={styles.row}>
+                    <div onClick={() => {
+                            navigate(`/main/publications/publication?id=${item._id}`, {
+                                    state: {
+                                        fromUserPage: false,
+                                    }
+                                }
+                            )}
+                        }>
+                        <Row
+                            home={true}
+                            item={item}
+                            locationActive={null}
+                            workerActive={false}let listaTrabalhosVistos
+                            user_id={user?._id}
+                            trabalhoVisto={JSON.parse(window.localStorage.getItem('listaTrabalhosVistos')).includes(item._id)}
+                        />
+                    </div>
+                    
+                </div>
+            )
+        })
+    }
 
-        console.log(emailHtml)
-
-        axios.post(`${api_url}/send-message-email`, {html: emailHtml}).then(res => {
-            console.log(res)
+    const fetchJobs = () => {
+        axios.get(`${api_url}/reservations`,{ params: {limit: 5} }).then(res => {
+            if(res.data!==null){
+                setItems(res.data.data)
+            }
         })
     }
     
@@ -595,15 +618,15 @@ const Home = (props) => {
                                 <p className={styles.upper_wrapper_text_title}>NOVO NO TAREFAS?</p>
                                 {/* <p className={styles.upper_wrapper_text_subtitle}>Esta plataforma junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span>.</p> */}
                                 {/* <p className={styles.upper_wrapper_text_subtitle}>O cliente publica as tarefas que quer ver realizadas e espera o contacto de profissionais. O profissional encontra as tarefas e contacta os clientes, simultaneamente expondo o seu negócio.</p> */}
-                                <p className={styles.upper_wrapper_text_subtitle}>O Tarefas é uma plataforma que permite aos clientes procurar profissionais ou esperar que eles venham até si. Os profissionais, por outro lado, podem encontrar tarefas para realizar ao mesmo tempo que expôem o seu negócio através do seu perfil público.</p>
+                                <p className={styles.upper_wrapper_text_subtitle}>O Tarefas é uma plataforma que permite aos clientes procurar profissionais ou esperar que eles venham até si. Os profissionais, por outro lado, podem encontrar tarefas para realizar ao mesmo tempo que expôem o seu negócio através do seu perfil publicamente visível.</p>
                                 <div className={styles.new}>
                                     <div className={styles.new_side} style={{marginRight:'5px'}}>
                                         <span className={styles.new_title} style={{color:'#0358e5'}}>CLIENTE</span>
-                                        <p className={styles.upper_wrapper_text_subtitle} style={{textDecoration:'underline', textDecorationColor:'#0358e5', textDecorationThickness:'1px'}}>Como cliente, basta abrires a conta e publicares uma tarefa ou procurares um profissional.</p>
+                                        <p className={styles.upper_wrapper_text_subtitle} style={{color:"#0358e5", fontWeight:600, textDecoration:'none', textDecorationColor:'#0358e5', textDecorationThickness:'1px'}}>Como cliente, basta criares a tua conta e publicares uma tarefa ou procurares um profissional.</p>
                                     </div>
                                     <div className={styles.new_side} style={{marginLeft:'5px'}}>
                                         <span className={styles.new_title} style={{color:'#FF785A'}}>PROFISSIONAL</span>
-                                        <p className={styles.upper_wrapper_text_subtitle} style={{textDecoration:'underline', textDecorationColor:'#FF785A', textDecorationThickness:'1px'}}>Como profissional, depois de abrires a conta segue o passo de ativar o modo profissional e começa a realizar tarefas.</p>
+                                        <p className={styles.upper_wrapper_text_subtitle} style={{color:"#FF785A", fontWeight:600, textDecoration:'none', textDecorationColor:'#FF785A', textDecorationThickness:'1px'}}>Como profissional, depois de criares a tua conta segue os passos de ativar o modo profissional e começa a realizar tarefas.</p>
                                     </div>
                                 </div>
                                 
@@ -661,6 +684,13 @@ const Home = (props) => {
                 </CSSTransition>
                 <div className={styles.home_back_top_wrapper}>
                     {
+                        hasUnreadTexts?
+                        <div className={styles.has_messages} onClick={() => navigate(`/user?t=messages`)}>  
+                            <p>Tens mensagens por ler</p>
+                        </div> 
+                        :null
+                    }
+                    {
                         showArrowFlag?
                         <div className={styles.arrow_wrapper} style={{opacity:showArrow?1:0}}>
                             <p className={styles.arrow_wrapper_text}>Explora o resto da página!</p>
@@ -681,14 +711,14 @@ const Home = (props) => {
                                
                     <div className={styles.home_back_top}>
                         <img className={styles.text_brand} src={logo_text_mix}/>
-                        <p className={styles.text_brand_helper}>Plataforma que junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span></p>
+                        <p className={styles.text_brand_helper}>A plataforma que junta <span style={{fontWeight:400, textDecoration:'none', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:400, textDecoration:'none', textDecorationColor:"#FF785A"}}>profissionais</span></p>
                         
                         {/* <div className={styles.upper_divider}/> */}
                         {
                             loaded?
                             <div className={styles.home_back_publish_special_wrapper} style={{borderTop:user!==null?"none":""}}>
                                 <div className={styles.home_back_publish_special}>
-                                    <p onClick={() => emailTest()} ref={select_profissionais} className={styles.back_publish_title_special} style={{textAlign:'center'}}>PROCURAR TAREFAS OU PROFISSIONAIS</p>
+                                    <p ref={select_profissionais} className={styles.back_publish_title_special} style={{textAlign:'center'}}>PROCURAR TAREFAS OU PROFISSIONAIS</p>
                                 </div>
                             </div>
                             :null
@@ -932,8 +962,7 @@ const Home = (props) => {
                     <div className={styles.home_divider}>.</div>
                     :null
                 }
-
-                <span className={styles.home_explorar} style={{marginBottom:'15px'}}>EXPLORAR</span>
+                
 
                 {
                     user?._id!=null?
@@ -956,9 +985,40 @@ const Home = (props) => {
                     </div>
                     :null
                 }
+
+                <span className={styles.home_explorar} style={{marginBottom:'15px'}}>EXPLORAR</span>
+
+                {/* ULTIMAS 5 TAREFAS */}
+                {
+                    items?.length>0?
+                    <div style={{width:'80%', margin: '0 auto', marginTop:'30px'}}>
+                        <p className={styles.back_publish_title}>ÚLTIMAS TAREFAS PUBLICADAS</p>
+                    </div>
+                    
+                    :null
+                }
+                {
+                    loaded?
+                        items?.length>0?
+                            <div className={styles.home_back_publish} style={{marginTop:'0px'}}>
+                                <div className={styles.notification_area} style={{paddingTop:0}}>
+                                    {mapRowsToDisplay()}
+                                </div>
+                                
+                            </div>
+                        :null
+                    :
+                    <div>
+                        <div className={styles.loading_skeleton}/>
+                        <div className={styles.loading_skeleton}/>
+                        <div className={styles.loading_skeleton}/>
+                        <div className={styles.loading_skeleton}/>
+                        <div className={styles.loading_skeleton}/>
+                    </div>
+                }
                 
                 
-                <div className={styles.home_geral} style={{marginTop:'30px', marginBottom:'30px'}}>
+                <div className={styles.home_geral} style={{marginTop:'50px', marginBottom:'70px'}}>
                     {
                         loaded?
                         <p className={styles.back_publish_title}>VER</p>

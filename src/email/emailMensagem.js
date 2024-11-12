@@ -20,7 +20,7 @@ const EmailMensagem = props => {
   return (
     <Html>
       <Head />
-      <Preview>Yelp recent login</Preview>
+      <Preview>{props.from} enviou-te uma mensagem</Preview>
       <Body style={main}>
         <Container>
           <Section style={logo}>
@@ -61,7 +61,7 @@ const EmailMensagem = props => {
                 
 
                 <Text style={paragraph}>
-                  Acede à tua caixa de mensagens através do botão ou link a baixo.
+                {props.from} enviou-te uma mensagem, acede à tua caixa de mensagens através do botão ou link a baixo.
                 </Text>
               </Column>
             </Row>

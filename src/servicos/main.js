@@ -199,7 +199,7 @@ const Main = (props) => {
 
     const fetchJobsByFilter = (params_aux) => {
         setLoading(true)
-        if(searchVal===""&&!params_aux.work&&!params_aux.region)
+        if(searchVal===""&&!params_aux?.work&&!params_aux?.region)
         {
             fetchJobs()
         }
@@ -213,9 +213,10 @@ const Main = (props) => {
                     searchValFinal += `\"${el}\" `
                 }
             }
+            console.log(searchValFinal)
             axios.post(`${api_url}/reservations/get_reservations_by_filter`, {
-                region: ((params_aux.region==null) || (params_aux.region===undefined))?false:params_aux.region!=='none'?params_aux.region:false,
-                trabalho: ((params_aux.work==null) || (params_aux.work===undefined))?false:params_aux.work!=='none'?params_aux.work:false,
+                region: ((params_aux?.region==null) || (params_aux?.region===undefined))?false:params_aux?.region!=='none'?params_aux?.region:false,
+                trabalho: ((params_aux?.work==null) || (params_aux?.work===undefined))?false:params_aux?.work!=='none'?params_aux?.work:false,
                 search: searchValFinal
             }).then(res => {
                 if(res.data!=='non_existing'){

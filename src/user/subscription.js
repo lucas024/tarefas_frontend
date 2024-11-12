@@ -165,20 +165,17 @@ const Subscription = props => {
 
     useEffect(() => {
         const paramsAux = Object.fromEntries([...searchParams])
-        console.log(paramsAux.redirect_status)
         if(paramsAux.redirect_status==='succeeded')
         {
             setLoading(true)
             axios.get(`${api_url}/retrieve-payment-intent`, {params: {payment_intent: paramsAux.payment_intent}})
             .then(res => {
-                console.log(res)
                 if((res.data.paymentIntent.metadata.user_id === user?._id) &&
                     !(user?.subscription_secrets_used?.includes(res.data.paymentIntent.client_secret)
                 ))
                 {                
                     if(res.data.paymentIntent.status==="succeeded")
                     {
-                        console.log(res.data.paymentIntent)
                         axios.post(`${api_url}/update-subscription-paid`, {
                             payment_intent: res.data.paymentIntent,
                             payment_intent_metadata: res.data.paymentIntent.metadata
@@ -265,7 +262,6 @@ const Subscription = props => {
                 phone: user.phone,
                 email: user.email.toLocaleLowerCase(),
             })
-            console.log(obj)
             customer_id = obj.data.customer.id
         }
 
@@ -300,7 +296,6 @@ const Subscription = props => {
             setLoading(false)
         }
         catch (err) {
-            console.log(err)
             setGeneralFail(true)
             setPaymentIntentObj(false)
             setTimeout(() => setGeneralFail(false), 15000)

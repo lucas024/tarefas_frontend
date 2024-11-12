@@ -100,7 +100,6 @@ const Details = props => {
     
     const setCheckedProf = trab => {
         if(editBottom){
-            console.log(selectedProf)
             let arr = selectedProf?[...selectedProf]:[]
             if(selectedProf?.includes(trab)){
                 arr.splice(arr.indexOf(trab), 1) 
@@ -471,7 +470,6 @@ const Details = props => {
                                 searcheable={editBottom}
                                 smallWindow={windowDimensions.width <= 1024}
                                 changeOption={val => {
-                                    console.log(val)
                                     setCheckedProf(val.value)
                                 }}
                                 placeholder={'procurar serviços'}/>

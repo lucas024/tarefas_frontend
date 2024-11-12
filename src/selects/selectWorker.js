@@ -87,7 +87,8 @@ const SelectWorker = (props) => {
     return(
         <Select
             styles={stylesSelect}
-            isDisabled={!props.editBottom}
+            // isDisabled={true}
+            // isDisabled={!props.editBottom}
             options={options}
             value={options.filter(option => option.value === props.worker_type)}
             isSearchable={false}

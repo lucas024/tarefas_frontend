@@ -414,7 +414,6 @@ const Personal = (props) => {
                                 .then(suc => {
                                 })
                                 .catch(err => {
-                                    console.log(err)
                                 })
                             }
                             axios.post(`${api_url}/general/delete_user`, {

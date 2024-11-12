@@ -57,7 +57,6 @@ const PaymentElementsComponent = props => {
                 }
             })
             
-            console.log(paymentConfirmation)
             
             let purchase_date = new Date()
             let end_date = new Date()
@@ -98,7 +97,6 @@ const PaymentElementsComponent = props => {
             }
             else
             {
-                console.log(paymentConfirmation.paymentIntent)
                 switch (paymentConfirmation.paymentIntent?.status) {
                     case "succeeded":
                         await axios.post(`${props.api_url}/update-subscription-paid`, {
@@ -152,7 +150,6 @@ const PaymentElementsComponent = props => {
             
         }
         catch (err) {
-            console.log(err)
             props.setGeneralFail(true)
             setTimeout(() => props.setGeneralFail(false), 15000)
             props.setLoading(false)
