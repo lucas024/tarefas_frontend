@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react'
 import styles from './subscription.module.css'
 import Check from '@mui/icons-material/Check';
-import chip from '../assets/chip.png'
 import basic from '../assets/basic.png'
 import medium from '../assets/real_medium.png'
 import pro from '../assets/medium_3.png'

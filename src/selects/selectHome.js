@@ -1,28 +1,28 @@
 import React from 'react';
 import Select from 'react-select'
 import styles from './select.module.css'
+import { height, width } from '@mui/system';
 
 const SelectHome = (props) => {
     
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: props.publicar?'#161F28':props.option?.value==='trabalhos'?"#0358e5":props.option?.value==='profissionais'?"#FF785A":props.option?.value?"#161F28":"#252d36",
+            backgroundColor: props.home?'transparent':props.publicar?'#161F28':props.option?.value==='trabalhos'?"#0358e5":props.option?.value==='profissionais'?"#FF785A":props.option?.value?"#161F28":"#252d36",
             borderColor: "#ffffff",
-            fontSize: "0.7rem",
-            textTransform: props.publicar?"normal":"uppercase",
-            color: "#ffffff",
+            fontSize: "0.55vw",
+            textTransform: props.publicar||props.home?"normal":"uppercase",
+            color: props.home?'#000000':"#ffffff",
             fontWeight: 600,
             width: props.publicar||props.home?"100%":"250px",
             transition: "0.5s all ease-in-out",
             borderRadius: "5px",
-            // borderBottomRightRadius: "0px",
             borderBottomLeftRadius: state.menuIsOpen? 0: "5px",
             borderBottomRightRadius: state.menuIsOpen? 0: "5px",
             border: props.details&&props.edit?'1px solid #ffffff':
                 props.home&&props.option?props.optionFirst?.value==='trabalhos'?'2px solid #0358e5':'2px solid #FF785A':state.isSelected? "1px solid white":props.home?'2px solid #ffffff40': 0,
             boxShadow: "white",
-            height: props.mediumWindow?'30px':"40px",
+            height:props.home?'100%':props.mediumWindow?'30px':"40px",
             minHeight:props.mediumWindow?'none':'',
             "&:hover": {
                 cursor: "pointer",
@@ -34,9 +34,9 @@ const SelectHome = (props) => {
             boxShadow: 
                 props.auth||props.publicarNew?'0px -1px 5px 0px rgba(255,255,255,0.8)':
                 !props.details&&props.profs&&!props.option?
-                    props.optionFirst?.value==='trabalhos'?'0px -1px 10px 0px rgba(3,88,229,0.8)':'0px -1px 10px 0px rgba(255,120,90,0.8)':
+                    props.optionFirst?.value==='trabalhos'?'0px -1px 10px 0px rgba(255,255,255,0.8)':'0px -1px 10px 0px rgba(255,255,255,0.8)':
                 props.home&&props.second&&!props.option?
-                    props.optionFirst?.value==='trabalhos'?'0px -1px 10px 0px rgba(3,88,229,0.8)':'0px -1px 10px 0px rgba(255,120,90,0.8)'
+                    props.optionFirst?.value==='trabalhos'?'0px -1px 10px 0px rgba(255,255,255,0.8)':'0px -1px 10px 0px rgba(255,255,255,0.8)'
                 :'',
 
         }),
@@ -106,7 +106,7 @@ const SelectHome = (props) => {
             ...base,
             width: "100%",
             position: props.profs?'unset':'relative',
-            height: props.mediumWindow?'30px':"40px",
+            height: props.home?'100%':props.mediumWindow?'30px':"40px",
         }),
         input: base => ({
             ...base,
@@ -131,6 +131,8 @@ const SelectHome = (props) => {
         }),
         valueContainer: base => ({
             ...base,
+            height:'100%',
+            width:'100%'
             // padding: "2px 10px 2px 2px",
             // margin: 'auto',
             // height: props.mediumWindow?'30px':"40px",
@@ -155,10 +157,10 @@ const SelectHome = (props) => {
             ...base,
             fontStyle: 'normal !important',
             fontFamily: 'Montserrat, sans-serif !important',
-            fontWeight: '400',
-            fontSize: '0.9rem',
+            fontWeight: '600',
             textAlign: props.home?'center':'left',
-            color: props.details?'#ffffff':''
+            color: props.details?'#ffffff':'#000000',
+            height:'100%'
         })
     }
 
@@ -241,7 +243,15 @@ const SelectHome = (props) => {
     
     return(
         <Select
-            placeholder={<span style={{marginLeft:'5px', color:props.details&&props.edit?'#ffffff':'#ffffff80'}}>{props.placeholder}</span>}
+            components={{ DropdownIndicator:() => null, IndicatorSeparator:() => null }}
+            placeholder={
+                props.home?
+                <span className={styles.placeholder}>
+                    <span className={styles.placeholder_title}>{props.placeholder}</span>
+                    <span className={styles.placeholder_desc}>{props.placeholder_desc}</span>
+                </span>
+                :
+                <span style={{marginLeft:'5px', color:props.home?'#000000':props.details&&props.edit?'#ffffff':'#ffffff80'}}>{props.placeholder}</span>}
             styles={stylesSelect}
             options={props.options}
             value={props.option}

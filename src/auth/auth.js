@@ -153,6 +153,7 @@ const Auth = (props) => {
     const [selectedProfWrong, setSelectedProfWrong] = useState(false)
     const [selectedRegWrong, setSelectedRegWrong] = useState(false)
     const [selectedTypeWrong, setSelectedTypeWrong] = useState(false)
+    const [mode, setMode] = useState(null)
 
     const [shake, setShake] = useState(false)
 
@@ -185,7 +186,9 @@ const Auth = (props) => {
         if(paramsAux)
         {
             setSelectedAuth(parseInt(paramsAux.type))
+            setMode(paramsAux.mode)
             // setSelectedAuth(parseInt(2))
+            if(paramsAux.landing) setShowWorker(true)
         }
     }, [searchParams])
     
@@ -521,8 +524,17 @@ const Auth = (props) => {
                     setLoading(false)
                     setRegisterPopup(true)
                     setTimeout(() => setRegisterPopup(false), 4000)
-                    setRegistarTab(3)
                     setPhoneHandler('')
+                    if(mode === 'professional'){
+                        setRegistarTab(4)
+                    }
+                    else if(mode === 'user'){
+                        handleUserSelected()
+                    }
+                    else
+                    {
+                        setRegistarTab(3)
+                    }
                 }
                 catch (err) {
                     if(err.code == "auth/email-already-in-use"){
@@ -805,6 +817,25 @@ const Auth = (props) => {
             }
             setEmailRecoverWrong(true)
             setLoading(false)
+        }
+    }
+
+    const handleUserSelected = () => 
+    {
+        if(createdWithGoogle)
+        {
+            navigate('/', {
+                state: {
+                    carry: 'register',
+                    skippedVerification: false
+                }
+            })
+        }
+        else
+        {
+            setSelectedAuth(2)
+            initiateEmailVerification()
+            setRegistarTab(0)
         }
     }
 
@@ -1272,25 +1303,8 @@ const Auth = (props) => {
                                                 </div>
                                             :
                                             <div className={styles.choose}>
-                                                <p className={styles.area_bot_title}>Continuar com conta normal ou ativar modo profissional?</p>
-                                                <div className={styles.choose_side} style={{marginTop:"10px"}} onClick={() => 
-                                                    {
-                                                        if(createdWithGoogle)
-                                                        {
-                                                            navigate('/', {
-                                                                state: {
-                                                                    carry: 'register',
-                                                                    skippedVerification: false
-                                                                }
-                                                            })
-                                                        }
-                                                        else
-                                                        {
-                                                            setSelectedAuth(2)
-                                                            initiateEmailVerification()
-                                                            setRegistarTab(0)
-                                                        }
-                                                    }}>
+                                                <p className={styles.area_bot_title}>Continuar com conta utilizador ou ativar modo profissional?</p>
+                                                <div className={styles.choose_side} style={{marginTop:"10px"}} onClick={() => handleUserSelected()}>
                                                                                         
                                                     <p className={styles.choose_side_title}>Continuar com conta normal</p>
                                                 </div>
@@ -1379,6 +1393,7 @@ const Auth = (props) => {
                                                     selectedTypeWrong={selectedTypeWrong}
                                                     entityName={entityName}
                                                     entityNameWrong={entityNameWrong}
+                                                    setCheckedProf={val => setCheckedProf(val)}
                                                     updateSelectedRegions={list => setSelectedReg(list)}
                                                     updateSelectedType={val => setSelectedType(val)&&setEntityNameWrong(false)}
                                                     updateEntityName={val => setEntityNameHandler(val)}

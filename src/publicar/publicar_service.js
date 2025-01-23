@@ -21,7 +21,7 @@ const PublicarService = props => {
         <div>
             <div className={styles.diff_right_title_container}>
                 <span className={styles.diff_right_title} style={{marginTop:"-8px"}}>
-                    Tipo de Serviço<span className={styles.action}>*</span>
+                    Serviço QUE PROCURAS<span className={styles.action}>*</span>
                 </span>
             </div>
             <div className={styles.top_left}>

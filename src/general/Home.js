@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './home.module.css'
-import PostAddIcon from '@mui/icons-material/PostAdd';
 import {useLocation, useNavigate} from 'react-router-dom'
 import WorkerBanner from './workerBanner';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
@@ -13,6 +12,7 @@ import {profissoesGrouped, regioes, regioesOptions} from './util'
 import InstagramIcon from '@mui/icons-material/Instagram';
 import {Tooltip} from 'react-tooltip';
 import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import TitleIcon from '@mui/icons-material/Title';
@@ -26,7 +26,6 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import ChatIcon from '@mui/icons-material/Chat';
 import FaceIcon from '@mui/icons-material/Face';
 import axios from 'axios';
-import logo_text_mix from '../assets/logo_text_mix_4.png'
 import home_arrow_right from '../assets/home_arrow_right.png'
 import home_arrow_left from '../assets/home_arrow_left.png'
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -35,7 +34,10 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import EmailUnverified from '@mui/icons-material/UnsubscribeOutlined';
+import moment from 'moment';
 
+import hero_1 from '../assets/new_assets/hero_1.png'
+import hero_2 from '../assets/new_assets/hero_2.png'
 
 import {
     DefineAdSlot,
@@ -44,6 +46,7 @@ import {
   } from '../adsense/google-publisher-tag';
 import PpBanner from './ppBanner';
 import Row from '../servicos/row';
+import InformationBanner from './informationBanner';
 
 
 const firstOptions = [
@@ -76,9 +79,12 @@ const Home = (props) => {
     const [ppBanner, setPpBanner] = useState(false)
     const [suggestionBanner, setSuggestionBanner] = useState(false)
     const [contactosBanner, setContactosBanner] = useState(false)
+    const [informationBanner, setInformationBanner] = useState(false)
     const [hasUnreadTexts, setHasUnreadTexts] = useState(false)
     const [unreadTexts, setUnreadTexts] = useState([])
     const [newPopup, setNewPopup] = useState(false)
+
+    const [searchPosition, setSearchPosition] = useState(0)
 
     const [mensagemPopup, setMensagemPopup] = useState(false)
     const [loginPopup, setLoginPopup] = useState(false)
@@ -115,14 +121,34 @@ const Home = (props) => {
 
             return () => clearInterval(interval);
         }
+
+        let last_timestamp = window.localStorage.getItem('last_search_timestamp')
+        if(last_timestamp!==null)
+        {
+            if(moment().diff(new Date(last_timestamp), 'minutes') > 10)
+                setSearchPosition(0)
+            else
+                setSearchPosition(1)
+        }
+            
         fetchJobs()
+
+        
       }, []);
 
     useEffect(() => {
         if(!parseInt(localStorage.getItem('firstAccessMade')))
             navigate('/landing')
-            
-        if(user?.worker) setFirst({ value: 'trabalhos', label: 'Tarefas' })
+        
+        let aux2 = window.localStorage.getItem('last_search_type')
+        if(aux2 !== null)
+        {
+            if(aux2 === 'trabalhos')
+                setFirst({ value: 'trabalhos', label: 'Tarefas' })
+            else
+                setFirst({ value: 'profissionais', label: 'Profissionais' })
+        }
+        else if(user?.worker) setFirst({ value: 'trabalhos', label: 'Tarefas' })
         else if(user!=null && user?._id!=null) setFirst({ value: 'profissionais', label: 'Profissionais' })
 
         if(location.state?.carry==="login"){
@@ -265,7 +291,9 @@ const Home = (props) => {
         else{
             navigate(`/main/publications/${first?.value}`)
         }
-        
+
+        window.localStorage.setItem('last_search_timestamp', new Date())
+        window.localStorage.setItem('last_search_type', first?.value)
     }
 
     const clearTopSearch = () => {
@@ -283,9 +311,13 @@ const Home = (props) => {
         return val.slice(0,5)
     }
 
+    const emptyNotifications = () => {
+        return unreadTexts.length===0 && (!user?.worker || worker_profile_complete&&worker_is_subscribed&&user_email_verified) && props.badPublications?.length===0
+    }
+
     const mapWrapper = () => {
         
-        if(unreadTexts.length===0 && (!user?.worker || worker_profile_complete&&worker_is_subscribed&&user_email_verified) && props.badPublications?.length===0)
+        if(emptyNotifications)
             return (
                 <div className={styles.notification_empty}>
                     <p className={styles.notification_empty_text}>Sem mensagens novas ou outras notificações, por enquanto.</p>
@@ -486,7 +518,7 @@ const Home = (props) => {
                             locationActive={null}
                             workerActive={false}let listaTrabalhosVistos
                             user_id={user?._id}
-                            trabalhoVisto={JSON.parse(window.localStorage.getItem('listaTrabalhosVistos')).includes(item._id)}
+                            trabalhoVisto={JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))?.includes(item._id)}
                         />
                     </div>
                     
@@ -576,8 +608,16 @@ const Home = (props) => {
                     cancel={() => setContactosBanner(false)}/>
                 :null
             }
-            {/* <div style={{display:'inline-block'}}></div> */}
-            <div ref={top} className={styles.home_back} onScroll={val => {
+            {
+                informationBanner?
+                <InformationBanner
+                    confirm={() => {
+                        setInformationBanner(false)
+                    }}
+                    cancel={() => setInformationBanner(false)}/>
+                :null
+            }
+            <div ref={top} className={styles.home_wrapper} onScroll={val => {
                 showArrowFlag&&handleScroll(val)
             }}>
                 {
@@ -608,7 +648,7 @@ const Home = (props) => {
                     :null
                 } */}
                 <CSSTransition 
-                    in={newPopup&&windowDimensions.width>500}
+                    in={false&&newPopup&&windowDimensions.width>500}
                     timeout={1000}
                     classNames="welcome"
                     unmountOnExit
@@ -682,238 +722,213 @@ const Home = (props) => {
                         </div>
                         
                 </CSSTransition>
-                <div className={styles.home_back_top_wrapper}>
+                <div className={styles.home_hero}>
                     {
                         hasUnreadTexts?
                         <div className={styles.has_messages} onClick={() => navigate(`/user?t=messages`)}>  
                             <p>Tens mensagens por ler</p>
                         </div> 
                         :null
-                    }
-                    {
-                        showArrowFlag?
-                        <div className={styles.arrow_wrapper} style={{opacity:showArrow?1:0}}>
-                            <p className={styles.arrow_wrapper_text}>Explora o resto da página!</p>
-                            <div className={styles.arrow_wrapper_div}> 
-                                <ArrowDownwardIcon className={styles.arrow_wrapper_icon}/>
-                            </div>
-                        </div> 
-                        :null
-                    }
-                    {
-                        loaded&&!newPopup&&(user===null||user?._id===null)?
-                        <div className={styles.novo} style={{zIndex:backdrop?0:''}} onClick={() => setNewPopup(true)}>   
-                            <p>Sou novo no TAREFAS</p>
-                        </div>
-                        :null
-                    }
-                    
+                    }                    
                                
-                    <div className={styles.home_back_top}>
-                        <img className={styles.text_brand} src={logo_text_mix}/>
-                        <p className={styles.text_brand_helper}>A plataforma que junta <span style={{fontWeight:400, textDecoration:'none', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:400, textDecoration:'none', textDecorationColor:"#FF785A"}}>profissionais</span></p>
-                        
-                        {/* <div className={styles.upper_divider}/> */}
+                    <div className={styles.home_hero_inner}>
                         {
                             loaded?
-                            <div className={styles.home_back_publish_special_wrapper} style={{borderTop:user!==null?"none":""}}>
-                                <div className={styles.home_back_publish_special}>
-                                    <p ref={select_profissionais} className={styles.back_publish_title_special} style={{textAlign:'center'}}>PROCURAR TAREFAS OU PROFISSIONAIS</p>
-                                </div>
-                            </div>
+                            <img src={hero_1} className={styles.hero_image}/>
                             :null
                         }
-                        
-                        
-
-
-                        {/* <span className={styles.text_title}>Procuras <span className={styles.text_title_underscore} style={{textDecorationColor:"#FF785A"}}>profissionais</span> ou <span className={styles.text_title_underscore} style={{textDecorationColor:"#0358e5"}}>tarefas</span>?</span> */}
                         {
                             loaded?
-                            <div className={styles.main_wrapper} style={{backgroundColor:first?.value==="profissionais"?"#FF785A10":"#0358e510"}}>
-                                
+                            <div className={styles.main_wrapper}>
+                                <span className={styles.main_wrapper_title}>Conectamos tarefas a</span>
+                                <span className={styles.main_wrapper_title}>profissionais de confiança</span>
+                                <div className={styles.main_select}>
+                                    <div className={styles.main_select_element} style={{backgroundColor:searchPosition===0?first?.value==="profissionais"?"#FF785A":"#0358e5":''}} onClick={() => setSearchPosition(0)}>
+                                        <SearchIcon className={styles.element_icon}/>
+                                        <span className={styles.element_text}>Procurar</span>
+                                    </div>
+                                    <div className={styles.main_select_element} style={{backgroundColor:searchPosition===1?'#0358e5':''}} onClick={() => setSearchPosition(1)}>
+                                        <AddIcon className={styles.element_icon}/>
+                                        <span className={styles.element_text}>Publicar</span>
+                                    </div>
+                                </div>
                                 <div className={styles.main}>
-                                    <div className={styles.zone}>
-                                        <div className={styles.zone_img} style={{backgroundColor:first?.value==="profissionais"?"#FF785A":"#0358e5", borderColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>
-                                            {
-                                                first?.value==="profissionais"?
-                                                <EmojiPeopleIcon className={styles.zone_person_icon} style={{transform: 'scaleX(-1)', color:"#ffffff"}}/>
-                                                :
-                                                <TitleIcon className={styles.zone_build_icon} style={{color:"#ffffff"}}/>
-                                            }
-                                        </div>
-                                        <div className={styles.zone_select}>
-                                            {/* <SelectHome
-                                                menuOpen={() => {}}
-                                                menuClose={() => {}}
-                                                searcheable={false}
-                                                home={true}
-                                                options={firstOptions} 
-                                                optionFirst={first} 
-                                                option={first} 
-                                                changeOption={val => setFirst(val)}
-                                                placeholder={"Tipo"}/> */}
-                                            <div className={styles.zone_select_buttons}>
-                                                <span className={first?.value==="trabalhos"?styles.zone_select_button:styles.zone_select_button_off} 
-                                                    onClick={() => setFirst({ value: 'trabalhos', label: 'Trabalhos' })}
-                                                    style={{marginRight:'2px', 
-                                                            width:first?.value==="trabalhos"?"80%":"20%",
-                                                            backgroundColor:first?.value==="trabalhos"?"#0358e5":"#0358e520", 
-                                                            fontWeight:first?.value==="trabalhos"?600:600,
-                                                            fontSize: first?.value==="trabalhos"?'0.9rem':'0.8rem',
-                                                            color:first?.value==="trabalhos"?'white':'#0358e5bb',
-                                                            borderColor:"#0358e5"}}>
-                                                                <span style={{position:'absolute', zIndex:3}}>
-                                                                {
-                                                                    first?.value==="trabalhos"?
-                                                                    'TAREFAS'
-                                                                    :<TitleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)'}}/>
-                                                                }
+                                    <div className={styles.zone_wrapper}>
+                                        <div className={styles.zone}>
+                                            {/* <div className={styles.zone_img} style={{backgroundColor:first?.value==="profissionais"?"#FF785A":"#0358e5", borderColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>
+                                                {
+                                                    first?.value==="profissionais"?
+                                                    <EmojiPeopleIcon className={styles.zone_person_icon} style={{transform: 'scaleX(-1)', color:"#ffffff"}}/>
+                                                    :
+                                                    <TitleIcon className={styles.zone_build_icon} style={{color:"#ffffff"}}/>
+                                                }
+                                            </div> */}
+                                            <div className={styles.zone_select}>
+                                                {/* <SelectHome
+                                                    menuOpen={() => {}}
+                                                    menuClose={() => {}}
+                                                    searcheable={false}
+                                                    home={true}
+                                                    options={firstOptions} 
+                                                    optionFirst={first} 
+                                                    option={first} 
+                                                    changeOption={val => setFirst(val)}
+                                                    placeholder={"Tipo"}/> */}
+                                                <div className={styles.zone_select_buttons}>
+                                                    <span className={first?.value==="trabalhos"?styles.zone_select_button:styles.zone_select_button_off} 
+                                                        onClick={() => setFirst({ value: 'trabalhos', label: 'Trabalhos' })}
+                                                        style={{marginRight:'2px', 
+                                                                width:first?.value==="trabalhos"?"80%":"20%",
+                                                                backgroundColor:first?.value==="trabalhos"?"#0358e5":"#0358e520", 
+                                                                fontWeight:first?.value==="trabalhos"?600:600,
+                                                                fontSize: first?.value==="trabalhos"?'0.9rem':'0.8rem',
+                                                                color:first?.value==="trabalhos"?'white':'#0358e5bb',
+                                                                borderColor:"#0358e5"}}>
+                                                                    <span style={{position:'absolute', zIndex:3}}>
+                                                                    {
+                                                                        first?.value==="trabalhos"?
+                                                                        'TAREFAS'
+                                                                        :<TitleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)'}}/>
+                                                                    }
+                                                                    </span>
                                                                 </span>
-                                                            </span>
 
-                                                <span className={first?.value==="profissionais"?styles.zone_select_button:styles.zone_select_button_off_profissional}
-                                                    onClick={() => setFirst({ value: 'profissionais', label: 'Profissionais' })}
-                                                    style={{marginLeft:'2px',
-                                                            width:first?.value==="profissionais"?"80%":"20%",
-                                                            backgroundColor:first?.value==="profissionais"?"#FF785A":"#FF785A20",
-                                                            fontWeight:first?.value==="profissionais"?600:600,
-                                                            color:first?.value==="profissionais"?'white':'#FF785Abb',
-                                                            fontSize: first?.value==="profissionais"?'0.9rem':'0.8rem',
-                                                            borderColor:"#FF785A"}}>
-                                                                <span style={{position:'absolute', zIndex:3}}>{
-                                                                first?.value==="profissionais"?
-                                                                'PROFISSIONAIS'
-                                                                :<EmojiPeopleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)'}}/>
-                                                            }</span>
-                                                            </span>
+                                                    <span className={first?.value==="profissionais"?styles.zone_select_button:styles.zone_select_button_off_profissional}
+                                                        onClick={() => setFirst({ value: 'profissionais', label: 'Profissionais' })}
+                                                        style={{marginLeft:'2px',
+                                                                width:first?.value==="profissionais"?"80%":"20%",
+                                                                backgroundColor:first?.value==="profissionais"?"#FF785A":"#FF785A20",
+                                                                fontWeight:first?.value==="profissionais"?600:600,
+                                                                color:first?.value==="profissionais"?'white':'#FF785Abb',
+                                                                fontSize: first?.value==="profissionais"?'0.9rem':'0.8rem',
+                                                                borderColor:"#FF785A"}}>
+                                                                    <span style={{position:'absolute', zIndex:3}}>{
+                                                                    first?.value==="profissionais"?
+                                                                    'PROFISSIONAIS'
+                                                                    :<EmojiPeopleIcon className={styles.zone_person_icon_small} style={{transform: 'scaleX(-1)'}}/>
+                                                                }</span>
+                                                                </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className={styles.zone_arrow_div}>
-                                        <span className={first?.value==="trabalhos"?second?.value?styles.zone_arrow_trabalhos:styles.zone_arrow_trabalhos_half
-                                                        :second?.value?styles.zone_arrow_trabalhadores:styles.zone_arrow_trabalhadores_half}>
-                                            {/* arrow */}
-                                        </span>
-                                    </div>
-                                    <div className={styles.zone}>
-                                        <div className={styles.zone_img} style={{borderColor:second?.value?first?.value==="profissionais"?"#FF785A":"#0358e5":"#252d36",
-                                                    backgroundColor:second?.value?'#161F28':'#161F28"'}}>
-                                            {
-                                                second?.value? 
-                                                <img src={second.img} className={styles.zone_image_prof}/>
-                                                :
-                                                <ConstructionIcon className={styles.zone_build_icon} style={{transform: 'scaleX(-1)'}}/>
-                                            }
-                                        </div>
-                                        <div className={styles.zone_select}>
-                                            <SelectHome 
-                                                menuOpen={() => {
-                                                    if(windowDimensions.width <= 768)
-                                                        setTimeout(() => {
-                                                            select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
-                                                        }, 200)
-                                                    else
-                                                        setTimeout(() => {
-                                                            top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
-                                                        }, 200)
+                                        <div className={styles.zone}>
+                                            {/* <div className={styles.zone_img} style={{borderColor:second?.value?first?.value==="profissionais"?"#FF785A":"#0358e5":"#252d36",
+                                                        backgroundColor:second?.value?'#161F28':'#161F28"'}}>
+                                                {
+                                                    second?.value? 
+                                                    <img src={second.img} className={styles.zone_image_prof}/>
+                                                    :
+                                                    <ConstructionIcon className={styles.zone_build_icon} style={{transform: 'scaleX(-1)'}}/>
+                                                }
+                                            </div> */}
+                                            <div className={styles.zone_select}>
+                                                <SelectHome 
+                                                    menuOpen={() => {
+                                                        if(windowDimensions.width <= 768)
+                                                            setTimeout(() => {
+                                                                select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
+                                                            }, 200)
+                                                        else
+                                                            setTimeout(() => {
+                                                                top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                            }, 200)
 
-                                                    setBackdrop(true)
-                                                }}
-                                                menuClose={() => {
-                                                    setBackdrop(false)
-                                                    // if(windowDimensions.width <= 768)
-                                                    //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
-                                                }}
-                                                home={true}
-                                                profs={true}
-                                                options={profissoesGrouped}
-                                                optionFirst={first} 
-                                                option={second} 
-                                                smallWindow={windowDimensions.width <= 1024}
-                                                mediumWindow={windowDimensions.width <= 1440}
-                                                changeOption={val => {
-                                                    // if(windowDimensions.width <= 768)
-                                                    //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
-                                                    setSecond(val)
-                                                    setBackdrop(false)
-                                                }}
-                                                placeholder={'tipo de serviço'}/>
+                                                        setBackdrop(true)
+                                                    }}
+                                                    menuClose={() => {
+                                                        setBackdrop(false)
+                                                        // if(windowDimensions.width <= 768)
+                                                        //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                    }}
+                                                    home={true}
+                                                    profs={true}
+                                                    options={profissoesGrouped}
+                                                    optionFirst={first} 
+                                                    option={second} 
+                                                    smallWindow={windowDimensions.width <= 1024}
+                                                    mediumWindow={windowDimensions.width <= 1440}
+                                                    changeOption={val => {
+                                                        // if(windowDimensions.width <= 768)
+                                                        //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                        setSecond(val)
+                                                        setBackdrop(false)
+                                                    }}
+                                                    placeholder={'Tipo de serviço'}
+                                                    placeholder_desc={'Pesquisa por um serviço'}/>
+                                            </div>
                                         </div>
+                                        <div className={styles.zone} ref={select_regioes}>
+                                            {/* <div className={styles.zone_img} style={{borderColor:third?first.value==="profissionais"?"#FF785A":"#0358e5":"#252d36",
+                                                        backgroundColor:third?'#161F28':'#161F28'}}>
+                                                {
+                                                    third? 
+                                                    <span className={styles.zone_image_region} style={{color:third.value==='online'?'#398606':'#fff'}}>{regioesOptions[third.value]}</span>
+                                                    :
+                                                    <LocationOnIcon className={styles.zone_build_icon}/>
+                                                }
+                                            </div> */}
+                                            <div className={styles.zone_select}>
+                                                <SelectHome
+                                                    menuOpen={() => {
+                                                        if(windowDimensions.width <= 768)
+                                                            setTimeout(() => {
+                                                                select_regioes.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
+                                                            }, 200)
+                                                    }}
+                                                    menuClose={() => {
+                                                        if(windowDimensions.width <= 768)
+                                                            select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
+                                                    }}
+                                                        
+                                                    home={true}
+                                                    regioes={true}
+                                                    options={regioes}
+                                                    optionFirst={first} 
+                                                    option={third}
+                                                    second={second}
+                                                    smallWindow={windowDimensions.width <= 1024}
+                                                    mediumWindow={windowDimensions.width <= 1440}
+                                                    changeOption={val => {
+                                                        if(windowDimensions.width <= 768)
+                                                            select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
+                                                        setThird(val)}}
+                                                    placeholder={'Região'}
+                                                    placeholder_desc={'Pesquisa por um local'}/>
+                                            </div>
+                                        </div>
+                                        <div onClick={() => {
+                                                        searchHandler()
+                                                    }} className={styles.search_wrapper} 
+                                                    style={{backgroundColor:first?.value==="profissionais"?"#FF785A":"#0358e5",
+                                                            borderColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>
+                                        <SearchIcon className={styles.zone_search_icon} style={{color:"#ffffff"}}/>
                                     </div>
-                                    <div className={styles.zone_arrow_div}>
-                                        <span className={second&&third?first?.value==='trabalhos'?styles.zone_arrow_trabalhos:styles.zone_arrow_trabalhadores
-                                                        :second?first?.value==='trabalhos'?styles.zone_arrow_trabalhos_half:styles.zone_arrow_trabalhadores_half
-                                                        :third?first?.value==='trabalhos'?styles.zone_arrow_trabalhos_half_reverse:styles.zone_arrow_trabalhadores_half_reverse
-                                                        :styles.zone_arrow_none}>
-                                            {/* arrow */}
-                                        </span>
-                                    </div>
-                                    <div className={styles.zone} ref={select_regioes}>
-                                        <div className={styles.zone_img} style={{borderColor:third?first.value==="profissionais"?"#FF785A":"#0358e5":"#252d36",
-                                                    backgroundColor:third?'#161F28':'#161F28'}}>
-                                            {
-                                                third? 
-                                                <span className={styles.zone_image_region} style={{color:third.value==='online'?'#398606':'#fff'}}>{regioesOptions[third.value]}</span>
-                                                :
-                                                <LocationOnIcon className={styles.zone_build_icon}/>
-                                            }
-                                        </div>
-                                        <div className={styles.zone_select}>
-                                            <SelectHome
-                                                menuOpen={() => {
-                                                    if(windowDimensions.width <= 768)
-                                                        setTimeout(() => {
-                                                            select_regioes.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
-                                                        }, 200)
-                                                }}
-                                                menuClose={() => {
-                                                    if(windowDimensions.width <= 768)
-                                                        select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
-                                                }}
-                                                    
-                                                home={true}
-                                                regioes={true}
-                                                options={regioes}
-                                                optionFirst={first} 
-                                                option={third}
-                                                second={second}
-                                                smallWindow={windowDimensions.width <= 1024}
-                                                mediumWindow={windowDimensions.width <= 1440}
-                                                changeOption={val => {
-                                                    if(windowDimensions.width <= 768)
-                                                        select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
-                                                    setThird(val)}}
-                                                placeholder={'Região'}/>
-                                        </div>
                                     </div>
                                 </div>
-                                <div onClick={() => {
-                                                    // second&&third&&
-                                                    searchHandler()
-                                                }} className={styles.search_wrapper} 
-                                                style={{backgroundColor:first?.value==="profissionais"?"#FF785A20":"#0358e520",
-                                                        borderColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>
-                                    <SearchIcon className={styles.zone_search_icon} style={{color:"#ffffff"}}/>
-                                    <span className={styles.zone_search_button} style={{color:"#ffffff", marginTop:'3px'}}>PROCURAR {first?.value==='profissionais'?'profissionais':'tarefas'}</span>
-                                </div>
-                                <div onClick={() => (second||third)&&clearTopSearch()} className={second||third?styles.search_clear_wrapper:styles.search_clear_wrapper_disabled} style={{borderColor:second||third?'#ffffff':""}}>
-                                    {/* <SearchOffIcon className={styles.zone_search_icon} style={{color:second&&third?"#ffffff":"#ffffff90"}}/> */}
-                                    <span className={styles.zone_search_button} style={{color:second||third?'#ffffff':"#ffffff80", fontSize:'0.7rem'}}>LIMPAR PESQUISA</span>
-                                </div>
+                                {/* {
+                                    searchPosition!==0?
+                                    <div onClick={() => (second||third)&&clearTopSearch()} className={second||third?styles.search_clear_wrapper:styles.search_clear_wrapper_disabled} style={{borderColor:second||third?'#ffffff':""}}>
+                                        <span onClick={() => setSearchPosition(0)} className={styles.zone_search_button} style={{color:second||third?'#ffffff':"#ffffff80", fontSize:'0.7rem'}}>LIMPAR PESQUISA</span>
+                                    </div>
+                                    :null
+                                } */}
                             </div>
-                            
                             :
                             <div className={styles.section_content} style={{backgroundColor:"transparent"}}>
                                 <p className={styles.skeleton_content_in}></p>
                             </div>  
                         }
-                        
+                        {
+                            loaded?
+                            <img src={hero_2} className={styles.hero_image}/>
+                            :null
+                        }
                     </div>
-                    {
+                    {/* {
                         loaded?
                         <div className={styles.ou_wrapper}>
-                            <span className={styles.back_publish_title} style={{fontWeight:400, margin:'30px auto'}}>OU</span>
+                            <span className={styles.ou_line}/>
+                            <span className={styles.ou} style={{fontWeight:400}}>OU</span>
                         </div>
                         :null
                     }
@@ -921,21 +936,21 @@ const Home = (props) => {
                         loaded?
                         <div className={`${styles.home_back_publish}`} style={{marginTop:'0px'}}>
 
-                            <p className={styles.back_publish_title} style={{textAlign:'center'}}>PUBLICAR A MINHA TAREFA</p>
+                            <p className={styles.back_publish_title_special} style={{textAlign:'center', marginTop:'0px'}}>PUBLICAR</p>
                             {
                                 user?._id!=null?
                                 <div className={styles.back_publish_div} style={{backgroundColor:"#ffffff"}} onClick={() => navigate('/publicar/novo')}>
                                     <div className={styles.home_back_publish_wrapper}>
                                         <PostAddIcon className={styles.section_img_mini} style={{color:"#0358e5"}}/>
-                                        <span className={styles.section_publicar} style={{color:"#0358e5"}}>NOVA TAREFA</span>
+                                        <span className={styles.section_publicar} style={{color:"#0358e5"}}>PUBLICAR UMA TAREFA NOVA</span>
                                     </div>
                                 </div>
                                 :
                                 user?._id===null||!user?
-                                <div className={styles.back_publish_div} style={{backgroundColor:"#ffffff"}} onClick={() => handleMoveAuth(1)} 
+                                <div className={styles.back_publish_div} style={{backgroundColor:"#ffffff", marginTop:'0px'}} onClick={() => handleMoveAuth(1)} 
                                     data-tooltip-id={'home'} data-tooltip-content="Por favor inicia sessão ou cria conta para publicares uma tarefa.">
                                     <AddBoxIcon className={styles.section_img_mini} style={{color:"#161F28"}}/>
-                                    <span className={styles.section_publicar} style={{color:"#161F28"}}>CRIAR CONTA</span>
+                                    <span className={styles.section_publicar} style={{color:"#161F28"}}>CRIAR CONTA E PUBLICAR A MINHA TAREFA</span>
                                 </div>
                                 :null
                             }
@@ -953,19 +968,12 @@ const Home = (props) => {
                             </div>
                         </div>
                         :null
-                    }
+                    } */}
                 </div>
                 
 
                 {
-                    loaded?
-                    <div className={styles.home_divider}>.</div>
-                    :null
-                }
-                
-
-                {
-                    user?._id!=null?
+                    user?._id!=null && !emptyNotifications?
                     <div style={{width:'80%', margin: '0 auto', marginTop:'30px'}}>
                         <p className={styles.back_publish_title}>CENTRO DE NOTIFICAÇÕES</p>
                     </div>
@@ -973,11 +981,12 @@ const Home = (props) => {
                     :null
                 }
                 {
-                    user?._id!=null?
+                    user?._id!=null && !emptyNotifications?
                     <div className={styles.home_back_publish} style={{marginTop:'0px'}}>
                     {
                         <div className={styles.notification_area}>
                             {   
+                                
                                 mapWrapper()
                             }
                         </div>
@@ -986,10 +995,10 @@ const Home = (props) => {
                     :null
                 }
 
-                <span className={styles.home_explorar} style={{marginBottom:'15px'}}>EXPLORAR</span>
+                {/* <span className={styles.home_explorar} style={{marginBottom:'15px'}}>EXPLORAR</span> */}
 
                 {/* ULTIMAS 5 TAREFAS */}
-                {
+                {/* {
                     items?.length>0?
                     <div style={{width:'80%', margin: '0 auto', marginTop:'30px'}}>
                         <p className={styles.back_publish_title}>ÚLTIMAS TAREFAS PUBLICADAS</p>
@@ -1015,9 +1024,9 @@ const Home = (props) => {
                         <div className={styles.loading_skeleton}/>
                         <div className={styles.loading_skeleton}/>
                     </div>
-                }
+                } */}
                 
-                
+{/*                 
                 <div className={styles.home_geral} style={{marginTop:'50px', marginBottom:'70px'}}>
                     {
                         loaded?
@@ -1154,16 +1163,17 @@ const Home = (props) => {
                         <p className={styles.skeleton_content_in}></p>
                     </div>
                     :null
-                }
+                } */}
                     
                 <div className={styles.footer} style={{paddingBottom:window.adsbygoogle?"60px":"20px"}}>
                     <div className={styles.footer_div}>
                         <div className={styles.footer_div_column}>
-                            <p className={styles.footer_div_text} style={{color: '#71848d'}}>APP Tarefas (brevemente)</p>
+                            <p className={styles.footer_div_text} style={{color: '#71848d', textDecoration:'none !important', cursor:'default'}}>APP Tarefas (brevemente)</p>
                             <p className={styles.footer_div_text} onClick={() => setContactosBanner(true)}>Contactos</p>
                             <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dá uma sugestão</p>
                             <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
                             <p className={styles.footer_div_text} onClick={() => setPpBanner(true)}>Política de privacidade</p>
+                            <p className={styles.footer_div_text} onClick={() => setInformationBanner(true)}>Sou novo no TAREFAS</p>
                             <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me profissional</p>
                         </div>
                         <div className={styles.footer_div_column}>

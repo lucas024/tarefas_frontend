@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from './welcome.module.css'
-import logo_text from '../assets/logo_text_mix_4.png'
+import logo_text from '../assets/logo-tarefas-alt.svg'
 import {CSSTransition}  from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
 import image1 from '../assets/1.png'
@@ -14,7 +14,7 @@ import image8 from '../assets/8.png'
 import image9 from '../assets/9.png'
 import image10 from '../assets/10.png'
 import image11 from '../assets/11.png'
-
+import Loader from './loader';
 const Welcome = (props) => {
 
     const navigate = useNavigate()
@@ -85,15 +85,19 @@ const Welcome = (props) => {
                                             >
                                             
                                         <div>
-                                            <div className={styles.button_wrapper}>
+                                            {/* <div className={styles.button_wrapper}>
                                                 <div className={styles.button} onClick={() => props.closeWelcome()}>
                                                     <span className={styles.button_text}>CONTINUAR</span>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                         </div>
 
                                         
                                     </CSSTransition>
+                                    <div style={{marginTop:'80px', position:'relative'}}>
+                                        <Loader loading={true}/>
+                                    </div>
+                                    
                                 </div>
                                 
                         </div>

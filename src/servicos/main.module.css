@@ -1,12 +1,24 @@
 .servicos{
     width: 100%;
-    height: calc(100vh - 138px);
     background-color: var(--brand);
-    margin: 0 auto;
-    border-top: 1px solid #ddd;
+    margin-top: var(--content-margin-top); 
     position: relative;
     overflow: auto;
     scroll-behavior: smooth;
+}
+.num_wrapper{
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+    height: var(--navbar-height);
+    min-height: var(--navbar-min-height);
+    max-height: var(--navbar-max-height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid var(--action);
+    background-color: var(--brand);
+    z-index: 5;
 }
 .option{
     display: flex;
@@ -28,9 +40,11 @@
     border-radius: 5px;
 }
 .backdrop{
-    position: absolute;
-    width: 100%;
-    height: calc(100%);
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
     background-color: #000000dd;
     z-index: 3;
     transition: all 500ms ease-in-out;
@@ -129,18 +143,7 @@
     display: flex;
     flex-direction: column;
 }
-.num_wrapper{
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-top: 1px solid var(--action);
-    background-color: var(--brand);
-    z-index: 5;
-    height: 60px;
-}
+
 .num{
     width: 100%;
 }
@@ -519,7 +522,6 @@
         font-size: 0.7rem;
     }
     .servicos{
-        height: calc(100vh - 108px);
     }
     .top_info_numbers{
         font-size: 0.8rem;
@@ -566,9 +568,6 @@
     }
     .search_filter_div_right{
         width: 200px;
-    }
-    .num_wrapper{
-        height: 30px;
     }
     .num_flex_content{
         /* padding: 0px 5px; */

@@ -664,7 +664,7 @@ const Publicar = props => {
                             setSelectedWorkerObject(val)
                             setBackdrop(false)
                         }}
-                        placeholder={'TIPO DE SERVIÇO'}/>
+                        placeholder={'SERVIÇO QUE PROCURAS'}/>
                 </CSSTransition>
             </div>
             {

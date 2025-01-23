@@ -16,9 +16,10 @@ input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
 }
 :root {
-  --neutral: #FFFFFF;
+  --neutral: #ffffff;
   --brand: #161F28;
-  --action: #FF785A;
+  --dark: #0A131C;
+  --action: #ff785a;
   --helper: #BA8376;
   --grey: #71848d;
   --green: #398606;
@@ -28,6 +29,13 @@ input:-webkit-autofill:active {
   --background: #f2f4f5;
   --skeleton: #f3f3f330;
   --job: #0358e5;
+  --navbar-min-height: 40px;
+  --navbar-max-height: 80px;
+  --navbar-height: 5vh;
+  --content-margin-top: calc(max(min(var(--navbar-height), var(--navbar-max-height)), var(--navbar-min-height)));
+  --standard: 0.55vw;
+  --small: 0.44vw;
+  --big: 0.66vw;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -95,6 +103,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.03em;
   font-size: 1em;
   height: 100%;
   background-color: var(--brand);

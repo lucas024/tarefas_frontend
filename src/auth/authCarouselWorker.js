@@ -31,7 +31,7 @@ const AuthCarouselWorker = props => {
         if(list?.length>0)
             return list?.map((el, i) => {
                 return (
-                    <p key={i} className={styles_personal.map_label}>{profissoesMap[el]?.label}</p>
+                    <p key={i} className={styles_personal.map_label} onClick={() => props.setCheckedProf(el)}>{profissoesMap[el]?.label}</p>
                     
                 )
             })
@@ -213,7 +213,13 @@ const AuthCarouselWorker = props => {
                     {mapSelected(props.selectedProf, 'jobs')}
                 </div>
                 <div onClick={() => props.setShowSelectProfs(true)} className={styles.select_yoyo}>
-                    <span>Selecionar Serviços</span>
+                    {
+                        props.selectedProf?.length===0?
+                        <span>Selecionar Serviços</span>
+                        :
+                        <span>Editar Serviços</span>
+                    }
+                    
                 </div>
                 
                 
@@ -235,7 +241,7 @@ const AuthCarouselWorker = props => {
 
             <div className={styles.login}>
                 <p className={styles.register_title}>Distritos ou regiões onde trabalhas</p>
-                <span className={styles.selected_number}>({props.selectedReg.length}/18)</span>
+                <span className={styles.selected_number}>({props.selectedReg.length}/21)</span>
                 <div className={styles.map_div}>
                     {mapRegioes()}
                 </div>

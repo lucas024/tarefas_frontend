@@ -1,0 +1,33 @@
+.loader{
+    position: absolute;
+    top: calc(50% - 50px);
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    z-index: 20;
+}
+.logo_wrapper{
+}
+.img_wrapper{
+    z-index: 20;
+    animation: move 5s infinite;
+    border-radius: 50%;
+}
+.img{
+    width: 80px;
+    height: 80px;
+    background-color: var(--brand);
+    border-radius: 50%;
+}
+.bar_wrapper{
+    margin-top: 15px;
+}
+
+@keyframes move {
+    25% {transform: rotate(180deg);}
+    50% {transform: rotate(0deg);}
+    75% {transform: rotate(-180deg);}
+    100% {transform: rotate(0deg);}
+  }

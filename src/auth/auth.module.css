@@ -28,7 +28,6 @@
 .auth_main{
     width: 100%;
     min-height: calc(100vh - 68px);
-    border-top: 1px solid #ccc;
     background-color: var(--brand);
     display: flex;
     flex-direction: column;
@@ -568,6 +567,7 @@
     width: fit-content;
     font-weight: 600;
     font-size: 1.2rem;
+    text-transform: uppercase;
 }
 .login_button_worker{
     width: 100%;
@@ -1165,7 +1165,7 @@
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
-background-color: var(--action);
+background-color: var(--job);
 }
 
 /* When the checkbox is checked, add a blue background */

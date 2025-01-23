@@ -81,7 +81,20 @@
     /* color: var(--job); */
     /* font-style: italic; */
 }
-
+.placeholder{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    text-align: left;
+    font-size: var(--standard);
+}
+.placeholder_title{
+    font-weight: 600;
+}
+.placeholder_desc{
+    font-weight: 400;
+}
 @media (max-width: 1024px){
     .label_label_profs_small{
         font-size: 0.7rem;

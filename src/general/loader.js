@@ -1,6 +1,9 @@
 import React, {CSSProperties} from 'react'
 import ClipLoader from "react-spinners/BounceLoader";
+import BarLoader from "react-spinners/BarLoader";
 import { css } from "@emotion/react";
+import logo from '../assets/logo_circular.png'
+import styles from './loader.module.css'
 
 
 const override: CSSProperties = {
@@ -38,13 +41,28 @@ const border_override = css`
 
 const Loader = (props) => {
     return(
-        <div>
-            <ClipLoader color={"#FFFFFF"} cssOverride={props.small?small_override:override} loading={props.loading} size={props.small?20:150} />
-                {
-                    props.loading?
-                    <div css={props.nofrontdrop===true?"":"frontdrop"} style={{borderRadius:props.radius?"10px":""}}></div>
-                    :null
-                }
+        <div className={styles.loader}>
+            {/* <ClipLoader color={"#FFFFFF"} cssOverride={props.small?small_override:override} loading={props.loading} size={props.small?20:150} /> */}
+            {
+              props.loading?
+              <div className={styles.logo_wrapper}>
+                <div className={styles.img_wrapper}>
+                  <img className={styles.img} src={logo}/>
+                </div>
+                <div className={styles.bar_wrapper}>
+                  <BarLoader color='#ffffff' loading={true}/>
+                </div>
+                
+              </div>
+              :null
+            }
+            
+            {
+                props.loading?
+                <div css={props.nofrontdrop===true?"":"frontdrop"} style={{borderRadius:props.radius?"10px":""}}></div>
+                :null
+            }
+            
         </div>
         
     )

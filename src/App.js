@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styles from './app.module.css'
 import {
   BrowserRouter,
   Routes,
@@ -200,115 +201,118 @@ const refreshWorker = () => {
 }
 
   return (
-    <div className="App">
         <BrowserRouter>
+          <div className={styles.app_container}>
           <Navbar 
             badPublications={badPublications}
             userLoadAttempt={userLoadAttempt}/>
+          <div className={styles.content_container}>
           <Routes>
-          <Route exact path="/email-teste" 
-                element={<EmailMensagem/>}
-              />
-              <Route exact path="/landing" 
-                element={<Landing/>}
-              />
-              <Route exact path="/confirm-email" 
-                element={<ConfirmEmail/>}
-              />
-              <Route exact path="/politica-privacidade" 
-                element={<Pp white={true}/>}
-              />
-              <Route exact path="/main/publications/publication" 
-                element={<Trabalho
-                  refreshWorker={() => refreshWorker()}
-                  userLoadAttempt={userLoadAttempt}
-                  />}
-              />
-              <Route exact path="/main/publications/profissional" 
-                element={<Profissional
-                  userLoadAttempt={userLoadAttempt}
-                  />}
-              />
-              <Route exact path="/main/publications/*" 
-                element={<Main
-                  userLoadAttempt={userLoadAttempt}
-                  />}
-              />
-              <Route exact path="/publicar/:editar/*" 
-                key={'single'}
-                element={
-                  <ProtectedRoute
-                    redirectPath='/'
-                    isAllowed={
-                      // user?.type===0&&
-                      parseInt(window.localStorage.getItem('loggedIn'))
-                    }>
-                    <Publicar
-                      refreshWorker={() => refreshWorker()}
-                      loading={loading}
-                      loadingHandler={bool => setLoading(bool)}
-                      />
-                  </ProtectedRoute>
+            <Route exact path="/email-teste" 
+                  element={<EmailMensagem/>}
+                />
+                <Route exact path="/landing" 
+                  element={<Landing/>}
+                />
+                <Route exact path="/confirm-email" 
+                  element={<ConfirmEmail/>}
+                />
+                <Route exact path="/politica-privacidade" 
+                  element={<Pp white={true}/>}
+                />
+                <Route exact path="/main/publications/publication" 
+                  element={<Trabalho
+                    refreshWorker={() => refreshWorker()}
+                    userLoadAttempt={userLoadAttempt}
+                    />}
+                />
+                <Route exact path="/main/publications/profissional" 
+                  element={<Profissional
+                    userLoadAttempt={userLoadAttempt}
+                    />}
+                />
+                <Route exact path="/main/publications/*" 
+                  element={<Main
+                    userLoadAttempt={userLoadAttempt}
+                    />}
+                />
+                <Route exact path="/publicar/:editar/*" 
+                  key={'single'}
+                  element={
+                    <ProtectedRoute
+                      redirectPath='/'
+                      isAllowed={
+                        // user?.type===0&&
+                        parseInt(window.localStorage.getItem('loggedIn'))
+                      }>
+                      <Publicar
+                        refreshWorker={() => refreshWorker()}
+                        loading={loading}
+                        loadingHandler={bool => setLoading(bool)}
+                        />
+                    </ProtectedRoute>
+                    }
+                />
+                <Route exact path="/publicar/novo/*" 
+                  key={'all'}
+                  element={
+                    <ProtectedRoute
+                      redirectPath='/'
+                      isAllowed={
+                        // user?.type===0&&
+                        parseInt(window.localStorage.getItem('loggedIn'))
+                      }>
+                      <Publicar
+                        loading={loading}
+                        loadingHandler={bool => setLoading(bool)}
+                        />
+                    </ProtectedRoute>
+                    }
+                />
+                <Route exact path="/user" 
+                  element={
+                    <ProtectedRoute
+                      redirectPath='/'
+                      isAllowed={
+                        parseInt(window.localStorage.getItem('loggedIn'))
+                      }>
+                      <User
+                        refreshWorker={() => refreshWorker()}
+                        userLoadAttempt={userLoadAttempt}
+                        loadingHandler={bool => setLoading(bool)}
+                        />
+                    </ProtectedRoute>
                   }
-              />
-              <Route exact path="/publicar/novo/*" 
-                key={'all'}
-                element={
-                  <ProtectedRoute
-                    redirectPath='/'
-                    isAllowed={
-                      // user?.type===0&&
-                      parseInt(window.localStorage.getItem('loggedIn'))
-                    }>
-                    <Publicar
-                      loading={loading}
-                      loadingHandler={bool => setLoading(bool)}
-                      />
-                  </ProtectedRoute>
-                  }
-              />
-              <Route exact path="/user" 
-                element={
-                  <ProtectedRoute
-                    redirectPath='/'
-                    isAllowed={
-                      parseInt(window.localStorage.getItem('loggedIn'))
-                    }>
-                    <User
-                      refreshWorker={() => refreshWorker()}
-                      userLoadAttempt={userLoadAttempt}
-                      loadingHandler={bool => setLoading(bool)}
-                      />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/authentication/*" 
-                element={<Auth
-                  loading={loading}
-                  loadingHandler={bool => setLoading(bool)}/>}
-              />
-              <Route path="/admin/*" 
-                element={
-                  <ProtectedRoute
-                    redirectPath='/'
-                    isAllowed={
-                      parseInt(window.localStorage.getItem('loggedIn'))&&isAdmin
-                    }>
-                    <Admin 
-                        userLoadAttempt={userLoadAttempt}/>
-                  </ProtectedRoute>
-                } />
-              <Route path="/" 
-                element={<Home
-                  badPublications={badPublications}
-                  refreshWorker={() => refreshWorker()}
-                  userLoggedIn = {parseInt(window.localStorage.getItem('loggedIn'))}
-                  notifications={notifications}
-                  userLoadAttempt={userLoadAttempt}/>} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+                />
+                <Route path="/authentication/*" 
+                  element={<Auth
+                    loading={loading}
+                    loadingHandler={bool => setLoading(bool)}/>}
+                />
+                <Route path="/admin/*" 
+                  element={
+                    <ProtectedRoute
+                      redirectPath='/'
+                      isAllowed={
+                        parseInt(window.localStorage.getItem('loggedIn'))&&isAdmin
+                      }>
+                      <Admin 
+                          userLoadAttempt={userLoadAttempt}/>
+                    </ProtectedRoute>
+                  } />
+                <Route path="/" 
+                  element={<Home
+                    badPublications={badPublications}
+                    refreshWorker={() => refreshWorker()}
+                    userLoggedIn = {parseInt(window.localStorage.getItem('loggedIn'))}
+                    notifications={notifications}
+                    userLoadAttempt={userLoadAttempt}/>} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            </div>
+          </div>
         </BrowserRouter>
-    </div>
+    
   );
 }
 

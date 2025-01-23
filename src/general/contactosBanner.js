@@ -36,13 +36,13 @@ const ContactosBanner = (props) => {
                 <span className={styles.contact_title}>E-mail</span>
                 <div className={styles.contact_center}>
                     <MailIcon className={styles.contact_icon}/>
-                    <span className={styles.contact_text}>pt.tarefas@gmail.com</span>
+                    <span className={styles.contact_text}>noreply@pt-tarefas.pt</span>
                 </div>
-                <span className={styles.contact_title} style={{marginTop:'20px'}}>Instagram</span>
+                {/* <span className={styles.contact_title} style={{marginTop:'20px'}}>Instagram</span>
                 <div className={styles.contact_center}>
                     <InstagramIcon className={styles.contact_icon}/>
                     <span className={styles.contact_text}>tarefaspt</span>
-                </div>
+                </div> */}
                 
                 <div className={styles.cancel_wrapper} style={{marginTop:'30px'}}>
                     <span className={styles.cancel} onClick={() => props.cancel()}>fechar</span>

@@ -93,12 +93,12 @@ const SuggestionBanner = (props) => {
                                 setSuggestion(e.target.value)}}>
                             </TextareaAutosize>
                         </div>
-                        <p className={styles.info}>Obrigado pela sua sugestão!</p>
-                        <span className={suggestion.length>10?styles.send:styles.send_disabled} onClick={() => suggestion.length>10&&send()}>ENVIAR</span>
+                        <p className={styles.info}>Obrigado pela tua sugestão!</p>
+                        <span style={{marginTop:'30px'}} className={suggestion.length>10?styles.send:styles.send_disabled} onClick={() => suggestion.length>10&&send()}>ENVIAR</span>
                     </div>
                 }
                 
-                <div className={styles.cancel_wrapper}>
+                <div className={styles.cancel_wrapper} style={{marginTop:'-10px'}}>
                     <span className={styles.cancel} onClick={() => props.cancel()}>fechar</span>
                 </div>
             </div>

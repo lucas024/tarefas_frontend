@@ -162,7 +162,7 @@ const WorkerBannerContent = props => {
                     null
                     :
                     <div className={styles.discount_area}>
-                        <span className={styles.line_discount}><strong>*</strong>Aproveita a oferta de <strong>3 meses de subscrição gratuitos</strong> para novos profissionais.</span>
+                        <span className={styles.line_discount}><strong>*</strong>Aproveita a oferta de <strong>90 dias (3 meses) de subscrição gratuitos</strong> para novos profissionais.</span>
                         <div style={{display:'flex', justifyContent:'center'}}>
                             <div className={styles.discount_big}>
                                 <p className={styles.discount_text_big}>90 dias subscrição grátis</p>

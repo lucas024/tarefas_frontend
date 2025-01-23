@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import styles from './navbar.module.css'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {logout} from '../firebase/firebase'
 import ChatIcon from '@mui/icons-material/Chat';
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import {Tooltip} from 'react-tooltip';
 import TitleIcon from '@mui/icons-material/Title';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import { useSelector, useDispatch } from 'react-redux'
-import logo from '../assets/logo_inicio.png'
+import logo from '../assets/new_assets/logo-tarefas-filled.png'
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
@@ -332,10 +330,16 @@ const Navbar = (props) => {
                     
                                     </div>
                                     :loaded?
-                                    <div>
-                                        <p className={styles.user_login} 
-                                            onClick={() => navigate('/authentication/user?type=1')}>
-                                            Iniciar Sessão</p>
+                                    <div className={styles.user_not_logged}>
+                                        <p className={styles.become_worker_text}>
+                                            Tornar-me profissional
+                                        </p>
+                                        <div className={styles.user_login_wrapper}>
+                                            <span className={styles.user_login} 
+                                                onClick={() => navigate('/authentication/user?type=1')}>
+                                                Iniciar sessão</span>
+                                        </div>
+                                        
                                         <div className={styles.user_login_short} onClick={() => navigate('/authentication?type=1')}>
                                             <LoginIcon className={styles.user_login_icon} />
                                         </div>

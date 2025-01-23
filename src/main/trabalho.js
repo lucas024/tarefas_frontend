@@ -42,6 +42,8 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Loader from '../general/loader';
 import { render } from '@react-email/components';
 import EmailMensagem from '../email/emailMensagem';
+import MetaDecorator from '../general/metaDecorator';
+import getMeta from '../general/metaDecorator';
 
 const ObjectID = require("bson-objectid");
 
@@ -456,13 +458,21 @@ const Trabalho = (props) => {
         })
     }
 
+    const meta = getMeta(
+        reservation.title,
+        'Tarefa',
+        reservation?.photos?.length>0?reservation?.photos[0]:null,
+        'Fotografia da Tarefa'
+    )
+
     return (
         <div style={{position:"relative"}}>
+            {meta}
             {
                 loading?
                 <div className={styles.main_frontdrop}>
                     <div className={styles.main_frontdrop_loader}>
-                        <Loader loading={loading} />
+                        {/* <Loader loading={loading} /> */}
                     </div>
                 </div>
                 :null

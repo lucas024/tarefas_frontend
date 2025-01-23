@@ -14,6 +14,8 @@ import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import NoPage from '../general/noPage';
 import { render } from '@react-email/components';
 import EmailMensagem from '../email/emailMensagem';
+import { Helmet } from 'react-helmet';
+import getMeta from '../general/metaDecorator';
 
 const ObjectID = require("bson-objectid");
 
@@ -229,6 +231,13 @@ const Profissional = props => {
         }
     }
 
+    const meta = getMeta(
+        worker.name,
+        'Profissional no TAREFAS',
+        worker.photoUrl,
+        'Fotografia do Profissional'
+    )
+
     return(
         noWorker?
         <div className={styles.worker}>
@@ -236,6 +245,7 @@ const Profissional = props => {
         </div>
             :
         <div className={styles.worker}>
+            {meta}
             <p className={styles.reservar_upper_title}>PROFISSIONAL</p>
             <div className={styles.normal_back}>
                 <Link className={styles.normal_back_left} 

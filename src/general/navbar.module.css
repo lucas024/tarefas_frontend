@@ -2,33 +2,76 @@
 @import '../index.css';
 
 .navbar{
-    background: rgb(255,255,255);
+    background-color: #161F28;
     flex: 0 1 auto;
-    height: 67px;
+    height: var(--navbar-height);
+    min-height: var(--navbar-min-height);
+    max-height: var(--navbar-max-height);
+    border-bottom: 1px solid transparent;
+    width: 100vw;
+    left: 0;
+    top: 0;
+    position: fixed;
+    z-index: 10;
 }
 .flex{
     display: flex;
     justify-content: space-between;
-    height: 100%;
     margin: auto;
-    width: 98%;
+    width: 90%;
+    height: 100%;
 }
 
 .logo{
-    width: 50px;
-    height: 50px;
     cursor: pointer;
-    border: 1px solid white;
+    height: 75%;
 }
 .logo:hover{
     transform: scale(1.05);
     transition: all 150ms;
+}
+.user_not_logged{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--standard);
+}
+.user_login_wrapper{
+    background-color: var(--job);
+    height: 65%;
+    padding: 0 1vh;
+    width: max-content;
+    border-radius: 8px;
+    color: var(--neutral);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.user_login_wrapper:hover{
+    opacity: 0.8;
+    transition: 150ms all;
+}
+.become_worker_text{
+    color: var(--neutral);
+    margin-right: 1vw;
+}
+.become_worker_text:hover{
+    text-decoration: underline;
+    cursor: pointer;
+    transition: 150ms all;
+}
+.user_login{
+    position: relative;
+    font-weight: 500;
 }
 .flex_end{
     display: flex;
     flex-direction: column;
     justify-content: center;
     position: relative;
+    height: 100%;
 }
 .flex_right{
     display: flex;
@@ -58,17 +101,6 @@
     font-weight: 600;
     font-size: 1.5rem;
 }
-.user_login{
-    font-weight: 500;
-    margin-right: 5px;
-    margin-bottom: 0px;
-    cursor: pointer;
-    position: relative;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--check);
-    text-transform: uppercase;
-}
 .chat_div{
     display: flex;
     position: relative;
@@ -97,7 +129,7 @@
     text-transform: uppercase;
 }
 .chat{
-    color: var(--brand);
+    color: var(--neutral);
 }
 .chat_notification{
     height: 15px;
@@ -263,7 +295,7 @@
 .user_text{
     font-weight: 700;
     font-size: 0.9rem;
-    color: var(--brand);
+    color: var(--neutral);
     text-transform: uppercase;
     margin-top: 10px;
 }
@@ -540,6 +572,9 @@
     margin-top: 3px;
 }
 @media (max-width: 500px){
+    .user_login_wrapper{
+        display: none;
+    }
     .drop_div_notification_wide{
         display: none;
     }
@@ -572,7 +607,7 @@
         margin: 0 5px;
     }
     .user_login_icon{
-        color: var(--brand);
+        color: var(--neutral);
     }
     .user_text{
         display: none;
@@ -604,8 +639,7 @@
         height: 40px;
     }
     .logo{
-        width: 30px;
-        height: 30px;
+
     }
     .user_button_disabled{
         padding: 0 5px;

@@ -17,7 +17,7 @@
     cursor: pointer;
 }
 .row_home:hover{
-    transform: scale(1.005);
+    transform: scale(1.003);
     background-color: #0358e5;
     transition: all 150ms;
 }
