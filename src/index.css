@@ -16,12 +16,13 @@ input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
 }
 :root {
-  --neutral: #ffffff;
+  --neutral: #fafafa;
   --brand: #161F28;
   --dark: #0A131C;
   --action: #ff785a;
   --helper: #BA8376;
-  --grey: #71848d;
+  --grey: #cccccc;
+  --grey_text: #6a6a6a;
   --green: #398606;
   --check: #0358e5;
   --yellow: #fdd835;
@@ -33,9 +34,11 @@ input:-webkit-autofill:active {
   --navbar-max-height: 80px;
   --navbar-height: 5vh;
   --content-margin-top: calc(max(min(var(--navbar-height), var(--navbar-max-height)), var(--navbar-min-height)));
-  --standard: 0.55vw;
-  --small: 0.44vw;
-  --big: 0.66vw;
+  --bigger: calc(max(14px, 0.77vw));
+  --big: calc(max(12px, 0.66vw));
+  --standard: calc(max(10px, 0.55vw));
+  --small: calc(max(8px, 0.44vw));
+  --small: calc(max(6px, 0.33vw));
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

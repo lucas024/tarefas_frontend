@@ -45,22 +45,32 @@
     width: 20px !important;
     height: 20px !important;
 }
-
-.label_label{
-    font-weight: 600;
+.label_main{
+    font-weight: 500;
     margin-left: 5px;
-    font-size: 0.8rem;
+    font-size: var(--big);
+}
+.label_desc{
+    font-weight: 400;
+    font-size: var(--standard);
+    color: var(--grey_text);
+    font-family: 'Montserrat', sans-serif !important;
+}
+.label_label{
+    font-weight: 500;
+    margin-left: 5px;
+    font-size: var(--standard);
 }
 .label_label_profs{
-    font-weight: 600;
+    font-weight: 500;
     margin-left: 5px;
-    font-size: 0.9rem;
+    font-size: var(--standard);
     color: white;
 }
 .label_label_profs_small{
-    font-weight: 600;
+    font-weight: 500;
     margin-left: 5px;
-    font-size: 0.8rem;
+    font-size: var(--small);
     color: white;
 }
 .label_img_profs{
@@ -68,9 +78,9 @@
     height: 20px !important;
 }
 .label_label_online{
-    font-weight: 600;
+    font-weight: 500;
     margin-left: 5px;
-    font-size: 0.8rem;
+    font-size: var(--standard);
     color: var(--green);
 }
 .label_online{
@@ -88,36 +98,13 @@
     height: 100%;
     text-align: left;
     font-size: var(--standard);
-}
-.placeholder_title{
-    font-weight: 600;
+    margin: 0 !important;
 }
 .placeholder_desc{
     font-weight: 400;
-}
-@media (max-width: 1024px){
-    .label_label_profs_small{
-        font-size: 0.7rem;
-    }
-    .group_title{
-        font-size: 0.7rem;
-    }
-}
-@media (max-width: 768px){
-    .label_img_profs{
-        width: 15px !important;
-        height: 15px !important;
-    }
-    .label_label_profs{
-        font-size: 0.7rem;
-        margin-left: 0;
-        margin-top: 3px;
-    }
-    .label_label_profs_small{
-        font-size: 0.6rem;
-    }
-    .label_profs{
-        flex-direction: column;
-        padding: 0px;
-    }
+    white-space: nowrap;  /* Prevent text wrapping */
+    overflow: hidden;     /* Hide the overflow */
+    text-overflow: ellipsis;  /* Show ellipsis (...) when text overflows */
+    display: inline-block;  /* Ensure the span behaves like a block for width control */
+    color: var(--grey_text);
 }

@@ -1,27 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select'
 import styles from './select.module.css'
-import { height, width } from '@mui/system';
+import { border, display, fontWeight, height, margin, padding, width } from '@mui/system';
 
 const SelectHome = (props) => {
+
+    const [menuOpen, setMenuOpen] = useState(false)
     
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
             backgroundColor: props.home?'transparent':props.publicar?'#161F28':props.option?.value==='trabalhos'?"#0358e5":props.option?.value==='profissionais'?"#FF785A":props.option?.value?"#161F28":"#252d36",
             borderColor: "#ffffff",
-            fontSize: "0.55vw",
+            fontSize: "calc(max(0.55vw, 10px))",
             textTransform: props.publicar||props.home?"normal":"uppercase",
             color: props.home?'#000000':"#ffffff",
             fontWeight: 600,
             width: props.publicar||props.home?"100%":"250px",
             transition: "0.5s all ease-in-out",
             borderRadius: "5px",
-            borderBottomLeftRadius: state.menuIsOpen? 0: "5px",
-            borderBottomRightRadius: state.menuIsOpen? 0: "5px",
-            border: props.details&&props.edit?'1px solid #ffffff':
-                props.home&&props.option?props.optionFirst?.value==='trabalhos'?'2px solid #0358e5':'2px solid #FF785A':state.isSelected? "1px solid white":props.home?'2px solid #ffffff40': 0,
-            boxShadow: "white",
+            // borderBottomLeftRadius: state.menuIsOpen? 0: "5px",
+            // borderBottomRightRadius: state.menuIsOpen? 0: "5px",
+            // border: props.details&&props.edit?'1px solid #ffffff':
+            //     props.home&&props.option?props.optionFirst?.value==='trabalhos'?'2px solid #0358e5':'2px solid #FF785A':state.isSelected? "1px solid white":props.home?'2px solid #ffffff40': 0,
+            // boxShadow: "white",
             height:props.home?'100%':props.mediumWindow?'30px':"40px",
             minHeight:props.mediumWindow?'none':'',
             "&:hover": {
@@ -31,13 +33,16 @@ const SelectHome = (props) => {
             top: '-40px',
             left: 0,
             zIndex: props.profs?4:'',
-            boxShadow: 
-                props.auth||props.publicarNew?'0px -1px 5px 0px rgba(255,255,255,0.8)':
-                !props.details&&props.profs&&!props.option?
-                    props.optionFirst?.value==='trabalhos'?'0px -1px 10px 0px rgba(255,255,255,0.8)':'0px -1px 10px 0px rgba(255,255,255,0.8)':
-                props.home&&props.second&&!props.option?
-                    props.optionFirst?.value==='trabalhos'?'0px -1px 10px 0px rgba(255,255,255,0.8)':'0px -1px 10px 0px rgba(255,255,255,0.8)'
-                :'',
+            border: 'none',
+            boxShadow: 'none',
+            // boxShadow: 
+            //     props.auth||props.publicarNew?'0px -1px 5px 0px rgba(255,255,255,0.8)':
+            //     !props.details&&props.profs&&!props.option?
+            //         props.optionFirst?.value==='trabalhos'?'0px -1px 10px 0px rgba(255,255,255,0.8)':'0px -1px 10px 0px rgba(255,255,255,0.8)':
+            //     props.home&&props.second&&!props.option?
+            //         props.optionFirst?.value==='trabalhos'?'0px -1px 10px 0px rgba(255,255,255,0.8)':'0px -1px 10px 0px rgba(255,255,255,0.8)'
+            //     :'',
+            
 
         }),
         option: (base, state) => ({
@@ -110,18 +115,20 @@ const SelectHome = (props) => {
         }),
         input: base => ({
             ...base,
-            color: "#ffffff",
+            color: props.home?"#000000":"#ffffff",
             paddingLeft:"5px",
-            fontSize:props.auth?'1rem':''
+            fontSize:props.auth?'1rem':'inherit',
+            fontWeight:500,
+            padding: 0,
+            fontSize: "calc(max(0.55vw, 10px))",
         }),
         singleValue: base => ({
             ...base,
-            color: "#ffffff",
+            color: "#000",
             margin: "auto",
-            minWidth:props.publicar?'0px':'200px',
             display: 'flex',
             justifyContent: 'center',
-            fontSize: props.publicar?"0.8rem":"0.7rem",
+            fontSize: "calc(max(0.55vw, 10px))",
             alignItems: 'center'
         }),
         indicatorSeparator : base => ({
@@ -132,7 +139,8 @@ const SelectHome = (props) => {
         valueContainer: base => ({
             ...base,
             height:'100%',
-            width:'100%'
+            width:'100%',
+            padding: 0
             // padding: "2px 10px 2px 2px",
             // margin: 'auto',
             // height: props.mediumWindow?'30px':"40px",
@@ -153,14 +161,20 @@ const SelectHome = (props) => {
             },
 
         }),
-        placeholder: base => ({
+        placeholder: (base, state) => ({
             ...base,
             fontStyle: 'normal !important',
             fontFamily: 'Montserrat, sans-serif !important',
             fontWeight: '600',
             textAlign: props.home?'center':'left',
-            color: props.details?'#ffffff':'#000000',
-            height:'100%'
+            color: state.isFocused?'transparent':props.details?'#ffffff':'#000000',
+            height:'100%',
+            margin: 0,
+            display: state.isFocused || props.value ? 'none' : 'block'
+        }),
+        container: base => ({
+            ...base,
+            height:'50% !important',
         })
     }
 
@@ -247,8 +261,7 @@ const SelectHome = (props) => {
             placeholder={
                 props.home?
                 <span className={styles.placeholder}>
-                    <span className={styles.placeholder_title}>{props.placeholder}</span>
-                    <span className={styles.placeholder_desc}>{props.placeholder_desc}</span>
+                    <span className={styles.placeholder_desc}>{props.placeholder_desc}</span>                   
                 </span>
                 :
                 <span style={{marginLeft:'5px', color:props.home?'#000000':props.details&&props.edit?'#ffffff':'#ffffff80'}}>{props.placeholder}</span>}
@@ -256,8 +269,11 @@ const SelectHome = (props) => {
             options={props.options}
             value={props.option}
             isSearchable={props.searcheable===false?false:true}
-            onMenuOpen={() => props.menuOpen()}
-            onBlur={() => props.menuClose()}
+            onMenuOpen={() => {
+                props.menuOpen()
+                // setMenuOpen(true)
+            }}
+            onBlur={() => props.menuClose()&&setMenuOpen(false)}
             onMenuClose={() => props.menuClose()}
             formatGroupLabel={props.profs?formatGroupLabelAuxProfs:formatGroupLabelAux}
             formatOptionLabel={(option, {context}) => {

@@ -62,7 +62,9 @@
     border-radius: 30px;
     background-color: var(--dark);
     padding: 3px;
-    height: 2.5vh;
+    height: 1.5vw;
+    min-height: 25px;
+    max-height: 40px;
     align-items: center;
     justify-content: space-between;
 }
@@ -80,6 +82,15 @@
 .main_select_element:hover{
     opacity: 0.8;
     transition: 150ms all;
+}
+.placeholder_title_wrapper{
+    height: 50%;
+    display: flex;
+    align-items: center;
+}
+.placeholder_title{
+    font-weight: 600;
+    font-size: var(--standard);
 }
 .search_wrapper:hover{
     opacity: 0.7;
@@ -214,6 +225,14 @@
     color: #ffffff;
     text-transform: uppercase;
 }
+.zone_seperator{
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2px;
+    background-color: var(--grey);
+}
 .zone{
     display: flex;
     align-items: center;
@@ -223,14 +242,15 @@
 }
 .zone_wrapper{
     display: flex;
-    height: 5vh;
+    height: 3vw;
+    min-height: 55px;
+    max-height: 70px;
     align-items: center;
     justify-content: space-around;
     background-color: var(--neutral);
-    border-radius: 12px;
+    border-radius: 50px;
     padding: 0;
     width: 100%;
-    
 }
 .zone_img{
     background-color: var(--brand);
@@ -272,6 +292,10 @@
 .zone_select{
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 5px;
 }
 .zone_select_buttons{
     display: flex;
@@ -324,7 +348,7 @@
     aspect-ratio: 1/1;
     justify-content: center;
     align-items: center;
-    border-radius: 12px;
+    border-radius: 50%;
 }
 
 @keyframes blue {
@@ -1044,10 +1068,10 @@
     /* margin-top: 22px; */
 }
 .backdrop{
-    position: absolute;
+    position: fixed;
     width: 100%;
-    height: calc(100vh - 68px);
-    background-color: #000000dd;
+    height: 100%;
+    background-color: #00000090;
     z-index: 1;
     transition: all 500ms ease-in-out;
     overflow: hidden;
@@ -1470,13 +1494,6 @@
     }
     .text_brand{
         width: 200px;
-    }
-    .search_wrapper{
-        padding: 5px 0;
-        /* font-size: 1.5em; */
-    }
-    .zone_search_icon{
-        display: none !important;
     }
     .zone_search_button{
         font-size: 0.7em;
