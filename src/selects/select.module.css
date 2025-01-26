@@ -14,12 +14,6 @@
     opacity: 0.7;
     margin-left: -5px;
 }
-.label{
-    display: flex;
-    align-items: center;
-    padding: 10px 0;
-    padding-left: 5px;
-}
 .label_profs{
     display: flex;
     align-items: center !important;
@@ -33,6 +27,19 @@
     margin-left: 2px;
     margin-right: 2px;
 }
+.label{
+    display: flex;
+    align-items: flex-start;
+    padding: 0.1vw 0;
+    padding-left: 5px;
+    height: 100%;
+    padding: 10px;
+}
+.label_active{
+    background-color: var(--grey_background);
+    border-radius: 4px;
+    
+}
 .label:hover{
     opacity: 0.8;
     transition: 150ms all;
@@ -41,13 +48,19 @@
     opacity: 0.8;
     transition: 150ms all;
 }
+.label_img_wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+}
 .label_img{
-    width: 20px !important;
-    height: 20px !important;
+    width: 0.8vw !important;
+    height: auto !important;
+    min-width: 14px;
 }
 .label_main{
     font-weight: 500;
-    margin-left: 5px;
     font-size: var(--big);
 }
 .label_desc{
@@ -55,6 +68,16 @@
     font-size: var(--standard);
     color: var(--grey_text);
     font-family: 'Montserrat', sans-serif !important;
+    width: max-content;
+    margin-top: 2px;
+    /* Ensure the content doesn't wrap to the next line */
+    white-space: nowrap;
+    /* Hide overflow content */
+    overflow: hidden;
+    /* Add ellipsis (...) at the end when text overflows */
+    text-overflow: ellipsis;
+    width: calc(9vw);
+    min-width: 100px;
 }
 .label_label{
     font-weight: 500;

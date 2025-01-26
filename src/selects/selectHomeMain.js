@@ -33,6 +33,13 @@ const SelectHomeMain = (props) => {
             color: "#161F28",
             fontWeight: state.isSelected? 800: 500,
             backgroundColor: "transparent",
+            overflow: 'hidden',
+            padding: '0.15vw 0.2vw',
+            "&:active": {
+                backgroundColor: "#e4eaf0",
+                borderRadius: '8px',
+                transition: '10ms all'
+            },
         }),
         menu: base => ({
             ...base,
@@ -45,10 +52,12 @@ const SelectHomeMain = (props) => {
             padding: "0",
             zIndex: 5,
             marginTop: '10px',
-            
+            width: '12vw',
+            minWidth: '150px'
         }),
         menuList: base => ({
             ...base,
+            padding: 0
         }),
         container: base => ({
             ...base,
@@ -116,19 +125,20 @@ const SelectHomeMain = (props) => {
 
     const formatOptionLabelAux = (data, context) => {
         return (
-            <div>
-                <div className={styles.label} style={{padding:context==='value'?0:''}}>
+            <div className={`${styles.label} ${((data.value === props.option.value) && (context === 'menu'))?styles.label_active:''}`}>
+                <div className={styles.label_img_wrapper}>
                     {
                         data.img?
                         <img src={data.img} className={styles.label_img}/>
                         :null
-                    }
-                    
-                    <p className={styles.label_main} style={{marginLeft:data.img?"5px":"0px"}}>{data.label}</p>
+                    } 
                 </div>
-                {
-                    context === 'menu' && <p className={styles.label_desc}>{data.desc}</p>
-                }
+                <div className={styles.label_main_wrapper} style={{marginLeft:data.img?"8px":"0px"}}>
+                    <p className={styles.label_main}>{data.label}</p>
+                    {
+                        context === 'menu' && <p className={styles.label_desc}>{data.desc}</p>
+                    }
+                </div>
             </div>
         )
     }
@@ -139,7 +149,8 @@ const SelectHomeMain = (props) => {
             styles={stylesSelect}
             options={props.options}
             value={props.option}
-            isSearchable={props.searcheable===false?false:true}
+            // menuIsOpen={1}
+            isSearchable={false}
             onMenuOpen={() => {
                 props.menuOpen()
             }}

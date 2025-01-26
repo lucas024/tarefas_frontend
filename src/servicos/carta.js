@@ -80,7 +80,7 @@ const Carta = (props) => {
                     {
                         worker.photoUrl!==""?
                         <img className={styles.worker_img} 
-                            src={worker.photoUrl}/>
+                            src={worker.photoUrl} referrerPolicy="no-referrer"/>
                         :
                         <div className={styles.image_tbd_wrapper}>
                             <EmojiPeopleIcon className={styles.image_tbd} style={{transform: 'scaleX(-1)'}}/>

@@ -8,8 +8,9 @@ import Sessao from '../transitions/sessao';
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import {auth} from '../firebase/firebase'
 import SelectHome from '../selects/selectHome';
-import {profissoesGrouped, regioes, regioesOptions} from './util'
+import {profissoesGrouped, regioes, regioesOptions, profissoesMap} from './util'
 import InstagramIcon from '@mui/icons-material/Instagram';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import {Tooltip} from 'react-tooltip';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
@@ -21,14 +22,10 @@ import { search_scroll_save, user_sort_chats, user_update_chats } from '../store
 import TosBanner from './tosBanner';
 import SuggestionBanner from './suggestionBanner';
 import ContactosBanner from './contactosBanner';
-import ConstructionIcon from '@mui/icons-material/Construction';
-import FacebookIcon from '@mui/icons-material/Facebook';
 import ChatIcon from '@mui/icons-material/Chat';
 import FaceIcon from '@mui/icons-material/Face';
 import axios from 'axios';
-import home_arrow_right from '../assets/home_arrow_right.png'
-import home_arrow_left from '../assets/home_arrow_left.png'
-import AddBoxIcon from '@mui/icons-material/AddBox';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
@@ -40,6 +37,11 @@ import hero_1 from '../assets/new_assets/hero_1.png'
 import hero_2 from '../assets/new_assets/hero_2.png'
 import icon_1 from '../assets/new_assets/icon_1.png'
 import icon_2 from '../assets/new_assets/icon_2.png'
+import icon_3 from '../assets/new_assets/worker_small.png'
+import icon_4 from '../assets/new_assets/tasks_small.png'
+
+
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import {
     DefineAdSlot,
@@ -77,6 +79,7 @@ const Home = (props) => {
 
 
     const [items, setItems] = useState([])
+    const [workers, setWorkers] = useState([])
     const [workerBanner, setWorkerBanner] = useState(false)
     const [tosBanner, setTosBanner] = useState(false)
     const [ppBanner, setPpBanner] = useState(false)
@@ -135,6 +138,7 @@ const Home = (props) => {
         }
             
         fetchJobs()
+        fetchWorkers()
 
         
       }, []);
@@ -503,26 +507,32 @@ const Home = (props) => {
         }
     }
 
-    const mapRowsToDisplay = () => {
+    const mapContentToDisplay = () => {
         return items.map((item, i) => {
             return(
-                <div key={i} className={styles.row}>
-                    <div onClick={() => {
-                            navigate(`/main/publications/publication?id=${item._id}`, {
-                                    state: {
-                                        fromUserPage: false,
-                                    }
+                <div key={i} className={styles.content_item}
+                    onClick={() => {
+                        navigate(`/main/publications/publication?id=${item._id}`, {
+                                state: {
+                                    fromUserPage: false,
                                 }
-                            )}
-                        }>
-                        <Row
-                            home={true}
-                            item={item}
-                            locationActive={null}
-                            workerActive={false}let listaTrabalhosVistos
-                            user_id={user?._id}
-                            trabalhoVisto={JSON.parse(window.localStorage.getItem('listaTrabalhosVistos'))?.includes(item._id)}
-                        />
+                            }
+                        )}}>
+                    <div className={styles.item}>
+                        <div className={styles.item_top}>
+                            <img className={styles.top_image} src={profissoesMap[item.workerType]?.img}/>
+                            <div className={styles.top_arrow_wrapper}>
+                                <ArrowForwardIcon className={styles.top_arrow}/>
+                            </div>
+                        </div>
+                        <div className={styles.item_middle}>
+                            <p className={styles.middle_title}>{item.title}</p>
+                            <p className={styles.middle_desc}>{item.desc}</p>
+                        </div>
+                        <div className={styles.item_bottom}>
+                            <LocationOnIcon className={styles.bottom_icon}/>
+                            <p className={styles.bottom_location}>{regioesOptions[item.district]}</p>
+                        </div>
                     </div>
                     
                 </div>
@@ -530,10 +540,78 @@ const Home = (props) => {
         })
     }
 
+    const mapWorkersToDisplay = () => {
+        return workers.map((item, i) => {
+            return(
+                <div key={i} className={styles.content_item_worker}
+                    onClick={() => {
+                        navigate(`/main/publications/publication?id=${item._id}`, {
+                                state: {
+                                    fromUserPage: false,
+                                }
+                            }
+                        )}}>
+                    <div className={styles.worker}>
+                        <div className={styles.worker_top}>
+                            <img className={styles.worker_image} referrerPolicy="no-referrer" src={item.photoUrl}/>
+                        </div>
+                        <div className={styles.worker_bottom}>
+                            <div className={styles.worker_bottom_title}>
+                                <p className={styles.middle_title}>{item.name}</p>
+                                <div className={styles.top_arrow_wrapper}>
+                                    <ArrowForwardIcon className={styles.top_arrow}/>
+                                </div>
+                            </div>
+                            <div className={styles.worker_bottom_info_wrapper}>
+                                <div className={styles.worker_bottom_info}>
+                                    <ConstructionIcon className={styles.bottom_icon}/>
+                                    <div className={styles.worker_bottom_info_wrapper_deep}>
+                                        <p className={styles.bottom_info}>{profissoesMap[item.trabalhos[0]]?.label}</p>
+                                        {
+                                            item.trabalhos?.length>1?
+                                            <p className={styles.bottom_info}> +{item.trabalhos?.length - 1}</p>
+                                            :null
+                                        }
+                                    </div>
+                                </div>
+                                <div className={styles.worker_bottom_info}>
+                                    <LocationOnIcon className={styles.bottom_icon}/>
+                                    <div className={styles.worker_bottom_info_wrapper_deep}>
+                                        <p className={styles.bottom_info}>{regioesOptions[item.regioes[0]]}</p>
+                                        {
+                                            item.regioes?.length>1?
+                                            <p className={styles.bottom_info}> +{item.regioes?.length - 1}</p>
+                                            :null
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles.item_bottom}>
+                            
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            )
+        })
+    }
+
+
+
     const fetchJobs = () => {
-        axios.get(`${api_url}/reservations`,{ params: {limit: 5} }).then(res => {
+        axios.get(`${api_url}/reservations`,{ params: {limit: 3} }).then(res => {
             if(res.data!==null){
                 setItems(res.data.data)
+            }
+        })
+    }
+
+    const fetchWorkers = () => {
+        axios.get(`${api_url}/workers`, { params: {limit: 3} }).then(res => {
+            if(res.data!==null){
+                setWorkers(res.data.data)
             }
         })
     }
@@ -650,81 +728,6 @@ const Home = (props) => {
                     </div>
                     :null
                 } */}
-                <CSSTransition 
-                    in={false&&newPopup&&windowDimensions.width>500}
-                    timeout={1000}
-                    classNames="welcome"
-                    unmountOnExit
-                    >
-                        <div className={styles.upper_wrapper}>
-                            <div className={styles.upper_wrapper_text}>
-                                <p className={styles.upper_wrapper_text_title}>NOVO NO TAREFAS?</p>
-                                {/* <p className={styles.upper_wrapper_text_subtitle}>Esta plataforma junta <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#0358e5"}}>clientes</span> e <span style={{fontWeight:600, textDecoration:'underline', textDecorationColor:"#FF785A"}}>profissionais</span>.</p> */}
-                                {/* <p className={styles.upper_wrapper_text_subtitle}>O cliente publica as tarefas que quer ver realizadas e espera o contacto de profissionais. O profissional encontra as tarefas e contacta os clientes, simultaneamente expondo o seu negócio.</p> */}
-                                <p className={styles.upper_wrapper_text_subtitle}>O Tarefas é uma plataforma que permite aos clientes procurar profissionais ou esperar que eles venham até si. Os profissionais, por outro lado, podem encontrar tarefas para realizar ao mesmo tempo que expôem o seu negócio através do seu perfil publicamente visível.</p>
-                                <div className={styles.new}>
-                                    <div className={styles.new_side} style={{marginRight:'5px'}}>
-                                        <span className={styles.new_title} style={{color:'#0358e5'}}>CLIENTE</span>
-                                        <p className={styles.upper_wrapper_text_subtitle} style={{color:"#0358e5", fontWeight:600, textDecoration:'none', textDecorationColor:'#0358e5', textDecorationThickness:'1px'}}>Como cliente, basta criares a tua conta e publicares uma tarefa ou procurares um profissional.</p>
-                                    </div>
-                                    <div className={styles.new_side} style={{marginLeft:'5px'}}>
-                                        <span className={styles.new_title} style={{color:'#FF785A'}}>PROFISSIONAL</span>
-                                        <p className={styles.upper_wrapper_text_subtitle} style={{color:"#FF785A", fontWeight:600, textDecoration:'none', textDecorationColor:'#FF785A', textDecorationThickness:'1px'}}>Como profissional, depois de criares a tua conta segue os passos de ativar o modo profissional e começa a realizar tarefas.</p>
-                                    </div>
-                                </div>
-                                
-                                
-                            </div>
-                            <div className={styles.upper}>
-                                    <div className={styles.upper_side_wrapper} style={{marginRight:'20px'}}>
-                                        <div className={styles.upper_side_text_helper}>
-                                            <p className={styles.upper_side_text}>Quero publicar a minha tarefa e ser contactado por profissionais</p>
-                                        </div>
-                                    </div>
-                                
-                                <div className={styles.upper_side_wrapper}>
-                                    <div className={styles.upper_side_text_helper} style={{borderColor:"#FF785A"}}>
-                                        <p className={styles.upper_side_text}>Quero realizar tarefas e expôr o meu negócio</p>
-                                    </div>                                    
-                                </div>
-                            </div>
-                            <div className={styles.upper_two} style={{marginTop:'0px'}}>
-                                <div className={styles.upper_side_wrapper}>
-                                    <img src={home_arrow_left} className={styles.home_arrow}/>
-                                </div>
-                                
-                                <div className={styles.upper_side_wrapper}>
-                                    <img src={home_arrow_right} className={styles.home_arrow}/>
-                                </div>
-                            </div>
-                            <div className={styles.upper_two}>
-                                <div className={styles.upper_side_wrapper} style={{display:'block', width:"80%"}}>
-                                    <div className={styles.upper_side}>
-                                        <div className={styles.upper_button} style={{backgroundColor:"#ffffff", borderColor:"#ffffff"}} onClick={() => {
-                                            handleMoveAuth(0)
-                                            window.localStorage.setItem('dismissedBanner', true)
-                                        }} >
-                                            <AddBoxIcon className={styles.section_img_mini_mini} style={{color:"#161F28"}}/>
-                                            <span className={styles.section_publicar_mini} style={{color:"#161F28"}}>CRIAR CONTA</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* <div className={styles.upper_side_wrapper}>
-                                    <div className={styles.upper_side}>
-                                        <span className={styles.upper_button} onClick={() => setWorkerBanner(true)} style={{backgroundColor:"#ffffff",  borderColor:"#ffffff"}}>
-                                        <EmojiPeopleIcon className={styles.section_img_mini_mini} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
-                                            <span className={styles.section_publicar_mini} style={{color:"#FF785A"}}>CRIAR CONTA MODO PROFISSIONAL</span>
-                                        </span>
-                                    </div>
-                                </div> */}
-                            </div>
-                            <span className={styles.upper_wrapper_close} onClick={() => {
-                                setNewPopup(false)
-                                window.localStorage.setItem('dismissedBanner', true)
-                            }}>FECHAR</span>
-                        </div>
-                        
-                </CSSTransition>
                 <div className={styles.home_hero}>
                     {
                         hasUnreadTexts?
@@ -911,176 +914,73 @@ const Home = (props) => {
                     </div>
                     :null
                 }
-
-                {/* <span className={styles.home_explorar} style={{marginBottom:'15px'}}>EXPLORAR</span> */}
-
-                {/* ULTIMAS 5 TAREFAS */}
-                {/* {
-                    items?.length>0?
-                    <div style={{width:'80%', margin: '0 auto', marginTop:'30px'}}>
-                        <p className={styles.back_publish_title}>ÚLTIMAS TAREFAS PUBLICADAS</p>
-                    </div>
-                    
-                    :null
-                }
-                {
-                    loaded?
-                        items?.length>0?
-                            <div className={styles.home_back_publish} style={{marginTop:'0px'}}>
-                                <div className={styles.notification_area} style={{paddingTop:0}}>
-                                    {mapRowsToDisplay()}
-                                </div>
-                                
+                <div className={styles.explore}>
+                    <div className={styles.explore_row}>
+                        <div className={styles.row_header}>
+                            <div className={styles.header_widget_wrapper}>
+                                <img src={icon_4} className={styles.widget_image}/>
+                                <p className={styles.widget_title}>Tarefas</p>
                             </div>
-                        :null
-                    :
-                    <div>
-                        <div className={styles.loading_skeleton}/>
-                        <div className={styles.loading_skeleton}/>
-                        <div className={styles.loading_skeleton}/>
-                        <div className={styles.loading_skeleton}/>
-                        <div className={styles.loading_skeleton}/>
-                    </div>
-                } */}
-                
-{/*                 
-                <div className={styles.home_geral} style={{marginTop:'50px', marginBottom:'70px'}}>
-                    {
-                        loaded?
-                        <p className={styles.back_publish_title}>VER</p>
-                        :null
-                    }
-                    
-                    {
-                        user!=null&&user?._id!==null&&!user?.worker&&loaded?
-                        <div className={styles.home_back_bottom}>
-                            <div className={styles.section_content}>
-                                <div className={styles.section_image_wrapper}>
-                                    <EmojiPeopleIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
-                                </div>
-                                <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
-                                    PROFISSIONAIS
-                                </span>
-                                <span className={styles.section_image_text}>
-                                    Ver todos os profissionais disponíveis
-                                </span>
-                                <div className={styles.section_button_right} onClick={() => navigate('/main/publications/profissionais')}>
-                                    <p className={styles.section_title_right} style={{fontSize: '0.9rem', color:"#FF785A"}}>
-                                        VER PROFISSIONAIS
-                                    </p>
-                                </div>
+                            <div className={styles.header_title_wrapper}>
+                                <p>Últimas tarefas <br/>publicadas</p>
                             </div>
+                            <div className={styles.header_button_wrapper}>
+                                <div className={styles.header_button}>Explorar tarefas</div>
+                            </div>
+
                         </div>
-                        :
-                        <div className={styles.home_back_bottom}>
-                            <div className={styles.section_one}>
-                                {
-                                    loaded?
-                                    <div className={styles.section_content}>
-                                        <div className={styles.section_image_wrapper}>
-                                            <TitleIcon className={styles.section_img} style={{color:"white"}}/>
-                                        </div>
-                                        <span className={styles.section_image_text_title} style={{color:"#0358e5"}}>
-                                            TAREFAS
-                                        </span>
-                                        <span className={styles.section_image_text}>
-                                            Ver todas as tarefas disponíveis
-                                        </span>
-                                        <div className={styles.section_button} onClick={() => navigate('/main/publications/trabalhos')}>
-                                            <p className={styles.section_title} style={{fontSize: '0.9rem', color:"#0358e5"}}>
-                                                VER TAREFAS
-                                            </p>
-                                        </div>
-                                    </div> 
-                                    :
-                                    <div className={styles.section_content}>
-                                        <span className={styles.skeleton_content_in_img}></span>
-                                        <p className={styles.skeleton_content_in}></p>
-                                    </div>        
-                                }
-                            </div>
-                            <span className={styles.section_spacer}></span>
+                        <div className={styles.row_content}>
                             {
-                                user?.worker&&loaded?
-                                <div className={styles.section_two}>
-                                    <div className={styles.section_content}>
-                                        <div className={styles.section_image_wrapper}>
-                                            <AccessibilityIcon className={styles.section_img} style={{color:"#ffffff"}}/>
-                                        </div>
-                                        <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
-                                            CONTA
-                                        </span>
-                                        <span className={styles.section_image_text}>
-                                            Ver ou editar conta
-                                        </span>
-                                        <div className={styles.section_button_right} onClick={() => navigate('/user?t=conta')}>
-                                            <p className={styles.section_title_right} style={{fontSize: '0.9rem', color:"#FF785A"}}>
-                                                VER CONTA
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                :
                                 loaded?
-                                <div className={styles.section_two}>
-                                    <div className={styles.section_content}>
-                                        <div className={styles.section_image_wrapper}>
-                                            <EmojiPeopleIcon className={styles.section_img} style={{color:"#ffffff", transform: 'scaleX(-1)'}}/>
-                                        </div>
-                                        <span className={styles.section_image_text_title} style={{color:"#FF785A"}}>
-                                            PROFISSIONAIS
-                                        </span>
-                                        <span className={styles.section_image_text}>
-                                            Ver todos os profissionais disponíveis
-                                        </span>
-                                        <div className={styles.section_button_right} onClick={() => navigate('/main/publications/profissionais')}>
-                                            <p className={styles.section_title_right} style={{fontSize: '0.9rem', color:"#FF785A"}}>
-                                                VER PROFISSIONAIS
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+                                items?.length>0?
+                                    mapContentToDisplay()
+                                :null
                                 :
-                                <div className={styles.section_two}>
-                                    <div className={styles.section_content}>
-                                        <span className={styles.skeleton_content_in_img}></span>
-                                        <p className={styles.skeleton_content_in}></p>
-                                    </div>
+                                <div className={styles.row_content_skeleton}>
+                                    <div className={styles.content_item_skeleton}/>
+                                    <div className={styles.content_item_skeleton}/>
+                                    <div className={styles.content_item_skeleton}/>
                                 </div>
-                                
-                                
                             }
                         </div>
-                    }
+                    </div>
+                    
+                    <div className={styles.explore_row}>
+                        <div className={styles.row_content}>
+                            {
+                                loaded?
+                                workers?.length>0?
+                                    mapWorkersToDisplay()
+                                :null
+                                :
+                                <div className={styles.row_content_skeleton}>
+                                    <div className={styles.content_item_skeleton}/>
+                                    <div className={styles.content_item_skeleton}/>
+                                    <div className={styles.content_item_skeleton}/>
+                                </div>
+                            }
+                        </div>
+                        <div className={styles.row_header_right}>
+                            <div className={styles.row_header} style={{width:'fit-content'}}>
+                                <div className={styles.header_widget_wrapper}>
+                                    <img src={icon_3} className={`${styles.widget_image} ${styles.action}`}/>
+                                    <p className={`${styles.widget_title} ${styles.action}`}>Profissionais</p>
+                                </div>
+                                <div className={styles.header_title_wrapper}>
+                                    <p>Deixa para <br/>quem sabe</p>
+                                </div>
+                                <div className={styles.header_button_wrapper}>
+                                    <div className={styles.header_button} style={{backgroundColor:'#ff785a'}}>Ver lista de profissionais</div>
+                                        <p className={styles.header_worker_text}>Tornar-me um profissional</p>
+                                </div>
+                                
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
 
-                {
-                    loaded?
-                    <div className={`${styles.home_back_publish}`} style={{marginTop:'30px'}}>
-                        {
-                            user?._id===null||!user?
-                            <p className={styles.back_publish_title}>TORNAR-ME PROFISSIONAL</p>
-                            :null
-                        }
-                        {
-                            user?._id===null||!user?
-                            <div className={styles.back_publish_div} style={{backgroundColor:"#ffffff"}}
-                                onClick={() => setWorkerBanner(true)}
-                                >
-                                <EmojiPeopleIcon className={styles.section_img_mini} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
-                                <span className={styles.section_publicar} style={{color:"#FF785A"}}>MODO PROFISSIONAL</span>
-                            </div>
-                            :null
-                        }
-                    </div>
-
-                    :!loaded?
-                    <div className={styles.section_content}>
-                        <p className={styles.skeleton_content_in}></p>
-                        <p className={styles.skeleton_content_in}></p>
-                    </div>
-                    :null
-                } */}
                     
                 <div className={styles.footer} style={{paddingBottom:window.adsbygoogle?"60px":"20px"}}>
                     <div className={styles.footer_div}>
@@ -1091,7 +991,7 @@ const Home = (props) => {
                             <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
                             <p className={styles.footer_div_text} onClick={() => setPpBanner(true)}>Política de privacidade</p>
                             <p className={styles.footer_div_text} onClick={() => setInformationBanner(true)}>Sou novo no TAREFAS</p>
-                            <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me profissional</p>
+                            <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>
                         </div>
                         <div className={styles.footer_div_column}>
                             <div>

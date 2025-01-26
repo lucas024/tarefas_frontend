@@ -23,6 +23,7 @@ input:-webkit-autofill:active {
   --helper: #BA8376;
   --grey: #cccccc;
   --grey_text: #6a6a6a;
+  --grey_background: #e4eaf0;
   --green: #398606;
   --check: #0358e5;
   --yellow: #fdd835;
@@ -32,14 +33,47 @@ input:-webkit-autofill:active {
   --job: #0358e5;
   --navbar-min-height: 40px;
   --navbar-max-height: 80px;
-  --navbar-height: 5vh;
+  --navbar-height: 3vw;
   --content-margin-top: calc(max(min(var(--navbar-height), var(--navbar-max-height)), var(--navbar-min-height)));
+  --title: calc(max(30px, 2.5vw));
+  --title_small: calc(max(24px, 2vw));
+  /* 20px */
+  --huge: calc(max(16px, 0.88vw));
+  /* 16px */
   --bigger: calc(max(14px, 0.77vw));
+  /* 14px */
   --big: calc(max(12px, 0.66vw));
+  /* 12px */
   --standard: calc(max(10px, 0.55vw));
   --small: calc(max(8px, 0.44vw));
   --small: calc(max(6px, 0.33vw));
+  --height-button: 1.7vw;
+  --padding-button: 0 calc(max(0.7vw, 10px));
+  --min-height-button: 20px; 
 }
+
+.button-style {
+  padding: var(--button-padding);
+  border-radius: var(--button-border-radius);
+  border: none;
+  cursor: pointer;
+  height: var(--height-button);
+  min-height: var(--min-height-button);
+  padding: var(--padding-button);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  border-radius: 8px;
+  font-weight: 400;
+  font-size: var(--big);
+}
+.button-style:hover{
+  opacity: 0.8;
+  transition: 150ms all;
+}
+
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
