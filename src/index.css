@@ -35,22 +35,28 @@ input:-webkit-autofill:active {
   --navbar-max-height: 80px;
   --navbar-height: 3vw;
   --content-margin-top: calc(max(min(var(--navbar-height), var(--navbar-max-height)), var(--navbar-min-height)));
-  --title: calc(max(30px, 2.5vw));
-  --title_small: calc(max(24px, 2vw));
+  --base-width-pixels: 95vw;
+  --base-width: min(var(--base-width-pixels), 100vw); /* Ensures responsiveness */
+  --base-width-percent: calc(var(--base-width) / 100); /* For percentage calculations */
+
+  --title: calc(max(30px, calc(var(--base-width-percent) * 2.5)));
+  --title_small: calc(max(20px, calc(var(--base-width-percent) * 2)));
   /* 20px */
-  --huge: calc(max(16px, 0.88vw));
+  --huge: calc(max(14px, calc(var(--base-width-percent) * 0.88)));
   /* 16px */
-  --bigger: calc(max(14px, 0.77vw));
+  --bigger: calc(max(12px, calc(var(--base-width-percent) * 0.77)));
   /* 14px */
-  --big: calc(max(12px, 0.66vw));
+  --big: calc(max(10px, calc(var(--base-width-percent) * 0.66)));
   /* 12px */
-  --standard: calc(max(10px, 0.55vw));
-  --small: calc(max(8px, 0.44vw));
-  --small: calc(max(6px, 0.33vw));
-  --height-button: 1.7vw;
-  --padding-button: 0 calc(max(0.7vw, 10px));
-  --min-height-button: 20px; 
+  --standard: calc(max(8px, calc(var(--base-width-percent) * 0.57)));
+  --small: calc(max(6px, calc(var(--base-width-percent) * 0.44)));
+  --smaller: calc(max(4px, calc(var(--base-width-percent) * 0.33)));
+  --height-button: calc(var(--base-width-percent) * 1.7);
+  --padding-button: 0 calc(max(calc(var(--base-width-percent) * 0.7), 10px));
+  --min-height-button: 20px;
 }
+
+/* calc(var(--base-width-percent) * x) */
 
 .button-style {
   padding: var(--button-padding);

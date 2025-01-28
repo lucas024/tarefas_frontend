@@ -1,5 +1,5 @@
 const regioes = [
-    { value: 'online', label: 'Online' },
+    { value: 'online', label: 'Online (remoto)' },
     { value: 'acores', label: 'Açores' },
     { value: 'aveiro', label: 'Aveiro' },
     { value: 'beja', label: 'Beja' },
@@ -46,7 +46,7 @@ const regioes_no_online = [
     { value: 'viseu', label: 'Viseu' }
 ]
 const regioesMap = {
-    online: { value: 'online', label: 'Online' },
+    online: { value: 'online', label: 'Online (remoto)' },
     acores: { value: 'acores', label: 'Açores' },
     aveiro: { value: 'aveiro', label: 'Aveiro' },
     beja: { value: 'beja', label: 'Beja' },
@@ -70,7 +70,7 @@ const regioesMap = {
 }
 
 const regioesOptions = {
-    online: 'Online',
+    online: 'Online (remoto)',
     acores : 'Açores',
     aveiro : 'Aveiro',
     beja : 'Beja',

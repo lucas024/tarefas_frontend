@@ -7,7 +7,7 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from '../transitions/sessao';
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import {auth} from '../firebase/firebase'
-import SelectHome from '../selects/selectHome';
+import SelectHomeOther from '../selects/selectHomeOther';
 import {profissoesGrouped, regioes, regioesOptions, profissoesMap} from './util'
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -545,7 +545,7 @@ const Home = (props) => {
             return(
                 <div key={i} className={styles.content_item_worker}
                     onClick={() => {
-                        navigate(`/main/publications/publication?id=${item._id}`, {
+                        navigate(`/main/publications/profissional?id=${item._id}`, {
                                 state: {
                                     fromUserPage: false,
                                 }
@@ -557,7 +557,7 @@ const Home = (props) => {
                         </div>
                         <div className={styles.worker_bottom}>
                             <div className={styles.worker_bottom_title}>
-                                <p className={styles.middle_title}>{item.name}</p>
+                                <p className={styles.middle_title} style={{textTransform:'capitalize'}}>{item.name}</p>
                                 <div className={styles.top_arrow_wrapper}>
                                     <ArrowForwardIcon className={styles.top_arrow}/>
                                 </div>
@@ -747,7 +747,7 @@ const Home = (props) => {
                             loaded?
                             <div className={styles.main_wrapper}>
                                 <span className={styles.main_wrapper_title}>Conectamos tarefas a</span>
-                                <span className={styles.main_wrapper_title}>profissionais de confiança</span>
+                                <span className={styles.main_wrapper_title}>profissionais</span>
                                 <div className={styles.main_select}>
                                     <div className={styles.main_select_element} style={{backgroundColor:searchPosition===0?first?.value==="profissionais"?"#FF785A":"#0358e5":''}} onClick={() => setSearchPosition(0)}>
                                         <SearchIcon className={styles.element_icon}/>
@@ -798,7 +798,7 @@ const Home = (props) => {
                                                 <div className={styles.placeholder_title_wrapper}>
                                                     <span className={styles.placeholder_title}>Tipo de serviço</span>
                                                 </div>
-                                                <SelectHome 
+                                                <SelectHomeOther 
                                                     menuOpen={() => {
                                                         if(windowDimensions.width <= 768)
                                                             setTimeout(() => {
@@ -817,7 +817,7 @@ const Home = (props) => {
                                                         //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
                                                     }}
                                                     home={true}
-                                                    profs={true}
+                                                    professions={true}
                                                     options={profissoesGrouped}
                                                     optionFirst={first} 
                                                     option={second} 
@@ -839,7 +839,7 @@ const Home = (props) => {
                                                 <div className={styles.placeholder_title_wrapper}>
                                                     <span className={styles.placeholder_title}>Região</span>
                                                 </div>
-                                                <SelectHome
+                                                <SelectHomeOther
                                                     menuOpen={() => {
                                                         if(windowDimensions.width <= 768)
                                                             setTimeout(() => {
@@ -985,21 +985,28 @@ const Home = (props) => {
                 <div className={styles.footer} style={{paddingBottom:window.adsbygoogle?"60px":"20px"}}>
                     <div className={styles.footer_div}>
                         <div className={styles.footer_div_column}>
-                            <p className={styles.footer_div_text} style={{color: '#71848d', textDecoration:'none !important', cursor:'default'}}>APP Tarefas (brevemente)</p>
-                            <p className={styles.footer_div_text} onClick={() => setContactosBanner(true)}>Contactos</p>
-                            <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dá uma sugestão</p>
+                            <p className={styles.footer_div_text_title}>Informações legais</p>
                             <p className={styles.footer_div_text} onClick={() => setTosBanner(true)}>Termos de utilização</p>
                             <p className={styles.footer_div_text} onClick={() => setPpBanner(true)}>Política de privacidade</p>
-                            <p className={styles.footer_div_text} onClick={() => setInformationBanner(true)}>Sou novo no TAREFAS</p>
+                        </div>
+                        <div className={styles.footer_div_column}>
+                            <p className={styles.footer_div_text_title}>Conta e profissionais</p>
+                            <p className={styles.footer_div_text} onClick={() => setContactosBanner(true)}>Suporte</p>
                             <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>
                         </div>
                         <div className={styles.footer_div_column}>
+                            <p className={styles.footer_div_text_title}>Sugestões e contactos</p>
+                            <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dá uma sugestão</p>
+                            <p className={styles.footer_div_text_no_style}>Outros assuntos: <span style={{textDecoration:'underline'}}>noreply@pt-tarefas.pt</span></p>
+                        </div>
+                        <div className={styles.footer_div_column}>
                             <div>
-                                <p className={styles.footer_div_text} style={{fontWeight:400, textDecoration:'none', cursor:"default"}}>Segue-nos nas redes:</p>
+                                <p className={styles.footer_div_text_title}>Segue-nos nas redes:</p>
                                 <div className={styles.footer_icon_div}>
                                     <InstagramIcon className={styles.footer_icon} onClick={() => window.open('https://instagram.com/tarefaspt', "_blank", "noreferrer")}/>
                                     <FacebookIcon className={styles.footer_icon} onClick={() => window.open('https://www.facebook.com/profile.php?id=61559666542359', "_blank", "noreferrer")}/>
                                 </div>
+                                <p className={styles.footer_div_text_no_style} style={{color: '#71848d'}}>APP Tarefas (brevemente)</p>
                             </div>
                         </div>  
                     </div>

@@ -118,10 +118,8 @@ const PaymentElementsComponent = props => {
                         props.setDisplay(0)
                         props.setSuccessPopin(true)
                         dispatch(worker_update_is_subscribed(true))
-                        if(props.user_phone_verified&&props.user_email_verified&&props.user.regioes?.length>0&&props.user.trabalhos?.length>0)
-                        {
-                            axios.post(`${props.api_url}/worker/update_state`, {state: 1, user_id: props.user._id})
-                        }
+                        // if(props.user_phone_verified&&props.user_email_verified&&props.user.regioes?.length>0&&props.user.trabalhos?.length>0)
+                        axios.post(`${props.api_url}/worker/update_state`, {state: 1, user_id: props.user._id})
                         setTimeout(() => props.setSuccessPopin(false), 10000)
                         break;
           

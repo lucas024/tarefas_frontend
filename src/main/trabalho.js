@@ -459,7 +459,7 @@ const Trabalho = (props) => {
     }
 
     const meta = getMeta(
-        reservation.title,
+        reservation?.title,
         'Tarefa',
         reservation?.photos?.length>0?reservation?.photos[0]:null,
         'Fotografia da Tarefa'
@@ -620,7 +620,7 @@ const Trabalho = (props) => {
                                     <div className={styles.top_title}>
                                         {
                                         <div className={styles.previous_wrapper}>
-                                            <span className={styles.previous_text} style={{color:userView&&"white"}}>{reservation.title}</span>
+                                            <span className={styles.previous_text} style={{color:userView&&"white"}}>{reservation?.title}</span>
                                         </div>
                                         }
                                     </div>

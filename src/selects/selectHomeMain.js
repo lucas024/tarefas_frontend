@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Select from 'react-select'
 import styles from './select.module.css'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const SelectHomeMain = (props) => {
 
@@ -11,7 +12,7 @@ const SelectHomeMain = (props) => {
             ...base,
             backgroundColor: 'transparent',
             borderColor: "#ffffff",
-            fontSize: "calc(max(0.55vw, 10px))",
+            fontSize: "calc(max(0.57vw, 8px))",
             textTransform: "normal",
             color: '#000000',
             fontWeight: 600,
@@ -40,6 +41,11 @@ const SelectHomeMain = (props) => {
                 borderRadius: '8px',
                 transition: '10ms all'
             },
+            "&:hover": {
+                backgroundColor: "#e4eaf0",
+                borderRadius: '8px',
+                transition: '10ms all'
+            },
         }),
         menu: base => ({
             ...base,
@@ -51,7 +57,7 @@ const SelectHomeMain = (props) => {
             borderRadius: 8,
             padding: "0",
             zIndex: 5,
-            marginTop: '10px',
+            marginTop: 'calc(max(0.65vw, 3px))',
             width: '12vw',
             minWidth: '150px'
         }),
@@ -71,7 +77,12 @@ const SelectHomeMain = (props) => {
             paddingLeft:"5px",
             fontWeight:500,
             padding: 0,
-            fontSize: "calc(max(0.55vw, 10px))",
+            fontSize: "calc(max(0.57vw, 8px))",
+        }),
+        indicatorContainer: base => ({
+            ...base,
+            width:'5px',
+            height:'5px'
         }),
         singleValue: base => ({
             ...base,
@@ -79,7 +90,7 @@ const SelectHomeMain = (props) => {
             margin: "auto",
             display: 'flex',
             justifyContent: 'center',
-            fontSize: "calc(max(0.55vw, 10px))",
+            fontSize: "calc(max(0.57vw, 8px))",
             alignItems: 'center'
         }),
         valueContainer: base => ({
@@ -133,8 +144,12 @@ const SelectHomeMain = (props) => {
                         :null
                     } 
                 </div>
-                <div className={styles.label_main_wrapper} style={{marginLeft:data.img?"8px":"0px"}}>
-                    <p className={styles.label_main}>{data.label}</p>
+                <div style={{marginLeft:data.img?"8px":"0px"}}>
+                    {
+                        context !== 'menu' ? <p className={styles.label_main_control}>{data.label}</p>
+                        :
+                        <p className={styles.label_main}>{data.label}</p>
+                    }
                     {
                         context === 'menu' && <p className={styles.label_desc}>{data.desc}</p>
                     }
@@ -145,7 +160,13 @@ const SelectHomeMain = (props) => {
     
     return(
         <Select
-            components={{ IndicatorSeparator:() => null }}
+            components={{ IndicatorSeparator:() => null, IndicatorsContainer:() => {
+                return(
+                    <div className={styles.arrow_downwards_wrapper}>
+                        <ExpandMoreIcon className={styles.arrow_downwards}/>
+                    </div>
+                )
+            } }}
             styles={stylesSelect}
             options={props.options}
             value={props.option}

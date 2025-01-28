@@ -254,7 +254,7 @@ const Subscription = props => {
         setLoading(true)
         
         let customer_id = user.customer_id
-        if(customer_id===null)
+        if(customer_id==null)
         {
             const obj = await axios.post(`${api_url}/create-customer`, {
                 name: user.name,
