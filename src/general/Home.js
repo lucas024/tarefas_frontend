@@ -773,7 +773,7 @@ const Home = (props) => {
                                                                 top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
                                                             }, 200)
 
-                                                        setBackdrop(true)
+                                                        // setBackdrop(true)
                                                     }}
                                                     menuClose={() => {
                                                         setBackdrop(false)
@@ -809,7 +809,7 @@ const Home = (props) => {
                                                                 top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
                                                             }, 200)
 
-                                                        setBackdrop(true)
+                                                        // setBackdrop(true)
                                                     }}
                                                     menuClose={() => {
                                                         setBackdrop(false)
@@ -826,6 +826,7 @@ const Home = (props) => {
                                                     changeOption={val => {
                                                         // if(windowDimensions.width <= 768)
                                                         //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                        console.log(val)
                                                         setSecond(val)
                                                         setBackdrop(false)
                                                     }}

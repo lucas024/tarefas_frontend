@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Select, {components} from 'react-select'
 import styles from './select.module.css'
 import LanguageIcon from '@mui/icons-material/Language';
+import { profissoesMap } from '../general/util';
 
 const SelectHomeOther = (props) => {
 
@@ -64,8 +65,8 @@ const SelectHomeOther = (props) => {
         menuList: base => ({
             ...base,
             padding: 0,
-            height: '100%',
-            maxHeight: props.professions?'700px':'300px',
+            height: props.professions?'max-content':'100%',
+            maxHeight: props.professions?'max-content':'300px',
             minWidth: '150px',
             width: 'max-content',
             backgroundColor: '#fff',
@@ -77,7 +78,7 @@ const SelectHomeOther = (props) => {
             gridAutoRows: 'min-content', /* Each row's height is content-based */
             gap: props.professions?'10px':'',
             width: props.professions?'100%':'',
-            overflowY: 'auto',
+            overflowY: 'auto'
         }),
         input: base => ({
             ...base,
@@ -199,33 +200,29 @@ const SelectHomeOther = (props) => {
         let currentColumn = 0;
         let currentHeight = 0;
         
-        console.log(children)
         // Function to simulate height calculation since we don't have real DOM elements yet
         const simulateHeight = (child) => {
           // This is a placeholder function. You'd need to adjust this based on real data or elements
           let num_childs = child.props.children.length
-          return 35 + (num_childs>1&&42*child.props.children.length || 0) // Example height for each child
+          return 35 + (num_childs>1&&32*child.props.children.length || 0) // Example height for each child
 
         };
       
         // Distribute children across columns
         React.Children.forEach(children, (child, index) => {
           let childHeight = simulateHeight(child);
-          console.log(currentHeight, childHeight, maxHeight)
           if (currentHeight + childHeight > maxHeight) {
             currentColumn = (currentColumn + 1) % numColumns;
             currentHeight = 0;
           }
           
-          console.log(currentColumn)
           columns[currentColumn].push(child);
           currentHeight += childHeight;
         });
 
-        console.log(columns[1])
       
         return (
-          <div className={styles.customMenuList} style={{ maxHeight: `${maxHeight}px` }}>
+          <div className={styles.customMenuList}>
             {columns.map((column, index) => (
               <div key={index} className={styles.customMenuList_column}>
                 {column}
@@ -258,10 +255,17 @@ const SelectHomeOther = (props) => {
             },
             Group:(p) => {
                 const { children, ...rest } = p;
-                console.log(children)
                 return (
                     props.professions?
-                    <div className={children.length===1?styles.group_wrapper_solo:styles.group_wrapper}>
+                    <div className={children.length===1?styles.group_wrapper_solo:styles.group_wrapper}
+                        onClick={() => {
+                            if(children.length===1){
+                                console.log(profissoesMap[children[0].props.value])
+                                selectChange(profissoesMap[children[0].props.value])
+                            }
+                        }}
+                        >
+
                         <components.Group {...rest}>
                             {CustomGroup({children})}
                         </components.Group>
@@ -306,6 +310,7 @@ const SelectHomeOther = (props) => {
                 return props.professions&&formatOptionLabelAuxProfs(option, context)||formatOptionLabelAux(option, context)
             }}
             onChange={value => {
+                console.log(value)
                 selectChange(value)
             }}
         />

@@ -5,13 +5,13 @@
     display: flex;
 }
 .group_title{
-    font-size: var(--big);
+    font-size: var(--standard);
     margin-left: 5px;
     color: #000000;
     font-weight: 600;
 }
 .group_icon{
-    width: calc(var(--base-width-percent) * 1);
+    width: calc(var(--base-width-percent) * 0.8);
     height: auto !important;
     margin-left: -5px;
 }
@@ -32,7 +32,7 @@
     transition: 150ms all;
 }
 .label_other_profs{
-    font-size: var(--big);
+    font-size: var(--standard);
     font-weight: 700;
 }
 .label{
@@ -94,7 +94,7 @@
     cursor: default;
 }
 .group_wrapper_solo{
-    height: 100%;
+    height: fit-content;
     position: relative;
     width: 100%;
 }
@@ -106,8 +106,7 @@
 .customMenuList {
     display: flex;
     flex-wrap: nowrap; /* Prevent wrapping to next line */
-    max-height: 700px; /* Maximum height for the entire MenuList */
-
+    overflow-y: hidden;
 }
 .customMenuList_column {
     flex: 1;
@@ -115,6 +114,7 @@
     display: flex;
     flex-direction: column;
     width: fit-content;
+    padding: 4px 0;
 }
 
 .menu_wrapper{
@@ -124,7 +124,7 @@
     background-color: #fff;
     border-radius: 8px;
     margin-top: calc(max(0.65vw, 3px));
-    height: 700px;
+    height: max-content;
 }
 .menu{
     width: 90%;
