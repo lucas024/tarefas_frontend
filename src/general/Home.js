@@ -618,10 +618,10 @@ const Home = (props) => {
     
     return(
         <div className={styles.home}>
-            {backdrop?
+            {/* {backdrop?
                 <span className={styles.backdrop}/>
                 :null
-            }
+            } */}
             <CSSTransition 
                 in={loginPopup}
                 timeout={1000}
@@ -798,7 +798,8 @@ const Home = (props) => {
                                                 <div className={styles.placeholder_title_wrapper}>
                                                     <span className={styles.placeholder_title}>Tipo de serviço</span>
                                                 </div>
-                                                <SelectHomeOther 
+                                                <SelectHomeOther
+                                                    ref={select_profissionais}
                                                     menuOpen={() => {
                                                         if(windowDimensions.width <= 768)
                                                             setTimeout(() => {
@@ -820,13 +821,12 @@ const Home = (props) => {
                                                     professions={true}
                                                     options={profissoesGrouped}
                                                     optionFirst={first} 
-                                                    option={second} 
+                                                    option={second}
                                                     smallWindow={windowDimensions.width <= 1024}
                                                     mediumWindow={windowDimensions.width <= 1440}
                                                     changeOption={val => {
                                                         // if(windowDimensions.width <= 768)
                                                         //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
-                                                        console.log(val)
                                                         setSecond(val)
                                                         setBackdrop(false)
                                                     }}

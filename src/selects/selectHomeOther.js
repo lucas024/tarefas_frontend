@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Select, {components} from 'react-select'
 import styles from './select.module.css'
 import LanguageIcon from '@mui/icons-material/Language';
-import { profissoesMap } from '../general/util';
+import { profissoesGrouped, profissoesMap } from '../general/util';
 
 const SelectHomeOther = (props) => {
 
@@ -50,17 +50,22 @@ const SelectHomeOther = (props) => {
         }),
         menu: base => ({
             ...base,
-            width: "100%",
             borderRadius: 0,
-            backgroundColor: "#ffffff",
+            backgroundColor: props.professions?"transparent":'',
+            border: props.professions?'none':'',
+            boxShadow: props.professions?'none':'',
             borderLeft: 0,
             borderTop: 0,
             borderRadius: 8,
             padding: "0",
             zIndex: 5,
-            marginTop: 'calc(max(0.65vw, 3px))',
-            width: '12vw',
-            // position: 'static'
+            marginTop: props.professions?'0':'calc(max(0.65vw, 3px))',
+            width: props.professions?'100%':'12vw',
+            position: props.professions?'static':'absolute',
+            display: props.professions?'flex':'',
+            flexDirection: props.professions?'row':'',
+            justifyContent: props.professions?'center':''
+
         }),
         menuList: base => ({
             ...base,
@@ -77,8 +82,9 @@ const SelectHomeOther = (props) => {
             gridAutoFlow: 'row dense', /* Items flow in rows first */
             gridAutoRows: 'min-content', /* Each row's height is content-based */
             gap: props.professions?'10px':'',
-            width: props.professions?'100%':'',
-            overflowY: 'auto'
+            // width: props.professions?'100%':'',
+            width: props.professions?'max-content':'',
+            overflowY: 'auto',
         }),
         input: base => ({
             ...base,
@@ -113,14 +119,14 @@ const SelectHomeOther = (props) => {
         }),
         group: base => ({
             ...base,
-            padding: "0px 0px 0px 0",
-            marginBottom: 0,
+            margin: 0,
+            padding: 0,
+            width: '100%',
             "& div": {
                 display: "flex",
                 flexDirect:'row',
-                justifyContent:'space-between',
                 flexWrap: 'wrap',
-                maxHeight: 'max-content'
+                maxHeight: 'max-content',
             },
         }),
         placeholder: (base, state) => ({
@@ -143,17 +149,20 @@ const SelectHomeOther = (props) => {
         groupHeading: base => ({
             ...base,
             cursor: 'inherit',
-            textTransform:'inherit'
+            textTransform:'inherit',
+            width: '100%',
+            padding:0
         })
     }
 
     const selectChange = (val) => {
+        setMenuOpen(false)
         props.changeOption(val)
     }
 
-    const formatGroupLabelAuxProfs = data => (
-        data.label==='no-label'?
-        <div className={styles.group_label}>
+    const formatGroupLabelAuxProfs = (data) => (
+        data.solo?
+        <div className={`${styles.group_label} ${((data?.value == props.option?.value))?styles.label_profs_active:''}`}>
             <img src={data.options[0].img} className={styles.group_icon}/>
             <span className={styles.group_title}>{data.options[0].label}</span>
         </div>
@@ -166,8 +175,9 @@ const SelectHomeOther = (props) => {
 
     const formatOptionLabelAuxProfs = (data, context) => {
         return (
-            !data.solo&&
-            <div className={`${styles.label_profs} ${((data?.value === props.option?.value) && (context === 'menu'))?styles.label_profs_active:''}`}
+            data.solo&&context === 'menu'?null
+            :
+            <div className={`${context === 'menu'?styles.label_profs:''} ${((data?.value == props.option?.value) && (context === 'menu'))?styles.label_profs_active:''}`}
                 style={{marginLeft:(context !== 'menu'?0:'')}}>
                 <div className={styles.label_main_wrapper}>
                     {
@@ -179,9 +189,9 @@ const SelectHomeOther = (props) => {
         )
     }
 
+    //regioes
     const formatOptionLabelAux = (data, context) => {
         return (
-            !data.solo&&
             <div className={`${styles.label} ${((data?.value === props.option?.value) && (context === 'menu'))?styles.label_active:''}`}>
                 <div className={styles.label_main_wrapper}>
                     {
@@ -195,8 +205,9 @@ const SelectHomeOther = (props) => {
 
 
     const CustomMenuList = ({ children }, maxHeight) => {
-        const numColumns = 5; // Number of columns you want
-        const columns = Array.from({ length: numColumns }, () => []);
+        // const numColumns = 5; // Number of columns you want
+        // const columns = Array.from({ length: numColumns }, () => []);
+        let columns = [[]]
         let currentColumn = 0;
         let currentHeight = 0;
         
@@ -212,7 +223,8 @@ const SelectHomeOther = (props) => {
         React.Children.forEach(children, (child, index) => {
           let childHeight = simulateHeight(child);
           if (currentHeight + childHeight > maxHeight) {
-            currentColumn = (currentColumn + 1) % numColumns;
+            columns.push([])
+            currentColumn = (currentColumn + 1);
             currentHeight = 0;
           }
           
@@ -233,7 +245,9 @@ const SelectHomeOther = (props) => {
     };
 
     const CustomGroup = ({children}) => {
-        return children.length>1&&children
+        console.log(children)
+        if(children.length===1&&children[0].props.data.solo) return null
+        else return children
     }
     
     return(
@@ -245,7 +259,9 @@ const SelectHomeOther = (props) => {
                 return (
                     props.professions?
                     <div className={styles.menu_wrapper}>
-                        {children}
+                        <components.Menu {...rest}>
+                            {children}
+                        </components.Menu>
                     </div>
                     :
                     <components.Menu {...rest}>
@@ -260,7 +276,6 @@ const SelectHomeOther = (props) => {
                     <div className={children.length===1?styles.group_wrapper_solo:styles.group_wrapper}
                         onClick={() => {
                             if(children.length===1){
-                                console.log(profissoesMap[children[0].props.value])
                                 selectChange(profissoesMap[children[0].props.value])
                             }
                         }}
@@ -289,6 +304,18 @@ const SelectHomeOther = (props) => {
                         {children}
                     </components.MenuList>
                 )
+            },
+            NoOptionsMessage:(p) => {
+                const { children, ...rest } = p;
+
+                return (
+                    <div className={styles.no_options}>
+                        <components.NoOptionsMessage {...rest}>
+                            Sem resultados
+                        </components.NoOptionsMessage>
+                    </div>
+                )
+
             }
         
             }}
@@ -296,21 +323,27 @@ const SelectHomeOther = (props) => {
                 <span className={styles.placeholder}>
                     <span className={styles.placeholder_desc}>{props.placeholder_desc}</span>                   
                 </span>}
+            // isSearchable={menuOpen}
             styles={stylesSelect}
             options={props.options}
+            // options={[]}
             value={props.option}
-            menuIsOpen={props.professions}
+            menuIsOpen={menuOpen}
+            // menuIsOpen={props.professions}
             onMenuOpen={() => {
+                setMenuOpen(true)
                 props.menuOpen()
             }}
             onBlur={() => props.menuClose()&&setMenuOpen(false)}
-            onMenuClose={() => props.menuClose()}
+            onMenuClose={() => {
+                setMenuOpen(false)
+                props.menuClose()
+            }}
             formatGroupLabel={formatGroupLabelAuxProfs}
             formatOptionLabel={(option, {context}) => {
                 return props.professions&&formatOptionLabelAuxProfs(option, context)||formatOptionLabelAux(option, context)
             }}
             onChange={value => {
-                console.log(value)
                 selectChange(value)
             }}
         />

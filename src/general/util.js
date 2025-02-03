@@ -301,20 +301,27 @@ const profissoes_restauracao = [
 
 const profissoesGrouped = [
     {
+        value: 'advogado',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.advogado],
     },
     {
+        value: 'alfaiate',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.alfaiate],
     },
     {
         label: 'Animais',
         options: profissoes_animais,
+        solo: true,
         img: profissoesPngs['animal']
     },
     {
+        value: 'arquiteto',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.arquiteto],
     },
     {
@@ -323,15 +330,21 @@ const profissoesGrouped = [
         img: profissoesPngs['auto']
     },
     {
+        value: 'ar_condicionados',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.ar_condicionados],
     },
     {
+        value: 'assistencia_a_idosos',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.assistencia_a_idosos],
     },
     {
+        value: 'baby_sitter',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.baby_sitter],
     },
     {
@@ -340,15 +353,21 @@ const profissoesGrouped = [
         img: profissoesPngs['beauty']
     },
     {
+        value: 'canalizador',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.canalizador],
     },
     {
+        value: 'carpinteiro',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.carpinteiro],
     },
     {
+        value: 'ciencias_misticas',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.ciencias_misticas],
     },
     {
@@ -357,35 +376,51 @@ const profissoesGrouped = [
         img: profissoesPngs['build']
     },
     {
+        value: 'culinaria_e_catering',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.culinaria_e_catering],
     },
     {
+        value: 'decoracao_e_interiores',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.decoracao_e_interiores],
     },
     {
+        value: 'desenho_e_ilustracao',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.desenho_e_ilustracao],
     },
     {
+        value: 'desenho_tecnico',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.desenho_tecnico],
     },
     {
+        value: 'designer_de_moda',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.designer_de_moda],
     },
     {
+        value: 'designer_grafico',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.designer_grafico],
     },
     {
+        value: 'desporto',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.desporto],
     },
     {
+        value: 'eletricista',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.eletricista],
     },
     {
@@ -394,15 +429,21 @@ const profissoesGrouped = [
         img: profissoesPngs['emigration']
     },
     {
+        value: 'energias_verdes',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.energias_verdes],
     },
     {
+        value: 'estofador',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.estofador],
     },
     {
+        value: 'explicador',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.explicador],
     },
     {
@@ -411,31 +452,45 @@ const profissoesGrouped = [
         img: profissoesPngs['finance']
     },
     {
+        value: 'fotografia',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.fotografia],
     },
     {
+        value: 'healing',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.healing],
     },
     {
+        value: 'hotelaria',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.hotelaria],
     },
     {
+        value: 'informatica',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.informatica],
     },
     {
+        value: 'interprete',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.interprete],
     },
     {
+        value: 'jardinagem',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.jardinagem],
     },
     {
+        value: 'joalharia_e_trabalhos_manuais',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.joalharia_e_trabalhos_manuais],
     },
     {
@@ -444,27 +499,39 @@ const profissoesGrouped = [
         img: profissoesPngs['clean']
     },
     {
+        value: 'motorista',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.motorista],
     },
     {
+        value: 'mudancas',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.mudancas],
     },
     {
+        value: 'musica',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.musica],
     },
     {
+        value: 'operador_de_maquinas',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.operador_de_maquinas],
     },
     {
+        value: 'piscinas',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.piscinas],
     },
     {
+        value: 'publicidade',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.publicidade],
     },
     {
@@ -473,11 +540,15 @@ const profissoesGrouped = [
         img: profissoesPngs['food']
     },
     {
+        value: 'revisor_de_texto',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.revisor_de_texto],
     },
     {
+        value: 'sapateiro_e_cabedal',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.sapateiro_e_cabedal]
     },
     {
@@ -486,19 +557,27 @@ const profissoesGrouped = [
         img: profissoesPngs['saude']
     },
     {
+        value: 'seguranca',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.seguranca]
     },
     {
+        value: 'soldador_e_serralheiro',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.soldador_e_serralheiro],
     },
     {
+        value: 'traducao',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.traducao],
     },
     {
+        value: 'turismo',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.turismo],
     },
     {
@@ -507,7 +586,9 @@ const profissoesGrouped = [
         img: profissoesPngs['profissoes_vestuario']
     },
     {
+        value: 'outros',
         label: 'no-label',
+        solo: true,
         options: [profissoesMap.outros],
     },
 ]

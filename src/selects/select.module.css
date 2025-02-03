@@ -13,14 +13,14 @@
 .group_icon{
     width: calc(var(--base-width-percent) * 0.8);
     height: auto !important;
-    margin-left: -5px;
+    padding-left: 5px;
 }
 .label_profs{
     display: flex;
     align-items: flex-start;
     padding: 0.1vw 0;
     height: 100%;
-    margin-left: calc(5px + calc(var(--base-width-percent) * 1));
+    padding-left: calc(3px + calc(var(--base-width-percent) * 1));
 }
 .label_profs_active{
     background-color: var(--grey_background);
@@ -92,11 +92,14 @@
 }
 .group_wrapper{
     cursor: default;
+    padding: 0 6px;
 }
 .group_wrapper_solo{
     height: fit-content;
     position: relative;
     width: 100%;
+    padding: 0 6px;
+    box-sizing: border-box;
 }
 .group_wrapper_solo:hover{
     cursor: pointer !important;
@@ -113,18 +116,29 @@
     margin: 0 5px;
     display: flex;
     flex-direction: column;
-    width: fit-content;
+    width: 15vw;
     padding: 4px 0;
 }
 
 .menu_wrapper{
-    position: absolute !important;
-    left: 5%;
-    width: 90% !important;
-    background-color: #fff;
+    position: fixed !important;
+    width: 100%;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    /* background-color: #fff; */
     border-radius: 8px;
     margin-top: calc(max(0.65vw, 3px));
     height: max-content;
+    height: 100%;
+}
+.no_options{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--grey_text);
+    font-weight: 500;
+    font-size: var(--bigger);
 }
 .menu{
     width: 90%;
