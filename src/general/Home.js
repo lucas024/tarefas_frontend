@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './home.module.css'
-import {useLocation, useNavigate} from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import WorkerBanner from './workerBanner';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
-import {CSSTransition}  from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 import Sessao from '../transitions/sessao';
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
-import {auth} from '../firebase/firebase'
+import { auth } from '../firebase/firebase'
 import SelectHomeOther from '../selects/selectHomeOther';
-import {profissoesGrouped, regioes, regioesOptions, profissoesMap} from './util'
+import { profissoesGrouped, regioes, regioesOptions, profissoesMap } from './util'
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
-import {Tooltip} from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -32,6 +32,7 @@ import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import EmailUnverified from '@mui/icons-material/UnsubscribeOutlined';
 import moment from 'moment';
+import { motion } from 'framer-motion';
 
 import hero_1 from '../assets/new_assets/hero_1.png'
 import hero_2 from '../assets/new_assets/hero_2.png'
@@ -47,7 +48,7 @@ import {
     DefineAdSlot,
     RequestAds,
     InitializeGPT
-  } from '../adsense/google-publisher-tag';
+} from '../adsense/google-publisher-tag';
 import PpBanner from './ppBanner';
 import Row from '../servicos/row';
 import InformationBanner from './informationBanner';
@@ -62,21 +63,20 @@ const firstOptions = [
 const getWindowDimensions = () => {
     const { innerWidth: width, innerHeight: height } = window
     return {
-      width,
-      height
+        width,
+        height
     }
 }
 
 const Home = (props) => {
     const dispatch = useDispatch()
-    const user = useSelector(state => {return state.user})
-    const chats = useSelector(state => {return state.chats})
-    const api_url = useSelector(state => {return state.api_url})
+    const user = useSelector(state => { return state.user })
+    const chats = useSelector(state => { return state.chats })
+    const api_url = useSelector(state => { return state.api_url })
 
-    const user_email_verified = useSelector(state => {return state.user_email_verified})
-    const worker_profile_complete = useSelector(state => {return state.worker_profile_complete})
-    const worker_is_subscribed = useSelector(state => {return state.worker_is_subscribed})
-
+    const user_email_verified = useSelector(state => { return state.user_email_verified })
+    const worker_profile_complete = useSelector(state => { return state.worker_profile_complete })
+    const worker_is_subscribed = useSelector(state => { return state.worker_is_subscribed })
 
     const [items, setItems] = useState([])
     const [workers, setWorkers] = useState([])
@@ -107,7 +107,7 @@ const Home = (props) => {
     const [showArrowFlag, setShowArrowFlag] = useState(true)
 
     const totalNotifications = [1, 2, 3]
-    
+
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -119,56 +119,52 @@ const Home = (props) => {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
 
     useEffect(() => {
-        if(window.localStorage.getItem('exploredHome')===null)
-        {
+        if (window.localStorage.getItem('exploredHome') === null) {
             const interval = setInterval(() => {
-                setShowArrow(true)        
+                setShowArrow(true)
             }, 5000)
 
             return () => clearInterval(interval);
         }
 
-        let last_timestamp = window.localStorage.getItem('last_search_timestamp')
-        if(last_timestamp!==null)
-        {
-            if(moment().diff(new Date(last_timestamp), 'minutes') > 10)
-                setSearchPosition(0)
-            else
-                setSearchPosition(1)
-        }
-            
+        // let last_timestamp = window.localStorage.getItem('last_search_timestamp')
+        // if (last_timestamp !== null) {
+        //     if (moment().diff(new Date(last_timestamp), 'minutes') > 10)
+        //         setSearchPosition(1)
+        //     else
+        //         setSearchPosition(0)
+        // }
+
         fetchJobs()
         fetchWorkers()
 
-        
-      }, []);
+    }, []);
 
     useEffect(() => {
-        if(!parseInt(localStorage.getItem('firstAccessMade')))
+        if (!parseInt(localStorage.getItem('firstAccessMade')))
             navigate('/landing')
-        
+
         let aux2 = window.localStorage.getItem('last_search_type')
-        if(aux2 !== null)
-        {
-            if(aux2 === 'trabalhos')
+        if (aux2 !== null) {
+            if (aux2 === 'trabalhos')
                 setFirst(firstOptions[0])
             else
                 setFirst(firstOptions[1])
         }
-        else if(user?.worker) setFirst(firstOptions[0])
-        else if(user!=null && user?._id!=null) setFirst(firstOptions[0])
+        else if (user?.worker) setFirst(firstOptions[0])
+        else if (user != null && user?._id != null) setFirst(firstOptions[0])
 
-        if(location.state?.carry==="login"){
+        if (location.state?.carry === "login") {
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
-            navigate(location.pathname, {}); 
+            navigate(location.pathname, {});
         }
-        else if(location.state?.carry==="register"){
-            setRegisterPopup(location.state?.skippedVerification?"skippedVerification":"didVerification")
+        else if (location.state?.carry === "register") {
+            setRegisterPopup(location.state?.skippedVerification ? "skippedVerification" : "didVerification")
             setTimeout(() => setRegisterPopup(false), 4000)
             navigate(location.pathname, {});
         }
-        else if(location.state?.refreshWorker){
+        else if (location.state?.refreshWorker) {
             props.refreshWorker()
             setLoginPopup(true)
             setTimeout(() => setLoginPopup(false), 4000)
@@ -186,70 +182,67 @@ const Home = (props) => {
 
     useEffect(() => {
         function handleResize() {
-          setWindowDimensions(getWindowDimensions());
+            setWindowDimensions(getWindowDimensions());
         }
-    
+
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-      }, [])
+    }, [])
 
     useEffect(() => {
-        if(user){
+        if (user) {
             setShowArrowFlag(false)
-            axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
-            .then(res => {
-                if(res.data!==''){
-                    if(res.data?.chats?.length>0)
-                    {
-                        let chats_aux = JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp))))
-                        dispatch(user_update_chats(chats_aux))
+            axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: { _id: user._id } })
+                .then(res => {
+                    if (res.data !== '') {
+                        if (res.data?.chats?.length > 0) {
+                            let chats_aux = JSON.parse(JSON.stringify(([...res.data.chats].sort(sortByTimestamp))))
+                            dispatch(user_update_chats(chats_aux))
+                        }
                     }
-                }
-            })
+                })
         }
 
     }, [user])
 
     useEffect(() => {
-        if(chats?.length>0){
+        if (chats?.length > 0) {
             let clear = true
             let aux = []
-            for(const el of chats){
-                if(user?._id===el.approacher_id&&!el.approacher_read){
+            for (const el of chats) {
+                if (user?._id === el.approacher_id && !el.approacher_read) {
                     aux.push(el)
                     clear = false
                 }
-                else if(user?._id===el.approached_id&&!el.approached_read){
+                else if (user?._id === el.approached_id && !el.approached_read) {
                     aux.push(el)
                     clear = false
                 }
             }
-            if(clear)
-            {
+            if (clear) {
                 setHasUnreadTexts(false)
                 setUnreadTexts([])
             }
-            else{
+            else {
                 setHasUnreadTexts(true)
                 setUnreadTexts(aux)
-            } 
+            }
         }
-        else{
+        else {
             setHasUnreadTexts(false)
         }
     }, [user, chats])
 
-    
+
 
     useEffect(() => {
-        props.userLoadAttempt&&setLoaded(true)
-        if(!props.userLoggedIn&&window.localStorage.getItem('dismissedBanner')===null)
-        {
+        props.userLoadAttempt && setLoaded(true)
+        if (!props.userLoggedIn && window.localStorage.getItem('dismissedBanner') === null) {
             setTimeout(() => {
                 setNewPopup(true)
             }, 1000);
         }
-        else{
+        else {
             setNewPopup(false)
         }
     }, [props.userLoadAttempt, props.userLoggedIn])
@@ -266,18 +259,18 @@ const Home = (props) => {
             }
             // The client SDK will parse the code from the link for you.
             signInWithEmailLink(auth, email, window.location.href)
-            .then((result) => {
-                localStorage.removeItem('emailForSignIn');
-                // You can access the new user via result.user
-                // Additional user info profile not available via:
-                // result.additionalUserInfo.profile == null
-                // You can check if the user is new or existing:
-                // result.additionalUserInfo.isNewUser
-            })
-            .catch((error) => {
-                // Some error occurred, you can inspect the code: error.code
-                // Common errors could be invalid email and invalid or expired OTPs.
-            });
+                .then((result) => {
+                    localStorage.removeItem('emailForSignIn');
+                    // You can access the new user via result.user
+                    // Additional user info profile not available via:
+                    // result.additionalUserInfo.profile == null
+                    // You can check if the user is new or existing:
+                    // result.additionalUserInfo.isNewUser
+                })
+                .catch((error) => {
+                    // Some error occurred, you can inspect the code: error.code
+                    // Common errors could be invalid email and invalid or expired OTPs.
+                });
         }
     }, [location])
 
@@ -286,16 +279,16 @@ const Home = (props) => {
     }
 
     const searchHandler = () => {
-        if(second&&third){
+        if (second && third) {
             navigate(`/main/publications/${first?.value}?work=${second?.value}&region=${third.value}`)
         }
-        else if(second){
+        else if (second) {
             navigate(`/main/publications/${first?.value}?work=${second?.value}`)
         }
-        else if(third){
+        else if (third) {
             navigate(`/main/publications/${first?.value}?region=${third.value}`)
         }
-        else{
+        else {
             navigate(`/main/publications/${first?.value}`)
         }
 
@@ -315,100 +308,100 @@ const Home = (props) => {
 
     const getDisplayTime = time => {
         let val = new Date(time).toLocaleTimeString()
-        return val.slice(0,5)
+        return val.slice(0, 5)
     }
 
     const emptyNotifications = () => {
-        return unreadTexts.length===0 && (!user?.worker || worker_profile_complete&&worker_is_subscribed&&user_email_verified) && props.badPublications?.length===0
+        return unreadTexts.length === 0 && (!user?.worker || worker_profile_complete && worker_is_subscribed && user_email_verified) && props.badPublications?.length === 0
     }
 
     const mapWrapper = () => {
-        
-        if(emptyNotifications)
+
+        if (emptyNotifications)
             return (
                 <div className={styles.notification_empty}>
                     <p className={styles.notification_empty_text}>Sem mensagens novas ou outras notificações, por enquanto.</p>
                 </div>
             )
-        else{
-            return(
+        else {
+            return (
                 <div>
                     {
-                        (user?.worker&&(!worker_profile_complete||!worker_is_subscribed))||!user_email_verified?
-                        <div>
-                            <div className={styles.banner} style={{marginTop:hasUnreadTexts?"3px":""}}>
-                                <p className={styles.banner_text}>Notificações de conta</p>
+                        (user?.worker && (!worker_profile_complete || !worker_is_subscribed)) || !user_email_verified ?
+                            <div>
+                                <div className={styles.banner} style={{ marginTop: hasUnreadTexts ? "3px" : "" }}>
+                                    <p className={styles.banner_text}>Notificações de conta</p>
+                                </div>
+                                {mapNotifications()}
                             </div>
-                            {mapNotifications()}
-                        </div>
-                        :null
+                            : null
                     }
                     {
-                        props.badPublications?.length>0?
-                        <div>
-                            <div className={styles.banner} style={{marginTop:hasUnreadTexts?"3px":"",}}>
-                                <p className={styles.banner_text} style={{backgroundColor:"#ff3b30"}}>Problema na Tarefa</p>
+                        props.badPublications?.length > 0 ?
+                            <div>
+                                <div className={styles.banner} style={{ marginTop: hasUnreadTexts ? "3px" : "", }}>
+                                    <p className={styles.banner_text} style={{ backgroundColor: "#ff3b30" }}>Problema na Tarefa</p>
+                                </div>
+                                {mapBadPublications()}
                             </div>
-                            {mapBadPublications()}
-                        </div>
-                        :null
+                            : null
                     }
                     {
-                        unreadTexts.length>0?
-                        <div>
-                            <div className={styles.banner}>
-                                <p className={styles.banner_text}>Mensagens</p>
-                                {mapMessages()}
+                        unreadTexts.length > 0 ?
+                            <div>
+                                <div className={styles.banner}>
+                                    <p className={styles.banner_text}>Mensagens</p>
+                                    {mapMessages()}
+                                </div>
                             </div>
-                        </div>
-                        :
-                        null
+                            :
+                            null
                     }
                 </div>
             )
         }
-                                        
+
     }
 
     const mapMessages = () => {
         return unreadTexts.map(el => {
             return (
                 <div className={
-                    el.approached_id !== user?._id?
-                        el.approached_type==='worker'?
-                        `${styles.notification} ${styles.notification_worker}`
-                        :`${styles.notification} ${styles.notification_user}`
-                    :
-                        el.approacher_type==='worker'?
-                        `${styles.notification} ${styles.notification_worker}`
-                        :`${styles.notification} ${styles.notification_user}`
-                    } 
-                // onClick={() => navigate(`/user?t=messages&id=${el.chat_id}`)}
-                onClick={() => navigate(`/user?t=messages`)}
+                    el.approached_id !== user?._id ?
+                        el.approached_type === 'worker' ?
+                            `${styles.notification} ${styles.notification_worker}`
+                            : `${styles.notification} ${styles.notification_user}`
+                        :
+                        el.approacher_type === 'worker' ?
+                            `${styles.notification} ${styles.notification_worker}`
+                            : `${styles.notification} ${styles.notification_user}`
+                }
+                    // onClick={() => navigate(`/user?t=messages&id=${el.chat_id}`)}
+                    onClick={() => navigate(`/user?t=messages`)}
                 >
                     <div className={styles.notification_left}>
-                        <ChatIcon className={styles.notification_left_icon}/>
+                        <ChatIcon className={styles.notification_left_icon} />
                     </div>
                     <div className={styles.notification_right}>
                         <div className={styles.notification_right_column}>
                             <div className={styles.notification_right_flex}>
                                 {
-                                    el.approached_id !== user?._id?
-                                        el.approached_photoUrl !== ""?
-                                        <img src={el.approached_photoUrl} className={styles.notification_right_image}/>
+                                    el.approached_id !== user?._id ?
+                                        el.approached_photoUrl !== "" ?
+                                            <img src={el.approached_photoUrl} className={styles.notification_right_image} />
+                                            :
+                                            el.approached_type === "worker" ?
+                                                <EmojiPeopleIcon className={styles.notification_right_image} style={{ transform: 'scaleX(-1)', color: "#FF785A" }} />
+                                                : <FaceIcon className={styles.notification_right_image} />
                                         :
-                                        el.approached_type==="worker"?
-                                        <EmojiPeopleIcon className={styles.notification_right_image} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
-                                        :<FaceIcon className={styles.notification_right_image}/>
-                                    :
-                                    el.approacher_photoUrl !== ""?
-                                        <img src={el.approacher_photoUrl} className={styles.notification_right_image}/>
-                                        :
-                                        el.approacher_type==="worker"?
-                                        <EmojiPeopleIcon className={styles.notification_right_image} style={{transform: 'scaleX(-1)', color:"#FF785A"}}/>
-                                        :<FaceIcon className={styles.notification_right_image}/>
+                                        el.approacher_photoUrl !== "" ?
+                                            <img src={el.approacher_photoUrl} className={styles.notification_right_image} />
+                                            :
+                                            el.approacher_type === "worker" ?
+                                                <EmojiPeopleIcon className={styles.notification_right_image} style={{ transform: 'scaleX(-1)', color: "#FF785A" }} />
+                                                : <FaceIcon className={styles.notification_right_image} />
                                 }
-                                <p className={styles.notification_right_name}>{el.approached_id !== user?._id?el.approached_name:el.approacher_name}</p>
+                                <p className={styles.notification_right_name}>{el.approached_id !== user?._id ? el.approached_name : el.approacher_name}</p>
                             </div>
                             <span className={styles.notification_right_text}>
                                 {el.last_text.text}
@@ -416,10 +409,10 @@ const Home = (props) => {
                         </div>
                         <div className={styles.notification_right_column}>
                             {
-                                el.reservation_title?
-                                <p className={styles.notification_right_reservation}>{el.reservation_title}</p>
-                                :
-                                <p className={styles.notification_right_reservation}>mensagem por ler</p>
+                                el.reservation_title ?
+                                    <p className={styles.notification_right_reservation}>{el.reservation_title}</p>
+                                    :
+                                    <p className={styles.notification_right_reservation}>mensagem por ler</p>
                             }
                             <div className={styles.notification_right_time}>
                                 <p className={styles.notification_right_date}>{getTime(el.last_text.timestamp)}</p>
@@ -433,48 +426,48 @@ const Home = (props) => {
     }
 
     const mapNotifications = () => {
-            return (
-                <div>
-                    {                    
-                    !user_email_verified?
+        return (
+            <div>
+                {
+                    !user_email_verified ?
                         <div className={styles.notification} onClick={() => navigate(`/user?t=conta`)}>
                             <div className={styles.notification_left}>
-                                <EmailUnverified className={styles.notification_left_icon}/>
+                                <EmailUnverified className={styles.notification_left_icon} />
                             </div>
                             <div className={styles.notification_short}>
                                 <p className={styles.notification_short_text}>VERIFICA O TEU E-MAIL</p>
                             </div>
                         </div>
-                    :null
-                    }
-                                        {                    
-                    user.worker&&!worker_profile_complete?
+                        : null
+                }
+                {
+                    user.worker && !worker_profile_complete ?
                         <div className={styles.notification} onClick={() => navigate(`/user?t=profissional`)}>
                             <div className={styles.notification_left}>
-                                <DisplaySettingsIcon className={styles.notification_left_icon}/>
+                                <DisplaySettingsIcon className={styles.notification_left_icon} />
                             </div>
                             <div className={styles.notification_short}>
                                 <p className={styles.notification_short_text}>PREENCHE OS DETALHES DE PROFISSIONAL</p>
                             </div>
                         </div>
-                    :null
-                    }
-                    {                    
-                    user.worker&&!worker_is_subscribed?
+                        : null
+                }
+                {
+                    user.worker && !worker_is_subscribed ?
                         <div className={styles.notification} onClick={() => navigate(`/user?t=profissional&st=subscription`)}>
                             <div className={styles.notification_left}>
-                                <CardMembershipIcon className={styles.notification_left_icon}/>
+                                <CardMembershipIcon className={styles.notification_left_icon} />
                             </div>
                             <div className={styles.notification_short}>
                                 <p className={styles.notification_short_text}>ATIVA A TUA SUBSCRIÇÃO</p>
                             </div>
                         </div>
-                    :null
-                    }
+                        : null
+                }
 
-                </div>
-                
-            )
+            </div>
+
+        )
     }
 
     const mapBadPublications = () => {
@@ -483,14 +476,14 @@ const Home = (props) => {
                 <div>
                     <div className={`${styles.notification} ${styles.notification_red}`} onClick={() => navigate(`/publicar/editar?editar=true&res_id=${val._id}`)}>
                         <div className={styles.notification_left}>
-                            <TitleIcon className={styles.notification_left_icon}/>
+                            <TitleIcon className={styles.notification_left_icon} />
                         </div>
                         <div className={styles.notification_short}>
-                        <p className={styles.notification_short_text_helper}>Tens um problema na tua tarefa: <strong>{val.title}</strong></p>
+                            <p className={styles.notification_short_text_helper}>Tens um problema na tua tarefa: <strong>{val.title}</strong></p>
                             <p className={styles.notification_short_text}>ALTERAR TAREFA</p>
                         </div>
                     </div>
-    
+
                 </div>
             )
         })
@@ -501,7 +494,7 @@ const Home = (props) => {
         const position = Math.ceil(
             (scrollTop / (scrollHeight - clientHeight)) * 100
         )
-        if(position > 50) {
+        if (position > 50) {
             window.localStorage.setItem('exploredHome', true)
             setShowArrowFlag(false)
         }
@@ -509,20 +502,21 @@ const Home = (props) => {
 
     const mapContentToDisplay = () => {
         return items.map((item, i) => {
-            return(
+            return (
                 <div key={i} className={styles.content_item}
                     onClick={() => {
                         navigate(`/main/publications/publication?id=${item._id}`, {
-                                state: {
-                                    fromUserPage: false,
-                                }
+                            state: {
+                                fromUserPage: false,
                             }
-                        )}}>
+                        }
+                        )
+                    }}>
                     <div className={styles.item}>
                         <div className={styles.item_top}>
-                            <img className={styles.top_image} src={profissoesMap[item.workerType]?.img}/>
+                            <img className={styles.top_image} src={profissoesMap[item.workerType]?.img} />
                             <div className={styles.top_arrow_wrapper}>
-                                <ArrowForwardIcon className={styles.top_arrow}/>
+                                <ArrowForwardIcon className={styles.top_arrow} />
                             </div>
                         </div>
                         <div className={styles.item_middle}>
@@ -530,11 +524,11 @@ const Home = (props) => {
                             <p className={styles.middle_desc}>{item.desc}</p>
                         </div>
                         <div className={styles.item_bottom}>
-                            <LocationOnIcon className={styles.bottom_icon}/>
+                            <LocationOnIcon className={styles.bottom_icon} />
                             <p className={styles.bottom_location}>{regioesOptions[item.district]}</p>
                         </div>
                     </div>
-                    
+
                 </div>
             )
         })
@@ -542,57 +536,58 @@ const Home = (props) => {
 
     const mapWorkersToDisplay = () => {
         return workers.map((item, i) => {
-            return(
+            return (
                 <div key={i} className={styles.content_item_worker}
                     onClick={() => {
                         navigate(`/main/publications/profissional?id=${item._id}`, {
-                                state: {
-                                    fromUserPage: false,
-                                }
+                            state: {
+                                fromUserPage: false,
                             }
-                        )}}>
+                        }
+                        )
+                    }}>
                     <div className={styles.worker}>
                         <div className={styles.worker_top}>
-                            <img className={styles.worker_image} referrerPolicy="no-referrer" src={item.photoUrl}/>
+                            <img className={styles.worker_image} referrerPolicy="no-referrer" src={item.photoUrl} />
                         </div>
                         <div className={styles.worker_bottom}>
                             <div className={styles.worker_bottom_title}>
-                                <p className={styles.middle_title} style={{textTransform:'capitalize'}}>{item.name}</p>
+                                <p className={styles.middle_title} style={{ textTransform: 'capitalize' }}>{item.name}</p>
                                 <div className={styles.top_arrow_wrapper}>
-                                    <ArrowForwardIcon className={styles.top_arrow}/>
+                                    <ArrowForwardIcon className={styles.top_arrow} />
                                 </div>
                             </div>
                             <div className={styles.worker_bottom_info_wrapper}>
                                 <div className={styles.worker_bottom_info}>
-                                    <ConstructionIcon className={styles.bottom_icon}/>
+                                    <ConstructionIcon className={styles.bottom_icon} />
                                     <div className={styles.worker_bottom_info_wrapper_deep}>
                                         <p className={styles.bottom_info}>{profissoesMap[item.trabalhos[0]]?.label}</p>
                                         {
-                                            item.trabalhos?.length>1?
-                                            <p className={styles.bottom_info}> +{item.trabalhos?.length - 1}</p>
-                                            :null
+                                            item.trabalhos?.length > 1 ?
+                                                <p className={styles.bottom_info}> +{item.trabalhos?.length - 1}</p>
+                                                : null
                                         }
                                     </div>
                                 </div>
                                 <div className={styles.worker_bottom_info}>
-                                    <LocationOnIcon className={styles.bottom_icon}/>
+                                    <LocationOnIcon className={styles.bottom_icon} />
                                     <div className={styles.worker_bottom_info_wrapper_deep}>
                                         <p className={styles.bottom_info}>{regioesOptions[item.regioes[0]]}</p>
                                         {
-                                            item.regioes?.length>1?
-                                            <p className={styles.bottom_info}> +{item.regioes?.length - 1}</p>
-                                            :null
+                                            item.regioes?.length > 1 ?
+                                                <p className={styles.bottom_info}> +{item.regioes?.length - 1}</p>
+                                                : null
                                         }
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div className={styles.item_bottom}>
-                            
-                            
+
+
                         </div>
                     </div>
-                    
+
                 </div>
             )
         })
@@ -601,115 +596,115 @@ const Home = (props) => {
 
 
     const fetchJobs = () => {
-        axios.get(`${api_url}/reservations`,{ params: {limit: 3} }).then(res => {
-            if(res.data!==null){
+        axios.get(`${api_url}/reservations`, { params: { limit: 3 } }).then(res => {
+            if (res.data !== null) {
                 setItems(res.data.data)
             }
         })
     }
 
     const fetchWorkers = () => {
-        axios.get(`${api_url}/workers`, { params: {limit: 3} }).then(res => {
-            if(res.data!==null){
+        axios.get(`${api_url}/workers`, { params: { limit: 3 } }).then(res => {
+            if (res.data !== null) {
                 setWorkers(res.data.data)
             }
         })
     }
-    
-    return(
+
+    return (
         <div className={styles.home}>
-            {/* {backdrop?
-                <span className={styles.backdrop}/>
-                :null
-            } */}
-            <CSSTransition 
+            {backdrop ?
+                <span className={styles.backdrop} />
+                : null
+            }
+            <CSSTransition
                 in={loginPopup}
                 timeout={1000}
                 classNames="transition"
                 unmountOnExit
-                >
-                <Sessao removePopin={() => setLoginPopup(false)} text={"Sessão iniciada com sucesso!"}/>
+            >
+                <Sessao removePopin={() => setLoginPopup(false)} text={"Sessão iniciada com sucesso!"} />
             </CSSTransition>
-            <CSSTransition 
-                in={registerPopup!==false}
+            <CSSTransition
+                in={registerPopup !== false}
                 timeout={1000}
                 classNames="transition"
                 unmountOnExit
-                >
-                <Sessao removePopin={() => setRegisterPopup(false)} text={registerPopup==="skippedVerification"?"Conta criada com sucesso! Não te esqueças de verificar o teu e-mail.":"Conta criada com sucesso!"}/>
+            >
+                <Sessao removePopin={() => setRegisterPopup(false)} text={registerPopup === "skippedVerification" ? "Conta criada com sucesso! Não te esqueças de verificar o teu e-mail." : "Conta criada com sucesso!"} />
             </CSSTransition>
-            <CSSTransition 
+            <CSSTransition
                 in={mensagemPopup}
                 timeout={1000}
                 classNames="transition"
                 unmountOnExit
-                >{
-                <Sessao removePopin={() => setMensagemPopup(false)} text={"Completa o teu perfil!"}/>
+            >{
+                    <Sessao removePopin={() => setMensagemPopup(false)} text={"Completa o teu perfil!"} />
                 }
             </CSSTransition>
             {
-                workerBanner?
-                <WorkerBanner 
-                    cancel={() => setWorkerBanner(false)}/>
-                :null
+                workerBanner ?
+                    <WorkerBanner
+                        cancel={() => setWorkerBanner(false)} />
+                    : null
             }
             {
-                tosBanner?
-                <TosBanner 
-                    confirm={() => {
-                        setTosBanner(false)
-                    }}
-                    cancel={() => setTosBanner(false)}/>
-                :null
+                tosBanner ?
+                    <TosBanner
+                        confirm={() => {
+                            setTosBanner(false)
+                        }}
+                        cancel={() => setTosBanner(false)} />
+                    : null
             }
             {
-                ppBanner?
-                <PpBanner 
-                    confirm={() => {
-                        setPpBanner(false)
-                    }}
-                    cancel={() => setPpBanner(false)}/>
-                :null
+                ppBanner ?
+                    <PpBanner
+                        confirm={() => {
+                            setPpBanner(false)
+                        }}
+                        cancel={() => setPpBanner(false)} />
+                    : null
             }
             {
-                suggestionBanner?
-                <SuggestionBanner
-                    confirm={() => {
-                        setSuggestionBanner(false)
-                    }}
-                    cancel={() => setSuggestionBanner(false)}/>
-                :null
+                suggestionBanner ?
+                    <SuggestionBanner
+                        confirm={() => {
+                            setSuggestionBanner(false)
+                        }}
+                        cancel={() => setSuggestionBanner(false)} />
+                    : null
             }
             {
-                contactosBanner?
-                <ContactosBanner
-                    confirm={() => {
-                        setContactosBanner(false)
-                    }}
-                    cancel={() => setContactosBanner(false)}/>
-                :null
+                contactosBanner ?
+                    <ContactosBanner
+                        confirm={() => {
+                            setContactosBanner(false)
+                        }}
+                        cancel={() => setContactosBanner(false)} />
+                    : null
             }
             {
-                informationBanner?
-                <InformationBanner
-                    confirm={() => {
-                        setInformationBanner(false)
-                    }}
-                    cancel={() => setInformationBanner(false)}/>
-                :null
+                informationBanner ?
+                    <InformationBanner
+                        confirm={() => {
+                            setInformationBanner(false)
+                        }}
+                        cancel={() => setInformationBanner(false)} />
+                    : null
             }
             <div ref={top} className={styles.home_wrapper} onScroll={val => {
-                showArrowFlag&&handleScroll(val)
+                showArrowFlag && handleScroll(val)
             }}>
                 {
-                    showArrowFlag?
-                    <div className={styles.arrow_wrapper_2} style={{opacity:showArrow?1:0}}>
-                        <p className={styles.arrow_wrapper_text}>Explora o resto da página!</p>
-                        <div className={styles.arrow_wrapper_div}> 
-                            <ArrowDownwardIcon className={styles.arrow_wrapper_icon}/>
+                    showArrowFlag ?
+                        <div className={styles.arrow_wrapper_2} style={{ opacity: showArrow ? 1 : 0 }}>
+                            <p className={styles.arrow_wrapper_text}>Explora o resto da página!</p>
+                            <div className={styles.arrow_wrapper_div}>
+                                <ArrowDownwardIcon className={styles.arrow_wrapper_icon} />
+                            </div>
                         </div>
-                    </div> 
-                    :null
+                        : null
                 }
                 {/* {
                     window.adsbygoogle?
@@ -730,200 +725,231 @@ const Home = (props) => {
                 } */}
                 <div className={styles.home_hero}>
                     {
-                        hasUnreadTexts?
-                        <div className={styles.has_messages} onClick={() => navigate(`/user?t=messages`)}>  
-                            <p>Tens mensagens por ler</p>
-                        </div> 
-                        :null
-                    }                    
-                               
+                        hasUnreadTexts ?
+                            <div className={styles.has_messages} onClick={() => navigate(`/user?t=messages`)}>
+                                <p>Tens mensagens por ler</p>
+                            </div>
+                            : null
+                    }
+
                     <div className={styles.home_hero_inner}>
                         {
-                            loaded?
-                            <img src={hero_1} className={styles.hero_image}/>
-                            :null
+                            loaded ?
+                                <img src={hero_1} className={styles.hero_image} />
+                                : null
                         }
                         {
-                            loaded?
-                            <div className={styles.main_wrapper}>
-                                <span className={styles.main_wrapper_title}>Conectamos tarefas a</span>
-                                <span className={styles.main_wrapper_title}>profissionais</span>
-                                <div className={styles.main_select}>
-                                    <div className={styles.main_select_element} style={{backgroundColor:searchPosition===0?first?.value==="profissionais"?"#FF785A":"#0358e5":''}} onClick={() => setSearchPosition(0)}>
-                                        <SearchIcon className={styles.element_icon}/>
-                                        <span className={styles.element_text}>Procurar</span>
+                            loaded ?
+                                <div className={styles.main_wrapper}>
+                                    <span className={styles.main_wrapper_title}>Conectamos tarefas a</span>
+                                    <span className={styles.main_wrapper_title}>profissionais</span>
+                                    <div className={styles.main_select}>
+                                        <div className={styles.main_select_element} style={{ backgroundColor: searchPosition === 0 ? first?.value === "profissionais" ? "#FF785A" : "#0358e5" : '' }} onClick={() => setSearchPosition(0)}>
+                                            <SearchIcon className={styles.element_icon} />
+                                            <span className={styles.element_text}>Procurar</span>
+                                        </div>
+                                        <div className={styles.main_select_element} style={{ backgroundColor: searchPosition === 1 ? '#0358e5' : '' }} onClick={() => setSearchPosition(1)}>
+                                            <AddIcon className={styles.element_icon} />
+                                            <span className={styles.element_text}>Publicar</span>
+                                        </div>
                                     </div>
-                                    <div className={styles.main_select_element} style={{backgroundColor:searchPosition===1?'#0358e5':''}} onClick={() => setSearchPosition(1)}>
-                                        <AddIcon className={styles.element_icon}/>
-                                        <span className={styles.element_text}>Publicar</span>
+                                    <div className={styles.main}>
+                                        <motion.div
+                                            style={{ display: searchPosition ? 'inherit' : 'none' }}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: searchPosition === 1 ? 1 : 0 }}
+                                            transition={{ duration: 0.15 }}
+                                            className={styles.zone_wrapper}>
+                                            <div className={styles.zone_publicar}>
+                                                <p className={styles.zone_publicar_text}>Conta-nos o que precisas, o profissional trata do resto!</p>
+                                            </div>
+                                            <div className={styles.zone_publicar_right}>
+                                                <p className={styles.zone_publicar_right_text}>
+                                                    {user?._id ?
+                                                        'Publicar'
+                                                        : 'Começar'}
+                                                </p>
+                                                <div onClick={() => {
+                                                    searchHandler()
+                                                }} className={styles.zone_publicar_right_icon}>
+                                                    <ArrowForwardIcon className={styles.zone_search_icon} style={{ color: "#ffffff", }} />
+                                                </div>
+                                            </div>
+
+                                        </motion.div>
+                                        <motion.div
+                                            style={{ display: !searchPosition ? 'inherit' : 'none' }}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: searchPosition === 0 ? 1 : 0 }}
+                                            transition={{ duration: 0.15 }}
+                                            className={styles.zone_wrapper}>
+                                            <div className={styles.zone}>
+                                                <div className={styles.zone_select}>
+                                                    <SelectHomeMain
+                                                        menuOpen={() => {
+                                                            if (windowDimensions.width <= 768)
+                                                                setTimeout(() => {
+                                                                    select_profissionais.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+                                                                }, 200)
+                                                            else
+                                                                setTimeout(() => {
+                                                                    top.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                                                                }, 200)
+
+                                                            // setBackdrop(true)
+                                                        }}
+                                                        menuClose={() => {
+                                                            setBackdrop(false)
+                                                            // if(windowDimensions.width <= 768)
+                                                            //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                        }}
+                                                        options={firstOptions}
+                                                        option={first}
+                                                        smallWindow={windowDimensions.width <= 1024}
+                                                        mediumWindow={windowDimensions.width <= 1440}
+                                                        changeOption={val => {
+                                                            // if(windowDimensions.width <= 768)
+                                                            //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                            setFirst(val)
+                                                            setBackdrop(false)
+                                                        }} />
+                                                </div>
+                                            </div>
+                                            <span className={styles.zone_seperator}></span>
+                                            <div className={styles.zone}>
+                                                <div className={styles.zone_select}>
+                                                    <div className={styles.placeholder_title_wrapper}>
+                                                        <span className={styles.placeholder_title}>Tipo de serviço</span>
+                                                    </div>
+                                                    <SelectHomeOther
+                                                        ref={select_profissionais}
+                                                        menuOpen={() => {
+                                                            if (windowDimensions.width <= 768)
+                                                                setTimeout(() => {
+                                                                    select_profissionais.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+                                                                }, 200)
+                                                            else
+                                                                setTimeout(() => {
+                                                                    top.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+                                                                }, 200)
+
+                                                            // setBackdrop(true)
+                                                        }}
+                                                        menuClose={() => {
+                                                            setBackdrop(false)
+                                                            // if(windowDimensions.width <= 768)
+                                                            //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                        }}
+                                                        home={true}
+                                                        professions={true}
+                                                        options={profissoesGrouped}
+                                                        optionFirst={first}
+                                                        option={second}
+                                                        smallWindow={windowDimensions.width <= 1024}
+                                                        mediumWindow={windowDimensions.width <= 1440}
+                                                        changeOption={val => {
+                                                            // if(windowDimensions.width <= 768)
+                                                            //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+                                                            setSecond(val)
+                                                            setBackdrop(false)
+                                                        }}
+                                                        placeholder={'Tipo de serviço'}
+                                                        placeholder_desc={'Pesquisa por um serviço'} />
+                                                </div>
+                                            </div>
+                                            <span className={styles.zone_seperator}></span>
+                                            <div className={styles.zone} ref={select_regioes}>
+                                                <div className={styles.zone_select}>
+                                                    <div className={styles.placeholder_title_wrapper}>
+                                                        <span className={styles.placeholder_title}>Região</span>
+                                                    </div>
+                                                    <SelectHomeOther
+                                                        menuOpen={() => {
+                                                            if (windowDimensions.width <= 768)
+                                                                setTimeout(() => {
+                                                                    select_regioes.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+                                                                }, 200)
+                                                        }}
+                                                        menuClose={() => {
+                                                            if (windowDimensions.width <= 768)
+                                                                select_profissionais.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+                                                        }}
+
+                                                        home={true}
+                                                        regioes={true}
+                                                        options={regioes}
+                                                        optionFirst={first}
+                                                        option={third}
+                                                        second={second}
+                                                        smallWindow={windowDimensions.width <= 1024}
+                                                        mediumWindow={windowDimensions.width <= 1440}
+                                                        changeOption={val => {
+                                                            if (windowDimensions.width <= 768)
+                                                                select_profissionais.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+                                                            setThird(val)
+                                                        }}
+                                                        placeholder={'Região'}
+                                                        placeholder_desc={'Pesquisa por um local'} />
+                                                </div>
+                                            </div>
+                                            <div onClick={() => {
+                                                searchHandler()
+                                            }} className={styles.search_wrapper}
+                                                style={{
+                                                    backgroundColor: first?.value === "profissionais" ? "#FF785A" : "#0358e5",
+                                                    borderColor: first?.value === "profissionais" ? "#FF785A" : "#0358e5"
+                                                }}>
+                                                <SearchIcon className={styles.zone_search_icon} style={{ color: "#ffffff" }} />
+                                            </div>
+                                        </motion.div>
                                     </div>
                                 </div>
-                                <div className={styles.main}>
-                                    <div className={styles.zone_wrapper}>
-                                        <div className={styles.zone}>
-                                            <div className={styles.zone_select}>
-                                                <SelectHomeMain
-                                                    menuOpen={() => {
-                                                        if(windowDimensions.width <= 768)
-                                                            setTimeout(() => {
-                                                                select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
-                                                            }, 200)
-                                                        else
-                                                            setTimeout(() => {
-                                                                top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
-                                                            }, 200)
-
-                                                        // setBackdrop(true)
-                                                    }}
-                                                    menuClose={() => {
-                                                        setBackdrop(false)
-                                                        // if(windowDimensions.width <= 768)
-                                                        //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
-                                                    }}
-                                                    options={firstOptions}
-                                                    option={first}
-                                                    smallWindow={windowDimensions.width <= 1024}
-                                                    mediumWindow={windowDimensions.width <= 1440}
-                                                    changeOption={val => {
-                                                        // if(windowDimensions.width <= 768)
-                                                        //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
-                                                        setFirst(val)
-                                                        setBackdrop(false)
-                                                    }}/>
-                                            </div>
-                                        </div>
-                                        <span className={styles.zone_seperator}></span>
-                                        <div className={styles.zone}>
-                                            <div className={styles.zone_select}>
-                                                <div className={styles.placeholder_title_wrapper}>
-                                                    <span className={styles.placeholder_title}>Tipo de serviço</span>
-                                                </div>
-                                                <SelectHomeOther
-                                                    ref={select_profissionais}
-                                                    menuOpen={() => {
-                                                        if(windowDimensions.width <= 768)
-                                                            setTimeout(() => {
-                                                                select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
-                                                            }, 200)
-                                                        else
-                                                            setTimeout(() => {
-                                                                top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
-                                                            }, 200)
-
-                                                        // setBackdrop(true)
-                                                    }}
-                                                    menuClose={() => {
-                                                        setBackdrop(false)
-                                                        // if(windowDimensions.width <= 768)
-                                                        //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
-                                                    }}
-                                                    home={true}
-                                                    professions={true}
-                                                    options={profissoesGrouped}
-                                                    optionFirst={first} 
-                                                    option={second}
-                                                    smallWindow={windowDimensions.width <= 1024}
-                                                    mediumWindow={windowDimensions.width <= 1440}
-                                                    changeOption={val => {
-                                                        // if(windowDimensions.width <= 768)
-                                                        //     top.current?.scrollTo({top: 0, left: 0, behavior: 'smooth'})
-                                                        setSecond(val)
-                                                        setBackdrop(false)
-                                                    }}
-                                                    placeholder={'Tipo de serviço'}
-                                                    placeholder_desc={'Pesquisa por um serviço'}/>
-                                            </div>
-                                        </div>
-                                        <span className={styles.zone_seperator}></span>
-                                        <div className={styles.zone} ref={select_regioes}>
-                                            <div className={styles.zone_select}>
-                                                <div className={styles.placeholder_title_wrapper}>
-                                                    <span className={styles.placeholder_title}>Região</span>
-                                                </div>
-                                                <SelectHomeOther
-                                                    menuOpen={() => {
-                                                        if(windowDimensions.width <= 768)
-                                                            setTimeout(() => {
-                                                                select_regioes.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
-                                                            }, 200)
-                                                    }}
-                                                    menuClose={() => {
-                                                        if(windowDimensions.width <= 768)
-                                                            select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
-                                                    }}
-                                                        
-                                                    home={true}
-                                                    regioes={true}
-                                                    options={regioes}
-                                                    optionFirst={first} 
-                                                    option={third}
-                                                    second={second}
-                                                    smallWindow={windowDimensions.width <= 1024}
-                                                    mediumWindow={windowDimensions.width <= 1440}
-                                                    changeOption={val => {
-                                                        if(windowDimensions.width <= 768)
-                                                            select_profissionais.current?.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'})
-                                                        setThird(val)}}
-                                                    placeholder={'Região'}
-                                                    placeholder_desc={'Pesquisa por um local'}/>
-                                            </div>
-                                        </div>
-                                        <div onClick={() => {
-                                                        searchHandler()
-                                                    }} className={styles.search_wrapper} 
-                                                    style={{backgroundColor:first?.value==="profissionais"?"#FF785A":"#0358e5",
-                                                            borderColor:first?.value==="profissionais"?"#FF785A":"#0358e5"}}>
-                                            <SearchIcon className={styles.zone_search_icon} style={{color:"#ffffff"}}/>
-                                        </div>
-                                    </div>
+                                :
+                                <div className={styles.section_content} style={{ backgroundColor: "transparent" }}>
+                                    <p className={styles.skeleton_content_in}></p>
                                 </div>
-                            </div>
-                            :
-                            <div className={styles.section_content} style={{backgroundColor:"transparent"}}>
-                                <p className={styles.skeleton_content_in}></p>
-                            </div>  
                         }
                         {
-                            loaded?
-                            <img src={hero_2} className={styles.hero_image}/>
-                            :null
+                            loaded ?
+                                <img src={hero_2} className={styles.hero_image} />
+                                : null
                         }
                     </div>
 
                 </div>
-                
+
 
                 {
-                    user?._id!=null && !emptyNotifications?
-                    <div style={{width:'80%', margin: '0 auto', marginTop:'30px'}}>
-                        <p className={styles.back_publish_title}>CENTRO DE NOTIFICAÇÕES</p>
-                    </div>
-                    
-                    :null
+                    user?._id != null && !emptyNotifications ?
+                        <div style={{ width: '80%', margin: '0 auto', marginTop: '30px' }}>
+                            <p className={styles.back_publish_title}>CENTRO DE NOTIFICAÇÕES</p>
+                        </div>
+
+                        : null
                 }
                 {
-                    user?._id!=null && !emptyNotifications?
-                    <div className={styles.home_back_publish} style={{marginTop:'0px'}}>
-                    {
-                        <div className={styles.notification_area}>
-                            {   
-                                
-                                mapWrapper()
+                    user?._id != null && !emptyNotifications ?
+                        <div className={styles.home_back_publish} style={{ marginTop: '0px' }}>
+                            {
+                                <div className={styles.notification_area}>
+                                    {
+
+                                        mapWrapper()
+                                    }
+                                </div>
                             }
                         </div>
-                    }
-                    </div>
-                    :null
+                        : null
                 }
                 <div className={styles.explore}>
                     <div className={styles.explore_row}>
                         <div className={styles.row_header}>
                             <div className={styles.header_widget_wrapper}>
-                                <img src={icon_4} className={styles.widget_image}/>
+                                <img src={icon_4} className={styles.widget_image} />
                                 <p className={styles.widget_title}>Tarefas</p>
                             </div>
                             <div className={styles.header_title_wrapper}>
-                                <p>Últimas tarefas <br/>publicadas</p>
+                                <p>Últimas tarefas <br />publicadas</p>
                             </div>
                             <div className={styles.header_button_wrapper}>
                                 <div className={styles.header_button}>Explorar tarefas</div>
@@ -932,58 +958,58 @@ const Home = (props) => {
                         </div>
                         <div className={styles.row_content}>
                             {
-                                loaded?
-                                items?.length>0?
-                                    mapContentToDisplay()
-                                :null
-                                :
-                                <div className={styles.row_content_skeleton}>
-                                    <div className={styles.content_item_skeleton}/>
-                                    <div className={styles.content_item_skeleton}/>
-                                    <div className={styles.content_item_skeleton}/>
-                                </div>
+                                loaded ?
+                                    items?.length > 0 ?
+                                        mapContentToDisplay()
+                                        : null
+                                    :
+                                    <div className={styles.row_content_skeleton}>
+                                        <div className={styles.content_item_skeleton} />
+                                        <div className={styles.content_item_skeleton} />
+                                        <div className={styles.content_item_skeleton} />
+                                    </div>
                             }
                         </div>
                     </div>
-                    
+
                     <div className={styles.explore_row}>
                         <div className={styles.row_content}>
                             {
-                                loaded?
-                                workers?.length>0?
-                                    mapWorkersToDisplay()
-                                :null
-                                :
-                                <div className={styles.row_content_skeleton}>
-                                    <div className={styles.content_item_skeleton}/>
-                                    <div className={styles.content_item_skeleton}/>
-                                    <div className={styles.content_item_skeleton}/>
-                                </div>
+                                loaded ?
+                                    workers?.length > 0 ?
+                                        mapWorkersToDisplay()
+                                        : null
+                                    :
+                                    <div className={styles.row_content_skeleton}>
+                                        <div className={styles.content_item_skeleton} />
+                                        <div className={styles.content_item_skeleton} />
+                                        <div className={styles.content_item_skeleton} />
+                                    </div>
                             }
                         </div>
                         <div className={styles.row_header_right}>
-                            <div className={styles.row_header} style={{width:'fit-content'}}>
+                            <div className={styles.row_header} style={{ width: 'fit-content' }}>
                                 <div className={styles.header_widget_wrapper}>
-                                    <img src={icon_3} className={`${styles.widget_image} ${styles.action}`}/>
+                                    <img src={icon_3} className={`${styles.widget_image} ${styles.action}`} />
                                     <p className={`${styles.widget_title} ${styles.action}`}>Profissionais</p>
                                 </div>
                                 <div className={styles.header_title_wrapper}>
-                                    <p>Deixa para <br/>quem sabe</p>
+                                    <p>Deixa para <br />quem sabe</p>
                                 </div>
                                 <div className={styles.header_button_wrapper}>
-                                    <div className={styles.header_button} style={{backgroundColor:'#ff785a'}}>Ver lista de profissionais</div>
-                                        <p className={styles.header_worker_text}>Tornar-me um profissional</p>
+                                    <div className={styles.header_button} style={{ backgroundColor: '#ff785a' }}>Ver lista de profissionais</div>
+                                    <p className={styles.header_worker_text}>Tornar-me um profissional</p>
                                 </div>
-                                
-                                
+
+
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
 
-                    
-                <div className={styles.footer} style={{paddingBottom:window.adsbygoogle?"60px":"20px"}}>
+
+                <div className={styles.footer} style={{ paddingBottom: window.adsbygoogle ? "60px" : "20px" }}>
                     <div className={styles.footer_div}>
                         <div className={styles.footer_div_column}>
                             <p className={styles.footer_div_text_title}>Informações legais</p>
@@ -993,29 +1019,29 @@ const Home = (props) => {
                         <div className={styles.footer_div_column}>
                             <p className={styles.footer_div_text_title}>Conta e profissionais</p>
                             <p className={styles.footer_div_text} onClick={() => setContactosBanner(true)}>Suporte</p>
-                            <p className={styles.footer_div_text} style={{color:"#FF785A"}} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>
+                            <p className={styles.footer_div_text} style={{ color: "#FF785A" }} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>
                         </div>
                         <div className={styles.footer_div_column}>
                             <p className={styles.footer_div_text_title}>Sugestões e contactos</p>
                             <p className={styles.footer_div_text} onClick={() => setSuggestionBanner(true)}>Dá uma sugestão</p>
-                            <p className={styles.footer_div_text_no_style}>Outros assuntos: <span style={{textDecoration:'underline'}}>noreply@pt-tarefas.pt</span></p>
+                            <p className={styles.footer_div_text_no_style}>Outros assuntos: <span style={{ textDecoration: 'underline' }}>noreply@pt-tarefas.pt</span></p>
                         </div>
                         <div className={styles.footer_div_column}>
                             <div>
                                 <p className={styles.footer_div_text_title}>Segue-nos nas redes:</p>
                                 <div className={styles.footer_icon_div}>
-                                    <InstagramIcon className={styles.footer_icon} onClick={() => window.open('https://instagram.com/tarefaspt', "_blank", "noreferrer")}/>
-                                    <FacebookIcon className={styles.footer_icon} onClick={() => window.open('https://www.facebook.com/profile.php?id=61559666542359', "_blank", "noreferrer")}/>
+                                    <InstagramIcon className={styles.footer_icon} onClick={() => window.open('https://instagram.com/tarefaspt', "_blank", "noreferrer")} />
+                                    <FacebookIcon className={styles.footer_icon} onClick={() => window.open('https://www.facebook.com/profile.php?id=61559666542359', "_blank", "noreferrer")} />
                                 </div>
-                                <p className={styles.footer_div_text_no_style} style={{color: '#71848d'}}>APP Tarefas (brevemente)</p>
+                                <p className={styles.footer_div_text_no_style} style={{ color: '#71848d' }}>APP Tarefas (brevemente)</p>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
-                <Tooltip effect='solid' place='top' id="home"/>
+                <Tooltip effect='solid' place='top' id="home" />
             </div>
             <InitializeGPT />
-            <RequestAds/>
+            <RequestAds />
         </div>
     )
 }

@@ -60,10 +60,9 @@
     margin: auto;
     display: flex;
     justify-content: center;
-    background-color: transparent;
+    background-color: #fff;
     width: 100%;
     border-top-right-radius: 0;
-    transition: 200ms all;
     margin-top: calc(var(--base-width-percent) * 0.7);
 }
 .main_select{
@@ -93,7 +92,8 @@
     padding: 0 10px;
     cursor: pointer;
     transition: 0.5s all;
-    width: 50%;
+    width: 49.5%;
+    box-sizing: border-box;
 }
 .main_select_element:hover{
     opacity: 0.8;
@@ -509,17 +509,62 @@
     width: 30%;
     height: 70%;
 }
-.zone_wrapper{
+.main{
+    margin: auto;
     display: flex;
-    height: calc(var(--base-width-percent) * 3);
+    justify-content: center;
+    background-color: #fff;
+    margin-top: calc(var(--base-width-percent) * 0.7);
     min-height: 40px;
     max-height: 70px;
-    align-items: center;
-    justify-content: space-around;
+    height: calc(var(--base-width-percent) * 3);
+    width: calc(var(--base-width-percent) * 35);
     background-color: var(--neutral);
     border-radius: 50px;
     padding: 0;
-    width: calc(var(--base-width-percent) * 35);
+}
+.zone_wrapper{
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    padding: 0 0.2vw;
+}
+.zone_publicar{
+    width: 90%;
+}
+
+.zone_publicar_right{
+    display: flex;
+    align-items: center;
+    height: 80%;
+    background-color: var(--job);
+    border-radius: 32px;
+    padding: 0 0.5vw;
+    box-sizing: border-box;
+}
+.zone_publicar_right:hover{
+    opacity: 0.8;
+    transition: 150ms all;
+    cursor: pointer;
+}
+.zone_publicar_right_text{
+    font-size: var(--bigger);
+    font-weight: 400;
+    color: var(--neutral);
+    margin-right: calc(max(5px, 0.5vw));
+}
+.zone_publicar_text{
+    font-weight: 500;
+    font-size: var(--bigger);
+    margin-left: calc(max(5px, 0.8vw));
+}
+.zone_publicar_right_icon{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .zone_img{
     background-color: var(--brand);
@@ -608,7 +653,16 @@
     animation-iteration-count: infinite;
     z-index: 0;
 }
-
+.search_wrapper{
+    cursor: pointer;
+    transition: all 0.5s;
+    display: flex;
+    height: 80%;
+    aspect-ratio: 1/1;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
 .search_wrapper{
     cursor: pointer;
     transition: all 0.5s;

@@ -7,6 +7,7 @@ import { profissoesGrouped, profissoesMap } from '../general/util';
 const SelectHomeOther = (props) => {
 
     const [menuOpen, setMenuOpen] = useState(false)
+    const [searchValue, setSearchValue] = useState('');
     
     const stylesSelect = {
         control: (base, state) => ({
@@ -61,10 +62,11 @@ const SelectHomeOther = (props) => {
             zIndex: 5,
             marginTop: props.professions?'0':'calc(max(0.65vw, 3px))',
             width: props.professions?'100%':'12vw',
-            position: props.professions?'static':'absolute',
+            position: props.professions?'absolute':'absolute',
             display: props.professions?'flex':'',
             flexDirection: props.professions?'row':'',
-            justifyContent: props.professions?'center':''
+            justifyContent: props.professions?'center':'',
+            top: props.professions?0:'',
 
         }),
         menuList: base => ({
@@ -156,6 +158,7 @@ const SelectHomeOther = (props) => {
     }
 
     const selectChange = (val) => {
+        setSearchValue('')
         setMenuOpen(false)
         props.changeOption(val)
     }
@@ -177,13 +180,13 @@ const SelectHomeOther = (props) => {
         return (
             data.solo&&context === 'menu'?null
             :
-            <div className={`${context === 'menu'?styles.label_profs:''} ${((data?.value == props.option?.value) && (context === 'menu'))?styles.label_profs_active:''}`}
-                style={{marginLeft:(context !== 'menu'?0:'')}}>
+            <div className={`${context === 'menu'?styles.label_profs:styles.label} ${((data?.value == props.option?.value) && (context === 'menu'))?styles.label_profs_active:''}`}
+                style={{marginLeft:context !== 'menu'?0:''}}>
                 <div className={styles.label_main_wrapper}>
                     {
                         data?.value === 'online' && <LanguageIcon className={styles.label_online}/>
                     }
-                    <p className={styles.label_other_profs} style={{fontWeight: props.professions&&context==='menu'?500:600}}>{data.label}</p>
+                    <p className={styles.label_other_profs}>{data.label}</p>
                 </div>
             </div>
         )
@@ -197,7 +200,7 @@ const SelectHomeOther = (props) => {
                     {
                         data?.value === 'online' && <LanguageIcon className={styles.label_online}/>
                     }
-                    <p className={styles.label_other} style={{fontWeight: props.professions&&context==='menu'?400:600}}>{data.label}</p>
+                    <p className={styles.label_other}>{data.label}</p>
                 </div>
             </div>
         )
@@ -273,9 +276,9 @@ const SelectHomeOther = (props) => {
                 const { children, ...rest } = p;
                 return (
                     props.professions?
-                    <div className={children.length===1?styles.group_wrapper_solo:styles.group_wrapper}
+                    <div className={children.length===1&&children[0].props.data.solo?styles.group_wrapper_solo:styles.group_wrapper}
                         onClick={() => {
-                            if(children.length===1){
+                            if(children.length===1&&children[0].props.data.solo){
                                 selectChange(profissoesMap[children[0].props.value])
                             }
                         }}
@@ -323,11 +326,13 @@ const SelectHomeOther = (props) => {
                 <span className={styles.placeholder}>
                     <span className={styles.placeholder_desc}>{props.placeholder_desc}</span>                   
                 </span>}
-            // isSearchable={menuOpen}
+            isSearchable={menuOpen}
             styles={stylesSelect}
             options={props.options}
             // options={[]}
             value={props.option}
+            inputValue={searchValue}
+            onInputChange={setSearchValue}
             menuIsOpen={menuOpen}
             // menuIsOpen={props.professions}
             onMenuOpen={() => {
