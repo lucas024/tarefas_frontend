@@ -12,7 +12,6 @@ const SelectHome = (props) => {
             ...base,
             backgroundColor: props.home?'transparent':props.publicar?'#161F28':props.option?.value==='trabalhos'?"#0358e5":props.option?.value==='profissionais'?"#FF785A":props.option?.value?"#161F28":"#252d36",
             borderColor: "#ffffff",
-            fontSize: "calc(max(0.55vw, 10px))",
             textTransform: props.publicar||props.home?"normal":"uppercase",
             color: props.home?'#000000':"#ffffff",
             fontWeight: 600,
@@ -120,7 +119,6 @@ const SelectHome = (props) => {
             fontSize:props.auth?'1rem':'inherit',
             fontWeight:500,
             padding: 0,
-            fontSize: "calc(max(0.55vw, 10px))",
         }),
         singleValue: base => ({
             ...base,
@@ -128,7 +126,6 @@ const SelectHome = (props) => {
             margin: "auto",
             display: 'flex',
             justifyContent: 'center',
-            fontSize: "calc(max(0.55vw, 10px))",
             alignItems: 'center'
         }),
         indicatorSeparator : base => ({
@@ -280,7 +277,7 @@ const SelectHome = (props) => {
                 return context==='menu'?props.details?formatOptionLabelAuxProfsDetails(option):props.profs?formatOptionLabelAuxProfs(option):formatOptionLabelAux(option):
                 formatOptionLabelAux(option, context)
             }}
-            menuIsOpen={props.details||props.auth||props.publicarNew}
+            menuIsOpen={props.details||props.auth||props.publicarNew||true}
             onChange={value => {
                 if(props.details&&props.edit) selectChange(value)
                 else if(!props.details) selectChange(value)

@@ -12,7 +12,6 @@ const SelectHomeMain = (props) => {
             ...base,
             backgroundColor: 'transparent',
             borderColor: "#ffffff",
-            fontSize: "calc(max(0.57vw, 8px))",
             textTransform: "normal",
             color: '#000000',
             fontWeight: 600,
@@ -57,8 +56,8 @@ const SelectHomeMain = (props) => {
             borderRadius: 8,
             padding: "0",
             zIndex: 5,
-            marginTop: 'calc(max(0.65vw, 3px))',
-            width: '12vw',
+            marginTop: '12px',
+            width: 'calc(min(255px, 18vw))',
             minWidth: '150px'
         }),
         menuList: base => ({
@@ -71,14 +70,6 @@ const SelectHomeMain = (props) => {
             position: 'relative',
             height: '100%'
         }),
-        input: base => ({
-            ...base,
-            color: "#000000",
-            paddingLeft:"5px",
-            fontWeight:500,
-            padding: 0,
-            fontSize: "calc(max(0.57vw, 8px))",
-        }),
         indicatorContainer: base => ({
             ...base,
             width:'5px',
@@ -90,14 +81,15 @@ const SelectHomeMain = (props) => {
             margin: "auto",
             display: 'flex',
             justifyContent: 'center',
-            fontSize: "calc(max(0.57vw, 8px))",
             alignItems: 'center'
         }),
         valueContainer: base => ({
             ...base,
             height:'100%',
             width:'100%',
-            padding: 0
+            paddingLeft: '5px',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
         }),
         group: base => ({
             ...base,

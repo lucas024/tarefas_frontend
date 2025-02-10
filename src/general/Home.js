@@ -26,7 +26,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import FaceIcon from '@mui/icons-material/Face';
 import axios from 'axios';
 import ConstructionIcon from '@mui/icons-material/Construction';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
@@ -34,13 +34,17 @@ import EmailUnverified from '@mui/icons-material/UnsubscribeOutlined';
 import moment from 'moment';
 import { motion } from 'framer-motion';
 
+import { Carousel } from 'react-responsive-carousel';
+
 import hero_1 from '../assets/new_assets/hero_1.png'
 import hero_2 from '../assets/new_assets/hero_2.png'
 import icon_1 from '../assets/new_assets/icon_1.png'
 import icon_2 from '../assets/new_assets/icon_2.png'
 import icon_3 from '../assets/new_assets/worker_small.png'
 import icon_4 from '../assets/new_assets/tasks_small.png'
-
+import more_1 from '../assets/new_assets/more_1.png'
+import more_2 from '../assets/new_assets/more_2.png'
+import rocket from '../assets/new_assets/rocket_launch.png'
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
@@ -126,14 +130,6 @@ const Home = (props) => {
 
             return () => clearInterval(interval);
         }
-
-        // let last_timestamp = window.localStorage.getItem('last_search_timestamp')
-        // if (last_timestamp !== null) {
-        //     if (moment().diff(new Date(last_timestamp), 'minutes') > 10)
-        //         setSearchPosition(1)
-        //     else
-        //         setSearchPosition(0)
-        // }
 
         fetchJobs()
         fetchWorkers()
@@ -391,14 +387,14 @@ const Home = (props) => {
                                             <img src={el.approached_photoUrl} className={styles.notification_right_image} />
                                             :
                                             el.approached_type === "worker" ?
-                                                <EmojiPeopleIcon className={styles.notification_right_image} style={{ transform: 'scaleX(-1)', color: "#FF785A" }} />
+                                                <EmojiPeopleIcon className={styles.notification_right_image} style={{ transform: 'scaleX(-1)', color: "#E56144" }} />
                                                 : <FaceIcon className={styles.notification_right_image} />
                                         :
                                         el.approacher_photoUrl !== "" ?
                                             <img src={el.approacher_photoUrl} className={styles.notification_right_image} />
                                             :
                                             el.approacher_type === "worker" ?
-                                                <EmojiPeopleIcon className={styles.notification_right_image} style={{ transform: 'scaleX(-1)', color: "#FF785A" }} />
+                                                <EmojiPeopleIcon className={styles.notification_right_image} style={{ transform: 'scaleX(-1)', color: "#E56144" }} />
                                                 : <FaceIcon className={styles.notification_right_image} />
                                 }
                                 <p className={styles.notification_right_name}>{el.approached_id !== user?._id ? el.approached_name : el.approacher_name}</p>
@@ -552,7 +548,7 @@ const Home = (props) => {
                         </div>
                         <div className={styles.worker_bottom}>
                             <div className={styles.worker_bottom_title}>
-                                <p className={styles.middle_title} style={{ textTransform: 'capitalize' }}>{item.name}</p>
+                                <p className={styles.middle_title_worker}>{item.name}</p>
                                 <div className={styles.top_arrow_wrapper}>
                                     <ArrowForwardIcon className={styles.top_arrow} />
                                 </div>
@@ -696,7 +692,7 @@ const Home = (props) => {
             <div ref={top} className={styles.home_wrapper} onScroll={val => {
                 showArrowFlag && handleScroll(val)
             }}>
-                {
+                {/* {
                     showArrowFlag ?
                         <div className={styles.arrow_wrapper_2} style={{ opacity: showArrow ? 1 : 0 }}>
                             <p className={styles.arrow_wrapper_text}>Explora o resto da página!</p>
@@ -705,7 +701,7 @@ const Home = (props) => {
                             </div>
                         </div>
                         : null
-                }
+                } */}
                 {/* {
                     window.adsbygoogle?
                     <div>
@@ -724,13 +720,13 @@ const Home = (props) => {
                     :null
                 } */}
                 <div className={styles.home_hero}>
-                    {
+                    {/* {
                         hasUnreadTexts ?
                             <div className={styles.has_messages} onClick={() => navigate(`/user?t=messages`)}>
                                 <p>Tens mensagens por ler</p>
                             </div>
                             : null
-                    }
+                    } */}
 
                     <div className={styles.home_hero_inner}>
                         {
@@ -744,7 +740,7 @@ const Home = (props) => {
                                     <span className={styles.main_wrapper_title}>Conectamos tarefas a</span>
                                     <span className={styles.main_wrapper_title}>profissionais</span>
                                     <div className={styles.main_select}>
-                                        <div className={styles.main_select_element} style={{ backgroundColor: searchPosition === 0 ? first?.value === "profissionais" ? "#FF785A" : "#0358e5" : '' }} onClick={() => setSearchPosition(0)}>
+                                        <div className={styles.main_select_element} style={{ backgroundColor: searchPosition === 0 ? first?.value === "profissionais" ? "#E56144" : "#0358e5" : '' }} onClick={() => setSearchPosition(0)}>
                                             <SearchIcon className={styles.element_icon} />
                                             <span className={styles.element_text}>Procurar</span>
                                         </div>
@@ -763,7 +759,16 @@ const Home = (props) => {
                                             <div className={styles.zone_publicar}>
                                                 <p className={styles.zone_publicar_text}>Conta-nos o que precisas, o profissional trata do resto!</p>
                                             </div>
-                                            <div className={styles.zone_publicar_right}>
+                                            <div className={styles.zone_publicar_right} onClick={() => {
+                                                user?._id ? navigate(`/publicar`, {
+                                                    state: {
+                                                        carry: true
+                                                        // publicar a seguir
+                                                    }
+                                                })
+                                                    :
+                                                    handleMoveAuth(0)
+                                            }}>
                                                 <p className={styles.zone_publicar_right_text}>
                                                     {user?._id ?
                                                         'Publicar'
@@ -784,7 +789,7 @@ const Home = (props) => {
                                             transition={{ duration: 0.15 }}
                                             className={styles.zone_wrapper}>
                                             <div className={styles.zone}>
-                                                <div className={styles.zone_select}>
+                                                <div className={styles.zone_select} style={{width:'none'}}>
                                                     <SelectHomeMain
                                                         menuOpen={() => {
                                                             if (windowDimensions.width <= 768)
@@ -896,8 +901,8 @@ const Home = (props) => {
                                                 searchHandler()
                                             }} className={styles.search_wrapper}
                                                 style={{
-                                                    backgroundColor: first?.value === "profissionais" ? "#FF785A" : "#0358e5",
-                                                    borderColor: first?.value === "profissionais" ? "#FF785A" : "#0358e5"
+                                                    backgroundColor: first?.value === "profissionais" ? "#E56144" : "#0358e5",
+                                                    borderColor: first?.value === "profissionais" ? "#E56144" : "#0358e5"
                                                 }}>
                                                 <SearchIcon className={styles.zone_search_icon} style={{ color: "#ffffff" }} />
                                             </div>
@@ -918,96 +923,214 @@ const Home = (props) => {
 
                 </div>
 
-
-                {
-                    user?._id != null && !emptyNotifications ?
-                        <div style={{ width: '80%', margin: '0 auto', marginTop: '30px' }}>
-                            <p className={styles.back_publish_title}>CENTRO DE NOTIFICAÇÕES</p>
+                <div className={styles.hero_separator}>
+                    <div className={styles.hero_separator_wrapper}>
+                        <div className={styles.separator_zone}>
+                            <RocketLaunchIcon className={styles.sep_img} style={{color: first?.value === 'profissionais'?'#E56144':''}}/>
+                            <p className={styles.sep_text}>Em destaque</p>
                         </div>
-
-                        : null
-                }
-                {
-                    user?._id != null && !emptyNotifications ?
-                        <div className={styles.home_back_publish} style={{ marginTop: '0px' }}>
-                            {
-                                <div className={styles.notification_area}>
-                                    {
-
-                                        mapWrapper()
-                                    }
+                        <div className={styles.separator_zone}>
+                            <div className={styles.sep_button_wrapper}>
+                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button}>
+                                    <p className={styles.sep_button_text}>Canalização</p>
                                 </div>
-                            }
-                        </div>
-                        : null
-                }
-                <div className={styles.explore}>
-                    <div className={styles.explore_row}>
-                        <div className={styles.row_header}>
-                            <div className={styles.header_widget_wrapper}>
-                                <img src={icon_4} className={styles.widget_image} />
-                                <p className={styles.widget_title}>Tarefas</p>
                             </div>
-                            <div className={styles.header_title_wrapper}>
-                                <p>Últimas tarefas <br />publicadas</p>
+                            <div className={styles.sep_button_wrapper}>
+                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button}>
+                                    <p className={styles.sep_button_text}>Informática</p>
+                                </div>
                             </div>
-                            <div className={styles.header_button_wrapper}>
-                                <div className={styles.header_button}>Explorar tarefas</div>
+                            <div className={styles.sep_button_wrapper}>
+                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button}>
+                                    <p className={styles.sep_button_text}>Eletricista</p>
+                                </div>
                             </div>
-
-                        </div>
-                        <div className={styles.row_content}>
-                            {
-                                loaded ?
-                                    items?.length > 0 ?
-                                        mapContentToDisplay()
-                                        : null
-                                    :
-                                    <div className={styles.row_content_skeleton}>
-                                        <div className={styles.content_item_skeleton} />
-                                        <div className={styles.content_item_skeleton} />
-                                        <div className={styles.content_item_skeleton} />
-                                    </div>
-                            }
+                            <div className={styles.sep_button_wrapper}>
+                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button}>
+                                    <p className={styles.sep_button_text}>Tradutor</p>
+                                </div>
+                            </div>
+                            <div className={styles.sep_button_wrapper}>
+                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button}>
+                                    <p className={styles.sep_button_text}>Advocacia</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    
 
-                    <div className={styles.explore_row}>
-                        <div className={styles.row_content}>
-                            {
-                                loaded ?
-                                    workers?.length > 0 ?
-                                        mapWorkersToDisplay()
-                                        : null
-                                    :
-                                    <div className={styles.row_content_skeleton}>
-                                        <div className={styles.content_item_skeleton} />
-                                        <div className={styles.content_item_skeleton} />
-                                        <div className={styles.content_item_skeleton} />
+                </div>
+
+                <div className={styles.home_content}>
+                    <div className={styles.more}>
+                        <Carousel
+                            autoPlay={false}
+                            interval={5000}
+                            showStatus={false}
+                            showArrows={false}
+                            infiniteLoop={true}
+                            className={styles.more_carousel}
+                            renderIndicator={(clickHandler, isSelected, index, label) => {
+                                const indicatorStyles = {
+                                    marginLeft: 10,
+                                    cursor: "pointer",
+                                    display: "inline-block",
+                                    width: 8,
+                                    height: 8,
+                                    backgroundColor: isSelected ? "#FAFAFA" : "#ccc",
+                                    borderRadius: "50%",
+                                }
+                                return (
+                                    <div
+                                        style={indicatorStyles}
+                                        onClick={clickHandler}
+                                        onKeyDown={clickHandler}
+                                        value={index}
+                                        key={index}
+                                        role="button"
+                                        tabIndex={0}
+                                        aria-label={`${label} ${index + 1}`}
+                                        aria-selected={isSelected}
+                                    />
+                                )
+                            }}
+                        >
+                            <div className={styles.more_content}>
+                                <div className={styles.content_left}>
+                                    <img className={styles.content_img} src={more_1} />
+                                </div>
+                                <div className={styles.content_right}>
+                                    <div className={styles.content_right_top}>
+                                        <p className={styles.content_title}>Encontra o profissional ideal</p>
+                                        <p className={styles.content_description}>Publica a tua tarefa ou pesquisa entre os profissionais para encontrares a ajuda que precisas</p>
                                     </div>
-                            }
-                        </div>
-                        <div className={styles.row_header_right}>
-                            <div className={styles.row_header} style={{ width: 'fit-content' }}>
+                                    <div className={styles.content_right_bottom}>
+                                        <div className={styles.content_button}>
+                                            <p className={styles.content_button_text}>Publicar uma tarefa</p>
+                                            <ArrowForwardIcon className={styles.content_button_icon} />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div className={styles.more_content}>
+                                <div className={styles.content_left}>
+                                    <img className={styles.content_img} src={more_2} />
+                                </div>
+                                <div className={styles.content_right}>
+                                    <div className={styles.content_right_top}>
+                                        <p className={styles.content_title}>Dá visibilidade ao teu negócio</p>
+                                        <p className={styles.content_description}>Encontra tarefas para realizar e mostra o teu trabalho através do teu perfil, atraindo mais clientes e oportunidades.</p>
+                                    </div>
+                                    <div className={styles.content_right_bottom}>
+                                        <div className={styles.content_button}>
+                                            <p className={styles.content_button_text}>Criar conta profissional</p>
+                                            <ArrowForwardIcon className={styles.content_button_icon} />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </Carousel>
+                    </div>
+                    {/* 
+                        {
+                            user?._id != null && !emptyNotifications ?
+                                <div style={{ width: '80%', margin: '0 auto', marginTop: '30px' }}>
+                                    <p className={styles.back_publish_title}>CENTRO DE NOTIFICAÇÕES</p>
+                                </div>
+
+                                : null
+                        }
+                        {
+                            user?._id != null && !emptyNotifications ?
+                                <div className={styles.home_back_publish} style={{ marginTop: '0px' }}>
+                                    {
+                                        <div className={styles.notification_area}>
+                                            {
+
+                                                mapWrapper()
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                                : null
+                        } */}
+
+                    <div className={styles.explore}>
+                        <div className={styles.explore_row} style={{ paddingTop: 0 }}>
+                            <div className={styles.row_header}>
                                 <div className={styles.header_widget_wrapper}>
-                                    <img src={icon_3} className={`${styles.widget_image} ${styles.action}`} />
-                                    <p className={`${styles.widget_title} ${styles.action}`}>Profissionais</p>
+                                    <img src={icon_4} className={styles.widget_image_tarefas} />
+                                    <p className={styles.widget_title}>Tarefas</p>
                                 </div>
                                 <div className={styles.header_title_wrapper}>
-                                    <p>Deixa para <br />quem sabe</p>
+                                    <p>Últimas tarefas <br />publicadas</p>
                                 </div>
                                 <div className={styles.header_button_wrapper}>
-                                    <div className={styles.header_button} style={{ backgroundColor: '#ff785a' }}>Ver lista de profissionais</div>
-                                    <p className={styles.header_worker_text}>Tornar-me um profissional</p>
+                                    <div className={styles.header_button}>Explorar tarefas</div>
                                 </div>
 
-
+                            </div>
+                            <div className={styles.row_content}>
+                                {
+                                    loaded ?
+                                        items?.length > 0 ?
+                                            mapContentToDisplay()
+                                            : null
+                                        :
+                                        <div className={styles.row_content_skeleton}>
+                                            <div className={styles.content_item_skeleton} />
+                                            <div className={styles.content_item_skeleton} />
+                                            <div className={styles.content_item_skeleton} />
+                                        </div>
+                                }
                             </div>
                         </div>
 
+                        <div className={styles.explore_row} style={{marginTop: 0}}>
+                            <div className={styles.row_content}>
+                                {
+                                    loaded ?
+                                        workers?.length > 0 ?
+                                            mapWorkersToDisplay()
+                                            : null
+                                        :
+                                        <div className={styles.row_content_skeleton}>
+                                            <div className={styles.content_item_skeleton} />
+                                            <div className={styles.content_item_skeleton} />
+                                            <div className={styles.content_item_skeleton} />
+                                        </div>
+                                }
+                            </div>
+                            <div className={styles.row_header_right}>
+                                <div className={styles.row_header} style={{ width: 'fit-content' }}>
+                                    <div className={styles.header_widget_wrapper}>
+                                        <img src={icon_3} className={`${styles.widget_image} ${styles.action}`} />
+                                        <p className={`${styles.widget_title} ${styles.action}`}>Profissionais</p>
+                                    </div>
+                                    <div className={styles.header_title_wrapper}>
+                                        <p>Deixa para <br />quem sabe</p>
+                                    </div>
+                                    <div className={styles.header_button_wrapper}>
+                                        <div className={styles.header_button} style={{ backgroundColor: '#E56144' }}>Ver lista de profissionais</div>
+                                        <p className={styles.header_worker_text}>Tornar-me um profissional</p>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 
+                
+
+                
+                
+                <span className={styles.footer_separator}/>
 
                 <div className={styles.footer} style={{ paddingBottom: window.adsbygoogle ? "60px" : "20px" }}>
                     <div className={styles.footer_div}>
@@ -1019,7 +1142,7 @@ const Home = (props) => {
                         <div className={styles.footer_div_column}>
                             <p className={styles.footer_div_text_title}>Conta e profissionais</p>
                             <p className={styles.footer_div_text} onClick={() => setContactosBanner(true)}>Suporte</p>
-                            <p className={styles.footer_div_text} style={{ color: "#FF785A" }} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>
+                            <p className={styles.footer_div_text} style={{ color: "#E56144" }} onClick={() => setWorkerBanner(true)}>Tornar-me um profissional</p>
                         </div>
                         <div className={styles.footer_div_column}>
                             <p className={styles.footer_div_text_title}>Sugestões e contactos</p>
@@ -1031,7 +1154,7 @@ const Home = (props) => {
                                 <p className={styles.footer_div_text_title}>Segue-nos nas redes:</p>
                                 <div className={styles.footer_icon_div}>
                                     <InstagramIcon className={styles.footer_icon} onClick={() => window.open('https://instagram.com/tarefaspt', "_blank", "noreferrer")} />
-                                    <FacebookIcon className={styles.footer_icon} onClick={() => window.open('https://www.facebook.com/profile.php?id=61559666542359', "_blank", "noreferrer")} />
+                                    <FacebookIcon style={{marginLeft:'3px'}} className={styles.footer_icon} onClick={() => window.open('https://www.facebook.com/profile.php?id=61559666542359', "_blank", "noreferrer")} />
                                 </div>
                                 <p className={styles.footer_div_text_no_style} style={{ color: '#71848d' }}>APP Tarefas (brevemente)</p>
                             </div>

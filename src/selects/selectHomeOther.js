@@ -14,7 +14,6 @@ const SelectHomeOther = (props) => {
             ...base,
             backgroundColor: 'transparent',
             borderColor: "#ffffff",
-            fontSize: "calc(max(0.57vw, 8px))",
             textTransform: "normal",
             color: '#000000',
             fontWeight: 600,
@@ -60,8 +59,8 @@ const SelectHomeOther = (props) => {
             borderRadius: 8,
             padding: "0",
             zIndex: 5,
-            marginTop: props.professions?'0':'calc(max(0.65vw, 3px))',
-            width: props.professions?'100%':'12vw',
+            marginTop: '12px',
+            width: props.professions?'100%':'calc(min(240px, 16.8vw))',
             position: props.professions?'absolute':'absolute',
             display: props.professions?'flex':'',
             flexDirection: props.professions?'row':'',
@@ -93,8 +92,7 @@ const SelectHomeOther = (props) => {
             color: "#000000",
             paddingLeft:"5px",
             fontWeight: 500,
-            padding: 0,
-            fontSize: "calc(max(0.57vw, 8px))",
+            padding: 0
         }),
         indicatorContainer: base => ({
             ...base,
@@ -108,7 +106,6 @@ const SelectHomeOther = (props) => {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            fontSize: "calc(max(0.57vw, 8px))",
             height: '100%',
             fontWeight: 600
         }),
@@ -318,8 +315,16 @@ const SelectHomeOther = (props) => {
                         </components.NoOptionsMessage>
                     </div>
                 )
+            },
+            Input:(p) => {
+                const { children, ...rest } = p;
 
-            }
+                return (
+                        <components.Input {...rest} className={styles.input_wrapper}>
+                            {children}
+                        </components.Input>
+                )
+            },
         
             }}
             placeholder={
@@ -331,9 +336,10 @@ const SelectHomeOther = (props) => {
             options={props.options}
             // options={[]}
             value={props.option}
-            inputValue={searchValue}
-            onInputChange={setSearchValue}
+            // inputValue={searchValue}
+            // onInputChange={setSearchValue}
             menuIsOpen={menuOpen}
+            // menuIsOpen={true}
             // menuIsOpen={props.professions}
             onMenuOpen={() => {
                 setMenuOpen(true)

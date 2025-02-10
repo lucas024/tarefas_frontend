@@ -5,7 +5,7 @@
     display: flex;
 }
 .group_title{
-    font-size: var(--standard);
+    font-size: var(--_14px);
     margin-left: 5px;
     color: #000000;
     font-weight: 600;
@@ -32,7 +32,7 @@
     transition: 150ms all;
 }
 .label_other_profs{
-    font-size: var(--big);
+    font-size: var(--_14px);
     font-weight: 500;
     align-items: center;
     /* Ensure the content doesn't wrap to the next line */
@@ -45,9 +45,6 @@
 .label{
     display: flex;
     align-items: flex-start;
-    padding: 0.1vw 0;
-    height: 100%;
-    padding: 10px;
 }
 .label_active{
     background-color: var(--grey_background);
@@ -62,14 +59,14 @@
     flex-direction: column;
     justify-content: flex-start;
     height: 100%;
+    aspect-ratio: 1;
 }
 .label_img{
-    width: 0.8vw !important;
+    width: calc(min(20px, max(12px, 1.4vw))) !important;
     height: auto !important;
-    min-width: 14px;
 }
 .label_other{
-    font-size: var(--big);
+    font-size: var(--_14px);
     font-weight: 500;
     /* Ensure the content doesn't wrap to the next line */
     white-space: nowrap;
@@ -81,7 +78,7 @@
 
 .label_main_control{
     font-weight: 500;
-    font-size: var(--big);
+    font-size: var(--_16px);
 }
 .arrow_downwards_wrapper{
     display: flex;
@@ -89,9 +86,9 @@
     align-items: center;
 }
 .arrow_downwards{
-    width: 1.1vw !important;
+    width: calc(min(22px, max(10px, 1.2vw))) !important;
     height: auto !important;
-    color: var(--grey_text);
+    color: black;
     min-width: 15px;
 }
 .label_main_wrapper{
@@ -100,9 +97,9 @@
     width: 100%;
 }
 @media (max-width: 992px) {
-    .label_main_control{
+    /* .label_main_control{
         display: none;
-    }
+    } */
 }
 .group_wrapper{
     cursor: default;
@@ -142,7 +139,7 @@
     justify-content: center;
     /* background-color: #fff; */
     border-radius: 8px;
-    margin-top: calc(max(0.65vw, 3px));
+    margin-top: 0px;
     height: max-content;
     height: 100%;
 }
@@ -152,7 +149,7 @@
     align-items: center;
     color: var(--grey_text);
     font-weight: 500;
-    font-size: var(--big);
+    font-size: var(--_14px);
 }
 .menu{
     width: 90%;
@@ -162,14 +159,16 @@
 
 .label_main{
     font-weight: 500;
-    font-size: var(--big);
+    font-size: var(--_14px);
+}
+.input_wrapper{
+    font-size: var(--_14px);
 }
 .label_desc{
     font-weight: 400;
-    font-size: var(--standard);
+    font-size: var(--_14px);
     color: var(--grey_text);
     font-family: 'Montserrat', sans-serif !important;
-    width: max-content;
     margin-top: 2px;
     /* Ensure the content doesn't wrap to the next line */
     white-space: nowrap;
@@ -177,24 +176,24 @@
     overflow: hidden;
     /* Add ellipsis (...) at the end when text overflows */
     text-overflow: ellipsis;
-    width: calc(9vw);
+    width: calc(min(240px, 16.36vw));
     min-width: 100px;
 }
 .label_label{
     font-weight: 500;
     margin-left: 5px;
-    font-size: var(--standard);
+    font-size: var(--_14px);
 }
 .label_label_profs{
     font-weight: 500;
     margin-left: 5px;
-    font-size: var(--standard);
+    font-size: var(--_14px);
     color: white;
 }
 .label_label_profs_small{
     font-weight: 500;
     margin-left: 5px;
-    font-size: var(--small);
+    font-size: var(--_10px);
     color: white;
 }
 .label_img_profs{
@@ -204,7 +203,7 @@
 .label_label_online{
     font-weight: 500;
     margin-left: 5px;
-    font-size: var(--standard);
+    font-size: var(--_14px);
     color: var(--green);
 }
 .label_online{
@@ -212,7 +211,7 @@
     align-items: center;
     padding: 0 0;
     margin-right: 8px;
-    font-size: var(--bigger);
+    font-size: var(--_14px);
     /* color: var(--job); */
     /* font-style: italic; */
 }
@@ -222,7 +221,7 @@
     justify-content: center;
     height: 100%;
     text-align: left;
-    font-size: var(--standard);
+    font-size: var(--_14px);
     margin: 0 !important;
 }
 .placeholder_desc{
@@ -232,4 +231,5 @@
     text-overflow: ellipsis;  /* Show ellipsis (...) when text overflows */
     display: inline-block;  /* Ensure the span behaves like a block for width control */
     color: var(--grey_text);
+    font-size: var(--_14px);
 }

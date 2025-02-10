@@ -19,13 +19,14 @@
     display: flex;
     justify-content: space-between;
     margin: auto;
-    width: 80%;
+    width: var(--width-home-main);
+    max-width: 1440px;
     height: 100%;
 }
 
 .logo{
     cursor: pointer;
-    width: calc(var(--base-width-percent) * 8);
+    width: calc(min(150px, var(--base-width-percent) * 10.9));
     height: auto;
     min-width: 100px;
 }
@@ -48,7 +49,7 @@
 }
 .become_worker_text{
     color: var(--neutral);
-    font-size: var(--big);
+    font-size: var(--_14px);
     width: max-content;
     margin-right: 10px;
 }
