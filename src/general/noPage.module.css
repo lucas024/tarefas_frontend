@@ -1,0 +1,87 @@
+.blank{
+    width: 100%;
+    margin: 0 auto;
+}
+.blank_flex{
+    margin: auto;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin-top: 70px;
+}
+.blank_text{
+    align-self: center;
+    font-size: 1rem;
+    color: #00000070;
+    text-align: center;
+    font-weight: 400;
+}
+.blank_face{
+    width: 100px !important;
+    height: 100px !important;
+    align-self: center;
+    color: #00000070;
+    margin-top: 20px;
+}
+.blank_face_small{
+    width: 30px !important;
+    height: 30px !important;
+    align-self: center;
+    color: #00000070;
+    margin-top: 20px;
+}
+.button{
+    margin: 20px auto;
+    background-color: var(--action);
+    padding: 12px;
+    border-radius: 5px;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 500;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.button:hover{
+    transform: scale(1.03);
+    transition: 50ms;
+}
+.blank_request{
+    margin: 60px auto;
+    font-size: 1rem;
+    color: #00000070;
+    font-weight: 500;
+    /* text-transform: uppercase; */
+    text-align: center;
+}
+.blank_request_click{
+    color: var(--action);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.blank_request_click:hover{
+    opacity: 0.6;
+}
+
+
+/* @media (max-width: 500px){
+    .blank_text{
+        font-size: 0.8rem;
+    }
+    .button{
+        padding: 10px;
+        font-size: 0.7rem;
+    }
+    .blank_face{
+        font-size: 1rem !important;
+        width: 35px !important;
+        height: 35px !important;
+    }
+    .blank_request{
+        font-size: 0.7rem;
+        margin: 30px auto;
+    }
+} */

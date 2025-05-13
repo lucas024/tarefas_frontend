@@ -1,0 +1,410 @@
+@import '../index.css';
+
+.popup_backdrop{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.65);
+    z-index: 5;
+}
+.popup_wrapper{
+    position: absolute;
+}
+.popup{
+    position: absolute;
+    width: 550px;
+    padding-bottom: 15px;
+    left: calc(50% - 275px);
+    top: 100px;
+    background-color: white;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    z-index: 6;
+}
+.popup_confirm{
+    position: absolute;
+    width: 550px;
+    left: calc(50% - 275px);
+    top: 100px;
+    background-color: var(--brand);
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    z-index: 6;
+    padding: 25px;
+}
+.popup_admin_refuse{
+    position: absolute;
+    width: 550px;
+    padding-bottom: 15px;
+    left: calc(50% - 275px);
+    top: 20px;
+    background-color: white;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    z-index: 6;
+    max-height: 500px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.value{
+    padding: 2px;
+    width: 90%;
+    align-self: center;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: var(--job);
+    font-weight: 700;
+}
+.divider{
+    width: 90%;
+    margin: auto;
+    height: 2px;
+    background-color: var(--brand);
+    margin: 5px auto;
+}
+.line{
+    width: 90%;
+    margin: 10px auto;
+    display: flex;
+}
+.line_circle{
+    font-size: 10px !important;
+    align-self: center;
+    color: var(--action);
+}
+.line_text_div{
+    width: 90%;
+    margin: auto;
+}
+.line_text{
+    text-align: left;
+    align-self: center;
+    margin-left: 5px;
+    font-size: 1.1rem;
+}
+.center_text_div{
+    width: 90%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+.center_text{
+}
+.button_eliminate{
+    width: 50%;
+    max-width: 400px;
+    margin: 0 auto;
+    border-radius: 3px;
+    text-align: center;
+    padding: 5px 0;
+    cursor: pointer;
+    color: white;
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 600;
+    border: 2px solid var(--red);
+    background-color: var(--neutral);
+}
+.button_cancel{
+    width: 50%;
+    max-width: 400px;
+    margin: 5px auto;
+    border-radius: 3px;
+    background-color: var(--brand);
+    color: var(--brand);
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    box-sizing: border-box;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--neutral);
+}
+.button_cancel:hover{
+    opacity: 0.8;
+    transition: 150ms all;
+}
+.button_eliminate:hover{
+    background-color: var(--red);
+    color: var(--neutral);
+    transition: 150ms all;
+}
+.center_text_special{
+    color: var(--red);
+    text-transform: uppercase;
+}
+.worker{
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+}
+.helper_text{
+    align-self: center;
+    font-style: italic;
+    opacity: 0.5;
+    margin-left: 5px;
+}
+.help_text_val{
+    font-size: 1.1rem;
+    text-align: center;
+    margin: 20px auto;
+    font-weight: 600;
+}
+.help_text_bottom{
+    font-size: 1rem;
+    margin-top: 20px;
+}
+.help_text{
+    width: 90%;
+    margin: 10px auto;
+}
+.action{
+    color: var(--action);
+}
+.action_touchable{
+    color: var(--action);
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 1rem;
+    text-align: center;
+    margin-top: 20px;
+}
+.action_touchable:hover{
+    opacity: 0.6;
+}
+.back_cor{
+    font-weight: 600;
+}
+.confirm_button{
+    margin: 10px auto 0 auto;
+    width: 90%;
+    background-color: var(--action);
+    border: 2px solid var(--action);
+    padding: 10px 0;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    align-items: center;
+    color: white;
+}
+.confirm_button:hover{
+    background-color: white;
+    transition: 100ms all;
+    color: var(--action);
+}
+.cancel_text{
+    margin: auto;
+    font-size: 0.8rem;
+    margin-top: 8px;
+}
+.cancel_text:hover{
+    cursor: pointer;
+    text-decoration: underline;
+    transition: 150ms;
+}
+.confirm_button_pagar{
+    margin: 10px auto 0 auto;
+    width: 90%;
+    background-color: var(--brand);
+    border: 2px solid #1EACAA;
+    padding: 10px 0;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.confirm_button_pagar:hover{
+    background-color: #1EACAA;
+    transition: 150ms all;
+}
+.line_total{
+    width: fit-content;
+    color: #ffffff80;
+}
+.line_total_val{
+    text-decoration: underline;
+    text-decoration-color: #1EACAA;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+    color: var(--neutral);
+}
+
+.confirm_button_support{
+    margin: 5px auto 0 auto;
+    width: 90%;
+    background-color: var(--brand);
+    border: 2px solid #ffffff;
+    padding: 5px 0;
+    justify-content: center;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+.confirm_button_support:hover{
+    background-color: #ffffff20;
+    transition: 100ms all;
+}
+.support{
+    height: 20px;
+    width: 20px;
+    margin-left: 3px;
+}
+.list_item{
+    width: 90%;
+    margin: 10px auto;
+    display: flex;
+    justify-content: space-between;
+}
+.list_item_left{
+    display: flex;
+}
+.list_item_circle{
+    width: 12px !important;
+    height: 12px !important;
+    align-self: center;
+}
+.list_item_number{
+    font-size: 0.8rem;
+    align-self: center;
+}
+.list_item_desc{
+    font-size: 0.8rem;
+    align-self: center;
+    font-style: italic;
+    margin-left: 8px;
+}
+.list_item_right{}
+.list_item_value{
+    align-self: center;
+}
+
+.cancel{
+    text-align: center;
+    margin-top: 15px;
+    cursor: pointer;
+}
+.cancel:hover{
+    text-decoration: underline;
+}
+
+.top_desc_area{
+    width: 90%;
+    min-height: 100px;
+    margin: auto;
+    border-radius: 5px;
+    resize: none;
+    border: none;
+    font-size: 0.9rem;
+    padding: 5px;
+    font-family: inherit;
+    z-index: -1;
+    border-top-left-radius: 0;
+    font-weight: 600;
+    background-color: var(--background);
+    color: var(--brand);
+    border-bottom: 2px solid var(--brand);
+    box-sizing: border-box;
+}
+.top_desc_area:hover{
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+    0 2px 2px rgba(0,0,0,0.12), 
+    0 3px 3px rgba(0,0,0,0.12),
+    0 4px 4px rgba(0,0,0,0.12);
+    outline: none !important;
+}
+.top_desc_area:focus{
+    outline: none !important;
+}
+.top_desc_area::placeholder{
+    font-style: italic;
+}
+.refusal_div{
+    display: flex;
+    margin: 10px 28px;
+    width: fit-content;
+    position: relative;
+}
+.input{
+    margin-left: 10px;
+    border-radius: 5px;
+    outline: none;
+    width: 300px;
+    max-width: 300px;
+    height: 100px;
+    padding: 5px;
+}
+.add{
+    margin-left: 30px;
+    font-size: 30px;
+    padding: 0 10px;
+    border-radius: 10px;
+    background-color: var(--brand);
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.add:hover{
+    opacity: 0.7;
+}
+.remove{
+    position: absolute;
+    left: 0;
+    top: 45px;
+    font-size: 30px;
+    padding: 0 10px;
+    border-radius: 10px;
+    background-color: var(--red);
+    color: white;
+    cursor: pointer;
+}
+.remove:hover{
+    opacity: 0.7;
+}
+
+@media (max-width: 500px){
+    .popup{
+        width: 100%;
+        left: 0;
+    }
+    .value{
+        font-size: 0.9rem;
+    }
+    .center_text_div{
+        margin: 10px auto;
+    }
+    .center_text{
+        font-size: 0.8rem;
+        text-align: center;
+    }
+    .button_eliminate{
+        font-size: 0.9rem;
+        border-width: 1px;
+        margin-top: 10px;
+    }
+    .button_cancel{
+        font-size: 0.8rem;
+    }
+    .confirm_button{
+        padding: 7px 0;
+        font-size: 0.8rem;
+    }
+    .help_text_val{
+        font-size: 0.9rem;
+    }
+    .cancel{
+        font-size: 0.8rem;
+    }
+}

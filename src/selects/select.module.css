@@ -1,0 +1,250 @@
+.group_label{
+    align-items: center;
+    padding-bottom: 5px;
+    padding-top: 10px;
+    display: flex;
+}
+.group_title{
+    font-size: var(--_14px);
+    margin-left: 5px;
+    color: #000000;
+    font-weight: 600;
+}
+.group_icon{
+    width: calc(var(--base-width-percent) * 0.8);
+    height: auto !important;
+    padding-left: 5px;
+}
+.label_profs{
+    display: flex;
+    align-items: flex-start;
+    padding: 0.1vw 0;
+    height: 100%;
+    padding-left: calc(3px + calc(var(--base-width-percent) * 1));
+}
+.label_profs_active{
+    background-color: var(--grey_background);
+    border-radius: 4px;
+    width: 100%;
+}
+.label_profs:hover{
+    opacity: 0.8;
+    transition: 150ms all;
+}
+.label_other_profs{
+    font-size: var(--_14px);
+    font-weight: 500;
+    align-items: center;
+    /* Ensure the content doesn't wrap to the next line */
+    white-space: nowrap;
+    /* Hide overflow content */
+    overflow: hidden;
+    /* Add ellipsis (...) at the end when text overflows */
+    text-overflow: ellipsis;
+}
+.label{
+    display: flex;
+    align-items: flex-start;
+    height: 100%;
+    padding: calc(min(8px, 0.55vw)) calc(min(4px, 0.3vw));
+}
+.label_active{
+    background-color: var(--grey_background);
+    border-radius: 4px;
+}
+.label:hover{
+    opacity: 0.8;
+    transition: 150ms all;
+}
+.label_img_wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+    aspect-ratio: 1;
+}
+.label_img{
+    width: calc(min(20px, max(12px, 1.4vw))) !important;
+    height: auto !important;
+}
+.label_other{
+    font-size: var(--_14px);
+    font-weight: 500;
+    /* Ensure the content doesn't wrap to the next line */
+    white-space: nowrap;
+    /* Hide overflow content */
+    overflow: hidden;
+    /* Add ellipsis (...) at the end when text overflows */
+    text-overflow: ellipsis;
+}
+.value_container{
+    width: 10px !important;
+    inherits: none !important; 
+}
+.label_main_control{
+    font-weight: 500;
+    font-size: var(--_16px);
+}
+.label_main_control_navbar{
+    font-size: var(--_14px) !important;
+}
+.arrow_downwards_wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.arrow_downwards{
+    width: calc(min(22px, max(10px, 1.2vw))) !important;
+    height: auto !important;
+    color: black;
+    min-width: 15px;
+}
+.label_main_wrapper{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+@media (max-width: 992px) {
+    /* .label_main_control{
+        display: none;
+    } */
+}
+.group_wrapper{
+    cursor: default;
+    padding: 0 6px;
+}
+.group_wrapper_solo{
+    height: fit-content;
+    position: relative;
+    width: 100%;
+    padding: 0 6px;
+    box-sizing: border-box;
+}
+.group_wrapper_solo:hover{
+    cursor: pointer !important;
+    background-color: var(--grey_background);
+    border-radius: 4px;
+}
+.customMenuList {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping to next line */
+    overflow-y: hidden;
+    z-index: 20;
+    position: relative;
+}
+.customMenuList_column {
+    flex: 1;
+    margin: 0 5px;
+    display: flex;
+    flex-direction: column;
+    width: 15vw;
+    padding: 4px 0;
+}
+
+.menu_wrapper{
+    position: absolute !important;
+    width: 100%;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    /* background-color: #fff; */
+    border-radius: 8px;
+    margin-top: 0px;
+    height: max-content;
+    height: 100%;
+}
+.no_options{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--grey_text);
+    font-weight: 500;
+    font-size: var(--_14px);
+}
+.menu{
+    width: 90%;
+    background-color: var(--neutral);
+    border-radius: 8px;
+}
+
+.label_main{
+    font-weight: 500;
+    font-size: var(--_14px);
+}
+.input_wrapper{
+    font-size: var(--_14px);
+}
+.label_desc{
+    font-weight: 400;
+    font-size: var(--_14px);
+    color: var(--grey_text);
+    font-family: 'Montserrat', sans-serif !important;
+    margin-top: 2px;
+    /* Ensure the content doesn't wrap to the next line */
+    white-space: nowrap;
+    /* Hide overflow content */
+    overflow: hidden;
+    /* Add ellipsis (...) at the end when text overflows */
+    text-overflow: ellipsis;
+    width: calc(min(240px, 16.36vw));
+    min-width: 100px;
+}
+.label_label{
+    font-weight: 500;
+    margin-left: 5px;
+    font-size: var(--_14px);
+}
+.label_label_profs{
+    font-weight: 500;
+    margin-left: 5px;
+    font-size: var(--_14px);
+    color: white;
+}
+.label_label_profs_small{
+    font-weight: 500;
+    margin-left: 5px;
+    font-size: var(--_10px);
+    color: white;
+}
+.label_img_profs{
+    width: 20px !important;
+    height: 20px !important;
+}
+.label_label_online{
+    font-weight: 500;
+    margin-left: 5px;
+    font-size: var(--_14px);
+    color: var(--green);
+}
+.label_online{
+    display: flex;
+    align-items: center;
+    padding: 0 0;
+    margin-right: 8px;
+    font-size: var(--_14px);
+    /* color: var(--job); */
+    /* font-style: italic; */
+}
+.placeholder{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    text-align: left;
+    font-size: var(--_14px);
+    margin: 0 !important;
+}
+.placeholder_desc{
+    font-weight: 400;
+    white-space: nowrap;  /* Prevent text wrapping */
+    overflow: hidden;     /* Hide the overflow */
+    text-overflow: ellipsis;  /* Show ellipsis (...) when text overflows */
+    display: inline-block;  /* Ensure the span behaves like a block for width control */
+    color: var(--grey_text);
+    font-size: var(--_14px);
+    text-align: left;
+}
+.placeholder_desc_navbar{
+    color: #000000 !important;
+    text-align: center !important;
+}

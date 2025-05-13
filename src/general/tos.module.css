@@ -1,0 +1,51 @@
+.tos{
+    padding: 0 10px;
+    border-left: 1px solid var(--brand);
+    border-right: 1px solid var(--brand);
+    margin: 10px 0;
+}
+.tos_title{
+    font-weight: 600;
+}
+.tos_title_helper{
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+.tos_title_info{
+    margin-top: 20px;
+    font-size: 0.8rem;
+}
+.tos_main_ol{
+    margin: 0;
+    padding-left: 20px;
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+.tos_ol{
+    margin: 0;
+    padding-left: 10px;
+    margin-top: 20px;
+}
+.tos_main_li{
+    font-weight: 600;
+    margin-top: 20px;
+}
+.tos_li{
+    margin-top: 5px;
+}
+.tos_li_title{
+    font-weight: 600;
+}
+.tos_desc{
+
+}
+.tos_inner_li{
+    margin-top: 5px;
+}
+.text_brand{
+    width: 250px;
+    margin: auto;
+}
+.tos_white{
+    color: white;
+}
