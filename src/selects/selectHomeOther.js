@@ -3,6 +3,7 @@ import Select, {components} from 'react-select'
 import styles from './select.module.css'
 import LanguageIcon from '@mui/icons-material/Language';
 import { profissoesGrouped, profissoesMap } from '../general/util';
+import zIndex from '@mui/material/styles/zIndex';
 
 const SelectHomeOther = (props) => {
 
@@ -86,6 +87,7 @@ const SelectHomeOther = (props) => {
             // width: props.professions?'100%':'',
             width: props.professions?'max-content':'',
             overflowY: 'auto',
+            zIndex: 20,
         }),
         input: base => ({
             ...base,
@@ -329,7 +331,7 @@ const SelectHomeOther = (props) => {
             }}
             placeholder={
                 <span className={styles.placeholder}>
-                    <span className={styles.placeholder_desc}>{props.placeholder_desc}</span>                   
+                    <span className={`${styles.placeholder_desc} ${props.searchBar&&styles.placeholder_desc_navbar}`}>{props.placeholder_desc}</span>                   
                 </span>}
             isSearchable={menuOpen}
             styles={stylesSelect}

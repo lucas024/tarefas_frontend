@@ -3,6 +3,7 @@
     height: 120px;
     background-color: white;
     border-radius: 5px;
+    border: 3px solid transparent !important;
     border-bottom: 3px solid var(--job) !important;
     margin-top: 10px;
     cursor: pointer;
@@ -28,8 +29,9 @@
     color: var(--neutral);
 }
 .row:hover{
-    border-bottom: 6px solid var(--job) !important;
-    transform: scale(1.01);
+    border: 3px solid var(--job) !important;
+    border-radius: 10px;
+    /* transform: scale(1.01); */
     transition: all 150ms;
 }
 .row_time{

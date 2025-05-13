@@ -27,11 +27,13 @@
     position: relative;
     width: 100%;
     padding: calc(min(20px, var(--base-width-percent) * 1.45)) 0 0 0;
+    z-index: 1;
 }
 .home_content{
     width: var(--width-home-content);
     max-width: 1200px;
     margin: auto;
+    z-index: 0;
 }
 
 .hero_separator{
@@ -323,16 +325,15 @@
 .top_arrow_wrapper{
     background-color: #030A12;
     border-radius: 50%;
-    padding: 4px;
     width: fit-content;
     display: flex;
     justify-content: center;
     color: var(--grey_background);
+    padding: calc(min(4px, var(--base-width-percent) * 0.3));
 }
 .top_arrow{
     width: calc(min(16px, var(--base-width-percent) * 1.55)) !important;
-    height: auto;
-    aspect-ratio: 1;
+    height: auto !important;
 }
 .middle_title{
     font-size: var(--_20px);
@@ -374,7 +375,7 @@
 }
 .bottom_icon{
     width: 8% !important;
-    height: auto;
+    height: auto !important;
 }
 .bottom_location{
     font-size: var(--_14px);
@@ -430,7 +431,7 @@
 .worker_bottom_info_wrapper{
     display: flex;
     flex-direction: column;
-    height: 100%;
+    
     justify-content: center;
 }
 .worker_bottom_info{
@@ -438,6 +439,7 @@
     display: flex;
     align-items: center;
     color: #C4C4C4 !important;
+    height: min-content;
 }
 .worker_bottom_info_wrapper_deep{
     display: flex;
@@ -448,10 +450,12 @@
     display: flex;
     justify-content: center;
     margin-bottom: var(--margin-content);
+    z-index: 0;
 }
 .more_carousel{
     width: 90%;
     height: 100%;
+    z-index: 0;
 }
 .more_content{
     width: 100%;
@@ -628,6 +632,11 @@
     width: 30%;
     height: 70%;
 }
+.main_navbar{
+    min-height: 30px !important;
+    height: calc(min(44px, var(--base-width-percent) * 3.06)) !important;
+    width: calc(min(376px, var(--base-width-percent) * 26.12)) !important;
+}
 .main{
     margin: auto;
     display: flex;
@@ -640,6 +649,7 @@
     background-color: var(--neutral);
     border-radius: 50px;
     padding: 0;
+    filter: drop-shadow(0px 2px 4px #ffffff20);
 }
 .zone_wrapper{
     display: flex;
@@ -728,6 +738,10 @@
     flex-direction: column;
     justify-content: space-between;
     margin-left: 5px;
+}
+.zone_select_navbar{
+    margin-left: 0px !important;
+    justify-content: center !important;
 }
 .zone_select_buttons{
     display: flex;

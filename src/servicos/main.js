@@ -20,7 +20,6 @@ import { search_save, search_scroll_save } from '../store';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ConstructionIcon from '@mui/icons-material/Construction';
 
-
 require('dayjs/locale/pt')
 
 const Main = (props) => {

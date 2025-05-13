@@ -2,7 +2,7 @@
     height: calc(100vh - 68px);
     position: relative;
     overflow-y: auto;
-    background-color: var(--action);
+    background-color: var(--brand);
     border-top: 1px solid #fff;
     scroll-behavior: smooth;
 }
@@ -111,8 +111,8 @@
     height: calc(100% + 8px);
     top: -4px;
     width: 2px;
-    color: var(--action);
-    background-color: var(--action);
+    color: var(--brand);
+    background-color: var(--brand);
     transform: rotateZ(35deg);
     border-radius: 20px;
 }
@@ -165,6 +165,7 @@
     font-weight: 600;
     text-transform: uppercase;
     width: max-content;
+    color: var(--action);
 }
 .left_type{
     color: #ccc;
@@ -193,6 +194,7 @@
     font-size: 1rem;
     margin-top: 10px;
     width: max-content;
+    color: var(--action);
 }
 .description{
     color: var(--brand);
@@ -207,7 +209,7 @@
     border: 3px solid transparent;
     box-sizing: border-box;
     font-weight: 600;
-    background-color: var(--brand);
+    background-color: var(--action);
     color: white;
     border-radius: 5px;
     font-size: 0.8rem;
@@ -254,15 +256,17 @@
     font-weight: 600;
     display: inline-block;
     font-size: 1rem;
+    color: var(--action);
 }
 .bottom_contact_wrapper{
     display: flex;
     align-items: center;
     margin: 10px 0;
+    color: var(--action);
 }
 .bottom_icon{
     font-size: 1rem !important;
-    background-color: var(--brand);
+    background-color: var(--action);
     padding: 5px;
     border-radius: 3px;
     align-self: center;
@@ -297,6 +301,7 @@
     display: inline-block;
     font-size: 1rem;
     width: 150px;
+    color: var(--action);
 }
 .list{
     padding: 10px 0;
@@ -351,6 +356,7 @@
     font-size: 1rem;
     font-weight: 600;
     text-transform: uppercase;
+    color: var(--action);
 }
 .message_img{
     width: 40px;

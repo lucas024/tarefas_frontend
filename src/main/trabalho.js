@@ -684,7 +684,7 @@ const Trabalho = (props) => {
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
                                                 <div className={styles.market_background}>
-                                                    <span className={styles.market_text}>Gostavas de contactar <span style={{color:"#161F28", fontWeight:700, textTransform:'capitalize'}}>{reservation.user_name.split(" ")[0 ]}</span>?</span>
+                                                    <span className={styles.market_text}>Gostavas de ver os detalhes da tarefa?</span>
                                                     <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Criar conta e tornar-me um Profissional</span>
                                                 </div>
                                             </div>
@@ -693,7 +693,7 @@ const Trabalho = (props) => {
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
                                                 <div className={styles.market_background}>
-                                                    <span className={styles.market_text}>Gostavas de contatcar <span style={{color:"#161F28", fontWeight:700, textTransform:'capitalize'}}>{reservation.user_name.split(" ")[0]}</span>?</span>
+                                                    <span className={styles.market_text}>Gostavas de ver os detalhes da tarefa?</span>
                                                     <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Ativar Modo Profissional</span>
                                                 </div>
                                             </div>
@@ -865,7 +865,7 @@ const Trabalho = (props) => {
                                             placeholder="Escrever mensagem..."
                                         />
                                         <div className={styles.frontdrop}>
-                                            <span className={styles.frontdrop_text} style={{padding:'0 10px', textAlign:'center'}}>Para enviares uma <span className={styles.action}>mensagem</span> e veres os <span className={styles.action}>detalhes de contacto</span> de <span 
+                                            <span className={styles.frontdrop_text} style={{padding:'0 10px', textAlign:'center'}}>Para enviares uma <span className={styles.action}>mensagem</span> e veres os <span className={styles.action}>detalhes da tarefa</span> de <span 
                                                     // style={{color:"#161F28", textTransform:"capitalize", fontWeight:700}}
                                                     >
                                                     {reservation.user_name.split(" ")[0]}

@@ -45,6 +45,8 @@
 .label{
     display: flex;
     align-items: flex-start;
+    height: 100%;
+    padding: calc(min(8px, 0.55vw)) calc(min(4px, 0.3vw));
 }
 .label_active{
     background-color: var(--grey_background);
@@ -75,10 +77,16 @@
     /* Add ellipsis (...) at the end when text overflows */
     text-overflow: ellipsis;
 }
-
+.value_container{
+    width: 10px !important;
+    inherits: none !important; 
+}
 .label_main_control{
     font-weight: 500;
     font-size: var(--_16px);
+}
+.label_main_control_navbar{
+    font-size: var(--_14px) !important;
 }
 .arrow_downwards_wrapper{
     display: flex;
@@ -121,6 +129,8 @@
     display: flex;
     flex-wrap: nowrap; /* Prevent wrapping to next line */
     overflow-y: hidden;
+    z-index: 20;
+    position: relative;
 }
 .customMenuList_column {
     flex: 1;
@@ -232,4 +242,9 @@
     display: inline-block;  /* Ensure the span behaves like a block for width control */
     color: var(--grey_text);
     font-size: var(--_14px);
+    text-align: left;
+}
+.placeholder_desc_navbar{
+    color: #000000 !important;
+    text-align: center !important;
 }

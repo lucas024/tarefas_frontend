@@ -31,7 +31,6 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
 import EmailUnverified from '@mui/icons-material/UnsubscribeOutlined';
-import moment from 'moment';
 import { motion } from 'framer-motion';
 
 import { Carousel } from 'react-responsive-carousel';
@@ -44,7 +43,6 @@ import icon_3 from '../assets/new_assets/worker_small.png'
 import icon_4 from '../assets/new_assets/tasks_small.png'
 import more_1 from '../assets/new_assets/more_1.png'
 import more_2 from '../assets/new_assets/more_2.png'
-import rocket from '../assets/new_assets/rocket_launch.png'
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
@@ -131,14 +129,13 @@ const Home = (props) => {
             return () => clearInterval(interval);
         }
 
-        fetchJobs()
-        fetchWorkers()
-
+        
+        
     }, []);
 
     useEffect(() => {
-        if (!parseInt(localStorage.getItem('firstAccessMade')))
-            navigate('/landing')
+        // if (!parseInt(localStorage.getItem('firstAccessMade')))
+        //     navigate('/landing')
 
         let aux2 = window.localStorage.getItem('last_search_type')
         if (aux2 !== null) {
@@ -170,6 +167,9 @@ const Home = (props) => {
         // {
         //     dispatch(user_update_chats(user?.chats))
         // }     
+        fetchJobs()
+        fetchWorkers()
+        
     }, [location, user, loaded])
 
     const sortByTimestamp = (a, b) => {
@@ -789,7 +789,7 @@ const Home = (props) => {
                                             transition={{ duration: 0.15 }}
                                             className={styles.zone_wrapper}>
                                             <div className={styles.zone}>
-                                                <div className={styles.zone_select} style={{width:'none'}}>
+                                                <div className={styles.zone_select} style={{width:'100%'}}>
                                                     <SelectHomeMain
                                                         menuOpen={() => {
                                                             if (windowDimensions.width <= 768)
@@ -931,27 +931,27 @@ const Home = (props) => {
                         </div>
                         <div className={styles.separator_zone}>
                             <div className={styles.sep_button_wrapper}>
-                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button}>
+                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button} onClick={() => navigate(`/main/publications/${first?.value}?work=canalizador`)}>
                                     <p className={styles.sep_button_text}>Canalização</p>
                                 </div>
                             </div>
                             <div className={styles.sep_button_wrapper}>
-                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button}>
+                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button} onClick={() => navigate(`/main/publications/${first?.value}?work=informatica`)}>
                                     <p className={styles.sep_button_text}>Informática</p>
                                 </div>
                             </div>
                             <div className={styles.sep_button_wrapper}>
-                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button}>
+                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button} onClick={() => navigate(`/main/publications/${first?.value}?work=eletricista`)}>
                                     <p className={styles.sep_button_text}>Eletricista</p>
                                 </div>
                             </div>
                             <div className={styles.sep_button_wrapper}>
-                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button}>
+                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button} onClick={() => navigate(`/main/publications/${first?.value}?work=tradutor`)}>
                                     <p className={styles.sep_button_text}>Tradutor</p>
                                 </div>
                             </div>
                             <div className={styles.sep_button_wrapper}>
-                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button}>
+                                <div className={first?.value === 'profissionais' ? styles.sep_button_action : styles.sep_button} onClick={() => navigate(`/main/publications/${first?.value}?work=advogado`)}>
                                     <p className={styles.sep_button_text}>Advocacia</p>
                                 </div>
                             </div>
@@ -964,7 +964,7 @@ const Home = (props) => {
                 <div className={styles.home_content}>
                     <div className={styles.more}>
                         <Carousel
-                            autoPlay={false}
+                            autoPlay={true}
                             interval={5000}
                             showStatus={false}
                             showArrows={false}
@@ -1006,7 +1006,16 @@ const Home = (props) => {
                                     </div>
                                     <div className={styles.content_right_bottom}>
                                         <div className={styles.content_button}>
-                                            <p className={styles.content_button_text}>Publicar uma tarefa</p>
+                                            <p className={styles.content_button_text} onClick={() => {
+                                                user?._id ? navigate(`/publicar`, {
+                                                    state: {
+                                                        carry: true
+                                                        // publicar a seguir
+                                                    }
+                                                })
+                                                    :
+                                                    handleMoveAuth(0)
+                                            }}>Publicar uma tarefa</p>
                                             <ArrowForwardIcon className={styles.content_button_icon} />
                                         </div>
                                     </div>
@@ -1025,7 +1034,7 @@ const Home = (props) => {
                                     </div>
                                     <div className={styles.content_right_bottom}>
                                         <div className={styles.content_button}>
-                                            <p className={styles.content_button_text}>Criar conta profissional</p>
+                                            <p className={styles.content_button_text} onClick={() => handleMoveAuth(0)}>Criar conta profissional</p>
                                             <ArrowForwardIcon className={styles.content_button_icon} />
                                         </div>
                                     </div>
@@ -1068,7 +1077,7 @@ const Home = (props) => {
                                 <div className={styles.header_title_wrapper}>
                                     <p>Últimas tarefas <br />publicadas</p>
                                 </div>
-                                <div className={styles.header_button_wrapper}>
+                                <div className={styles.header_button_wrapper} onClick={() => navigate(`/main/publications/trabalhos`)}>
                                     <div className={styles.header_button}>Explorar tarefas</div>
                                 </div>
 
@@ -1114,7 +1123,7 @@ const Home = (props) => {
                                         <p>Deixa para <br />quem sabe</p>
                                     </div>
                                     <div className={styles.header_button_wrapper}>
-                                        <div className={styles.header_button} style={{ backgroundColor: '#E56144' }}>Ver lista de profissionais</div>
+                                        <div className={styles.header_button} onClick={() => navigate(`/main/publications/profissionais`)} style={{ backgroundColor: '#E56144' }}>Ver lista de profissionais</div>
                                         <p className={styles.header_worker_text}>Tornar-me um profissional</p>
                                     </div>
 

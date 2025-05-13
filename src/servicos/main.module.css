@@ -51,10 +51,13 @@
     overflow: hidden;
 }
 .main{
-    width: 98%;
     height: 100%;
     position: relative;
     margin: auto;
+
+    width: var(--width-home-main);
+    margin: 0 auto;
+    max-width: 1440px;
 }
 .grid{
     display: grid;
