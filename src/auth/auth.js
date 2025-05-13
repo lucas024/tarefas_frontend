@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
 import styles from './auth.module.css'
+import styles_personal from '../user/personal.module.css'
 import facebook from '../assets/facebook.png'
 import google from '../assets/google.png'
 import validator, { toString } from 'validator'
 import axios from 'axios'
 import { useLocation, useNavigate } from 'react-router-dom';
+import {profissoesGrouped, profissoesMap} from '../general/util'
+
 import {
     registerWithEmailAndPassword, 
     loginWithEmailAndPassword,
@@ -45,6 +48,17 @@ import * as sendEmail from '../assets/lotties/plane-email.json'
 import WorkerBanner from '../general/workerBanner';
 import AuthCarouselWorker from './authCarouselWorker';
 import portugal from '../assets/portugal.png'
+import SelectHome from '../selects/selectHome'
+
+
+const getWindowDimensions = () => {
+    const { innerWidth: width, innerHeight: height } = window
+    return {
+      width,
+      height
+    }
+}
+
 
 const Auth = (props) => {
     const api_url = useSelector(state => {return state.api_url})
@@ -75,6 +89,8 @@ const Auth = (props) => {
     const [passwordWrong, setPasswordWrong] = useState(false)
     const [passwordRepeat, setPasswordRepeat] = useState("")
     const [passwordRepeatWrong, setPasswordRepeatWrong] = useState(false)
+
+    const [showSelectProfs, setShowSelectProfs] = useState(false)
 
     const [name, setName] = useState("")
     const [nameWrong, setNameWrong] = useState(false)
@@ -137,8 +153,24 @@ const Auth = (props) => {
     const [selectedProfWrong, setSelectedProfWrong] = useState(false)
     const [selectedRegWrong, setSelectedRegWrong] = useState(false)
     const [selectedTypeWrong, setSelectedTypeWrong] = useState(false)
+    const [mode, setMode] = useState(null)
+
+    const [shake, setShake] = useState(false)
+
+    const [fullList, setFullList] = useState(false)
 
     const [detailsPopup, setDetailsPopup] = useState(false)
+
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+
+    useEffect(() => {
+        function handleResize() {
+          setWindowDimensions(getWindowDimensions());
+        }
+    
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, [])
 
     useEffect(() => {
         if(location.state && location.state.nameCarry){
@@ -154,7 +186,9 @@ const Auth = (props) => {
         if(paramsAux)
         {
             setSelectedAuth(parseInt(paramsAux.type))
+            setMode(paramsAux.mode)
             // setSelectedAuth(parseInt(2))
+            if(paramsAux.landing) setShowWorker(true)
         }
     }, [searchParams])
     
@@ -188,6 +222,32 @@ const Auth = (props) => {
         }
         
     }, [password])
+
+    
+    // const getCheckedProf = trab => {
+    //     if(props.selectedProf?.includes(trab)) return true
+    //     return false
+    // }
+
+    const setCheckedProf = trab => {
+        let arr = [...selectedProf]
+        if(selectedProf.includes(trab)){
+            arr.splice(arr.indexOf(trab), 1)
+            setFullList(false)
+        }
+        else if(arr.length<=8){
+            if(arr.length===8) setFullList(true)
+            arr.push(trab)
+        }
+
+        else if(arr.length===9)
+        {
+            setShake(true)
+            setTimeout(() => setShake(false), 1000)
+        } 
+
+        setSelectedProf(arr)
+    }
 
     const navigateHandler = () => {
         navigate(`/publicar?w=${location.state.worker}`,
@@ -425,11 +485,6 @@ const Auth = (props) => {
     }
 
     const registerHelper = async (user_uid, from_signup) => {
-        const obj = await axios.post(`${api_url}/create-customer`, {
-            name: from_signup?from_signup.name:name,
-            phone: from_signup?from_signup.phone:phone,
-            email: from_signup?from_signup.email.toLocaleLowerCase():email.toLocaleLowerCase(),
-        })
         await axios.post(`${api_url}/auth/register`, 
             {
                 name: from_signup?from_signup.name:name,
@@ -442,7 +497,7 @@ const Auth = (props) => {
                 phone_verified: false,
                 registerMethod: from_signup?from_signup.register_type:"email",
                 worker: false,
-                stripe_id: obj.data.customer.id,
+                // stripe_id: obj.data.customer.id,
                 entity: 0,
                 entity_name: "",
                 regioes: [],
@@ -469,8 +524,17 @@ const Auth = (props) => {
                     setLoading(false)
                     setRegisterPopup(true)
                     setTimeout(() => setRegisterPopup(false), 4000)
-                    setRegistarTab(3)
                     setPhoneHandler('')
+                    if(mode === 'professional'){
+                        setRegistarTab(4)
+                    }
+                    else if(mode === 'user'){
+                        handleUserSelected()
+                    }
+                    else
+                    {
+                        setRegistarTab(3)
+                    }
                 }
                 catch (err) {
                     if(err.code == "auth/email-already-in-use"){
@@ -756,6 +820,25 @@ const Auth = (props) => {
         }
     }
 
+    const handleUserSelected = () => 
+    {
+        if(createdWithGoogle)
+        {
+            navigate('/', {
+                state: {
+                    carry: 'register',
+                    skippedVerification: false
+                }
+            })
+        }
+        else
+        {
+            setSelectedAuth(2)
+            initiateEmailVerification()
+            setRegistarTab(0)
+        }
+    }
+
     const o2auth = () => {
         return(
             <div className={styles.area_o2} style={{borderBottom:selectedAuth===0?'none':''}}>
@@ -901,25 +984,33 @@ const Auth = (props) => {
         })
     }
 
+    const mapSelected = (list, type) => {
+        if(list?.length>0)
+            return list?.map((el, i) => {
+                return (
+                    <p key={i} className={styles_personal.map_label}                        
+                        onClick={() => setCheckedProf(el)}>{profissoesMap[el]?.label}</p>
+                    
+                )
+            })
+
+        return (
+            <p className={styles_personal.map_label_no}>{type==='jobs'?'Sem serviços selecionados':'Sem regiões ou distritos selecionados'}</p>
+        )
+    }
 
     return (
         <div className={styles.auth}>
-            {/* <CSSTransition 
-                in={registerPopup}
-                timeout={1000}
-                classNames="transition"
-                unmountOnExit
-                >
-                <Sessao text={"Conta criada com sucesso!"}/>
-            </CSSTransition> */}
-
+            {
+                showSelectProfs&&<div className={styles.backdrop} onClick={() => setShowSelectProfs(false)}/>
+            }
             <CSSTransition 
                     in={detailsPopup}
                     timeout={1000}
                     classNames="transition"
                     unmountOnExit
                     >
-                    <Sessao text={"Detalhes profissional atualizados com sucesso!"}/>
+                    <Sessao removePopin={() => setDetailsPopup(false)} text={"Detalhes profissional atualizados com sucesso!"}/>
             </CSSTransition>
             {
                 tosBanner?
@@ -940,6 +1031,63 @@ const Auth = (props) => {
                     cancel={() => setShowWorker(false)}/>
                 :null
             }
+            <div className={styles.select_wrapper}>
+                <CSSTransition 
+                    in={showSelectProfs}
+                    timeout={1200}
+                    classNames="banner"
+                    unmountOnExit
+                    >
+                <div>
+                <div className={styles_personal.area_left} style={{width:'100%'}}>
+                    <div className={styles_personal.area_left_title_wrapper}>
+                        <p className={styles_personal.area_left_title}>Serviços Selecionados <span className={shake?`${styles_personal.selected_number} ${styles_personal.shake}`:styles_personal.selected_number}>({selectedProf?selectedProf?.length:0}/9)</span></p>
+                    </div>
+                    
+                    <div className={styles_personal.area_left_map} style={{
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        overflowY:'hidden',
+                        backgroundColor:selectedProf?.length===0?'#fdd83580':'', 
+                        border:selectedProf?.length===0?'2px solid #fdd835':'2px solid #FF785A80',
+                        display:selectedProf?.length===0?'flex':'grid'}}>
+                        {mapSelected(selectedProf, 'jobs')}
+                    </div>
+                </div>
+                <div className={styles.select_wrapper_two}>
+                    <SelectHome 
+                        auth={true}
+                        menuOpen={() => {
+                        }}
+                        menuClose={() => {
+                        }}
+                        selectedArray={selectedProf}
+                        home={true}
+                        profs={true}
+                        details={true}
+                        edit={true}
+                        options={profissoesGrouped}
+                        optionFirst={null} 
+                        option={null} 
+                        searcheable={true}
+                        smallWindow={windowDimensions.width < 1024}
+                        changeOption={val => {
+                            setCheckedProf(val.value)
+                        }}
+                        placeholder={'procurar serviços...'}/>
+                </div>
+                <span className={styles.login_button_worker} 
+                    onClick={() => {
+                        setShowSelectProfs(false)
+                    }}
+                    style={{marginTop:windowDimensions.width<1024?'400px':'550px',
+                            backgroundColor:selectedProf?.length===0?'#fdd835':''
+
+                    }}>
+                    <p className={styles.login_text} style={{color:selectedProf?.length===0?'#000000':''}}>CONTINUAR</p>
+                </span>
+                </div>
+                </CSSTransition>
+            </div>
             <div className={styles.auth_main}>
                 <div ref={recaptchaWrapperRef}>
                     <div id='recaptcha-container' className={styles.recaptcha_container}></div>
@@ -1155,25 +1303,8 @@ const Auth = (props) => {
                                                 </div>
                                             :
                                             <div className={styles.choose}>
-                                                <p className={styles.area_bot_title}>Continuar com conta normal ou ativar modo profissional?</p>
-                                                <div className={styles.choose_side} style={{marginTop:"10px"}} onClick={() => 
-                                                    {
-                                                        if(createdWithGoogle)
-                                                        {
-                                                            navigate('/', {
-                                                                state: {
-                                                                    carry: 'register',
-                                                                    skippedVerification: false
-                                                                }
-                                                            })
-                                                        }
-                                                        else
-                                                        {
-                                                            setSelectedAuth(2)
-                                                            initiateEmailVerification()
-                                                            setRegistarTab(0)
-                                                        }
-                                                    }}>
+                                                <p className={styles.area_bot_title}>Continuar com conta utilizador ou ativar modo profissional?</p>
+                                                <div className={styles.choose_side} style={{marginTop:"10px"}} onClick={() => handleUserSelected()}>
                                                                                         
                                                     <p className={styles.choose_side_title}>Continuar com conta normal</p>
                                                 </div>
@@ -1262,13 +1393,14 @@ const Auth = (props) => {
                                                     selectedTypeWrong={selectedTypeWrong}
                                                     entityName={entityName}
                                                     entityNameWrong={entityNameWrong}
-                                                    updateSelectedProfessions={list => setSelectedProf(list)}
+                                                    setCheckedProf={val => setCheckedProf(val)}
                                                     updateSelectedRegions={list => setSelectedReg(list)}
                                                     updateSelectedType={val => setSelectedType(val)&&setEntityNameWrong(false)}
                                                     updateEntityName={val => setEntityNameHandler(val)}
                                                     verifySelectedProfessions={() => verifySelectedProfessions()}
                                                     verifySelectedRegions={() => verifySelectedRegions()}
                                                     verifySelectedType={() => verifySelectedType()}
+                                                    setShowSelectProfs={val => setShowSelectProfs(val)}
                                                 />
                                             }
                                         </div>

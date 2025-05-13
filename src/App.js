@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styles from './app.module.css'
 import {
   BrowserRouter,
   Routes,
@@ -36,6 +37,7 @@ import ProtectedRoute from './protectedRoute';
 import ConfirmEmail from './general/confirmEmail';
 import Pp from './general/pp.js';
 import Landing from './general/landing.js';
+import EmailMensagem from './email/emailMensagem.js';
 
 
 function App() {
@@ -51,6 +53,7 @@ function App() {
   const [userLoadAttempt, setUserLoadAttempt] = useState(false)
   const [userExists, setUserExists] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [badPublications, setBadPublications] = useState([])
 
 onAuthStateChanged(auth, (user_google) => {
     if (user_google) {
@@ -61,7 +64,7 @@ onAuthStateChanged(auth, (user_google) => {
       window.localStorage.setItem('loggedIn', 0)
       setUserGoogle(null)
       dispatch(user_reset())
-      setUserLoadAttempt(true)
+      setTimeout(() => setUserLoadAttempt(true), 2000)
     }
 })
 
@@ -123,31 +126,12 @@ useEffect(() => {
         if(res.data.worker)
         {
           checkWorkerComplete(userGoogle)
+          dispatch(user_load(res.data))
           if(res.data.subscription){
-            setLoading(true)
-            axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
-                subscription_id: res.data.subscription.id,
-                schedule_id: res.data.subscription.sub_schedule
-            })
-            .then(res2 => {
-                if(res2.data.schedule){
-                    if(new Date().getTime() < new Date(res2.data.schedule.current_phase?.end_date*1000)){
-                      dispatch(worker_update_is_subscribed(true))
-                      checkWorkerComplete(res.data, userGoogle)
-                    }
-                    else{
-                      dispatch(worker_update_is_subscribed(false))
-                      checkWorkerComplete(res.data, userGoogle)
-                      if(res.data.state!==0)
-                        axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
-                    }
-                }
-            })
-          }
-          else if(new Date(res.data.trial?.end_date) > new Date())
-          {
-            dispatch(worker_update_is_subscribed(true))
-            checkWorkerComplete(res.data, userGoogle)
+              if(new Date().getTime() < new Date(res.data.subscription.end_date)){
+                dispatch(worker_update_is_subscribed(true))
+                checkWorkerComplete(res.data, userGoogle)
+              }
           }
           else
           {
@@ -160,6 +144,16 @@ useEffect(() => {
         else checkUserComplete(userGoogle, res.data)
         setUserLoadAttempt(true)
         setLoading(false)
+
+        axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: res.data._id} }).then(res => {
+          let aux = []
+          for(let el of res.data){
+              if(el.type===2){
+                  aux.push(el)
+              }
+          }
+          setBadPublications([...aux])
+      })
       }
     }).catch(err => {
       setLoading(false)
@@ -176,31 +170,26 @@ const refreshWorker = () => {
     if(res.data !== null){
       dispatch(user_load(res.data))
       if(res.data.subscription){
-        setLoading(true)
-        axios.post(`${api_url}/retrieve-subscription-and-schedule`, {
-            subscription_id: res.data.subscription.id,
-            schedule_id: res.data.subscription.sub_schedule
-        })
-        .then(res2 => {
-            if(res2.data.schedule){
-                if(new Date().getTime() < new Date(res2.data.schedule.current_phase.end_date*1000)){
-                  dispatch(worker_update_is_subscribed(true))
-                  checkWorkerComplete(res.data, userGoogle)
-                }
-                
-            }
-        })
-      }
-      else if(new Date(res.data.trial?.end_date) > new Date())
-      {
-        dispatch(worker_update_is_subscribed(true))
-        checkWorkerComplete(res.data, userGoogle)
+          if(new Date().getTime() < new Date(res.data.subscription.end_date)){
+            dispatch(worker_update_is_subscribed(true))
+            checkWorkerComplete(res.data, userGoogle)
+          }
       }
       else{
         dispatch(worker_update_is_subscribed(false))
         if(res.data.state!==0)
           axios.post(`${api_url}/worker/update_state`, {state: 0, user_id: res.data._id})
       }
+
+      axios.get(`${api_url}/reservations/get_by_id`, { params: {user_id: res.data._id} }).then(res => {
+        let aux = []
+        for(let el of res.data){
+            if(el.type===2){
+                aux.push(el)
+            }
+        }
+        setBadPublications([...aux])
+      })
 
       setUserLoadAttempt(true)
       setLoading(false)
@@ -212,115 +201,118 @@ const refreshWorker = () => {
 }
 
   return (
-    <div className="App">
         <BrowserRouter>
+          <div className={styles.app_container}>
           <Navbar 
+            badPublications={badPublications}
             userLoadAttempt={userLoadAttempt}/>
+          <div className={styles.content_container}>
           <Routes>
-              <Route exact path="/landing" 
-                element={<Landing/>}
-              />
-              <Route exact path="/confirm-email" 
-                element={<ConfirmEmail/>}
-              />
-              <Route exact path="/politica-privacidade" 
-                element={<Pp white={true}/>}
-              />
-              <Route exact path="/main/publications/publication" 
-                element={<Trabalho
-                  refreshWorker={() => refreshWorker()}
-                  userLoadAttempt={userLoadAttempt}
-                  />}
-              />
-              <Route exact path="/main/publications/profissional" 
-                element={<Profissional
-                  userLoadAttempt={userLoadAttempt}
-                  />}
-              />
-              <Route exact path="/main/publications/*" 
-                element={<Main
-                  userLoadAttempt={userLoadAttempt}
-                  />}
-              />
-              <Route exact path="/publicar/:editar/*" 
-                key={'single'}
-                element={
-                  <ProtectedRoute
-                    redirectPath='/'
-                    isAllowed={
-                      // user?.type===0&&
-                      parseInt(window.localStorage.getItem('loggedIn'))
-                    }>
-                    <Publicar
-                      loading={loading}
-                      loadingHandler={bool => setLoading(bool)}
-                      />
-                  </ProtectedRoute>
+            <Route exact path="/email-teste" 
+                  element={<EmailMensagem/>}
+                />
+                <Route exact path="/landing" 
+                  element={<Landing/>}
+                />
+                <Route exact path="/confirm-email" 
+                  element={<ConfirmEmail/>}
+                />
+                <Route exact path="/politica-privacidade" 
+                  element={<Pp white={true}/>}
+                />
+                <Route exact path="/main/publications/publication" 
+                  element={<Trabalho
+                    refreshWorker={() => refreshWorker()}
+                    userLoadAttempt={userLoadAttempt}
+                    />}
+                />
+                <Route exact path="/main/publications/profissional" 
+                  element={<Profissional
+                    userLoadAttempt={userLoadAttempt}
+                    />}
+                />
+                <Route exact path="/main/publications/*" 
+                  element={<Main
+                    userLoadAttempt={userLoadAttempt}
+                    />}
+                />
+                <Route exact path="/publicar/:editar/*" 
+                  key={'single'}
+                  element={
+                    <ProtectedRoute
+                      redirectPath='/'
+                      isAllowed={
+                        // user?.type===0&&
+                        parseInt(window.localStorage.getItem('loggedIn'))
+                      }>
+                      <Publicar
+                        refreshWorker={() => refreshWorker()}
+                        loading={loading}
+                        loadingHandler={bool => setLoading(bool)}
+                        />
+                    </ProtectedRoute>
+                    }
+                />
+                <Route exact path="/publicar/novo/*" 
+                  key={'all'}
+                  element={
+                    <ProtectedRoute
+                      redirectPath='/'
+                      isAllowed={
+                        // user?.type===0&&
+                        parseInt(window.localStorage.getItem('loggedIn'))
+                      }>
+                      <Publicar
+                        loading={loading}
+                        loadingHandler={bool => setLoading(bool)}
+                        />
+                    </ProtectedRoute>
+                    }
+                />
+                <Route exact path="/user" 
+                  element={
+                    <ProtectedRoute
+                      redirectPath='/'
+                      isAllowed={
+                        parseInt(window.localStorage.getItem('loggedIn'))
+                      }>
+                      <User
+                        refreshWorker={() => refreshWorker()}
+                        userLoadAttempt={userLoadAttempt}
+                        loadingHandler={bool => setLoading(bool)}
+                        />
+                    </ProtectedRoute>
                   }
-              />
-              <Route exact path="/publicar/novo/*" 
-                key={'all'}
-                element={
-                  <ProtectedRoute
-                    redirectPath='/'
-                    isAllowed={
-                      // user?.type===0&&
-                      parseInt(window.localStorage.getItem('loggedIn'))
-                    }>
-                    <Publicar
-                      loading={loading}
-                      loadingHandler={bool => setLoading(bool)}
-                      />
-                  </ProtectedRoute>
-                  }
-              />
-              <Route exact path="/user" 
-                element={
-                  <ProtectedRoute
-                    redirectPath='/'
-                    isAllowed={
-                      parseInt(window.localStorage.getItem('loggedIn'))
-                    }>
-                    <User
-                      refreshWorker={() => refreshWorker()}
-                      userLoadAttempt={userLoadAttempt}
-                      loadingHandler={bool => setLoading(bool)}
-                      />
-                  </ProtectedRoute>
-                }
-              />
-              {/* <Route exact path="/authentication/worker" 
-                element={<AuthWorker
-                  refreshWorker={() => refreshWorker()}
-                  loading={loading}
-                  loadingHandler={bool => setLoading(bool)}/>}
-              /> */}
-              <Route path="/authentication/*" 
-                element={<Auth
-                  loading={loading}
-                  loadingHandler={bool => setLoading(bool)}/>}
-              />
-              <Route path="/admin/*" 
-                element={
-                  <ProtectedRoute
-                    redirectPath='/'
-                    isAllowed={
-                      parseInt(window.localStorage.getItem('loggedIn'))&&isAdmin
-                    }>
-                    <Admin 
-                        userLoadAttempt={userLoadAttempt}/>
-                  </ProtectedRoute>
-                } />
-              <Route path="/" 
-                element={<Home
-                  refreshWorker={() => refreshWorker()}
-                  userLoggedIn = {parseInt(window.localStorage.getItem('loggedIn'))}
-                  notifications={notifications}
-                  userLoadAttempt={userLoadAttempt}/>} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+                />
+                <Route path="/authentication/*" 
+                  element={<Auth
+                    loading={loading}
+                    loadingHandler={bool => setLoading(bool)}/>}
+                />
+                <Route path="/admin/*" 
+                  element={
+                    <ProtectedRoute
+                      redirectPath='/'
+                      isAllowed={
+                        parseInt(window.localStorage.getItem('loggedIn'))&&isAdmin
+                      }>
+                      <Admin 
+                          userLoadAttempt={userLoadAttempt}/>
+                    </ProtectedRoute>
+                  } />
+                <Route path="/" 
+                  element={<Home
+                    badPublications={badPublications}
+                    refreshWorker={() => refreshWorker()}
+                    userLoggedIn = {parseInt(window.localStorage.getItem('loggedIn'))}
+                    notifications={notifications}
+                    userLoadAttempt={userLoadAttempt}/>} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            </div>
+          </div>
         </BrowserRouter>
-    </div>
+    
   );
 }
 

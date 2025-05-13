@@ -7,7 +7,7 @@
     height: 100%;
     background-color: var(--brand);
     position: relative;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
 }
 .backdrop{
     position: absolute;
@@ -135,7 +135,7 @@
     margin-bottom: 60px;
 }
 .sub_info_bottom{
-    margin-top: 50px;
+    margin-top:30px;
     /* border: 1px solid #fff; */
     border-radius: 5px;
     width: 800px;
@@ -228,18 +228,19 @@
     width: max-content;
 }
 .ya{
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     color: var(--job);
-    margin-left: 5px;
     font-weight: 600;
+    margin: 20px 0 0px 0;
+    text-align: center;
 }
 .subtitle_sub{
     margin: 10px auto;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     text-transform: uppercase;
     display: inline-block;
     font-weight: 500;
-    color: var(--grey);
+    color: var(--neutral);
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -392,14 +393,13 @@
     align-self: flex-start;
     flex-direction: column;
     width: 100%;
-    height: 100px;
 }
 .selected_plan_title{
     font-weight: 500;
     text-transform: uppercase;
     color: var(--neutral);
     margin: auto;
-    margin-top: 30px;
+    margin-top: 50px;
     font-size: 1rem;
     margin-bottom: 5px;
 }
@@ -422,10 +422,91 @@
     font-weight: 600;
 }
 .selected_plan_value_information{
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     margin-top: 10px;
     font-weight: 400;
     color: #ffffff;
+}
+.days_top{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.days_top_small{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.days_top_value_small{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--neutral);
+}
+.days_top_title_main{
+    color: var(--neutral);
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+.top_background{
+    background-color: var(--brand);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+.days_top_title_help{
+    color: var(--neutral);
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+.days_top_value_small_number_font{
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--neutral);
+    transition: 150ms all;
+}
+.days_top_discount{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.days_top_discount_info{
+    color: var(--action);
+    font-weight: 600;
+    margin-top: 5px;
+}
+.days_top_value_small_number{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--neutral);
+    font-family: 'Roboto Mono', monospace;
+    transition: 150ms all;
+}
+.top_background_flex{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    justify-content: center;
+}
+.days_top_title_small{
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--action);
+    text-transform: uppercase;
+    margin-left: 5px;
+}
+.days_top_value{
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--neutral);
+}
+.days_top_title{
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--neutral);
 }
 .selected_plan_no_value{
     color: var(--neutral);
@@ -473,6 +554,149 @@
     font-weight: 400;
     margin-top: 10px;
 }
+.history{
+    border: 2px solid white;
+    border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    margin-bottom: 30px;
+}
+.operations_wrapper{
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: var(--neutral);
+    text-transform: uppercase;
+}
+.title_operations{
+
+}
+.history_button{
+    width: 100%;
+    padding: 10px 0;
+    position: relative;
+    cursor: pointer;
+}
+.history_button:hover{
+    opacity: 0.8;
+    transition: 150ms all;
+}
+.history_title{
+    color: var(--neutral);
+    text-align: center;
+    text-transform: uppercase;
+}
+.history_title_small{
+    color: var(--neutral);
+    text-align: center;
+    text-transform: uppercase;
+    display: none;
+}
+.history_map{
+    box-sizing: border-box;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.history_element{
+    border-radius: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: var(--neutral);
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.history_element:first-child{
+    margin-top: 5px;
+}
+.history_element:last-child{
+    margin-bottom: 0;
+}
+.history_image{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--action);
+    border-radius: 5px;
+    height: 40px;
+    width: 40px;
+    border: 2px solid var(--action);
+}
+.history_image_value{
+    width: 25px !important;
+    height: 25px !important;
+}
+.history_right{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 45px;
+}
+.history_right_west{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 5px;
+}
+.history_west_title{
+    font-weight: 700;
+    color: var(--action);
+}
+.history_west_value{
+    font-weight: 600;
+    text-align: left;
+}
+.history_right_east{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.history_east_date{
+    font-size: 0.9rem;
+}
+.history_temporary{
+    display: flex;
+    align-items: center;
+    background-color: #fdd835;
+    padding: 2px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    width: fit-content;
+    border: 1px solid var(--yellow);
+    -webkit-box-shadow: 0px 0px 55px -10px rgba(255,255,255,1);
+-moz-box-shadow: 0px 0px 55px -10px rgba(255,255,255,1);
+box-shadow: 0px 0px 55px -10px rgba(255,255,255,1);
+}
+.history_temporary:hover{
+    opacity: 0.8;
+    transition: 150ms all;
+}
+.temporary_image{}
+.temporary_image_val{
+    width: 25px !important;
+    height: 30px;
+}
+.temporary_east{
+    margin-left: 5px;
+}
+.temporary_east_full{
+    margin-left: 5px;
+}
+.temporary_east_title{
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.temporary_east_date{
+    font-size: 0.8rem;
+    /* font-weight: 600; */
+}
+
+
 .info_text_helper{
     font-weight: 400;
     text-transform: uppercase;
@@ -483,11 +707,11 @@
 }
 .info_text_helper_date{
     font-weight: 400;
-    text-transform: uppercase;
     color: var(--neutral);
     font-size: 0.9rem;
     text-align: center;
     margin: 0 auto;
+    font-weight: 400;
 }
 .display_three_canceled{
     margin-top: 50px;
@@ -513,6 +737,11 @@
 }
 .info_text{
     font-size: 1rem;
+    font-weight: 600;
+    color: white;
+}
+.info_text_days{
+    font-size: 1.1rem;
     font-weight: 600;
     color: white;
 }
@@ -725,7 +954,7 @@
 .details_area{
     width: 100%;
     margin: 0 auto;
-    display: flex;
+    margin-top: 20px;
 }
 .card{
     border-radius: 10px;
@@ -883,16 +1112,40 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     padding: 5px 0;
     color: white;
 }
+.fontFam{
+    font-family: 'Roboto Mono', monospace;
+}
+.sub_val_subscribed{
+    animation-name: blue;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+.sub_val_not_subscribed{
+    background-color: #fdd83540;
+    border-color: var(--yellow);
+}
 
+
+@keyframes blue {
+    0% {
+      background-color: #0358e540;
+    }
+    50% {
+        background-color: #0358e5aa;
+    }
+    100% {
+        background-color: #0358e540;
+    }
+}
 .buttons{
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 95px;
+    margin-top: 20px;
     padding-bottom: 50px;
 }
-.buttons_plan{
-
+.saver_color{
+    color: #ffffffa0;
 }
 .button_add_disabled{
     width: 70%;
@@ -929,8 +1182,9 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     border-radius: 5px;
     background-color: var(--neutral);
     margin-left: 10px;
-    color: var(--grey);
+    color: var(--brand);
     cursor: pointer;
+    font-weight: 600;
 }
 .button_cancel:hover{
     opacity: 0.8;
@@ -940,7 +1194,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     width: 100%;
     display: flex;
     justify-content: space-around;
-    margin-top: 0px;
+    margin-top: 40px;
     background-color: #ffffff10;
     padding: 10px 0;
     border-radius: 2px;
@@ -969,6 +1223,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     font-size: 0.8rem;
     color: var(--grey);
     text-align: center;
+    font-family: 'Roboto Mono', monospace;
 }
 .indicator_check{
     width: 20px !important;
@@ -1097,25 +1352,27 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     transform: scale(1.05);
 }
 .section_img{
-    width: 40px;
-    height: 40px;
+    width: 40px !important;
+    height: 40px !important;
     margin: 20px auto;
 }
 .section_img_small{
-    width: 25px;
-    height: 25px;
+    width: 25px !important;
+    height: 29px !important;
 }
 .section_type{
     font-weight: 700;
     margin: 0 auto;
     font-size: 1.5rem;
     color: var(--neutral);
+    text-align: center;
 }
 .section_type_desc{
     color: #ffffffaa;
     margin: 0 auto;
     font-size: 0.7rem;
     text-align: center;
+    font-style: italic;
 }
 .section_valor_div{
     display: flex;
@@ -1156,6 +1413,25 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     text-decoration: line-through;
     color: var(--grey);
 }
+.previous{
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    cursor: pointer;
+    width: fit-content;
+}
+.previous:hover{
+    transition: 150ms all;
+    opacity: 0.8;
+}
+.previous_symbol{
+    color: var(--neutral);
+}
+.previous_text{
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--neutral);
+}
 .section_valor_top_number_decimal_discount{
     font-size: 0.8rem;
     font-weight: 500;
@@ -1184,6 +1460,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     margin: 0 auto;
     width: 70px;
     font-weight: 400;
+    text-align: center;
 }
 .section_desc_of_pay_discount{
     color: grey;
@@ -1253,13 +1530,30 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     margin-top: -2px;
     font-weight: 600;
 }
+.top_complete_arrow{
+    width: 20px !important;
+    height: 20px !important;
+    transition: all 150ms;
+    color: var(--action);
+    position: absolute;
+    right: 5px;
+}
+.top_complete_arrow_show{
+    width: 20px !important;
+    height: 20px !important;
+    transform: rotate(90deg);
+    transition: all 150ms;
+    color: var(--action);
+    position: absolute;
+    right: 5px;
+}
 .initial{
     width: 100%;
     display: flex;
     justify-content: center;
 }
 .card_right{
-    margin-top: 50px;
+    margin-top: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1283,13 +1577,12 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     text-align: center;
     border-radius: 5px;
     background-color: var(--action);
-    height: 48%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     text-transform: uppercase;
-    margin-top: 5px;
+    margin-top: 0px;
 }
 .card_right_button:hover{
     opacity: 0.8;
@@ -1408,6 +1701,17 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     font-weight: 600;
     color: var(--neutral);
     margin: 5px 0;
+    margin-top: 10px;
+    text-align: center;
+}
+.options_card_title_helper{
+    color: #ffffffaa;
+    margin: 0 auto;
+    font-size: 0.7rem;
+    margin: 0 0;
+    font-style: italic;
+    margin-bottom: 10px;
+    text-align: center;
 }
 .options_card_img{
     width: 35px !important;
@@ -1488,7 +1792,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         width: 600px;
     }
     .mid_content{
-        width: 600px;
+        width: 90%;
     }
     .sub_val_date_discount_small{
         display: block;
@@ -1502,14 +1806,27 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     .discount_letters_small{
         display: block;
     }
+    .days_top_value{
+        font-size: 1.4rem;
+    }
+    .days_top_title{
+        font-size: 1.1rem;
+    }
 }
 
 @media (max-width: 768px){
+    .history_temporary{
+        padding: 5px 5px;
+    }
+    .temporary_image_val{
+        width: 20px !important;
+        height: 24px;
+    }
+    .temporary_east{
+        display: none;
+    }
     .top_title{
         font-size: 1.1rem;
-    }
-    .mid_content{
-        width: 100%;
     }
     .alterar_plano_wrap{
         padding: 0 10px;
@@ -1577,6 +1894,18 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     .alterar_plano{
         font-size: 0.7rem;
     }
+    .options_card_title_helper{
+        font-size: 0.7rem;
+    }
+    .days_top_value{
+        font-size: 1.3rem;
+    }
+    .days_top_title{
+        font-size: 1rem;
+    }
+    .operations_wrapper{
+        font-size: 1rem;
+    }
 }
 .verificar_top_wrapper{
     width: 100%;
@@ -1627,6 +1956,34 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
 }
 
 @media (max-width: 500px){
+    .temporary_east_title{
+        font-size: 0.8rem;
+    }
+    .temporary_east_date{
+        font-size: 0.7rem;
+    }
+    .operations_wrapper{
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 0.9rem;
+    }
+    .days_top_value{
+        font-size: 1.1rem;
+    }
+    .days_top_title{
+        font-size: 0.9rem;
+    }
+    .top_complete_arrow{
+        width: 15px !important;
+        height: 15px !important;
+        top: 5px;
+    }
+    .top_complete_arrow_show{
+        width: 15px !important;
+        height: 15px !important;
+        top: 5px;
+    }
     .verificar_top{
         padding: 2px 0;
     }
@@ -1669,7 +2026,10 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         flex-direction: column;
     }
     .options_card_title{
-        font-size: 0.8rem;
+        font-size: 0.7rem;
+    }
+    .options_card_title_helper{
+        font-size: 0.6rem;
     }
     .options_card_img{
         width: 25px !important;
@@ -1807,19 +2167,16 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         font-size: 1rem;
     }
     .subtitle_sub{
-        font-size: 0.8rem;
+        font-size: 1rem;
         justify-content: center;
         align-items: center;
     }
     .ya{
-        font-size: 0.8rem;
+        font-size: 1rem;
     }
     .sub_info_title{
         font-size: 1rem;
         margin-top: 15px;
-    }
-    .subtitle_sub{
-        font-size: 0.6rem;
     }
     .indicator_text{
         font-size: 0.6rem;
@@ -1869,18 +2226,35 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         width: 90%;
     }
     .sub_val_wrap_image{
-        width: 20px !important;
-        height: 20px !important;
+        width: 25px !important;
+        height: 25px !important;
+    }
+    .sub_val_wrap{
+        width: 90%;
+        margin: auto;
     }
     .section_img_small{
         width: 20px !important;
         height: 20px !important;
+        margin-left: -3px;
+        margin-top: -3px;
     }
     .sub_val_date{
         font-size: 0.9rem;
     }
     .selected_plan_value{
         font-size: 0.6rem;
+    }
+    .history_title{
+        font-size: 0.9rem;
+        display: none;
+    }
+    .history_title_small{
+        display: block;
+        font-size: 0.9rem;
+    }
+    .history_button{
+        padding: 5px 0;
     }
     .selected_plan_discount_wrap{
         text-align: center;
@@ -1898,34 +2272,37 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         flex-direction: column;
     }
     .button_add{
-        width: 100%;
+        width: 90%;
         box-sizing: border-box;
-        border-radius: 0px;
         font-size: 0.8rem;
+        margin: auto;
     }
     .button_cancel{
-        margin-left: 0;
-        width: 100%;
+        width: 90%;
         box-sizing: border-box;
         padding: 5px 10px;
+        margin: auto;
         margin-top: 5px;
-        border-radius: 0px;
         font-size: 0.8rem;
     }
     .subscription{
         height: 100%;
     }
     .button_add_disabled{
-        width: 100%;
+        width: 90%;
         box-sizing: border-box;
-        border-radius: 0px;
         font-size: 0.8rem;
+        margin: auto;
     }
     .info_text_helper{
         font-size: 0.7rem;
     }
     .info_text{
         font-size: 0.8rem;
+        width: max-content;
+    }
+    .info_text_days{
+        font-size: 0.9rem;
         width: max-content;
     }
     .info_text_helper_date{
@@ -1937,7 +2314,7 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
     .card_right_button{
         padding: 10px;
         font-size: 0.9rem;
-        border-radius: 0px;
+        width: 90%;
     }
     .equivalente{
         font-size: 0.5rem !important;
@@ -1956,16 +2333,19 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         font-size: 0.8rem;
     }
     .card{
-        /* display: none; */
+        display: none;
     }
     .details_right{
         width: 100%;
         box-sizing: border-box;
         margin-left: 0;
         padding: 0 10px;
+        border: 2px solid white;
+        border-radius: 5px;
     }
     .right_section_short_div{
         justify-content: flex-start;
+        margin-bottom: 5px;
     }
     .right_input_short{
         width: 100px;
@@ -1974,13 +2354,44 @@ background: linear-gradient(90deg, rgba(3,88,229,1) 0%, rgba(63,128,235,1) 100%)
         margin-top: 2px;
         margin-left: 10px;
     }
-    .card_right_button_remove{
-        border-radius: 0px;
-    }
     .post_pay{
         margin-top: 20px;
     }
     .canceled_title{
         font-size: 0.8rem;
+    }
+    .top_background_flex{
+        flex-direction: column;
+    }
+    .days_top_title_small{
+        margin-left: 0;
+        margin-top: 2px;
+        font-size: 0.8rem;
+    }
+    .days_top_title_main{
+        font-size: 1rem;
+    }
+    .days_top_title_help{
+        font-size: 0.7rem;
+    }
+    .days_top_value_small_number_font{
+        font-size: 1rem;
+    }
+    .days_top_value_small_number{
+        font-size: 1rem;
+    }
+    .history{
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .history_east_date{
+        font-size: 0.7rem;
+    }
+    .history_west_title{
+        font-size: 0.9rem;
+    }
+    .history_west_value{
+        font-size: 0.9rem;
     }
 }

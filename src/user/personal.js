@@ -311,7 +311,7 @@ const Personal = (props) => {
                     classNames="transition"
                     unmountOnExit
                     >
-                    <Sessao text={"Foto carregada com sucesso!"}/>
+                    <Sessao user_page={true} removePopin={() => setPhotoPop(false)} text={"Foto carregada com sucesso!"}/>
                 </CSSTransition>
                 <CSSTransition 
                     in={rightPop}
@@ -321,9 +321,9 @@ const Personal = (props) => {
                     >
                     {
                         user?.worker?
-                        <Sessao text={"Número de telefone e/ou descrição atualizados com sucesso!"}/>
+                        <Sessao user_page={true} removePopin={() => setRightPop(false)} text={"Número de telefone e/ou descrição atualizados com sucesso!"}/>
                         :
-                        <Sessao text={"Número de telefone atualizado com sucesso!"}/>
+                        <Sessao user_page={true} removePopin={() => setRightPop(false)} text={"Número de telefone atualizado com sucesso!"}/>
                     }
                 </CSSTransition>
                 {/* {
@@ -414,7 +414,6 @@ const Personal = (props) => {
                                 .then(suc => {
                                 })
                                 .catch(err => {
-                                    console.log(err)
                                 })
                             }
                             axios.post(`${api_url}/general/delete_user`, {

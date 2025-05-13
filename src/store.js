@@ -14,8 +14,14 @@ const slice = createSlice({
     user_subscription_active: false,
     user_admin_verified: false,
     chats: [],
+
+    //
+    //LOCALHOST
     // api_url: "http://localhost:5200",
-    api_url: "https://vender-344408.ew.r.appspot.com",
+
+    //LIVE
+    api_url: "https://vender-344408.ew.r.appspot.com"
+    //
   },
   reducers: {
     user_load: (state, action) => {
@@ -78,8 +84,8 @@ const slice = createSlice({
     worker_update_is_subscribed: (state, action) => {
       state.worker_is_subscribed = action.payload
     },
-    worker_update_trial: (state, action) => {
-      state.user.trial = action.payload
+    worker_update_subscription: (state, action) => {
+      state.user.subscription = action.payload
     },
   }
 })
@@ -106,7 +112,7 @@ export const {
     ////////////////////// worker
     worker_update_profile_complete,
     worker_update_is_subscribed,
-    worker_update_trial,
+    worker_update_subscription,
   } = slice.actions
 
 

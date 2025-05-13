@@ -7,7 +7,7 @@ import HandymanIcon from '@mui/icons-material/Handyman';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
-import {regioes, profissoes, profissoesGrouped} from '../general/util'
+import {regioes, profissoesMap, profissoesGrouped, regioesOptions} from '../general/util'
 import AccountBalanceOutlinedIcon from '@mui/icons-material/AccountBalanceOutlined';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import axios from 'axios';
@@ -16,6 +16,16 @@ import {CSSTransition}  from 'react-transition-group';
 import Sessao from './../transitions/sessao';
 import SelectWorker from '../selects/selectWorker';
 import { user_update_field, worker_update_profile_complete } from '../store';
+import SelectHome from '../selects/selectHome';
+
+
+const getWindowDimensions = () => {
+    const { innerWidth: width, innerHeight: height } = window
+    return {
+      width,
+      height
+    }
+}
 
 const Details = props => {
     const dispatch = useDispatch()
@@ -42,6 +52,17 @@ const Details = props => {
     const [selectedProf, setSelectedProf] = useState([])
     const [selectedReg, setSelectedReg] = useState([])
     const [shake, setShake] = useState(false)
+
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+
+    useEffect(() => {
+        function handleResize() {
+          setWindowDimensions(getWindowDimensions());
+        }
+    
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, [])
 
     useEffect(() => {
         if(user){
@@ -136,8 +157,8 @@ const Details = props => {
                     <input type="checkbox" readOnly checked={getCheckedProf(trab.value)}/>
                     <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkmark:styles.checkmark_disabled}></span>
                     <div style={{display:'flex', alignItems:'center'}}>
-                        <img src={trab.img} className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkmark_image:styles.checkmark_image_disabled}/>
-                        <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkbox_text:styles.checkbox_text_disabled}>{trab.label}</span>
+                        {/* <img src={trab.img} className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkmark_image:styles.checkmark_image_disabled}/> */}
+                        <span className={(editBottom&&!fullList)||editBottom&&getCheckedProf(trab.value)?styles.checkbox_text:styles.checkbox_text_disabled} style={{marginLeft:'30px'}}>{trab.label}</span>
                     </div>
                 </div>
                 :null
@@ -163,7 +184,7 @@ const Details = props => {
                     </div>
                     :null
                 :
-                <div className={styles.checkbox_submap}>
+                <div key={i} className={styles.checkbox_submap}>
                     {
                         checkExistsInSearch(trab.options)?
                         <div style={{display:'flex', alignItems:'center', marginBottom:'10px'}}>
@@ -247,10 +268,29 @@ const Details = props => {
 
     const getPercentagem = () => {
         let val = 0
-        if(selectedProf?.length>0&&!editBottom) val += 1
-        if(selectedReg?.length>0&&!editBottom) val += 1
-        if(radioSelected!==null&&!editBottom) val += 1
+        if(selectedProf?.length>0) val += 1
+        if(selectedReg?.length>0) val += 1
+        if(radioSelected!==null) val += 1
         return Math.ceil((val/3)*100)
+    }
+
+    const mapSelected = (list, type) => {
+        if(list?.length>0)
+            return list?.map((el, i) => {
+                return (
+                    type==='jobs'?
+                    <p className={styles.map_label} style={{opacity:editBottom?1:0.7}}
+                        
+                        onClick={() => setCheckedProf(el)}>{profissoesMap[el]?.label}</p>
+                    :
+                    <p className={styles.map_label} onClick={() => setCheckedReg(el)} style={{opacity:editBottom?1:0.7}}>{regioesOptions[el]}</p>
+                    
+                )
+            })
+
+        return (
+            <p className={styles.map_label_no}>{type==='jobs'?'Sem serviços selecionados':'Sem regiões ou distritos selecionados'}</p>
+        )
     }
 
     return (
@@ -261,7 +301,7 @@ const Details = props => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text={"Detalhes profissional atualizados com sucesso!"}/>
+                <Sessao user_page={true} removePopin={() => setBottomPop(false)} text={"Detalhes profissional atualizados com sucesso!"}/>
             </CSSTransition>
             <div className={styles.top}>
                 <div className={styles.top_info}  onClick={() => setDisplayTop(!displayTop)}>
@@ -273,9 +313,9 @@ const Details = props => {
                         displayTop?
                         <div className={getPercentagem()<100?styles.top_wrap_incomplete:styles.top_wrap_complete}>
                             <div className={styles.top_complete_line}>
-                                <CorporateFareIcon className={radioSelected!==""&&!editBottom?styles.line_icon:styles.line_icon_complete}/>
+                                <CorporateFareIcon className={radioSelected!==""?styles.line_icon:styles.line_icon_complete}/>
                                 {
-                                    radioSelected!==""&&!editBottom?
+                                    radioSelected!==""?
                                     <div style={{display:"flex", alignItems:"center"}}>
                                         <span className={styles.line_text_complete}>particular ou empresa</span>
                                         <CheckIcon className={styles.line_val_complete}></CheckIcon>
@@ -290,26 +330,26 @@ const Details = props => {
                                 }
                             </div>
                             <div className={styles.top_complete_line}>
-                                <HandymanIcon className={selectedProf?.length>0&&!editBottom?styles.line_icon:styles.line_icon_complete}/>
+                                <HandymanIcon className={selectedProf?.length>0?styles.line_icon:styles.line_icon_complete}/>
                                 {
-                                    selectedProf?.length>0&&!editBottom?
+                                    selectedProf?.length>0?
                                     <div style={{display:"flex", alignItems:"center"}}>
-                                        <span className={styles.line_text_complete}>Serviços que exerço</span>
+                                        <span className={styles.line_text_complete}>Serviços em que trabalho</span>
                                         <CheckIcon className={styles.line_val_complete}></CheckIcon>
                                     </div>
                                     
                                     :
                                     <div style={{display:"flex", alignItems:"center"}}>
-                                        <span className={styles.line_text}>Serviços que exerço</span>
+                                        <span className={styles.line_text}>Serviços em que trabalho</span>
                                         <ClearIcon className={styles.line_val}></ClearIcon>
                                     </div>
 
                                 }
                             </div>
                             <div className={styles.top_complete_line}>
-                                <LocationOnIcon className={selectedReg?.length>0&&!editBottom?styles.line_icon:styles.line_icon_complete}/>
+                                <LocationOnIcon className={selectedReg?.length>0?styles.line_icon:styles.line_icon_complete}/>
                                 {
-                                    selectedReg?.length>0&&!editBottom?
+                                    selectedReg?.length>0?
                                     <div style={{display:"flex", alignItems:"center"}}>
                                         <span className={styles.line_text_complete}>Regiões ou distritos onde trabalho</span>
                                         <CheckIcon className={styles.line_val_complete}></CheckIcon>
@@ -332,11 +372,13 @@ const Details = props => {
                                 styles.top_separator_complete}/>
             </div>
             <div className={styles.worker_area}>
-                <div className={styles.title_flex}>
+            <span className={styles.flex_title} style={{marginTop:'10px', marginTop:'30px'}}>Particular ou Empresa</span>
+                <div className={styles.title_flex} style={{marginTop:'0'}}>
                     <div>
-                        <span className={styles.personal_subtitle}>Serviços e Regiões</span>
+                        
                         <div className={styles.radio_div}>
                             <SelectWorker 
+                                details={true}
                                 editBottom={editBottom} 
                                 worker_type={radioSelected} 
                                 changeType={val => {
@@ -375,7 +417,6 @@ const Details = props => {
                             <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper}>Por favor define a tua situação de trabalho.</span>
                             :null
                         }
-                        
                     </div>
                     {   
                         !editBottom?
@@ -389,39 +430,80 @@ const Details = props => {
                     }
                 </div>
                 <Loader loading={loadingBottom}/>
-                <div className={styles.flex_bottom}>
+                <div className={styles.area_flex}>
+                    <span ref={shakeError} className={styles.flex_title}>Serviços em que trabalho</span>
+                    {
+                        editBottom&&selectedProf?.length===0||editBottom&&!selectedProf?
+                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper} style={{marginBottom:'0'}}>Por favor escolhe pelo menos um tipo de serviço!</span>
+                        :null
+                    }
+                    <span className={editBottom?styles.divider_active:styles.divider}></span>                    
                     
-                    <div className={styles.flex_left}>
-                        <span ref={shakeError} className={styles.flex_title}>Serviços que exerço <span className={shakeTarefas?`${styles.selected_number} ${styles.shake}`:styles.selected_number}>({selectedProf?selectedProf?.length:0}/9)</span></span>
-                        {
-                            editBottom&&selectedProf?.length===0||editBottom&&!selectedProf?
-                            <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper} style={{marginBottom:'0'}}>Por favor escolhe pelo menos um tipo de serviço!</span>
-                            :null
-                        }
-                        <span className={editBottom?styles.divider_active:styles.divider}></span>
-
-                        
-                        <div className={styles.input_wrapper}>
-                            <input onChange={e => setListValue(e.target.value)} placeholder='Pesquisar serviços...' value={listValue} className={styles.input_list} disabled={!editBottom} maxLength={20}/>
-                        </div>
-                        <div className={styles.flex_select_div}>
-                            {mapTrabalhos()}
+                    <div className={styles.area}>
+                        <div className={styles.area_left}>
+                            <div className={styles.area_left_title_wrapper}>
+                                <p className={styles.area_left_title}>Selecionados <span className={shakeTarefas?`${styles.selected_number} ${styles.shake}`:styles.selected_number}>({selectedProf?selectedProf?.length:0}/9)</span></p>
+                            </div>
+                            
+                            <div className={styles.area_left_map} style={{
+                                backgroundColor:selectedProf?.length===0?'#fdd83580':editBottom?'':'#FF785A40', 
+                                border:selectedProf?.length===0?'2px solid #fdd835':editBottom?'':'2px solid #FF785A80',
+                                display:selectedProf?.length===0?'flex':''}}>
+                                {mapSelected(selectedProf, 'jobs')}
+                            </div>
                         </div>
                         
-                        
+                        <div className={styles.area_right}>
+                            <SelectHome 
+                                menuOpen={() => {
+                                }}
+                                menuClose={() => {
+                                }}
+                                selectedArray={selectedProf}
+                                home={true}
+                                profs={true}
+                                details={true}
+                                edit={editBottom}
+                                options={profissoesGrouped}
+                                optionFirst={null} 
+                                option={null} 
+                                searcheable={editBottom}
+                                smallWindow={windowDimensions.width <= 1024}
+                                changeOption={val => {
+                                    setCheckedProf(val.value)
+                                }}
+                                placeholder={'procurar serviços'}/>
+                        </div>  
                     </div>
-                    <div className={`${styles.flex_left} ${styles.flex_left_mobile}`}>
-                        <span ref={shakeError} className={styles.flex_title}>Regiões ou distritos onde trabalho</span>
-                        {
-                            (editBottom&&selectedReg?.length===0)||editBottom&&!selectedReg?
-                            <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper} style={{marginBottom:'0'}}>Por favor escolhe pelo menos uma região ou distrito!</span>
-                            :null
-                        }
-                        <span className={editBottom?styles.divider_active:styles.divider}></span>
-
-                        <div className={styles.flex_select_div}>
-                            {mapRegioes()}
+                </div>
+                <div className={styles.area_flex} style={{marginTop:windowDimensions.width<1024?'350px':'460px'}}>
+                    <span ref={shakeError} className={styles.flex_title}>Regiões ou Distritos onde trabalho</span>
+                    {
+                        editBottom&&selectedReg?.length===0||editBottom&&!selectedReg?
+                        <span className={shake?`${styles.helper} ${styles.shake}`:styles.helper} style={{marginBottom:'0'}}>Por favor escolhe pelo menos uma região ou distrito</span>
+                        :null
+                    }
+                    <span className={editBottom?styles.divider_active:styles.divider}></span>                    
+                    
+                    <div className={styles.area}>
+                        <div className={styles.area_left}>
+                            <div className={styles.area_left_title_wrapper}>
+                                <p className={styles.area_left_title}>Selecionados</p>
+                            </div>
+                            
+                            <div className={styles.area_left_map} style={{
+                                backgroundColor:selectedReg?.length===0?'#fdd83580':editBottom?'':'#FF785A40', 
+                                border:selectedReg?.length===0?'2px solid #fdd835':editBottom?'':'2px solid #FF785A80',
+                                display:selectedReg?.length===0?'flex':''}}>
+                                {mapSelected(selectedReg, 'regions')}
+                            </div>
                         </div>
+                        
+                        <div className={styles.area_right_two}>
+                            <div className={styles.flex_select_div}>
+                                {mapRegioes()}
+                            </div>
+                        </div>  
                     </div>
                 </div>
             </div>

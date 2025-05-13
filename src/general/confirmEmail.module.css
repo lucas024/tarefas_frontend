@@ -23,6 +23,8 @@
     color: var(--brand);
     cursor: pointer;
     transition: 150ms all;
+    margin-top: 40px;
+    color: var(--job);
 }
 .button:hover{
     background-color: var(--job);
@@ -30,7 +32,7 @@
 }
 .button_text{
     font-weight: 600;
-    color: var(--job);
     text-align: center;
     font-size: 1.1rem;
+    text-transform: uppercase;
 }

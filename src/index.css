@@ -6,21 +6,26 @@
 
 @import "~react-image-gallery/styles/css/image-gallery.css";
 
-html{
-  font-size: 95%;
+html {
+  font-size: 90%;
 }
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 5000s ease-in-out 0s;
 }
+
 :root {
-  --neutral: #FFFFFF;
+  --neutral: #fafafa;
   --brand: #161F28;
-  --action: #FF785A;
+  --dark: #0A131C;
+  --action: #E56144;
   --helper: #BA8376;
-  --grey: #71848d;
+  --grey: #cccccc;
+  --grey_text: #6a6a6a;
+  --grey_background: #e4eaf0;
   --green: #398606;
   --check: #0358e5;
   --yellow: #fdd835;
@@ -28,7 +33,108 @@ input:-webkit-autofill:active {
   --background: #f2f4f5;
   --skeleton: #f3f3f330;
   --job: #0358e5;
+  --navbar-min-height: 40px;
+  --navbar-max-height: 66px;
+  --navbar-height: 4.6vw;
+  --content-margin-top: calc(max(min(var(--navbar-height), var(--navbar-max-height)), var(--navbar-min-height)));
+  --base-width-pixels: 100vw;
+  --base-width: min(var(--base-width-pixels), 100vw); /* Ensures responsiveness */
+  --base-width-percent: calc(var(--base-width) / 100); /* For percentage calculations */
+
+  /* 48px */
+  --_48px: 48px;
+  /* 40px */
+  --_40px: 40px;
+  /* 30px */
+  --_30px: 30px;
+  /* 18px */
+  --_20px: 20px;
+  /* 18px */
+  --_18px: 18px;
+  /* 16px */
+  --_16px: 16px;
+  /* 14px */
+  --_14px: 14px;
+  /* 12px */
+  --_12px: 12px;
+  /* 10px */
+  --_10px: 10px;
+  /* 6px */
+  --_8px: 8px;
+  --_6px: 6px;
+  --padding-button-width: calc(min(calc(var(--base-width-percent) * 0.88), 12px));
+  --padding-button-height: calc(min(calc(var(--base-width-percent) * 0.8), 11px));
+  --min-height-button: 20px;
+
+  --margin-content: 90px;
+  --width-home-main: 95%;
+  --width-home-content: 85%;
 }
+
+/* Media query for screens smaller than 1440px */
+@media (max-width: 1440px) {
+  :root {
+    --_48px: calc(max(15px, calc(var(--base-width-percent) * 3.35)));
+    --_40px: calc(max(12.5px, calc(var(--base-width-percent) * 2.78)));
+    
+    /* 20px */
+    --_20px: calc(max(11px, calc(var(--base-width-percent) * 1.4)));
+
+    /* 18px */
+    --_18px: calc(max(10px, calc(var(--base-width-percent) * 1.33)));
+
+    /* 16px */
+    --_16px: calc(max(8px, calc(var(--base-width-percent) * 1.11)));
+  
+    /* 14px */
+    --_14px: calc(max(7px, calc(var(--base-width-percent) * 0.975)));
+  
+    /* 12px */
+    --_12px: calc(max(6px, calc(var(--base-width-percent) * 0.84)));
+  
+    /* 10px */
+    --_10px: calc(max(5px, calc(var(--base-width-percent) * 0.7)));
+    --small: calc(max(8px, calc(var(--base-width-percent) * 0.44)));
+    --smaller: calc(max(6px, calc(var(--base-width-percent) * 0.33)));
+
+
+    --padding-button-width: calc(min(calc(var(--base-width-percent) * 0.88), 12px));
+    --padding-button-height: calc(min(calc(var(--base-width-percent) * 0.8), 11px));
+    --min-height-button: 20px;
+    
+    /* 90px base */
+    --margin-content: calc(max(30px, var(--base-width-percent) * 6.2));
+  }
+}
+
+/* calc(var(--base-width-percent) * x) */
+.control-dots{
+  margin-left: calc(min(298px, 20.7vw)) !important;
+  display: flex;
+  justify-content: flex-start !important;
+  margin-bottom: 0 !important;
+}
+.button-style {
+  padding: var(--button-padding);
+  border-radius: var(--button-border-radius);
+  border: none;
+  cursor: pointer;
+  min-height: var(--min-height-button);
+  padding: var(--padding-button-height) var(--padding-button-width);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  border-radius: 8px;
+  font-weight: 400;
+  font-size: var(--_14px);
+}
+
+.button-style:hover {
+  opacity: 0.8;
+  transition: 150ms all;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -39,31 +145,36 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
-.interesse{
+
+.interesse {
   display: flex;
   flex-direction: column;
   padding: 10px;
   background-color: white;
-  box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   width: 50%;
   cursor: pointer;
 }
-.interesse_title{
+
+.interesse_title {
   font-size: 0.8rem;
 }
-.interesse_val{
+
+.interesse_val {
   text-align: center;
   font-weight: 600;
   margin: 5px 0;
 }
-.interesse_link{
+
+.interesse_link {
   text-align: center;
   margin: 5px 0;
   color: var(--action);
 }
 
-.image-gallery-thumbnail.active, .image-gallery-thumbnail:focus {
+.image-gallery-thumbnail.active,
+.image-gallery-thumbnail:focus {
   outline: none;
   border: 4px solid var(--job);
 }
@@ -74,35 +185,42 @@ input[type=number] {
   line-height: 0;
   object-fit: cover;
 }
-.image-gallery-right-nav{
+
+.image-gallery-right-nav {
   right: 30px;
 }
-.image-gallery-icon:focus{
+
+.image-gallery-icon:focus {
   outline: 2px solid var(--job);
 }
+
 .image-gallery-icon:hover {
   color: var(--job);
 }
-.image-gallery-fullscreen-button{
+
+.image-gallery-fullscreen-button {
   right: 50px;
 }
-html { 
+
+html {
   height: 100%;
   scroll-behavior: smooth;
 }
+
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.03em;
   font-size: 1em;
   height: 100%;
   background-color: var(--brand);
 }
-p{
+
+p {
   margin: 0;
 }
-
 
 /* ===== Scrollbar CSS ===== */
 /* Firefox */
@@ -128,18 +246,18 @@ p{
   border: 1px solid #ffffff;
 }
 
-.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
   color: black !important;
   -webkit-text-fill-color: rgba(0, 0, 0, 0.796) !important;
   font-size: 1rem !important;
   font-family: 'Roboto', sans-serif !important;
 }
 
-.css-1r5wa48-MuiList-root{
+.css-1r5wa48-MuiList-root {
   padding: 0 !important;
 }
 
-.css-ishquk-MuiButtonBase-root-MuiListItemButton-root:hover{
+.css-ishquk-MuiButtonBase-root-MuiListItemButton-root:hover {
   background-color: #65b5f633 !important;
 }
 
@@ -147,39 +265,46 @@ p{
   background-color: #65b5f633 !important;
 }
 
-.publicar-enter{
+.publicar-enter {
   opacity: 0;
 }
+
 .publicar-enter-active {
   opacity: 1;
   transform: translateY(30%);
   transition: 600ms;
 }
-.publicar-enter-done{
+
+.publicar-enter-done {
   transform: translateY(30%);
 }
+
 .publicar-exit {
   opacity: 1;
   transform: translateY(30%);
 }
+
 .publicar-exit-active {
   opacity: 0;
   transform: translateY(-30%);
   transition: 200ms;
 }
 
-.welcome-enter{
+.welcome-enter {
   opacity: 0;
   transform: translateY(-40%);
 }
+
 .welcome-enter-active {
   opacity: 1;
   transform: translateY(0%);
   transition: 600ms;
 }
-.welcome-enter-done{
+
+.welcome-enter-done {
   /* transform: translateY(40%); */
 }
+
 /* .welcome-exit {
   opacity: 1;
   transform: translateY(40%);
@@ -190,108 +315,123 @@ p{
   transition: 200ms;
 }
 
-.transition-enter{
+.transition-enter {
   opacity: 0;
 }
+
 .transition-enter-active {
   opacity: 1;
   transform: translateY(40%);
   transition: 600ms;
 }
-.transition-enter-done{
+
+.transition-enter-done {
   transform: translateY(40%);
 }
+
 .transition-exit {
   opacity: 1;
   transform: translateY(40%);
 }
+
 .transition-exit-active {
   opacity: 0;
   transform: translateY(-40%);
   transition: 200ms;
 }
 
-.reservation-enter{
+.reservation-enter {
   opacity: 0;
 }
+
 .reservation-enter-active {
   opacity: 1;
   transform: translateY(30%);
   transition: 600ms;
 }
-.reservation-enter-done{
+
+.reservation-enter-done {
   transform: translateY(30%);
 }
+
 .reservation-exit {
   opacity: 1;
   transform: translateY(30%);
 }
+
 .reservation-exit-active {
   opacity: 0;
   transform: translateY(-30%);
   transition: 200ms;
 }
 
-.reservation_less-enter{
+.reservation_less-enter {
   opacity: 0;
 }
+
 .reservation_less-enter-active {
   opacity: 1;
   transform: translateY(20%);
   transition: 600ms;
 }
-.reservation_less-enter-done{
+
+.reservation_less-enter-done {
   transform: translateY(20%);
 }
+
 .reservation_less-exit {
   opacity: 1;
   transform: translateY(20%);
 }
+
 .reservation_less-exit-active {
   opacity: 0;
   transform: translateY(-20%);
   transition: 200ms;
 }
 
-
-
-.banner-enter{
+.banner-enter {
   opacity: 0;
 }
+
 .banner-enter-active {
   opacity: 1;
   transform: translateY(10%);
   transition: 600ms;
 }
-.banner-enter-done{
+
+.banner-enter-done {
   transform: translateY(10%);
 }
+
 .banner-exit {
   opacity: 1;
   transform: translateY(10%);
 }
+
 .banner-exit-active {
   opacity: 0;
   transform: translateY(-10%);
   transition: 200ms;
 }
 
-
-
-
-.fade{
+.fade {
   z-index: 10;
 }
+
 .fade-enter {
   opacity: 0;
 }
+
 .fade-enter-active {
   opacity: 1;
   transition: 500ms;
 }
+
 .fade-exit {
   opacity: 1;
 }
+
 .fade-exit-active {
   opacity: 0;
   transition: 200ms;

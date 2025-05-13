@@ -40,6 +40,10 @@ import ChatIcon from '@mui/icons-material/Chat';
 import {Tooltip} from 'react-tooltip';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Loader from '../general/loader';
+import { render } from '@react-email/components';
+import EmailMensagem from '../email/emailMensagem';
+import MetaDecorator from '../general/metaDecorator';
+import getMeta from '../general/metaDecorator';
 
 const ObjectID = require("bson-objectid");
 
@@ -123,11 +127,11 @@ const Trabalho = (props) => {
         paramsAux.work&&setWorkerActive(paramsAux.work)
         setPage(paramsAux.page)
         setLoading(true)
-        paramsAux.id&&axios.get(`${api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id} }).then(res => {
+        paramsAux.id&&axios.get(`${api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.id, inc: true} }).then(res => {
             if(res.data){
-                setReservation(res.data)
+                setReservation(res.data.value)
                 let arr = []
-                for(let img of res.data.photos){
+                for(let img of res.data?.value?.photos){
                     if(img.id === res.data.photo_principal)
                         arr.unshift({
                             original: img.url,
@@ -367,6 +371,14 @@ const Trabalho = (props) => {
         navigate(-1)
     }
 
+    const emailSend = async () => {
+        const emailHtml = await render(<EmailMensagem from={user?.name.split(' ')[0]} to={publicationUser.name.split(' ')[0]} />);
+
+
+        axios.post(`${api_url}/send-message-email`, {html: emailHtml, email: publicationUser.email}).then(res => {
+        })
+    }
+
     const sendMessageHandler = async () => {
         if(text!==""&&reservation.user_id!==user?._id){
             setLoadingChat(true)
@@ -385,6 +397,7 @@ const Trabalho = (props) => {
                 approached_name: publicationUser.name,
                 approached_photoUrl: publicationUser.photoUrl,
                 approached_phone: publicationUser.phone,
+                approached_email: publicationUser.email,
                 approached_read: false,
                 approached_type: publicationUser.worker?'worker':'user',
 
@@ -392,6 +405,7 @@ const Trabalho = (props) => {
                 approacher_name: user?.name,
                 approacher_photoUrl: user?.photoUrl,
                 approacher_phone: user?.phone,
+                approacher_email: user?.email,
                 approacher_read: true,
                 approacher_type: user?.worker?'worker':'user',
 
@@ -408,6 +422,9 @@ const Trabalho = (props) => {
             setSuccessPopin(true)
             setTimeout(() => setSuccessPopin(false), 4000)
             setNoRepeatedChats(true)
+
+            emailSend()
+
             props.refreshWorker()
             }
     }
@@ -441,12 +458,25 @@ const Trabalho = (props) => {
         })
     }
 
+    const meta = getMeta(
+        reservation?.title,
+        'Tarefa',
+        reservation?.photos?.length>0?reservation?.photos[0]:null,
+        'Fotografia da Tarefa'
+    )
+
     return (
         <div style={{position:"relative"}}>
+            {meta}
             {
-                loading&&<div className={styles.main_frontdrop}/>
+                loading?
+                <div className={styles.main_frontdrop}>
+                    <div className={styles.main_frontdrop_loader}>
+                        {/* <Loader loading={loading} /> */}
+                    </div>
+                </div>
+                :null
             }
-            {/* <Loader loading={loading}/> */}
             {
                 workerBanner?
                 <WorkerBanner 
@@ -473,7 +503,7 @@ const Trabalho = (props) => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text="Mensagem enviada com sucesso!"/>
+                <Sessao removePopin={() => setSuccessPopin(false)} text="Mensagem enviada com sucesso!"/>
             </CSSTransition>
             
             {
@@ -539,7 +569,7 @@ const Trabalho = (props) => {
                             reservation.type===2?
                             <div className={styles.wrong}>
                                 <span className={styles.wrong_text}>A tua tarefa encontra-se <span className={styles.wrong_text_special}>INCORRETA</span></span>
-                                <p className={styles.wrong_text} style={{fontSize:'1rem'}}>Mais informações sobre o(s) erro(s) no chat de Suporte.</p>
+                                <p className={styles.wrong_text} style={{fontSize:'1rem'}}>Por-favor edita a tua tarefa a baixo.</p>
                             </div>
                             
                             :null
@@ -557,7 +587,7 @@ const Trabalho = (props) => {
                                                     reservation.type===1?"Activa":
                                                     reservation.type===2?"Incorreta":
                                                     reservation.type===3?"Concluída":
-                                                        "A Processar"
+                                                        "Em Análise"
                                                 }
                                             </span>
                                         </div>
@@ -590,7 +620,7 @@ const Trabalho = (props) => {
                                     <div className={styles.top_title}>
                                         {
                                         <div className={styles.previous_wrapper}>
-                                            <span className={styles.previous_text} style={{color:userView&&"white"}}>{reservation.title}</span>
+                                            <span className={styles.previous_text} style={{color:userView&&"white"}}>{reservation?.title}</span>
                                         </div>
                                         }
                                     </div>
@@ -654,7 +684,7 @@ const Trabalho = (props) => {
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
                                                 <div className={styles.market_background}>
-                                                    <span className={styles.market_text}>Gostavas de contacar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>?</span>
+                                                    <span className={styles.market_text}>Gostavas de ver os detalhes da tarefa?</span>
                                                     <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Criar conta e tornar-me um Profissional</span>
                                                 </div>
                                             </div>
@@ -663,7 +693,7 @@ const Trabalho = (props) => {
                                             <div className={styles.market}>
                                                 <img src={arrow} className={styles.market_arrow}/>
                                                 <div className={styles.market_background}>
-                                                    <span className={styles.market_text}>Gostavas de contacar <span style={{color:"#161F28", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>?</span>
+                                                    <span className={styles.market_text}>Gostavas de ver os detalhes da tarefa?</span>
                                                     <span className={styles.frontdrop_text_action_top} style={{margin:"5px auto"}} onClick={() => setWorkerBanner(true)}>Ativar Modo Profissional</span>
                                                 </div>
                                             </div>
@@ -744,7 +774,7 @@ const Trabalho = (props) => {
                                         reservation.task_type===2?
                                         <span className={styles.location} style={{fontWeight:600}}>Online</span>
                                         :
-                                        <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}, ${reservation.andar}`}</span>
+                                        <span className={styles.location}>{`${reservation.localizacao} - ${reservation.porta}${reservation.andar?`, ${reservation.andar}`:''}`}</span>
                                         :loaded&&(!showFull&&!userView)?
                                         <span className={`${styles.location_blur} ${styles.unselectable}`}>R. Abcdefg Hijklmonpqrstuvxyz 99, Porta 99</span> 
                                         :<span className={styles.skeleton} style={{width:"490px", height:"20px", marginLeft:"10px", borderRadius:"5px"}}></span>
@@ -835,21 +865,26 @@ const Trabalho = (props) => {
                                             placeholder="Escrever mensagem..."
                                         />
                                         <div className={styles.frontdrop}>
-                                            <span className={styles.frontdrop_text}>Para enviar mensagem a <span style={{color:"#161F28", textTransform:"capitalize", fontWeight:700}}>{reservation.user_name.split(" ")[0]}</span>,</span>
+                                            <span className={styles.frontdrop_text} style={{padding:'0 10px', textAlign:'center'}}>Para enviares uma <span className={styles.action}>mensagem</span> e veres os <span className={styles.action}>detalhes da tarefa</span> de <span 
+                                                    // style={{color:"#161F28", textTransform:"capitalize", fontWeight:700}}
+                                                    >
+                                                    {reservation.user_name.split(" ")[0]}
+                                                </span>,
                                             {
                                                 noAccountView?
-                                                <span className={styles.frontdrop_text}>cria uma conta e torna-te um profissional.</span>
+                                                <span className={styles.frontdrop_text}> cria uma conta e torna-te um profissional.</span>
                                                 :
                                                 noModeView?
-                                                <span className={styles.frontdrop_text}>ativa o Modo Profissional.</span>
+                                                <span className={styles.frontdrop_text}> ativa o Modo Profissional.</span>
                                                 :noneView?
-                                                <span className={styles.frontdrop_text}>completa os passos em falta para ativares a tua conta.</span>
+                                                <span className={styles.frontdrop_text}> completa os passos em falta para ativares a tua conta.</span>
                                                 :noSubView?
-                                                <span className={styles.frontdrop_text}>activa a tua <span style={{color:"white"}}>subscrição</span>.</span>
+                                                <span className={styles.frontdrop_text}> activa a tua <span style={{color:"white"}}>subscrição</span>.</span>
                                                 :noProfileView?
-                                                <span className={styles.frontdrop_text}>completa o teu <span style={{color:"white"}}>perfil</span>.</span>
+                                                <span className={styles.frontdrop_text}> completa o teu <span style={{color:"white"}}>perfil</span>.</span>
                                                 :null
                                             }
+                                            </span>
                                             {
                                                 noAccountView?
                                                 <span className={styles.frontdrop_text_action} onClick={() => setWorkerBanner(true)}>tornar-me um Profissional</span>
@@ -864,6 +899,7 @@ const Trabalho = (props) => {
                                                 <span className={styles.frontdrop_text_action} onClick={() => navigate('/user?t=conta')}>completar perfil</span>
                                                 :null
                                             }
+                                            
                                         </div>
                                     </div>
                                     :noRepeatedChats?

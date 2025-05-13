@@ -30,8 +30,8 @@ const SubscriptionPlans = props => {
                     :null
                 }
                 <img src={basic} className={styles.section_img} style={{marginTop:props.workerBanner?"30px":"20px"}}/>
-                <span className={styles.section_type}>Mensal</span>
-                <span className={styles.section_type_desc}>Pagamento a cada mês</span>
+                <span className={styles.section_type}>Pacote +30 dias</span>
+                <span className={styles.section_type_desc}>Adiciona 30 dias à tua subscrição</span>
                 <div className={styles.section_valor_div}>
                     {
                         props.discountSubscriber?
@@ -62,8 +62,8 @@ const SubscriptionPlans = props => {
                     }
                     {
                         props.discountSubscriber?
-                        <span className={styles.section_desc_of_pay}>{props.discount_mensal_d}€/mês</span>
-                        :<span className={styles.section_desc_of_pay}>{props.mensal_d}€/mês</span>
+                        <span className={styles.section_desc_of_pay}>{props.discount_mensal_d}€/dia</span>
+                        :<span className={styles.section_desc_of_pay}>{props.mensal_d}€/dia</span>
                     }
                     
                 </div>
@@ -96,8 +96,8 @@ const SubscriptionPlans = props => {
                     :null
                 }
                 <img src={medium} className={styles.section_img} style={{marginTop:props.workerBanner?"30px":"20px"}}/>
-                <span className={styles.section_type}>Semestral</span>
-                <span className={styles.section_type_desc}>Pagamento a cada 6 meses</span>
+                <span className={styles.section_type}>Pacote +180 dias</span>
+                <span className={styles.section_type_desc}>Adiciona 180 dias à tua subscrição</span>
                 <div className={styles.section_valor_div}>
                     {
                         props.discountSubscriber?
@@ -128,8 +128,8 @@ const SubscriptionPlans = props => {
                     }
                     {
                         props.discountSubscriber?
-                        <span className={styles.section_desc_of_pay}>{props.discount_semestral_monthly}€/mês</span>
-                        :<span className={styles.section_desc_of_pay}>{props.semestral_monthly}€/mês</span>
+                        <span className={styles.section_desc_of_pay}>{props.discount_semestral_monthly}€/dia</span>
+                        :<span className={styles.section_desc_of_pay}>{props.semestral_monthly}€/dia</span>
                     }
                 </div>
                 {
@@ -161,8 +161,8 @@ const SubscriptionPlans = props => {
                     :null
                 }
                 <img src={pro} className={styles.section_img} style={{marginTop:props.workerBanner?"30px":"20px"}}/>
-                <span className={styles.section_type}>Anual</span>
-                <span className={styles.section_type_desc}>Pagamento a cada 12 meses</span>
+                <span className={styles.section_type}>Pacote +360 dias</span>
+                <span className={styles.section_type_desc}>Adiciona 360 dias à tua subscrição</span>
                 <div className={styles.section_valor_div}>
                     {
                         props.discountSubscriber?
@@ -193,8 +193,8 @@ const SubscriptionPlans = props => {
                     }
                     {
                         props.discountSubscriber?
-                        <span className={styles.section_desc_of_pay}>{props.discount_anual_monthly}€/mês</span>
-                        :<span className={styles.section_desc_of_pay}>{props.anual_monthly}€/mês</span>
+                        <span className={styles.section_desc_of_pay}>{props.discount_anual_monthly}€/dia</span>
+                        :<span className={styles.section_desc_of_pay}>{props.anual_monthly}€/dia</span>
                     }
                 </div>
                 {

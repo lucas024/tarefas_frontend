@@ -19,7 +19,7 @@ import { useTimer } from 'react-timer-hook';
 import PublicarService from '../publicar/publicar_service';
 import PublicarPhoto from '../publicar/publicar_photo';
 import PublicarDetails from '../publicar/publicar_details';
-import {profissoesMap, regioesMap} from '../general/util'
+import {profissoesMap, regioesMap, profissoesGrouped} from '../general/util'
 import Loader2 from '../general/loader';
 import VerificationBannerConfirm from '../general/verificationBannerConfirm';
 import VerificationBannerEditConfirm from '../general/verificationBannerEditConfirm';
@@ -28,8 +28,20 @@ import { auth } from '../firebase/firebase'
 import { user_update_phone_verified, user_update_email_verified } from '../store';
 import { RecaptchaVerifier, PhoneAuthProvider, linkWithCredential, sendEmailVerification, unlink } from 'firebase/auth';
 import VerificationBannerEmail from '../general/verificationBannerEmail';
+import SelectHome from '../selects/selectHome';
+import CircleIcon from '@mui/icons-material/Circle';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
-const Publicar = () => {
+const getWindowDimensions = () => {
+    const { innerWidth: width, innerHeight: height } = window
+    return {
+      width,
+      height
+    }
+}
+
+const Publicar = props => {
     const api_url = useSelector(state => {return state.api_url})
     const user = useSelector(state => {return state.user})
     const user_email_verified = useSelector(state => {return state.user_email_verified})
@@ -50,6 +62,7 @@ const Publicar = () => {
       )
 
     const [selectedWorker, setSelectedWorker] = useState(null)
+    const [selectedWorkerObject, setSelectedWorkerObject] = useState(null)
     const [titulo, setTitulo] = useState('')
     const [tituloWrong, setTituloWrong] = useState(true)
     const [description, setDescription] = useState('')
@@ -81,6 +94,7 @@ const Publicar = () => {
     const [taskType, setTaskType] = useState(0)
     const [availableToGo, setAvailableToGo] = useState(false)
     const [editAddress, setEditAddress] = useState(null)
+    const [backdrop, setBackdrop] = useState(false)
 
     const [photoPrincipal, setPhotoPrincipal] = useState(null)
     const [expired, setExpired] = useState(true)
@@ -96,6 +110,12 @@ const Publicar = () => {
 
     const [sendingError, setSendingError] = useState(null)
 
+    
+    const [editedTitle, setEditedTitle] = useState(false)
+    const [editedDesc, setEditedDesc] = useState(false)
+    const [editedPhotos, setEditedPhotos] = useState(false)
+    const [editedLocation, setEditedLocation] = useState(false)
+
 
     const checkAllFieldsCorrect = () => {
         let first_phase_correct = titulo.length>6&&selectedWorker!=null
@@ -108,7 +128,7 @@ const Publicar = () => {
     const checkAddressCorrect = () => {
         if(taskType===2)
             return true
-        return address?.length>10&&district!=null&&porta?.length>0
+        return address?.length>1&&district!=null&&porta?.length>0
         
     }
 
@@ -120,6 +140,17 @@ const Publicar = () => {
     const location = useLocation()
 
     const [searchParams] = useSearchParams()
+
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+
+    useEffect(() => {
+        function handleResize() {
+          setWindowDimensions(getWindowDimensions());
+        }
+    
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, [])
 
     useEffect(() => {
         if(window.google){
@@ -158,23 +189,24 @@ const Publicar = () => {
         if(paramsAux.editar && paramsAux.res_id)
         {   
             setEdit(true)
-            axios.get(`${api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.res_id} }).then(res => {
-                if(res.data){
-                    !editReservation&&setSelectedWorker(res.data.workerType)
-                    setEditReservation(res.data)
-                    setTitulo(res.data.title)
-                    setDescription(res.data.desc)
-                    setEditAddress(res.data.localizacao)
-                    setAddress(res.data.localizacao)
-                    setPorta(res.data.porta)
-                    setAndar(res.data.andar)
-                    setLat(res.data.lat)
-                    setLng(res.data.lng)
-                    setDistrict(regioesMap[res.data.district])
-                    setPhotoPrincipal(res.data.photo_principal)
-                    setImages(res.data.photos)
+            axios.get(`${api_url}/reservations/get_single_by_id`, { params: {_id: paramsAux.res_id, inc: false} }).then(res => {
+                console.log(res.data)
+                if(res.data?.value){
+                    !editReservation&&setSelectedWorker(res.data.value.workerType)
+                    setEditReservation(res.data.value)
+                    setTitulo(res.data.value.title)
+                    setDescription(res.data.value.desc)
+                    setEditAddress(res.data.value.localizacao)
+                    setAddress(res.data.value.localizacao)
+                    setPorta(res.data.value.porta)
+                    setAndar(res.data.value.andar)
+                    setLat(res.data.value.lat)
+                    setLng(res.data.value.lng)
+                    setDistrict(regioesMap[res.data.value.district])
+                    setPhotoPrincipal(res.data.value.photo_principal)
+                    setImages(res.data.value.photos)
                     setLoading(false)
-                    setTaskType(res.data.task_type)
+                    setTaskType(res.data.value.task_type)
                     setTituloWrong(false)
                 }
                 else{
@@ -304,6 +336,7 @@ const Publicar = () => {
                 })
             }
         })
+        if(edit) props.refreshWorker()
     }
 
     const confirmarHandler = () => {
@@ -360,6 +393,7 @@ const Publicar = () => {
         setImageFiles(files_aux)
         setImages(images_aux)
         event.target.value = null;
+        setEditedPhotos(true)
     }
 
     const setPhotoPrincipalHandler = img_id => {
@@ -404,17 +438,19 @@ const Publicar = () => {
     }
 
     const getFieldWrong = type => {
-        for(let el of editReservation.refusal_object)
-        {
-            if(el.type===type) return true
-        }
+        if(editReservation?.refusal_object)
+            for(let el of editReservation.refusal_object)
+            {
+                if(el.type===type) return true
+            }
     }
 
     const getFieldWrongText = type => {
-        for(let el of editReservation.refusal_object)
-        {
-            if(el.type===type) return el.text
-        }
+        if(editReservation?.refusal_object)
+            for(let el of editReservation.refusal_object)
+            {
+                if(el.type===type) return el.text
+            }
     }
 
     const setTituloHandler = val => {
@@ -522,19 +558,74 @@ const Publicar = () => {
         }
     }
 
+    const types = {
+        titulo: "Título",
+        description: "Descrição",
+        photos: "Fotografias",
+        location: "Detalhes"
+    }
+
+    const mapWrongToField = () => {
+        return editReservation?.refusal_object?.map((val, i) => {
+            return (
+                <div style={{margin:'5px 0'}}>
+                    {
+                        val.type==='titulo'&&editedTitle?
+                        <CheckIcon className={styles.refusal_icon} style={{color:"#0358e5"}}/>
+                        :val.type==='titulo'?
+                        <CircleIcon className={styles.refusal_icon}/>
+                        :null
+                    }
+                    {
+                        val.type==='description'&&editedDesc?
+                        <CheckIcon className={styles.refusal_icon} style={{color:"#0358e5"}}/>
+                        :val.type==='description'?
+                        <CircleIcon className={styles.refusal_icon}/>
+                        :null
+                    }
+                    {
+                        val.type==='photos'&&editedPhotos?
+                        <CheckIcon className={styles.refusal_icon} style={{color:"#0358e5"}}/>
+                        :val.type==='photos'?
+                        <CircleIcon className={styles.refusal_icon}/>
+                        :null
+                    }
+                    {
+                        val.type==='location'&&editedLocation?
+                        <CheckIcon className={styles.refusal_icon} style={{color:"#0358e5"}}/>
+                        :val.type==='location'?
+                        <CircleIcon className={styles.refusal_icon}/>
+                        :null
+                    }
+                    <span style={{color:
+                            val.type==='titulo'&&editedTitle?'#0358e5':
+                            val.type==='description'&&editedDesc?'#0358e5':
+                            val.type==='photos'&&editedPhotos?'#0358e5':
+                            val.type==='location'&&editedLocation?'#0358e5':''}} className={styles.refusal_type}>{types[val.type]} - </span>
+                    <span className={styles.refusal_text}>{getFieldWrongText(val.type)}</span>
+                </div>
+            )
+        })
+    }
+
     const setSelectedTabTopHandler = index => {
         if(index===0)
         {
             setSelectedTab(0)
         }
-        else if(index===1||index===2)
+        else if(index===1)
         {
-            if(!tituloWrong&&titulo.length>6&&selectedWorker!=null)
+            if(!tituloWrong&&titulo.length>6&&selectedWorker!=null&&(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedDesc:true))
+                setSelectedTab(index)
+        }
+        else if(index===2)
+        {
+            if(getFieldWrong('photos')?editedPhotos:true)
                 setSelectedTab(index)
         }
         else
         {
-            if(!tituloWrong&&titulo.length>6&&selectedWorker!=null && (user.phone===phone&&user_phone_verified)&&user_email_verified&&checkAddressCorrect())
+            if(!tituloWrong&&titulo.length>6&&selectedWorker!=null && (user.phone===phone&&user_phone_verified)&&user_email_verified&&checkAddressCorrect() &&(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedDesc:true)&&(getFieldWrong('photos')?editedPhotos:true))
             {
                 setSelectedTab(index)
             }
@@ -543,6 +634,39 @@ const Publicar = () => {
 
     return (
         <div className={styles.reservation}>
+            {backdrop?
+                <span className={styles.backdrop} onClick={() => setBackdrop(false)}/>
+                :null
+            }
+            <div className={styles.select_wrapper}>
+                <CSSTransition 
+                    in={backdrop}
+                    timeout={100}
+                    classNames="banner"
+                    unmountOnExit
+                    >
+                        <SelectHome
+                        publicarNew={true}
+                        menuOpen={() => {
+                            setBackdrop(true)
+                        }}
+                        menuClose={() => {
+                            setBackdrop(false)
+                        }}
+                        home={true}
+                        profs={true}
+                        options={profissoesGrouped}
+                        option={selectedWorkerObject}
+                        optionFirst={{value: 'trabalhos'}} 
+                        smallWindow={windowDimensions.width <= 1024}
+                        changeOption={val => {
+                            setSelectedWorker(val.value)
+                            setSelectedWorkerObject(val)
+                            setBackdrop(false)
+                        }}
+                        placeholder={'SERVIÇO QUE PROCURAS'}/>
+                </CSSTransition>
+            </div>
             {
                 edit?
                 <div className={styles.previous_voltar} style={{borderBottom:`3px solid #FF785A`}} onClick={() => navigate(-1)}>
@@ -552,6 +676,7 @@ const Publicar = () => {
                 :null
             }
             <div className={styles.flex}>
+
             <div className={verifyPhone||confirmationPopup||confirmationEditPopup||tooManyReservations?styles.backdrop:null} onClick={() => !publicationSent&&(setVerifyPhone(false)||setConfirmationPopup(false)||setConfirmationEditPopup(false)||setTooManyReservations(false))}/>
                 <div className={styles.main}>
                     <div ref={recaptchaWrapperRef}>
@@ -661,10 +786,25 @@ const Publicar = () => {
                         <div className={styles.reservar_upper} style={{marginTop:edit?"100px":""}} ref={scrolltopref}>
                             <p className={styles.reservar_upper_title}>
                                 {edit?
-                                <div><span style={{color:'#FF785A'}}>EDITAR</span><span> TAREFA</span></div>:
-                                'PUBLICAR TAREFA'
+                                    <div><span style={{color:'#FF785A'}}>EDITAR</span><span> TAREFA</span></div>:
+                                    'PUBLICAR TAREFA'
                                 }
                             </p>
+                            {edit?
+                                <div className={styles.fieldWrapper_wrapper}>
+                                    <div className={styles.fieldWrapper} style={{animationName:
+                                            (getFieldWrong('titulo')?editedTitle:true)
+                                            &&(getFieldWrong('description')?editedDesc:true)
+                                            &&(getFieldWrong('photos')?editedPhotos:true)
+                                            &&(getFieldWrong('location')?editedLocation:true)?'none':null
+                                    }}>
+                                    <span className={styles.editar_oi}>FAZ AS ALTERAÇÕES E <span style={{textDecoration:'underline', textDecorationColor:'#FF785A', textDecorationThickness:'2px'}}>CONFIRMA A EDIÇÃO</span></span>
+                                        {mapWrongToField()}
+                                    </div>
+                                </div>
+                                :
+                                null
+                            }
                             {
                                 edit?
                                 null
@@ -688,7 +828,7 @@ const Publicar = () => {
                                 }
                                 <p className={styles.display_element_text}>Tarefa</p>
                             </div>
-                            <span className={!tituloWrong&&titulo.length>6&&selectedWorker!=null?styles.display_element_bar:selectedTab===0?styles.display_element_bar_selected:styles.display_element_empty}/>
+                            <span className={!tituloWrong&&titulo.length>6&&selectedWorker!=null&&(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedDesc:true)?styles.display_element_bar:selectedTab===0?styles.display_element_bar_selected:styles.display_element_empty}/>
                             <div className={styles.display_element} onClick={() => setSelectedTabTopHandler(1)}>
                                 <p className={selectedTab===1?styles.display_element_number_selected
                                                 :selectedTab>1?styles.display_element_number
@@ -701,7 +841,7 @@ const Publicar = () => {
                                 }
                                 <p className={styles.display_element_text}>Fotografias</p>
                             </div>
-                            <span className={selectedTab===1?styles.display_element_bar:selectedTab>0?styles.display_element_bar:!tituloWrong&&titulo.length>6&&selectedWorker!=null && (user.phone===phone&&user_phone_verified)&&user_email_verified&&checkAddressCorrect()?styles.display_element_bar:styles.display_element_empty}/>
+                            <span className={selectedTab>2?styles.display_element_bar:!tituloWrong&&titulo.length>6&&selectedWorker!=null&&(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedDesc:true)&&(getFieldWrong('photos')?editedPhotos:true)?styles.display_element_bar:styles.display_element_empty}/>
                             <div className={styles.display_element} onClick={() => setSelectedTabTopHandler(2)}>
                                 <p className={selectedTab===2?styles.display_element_number_selected
                                                 :selectedTab>2?styles.display_element_number
@@ -714,7 +854,7 @@ const Publicar = () => {
                                 }
                                 <p className={styles.display_element_text}>Detalhes</p>
                             </div>
-                            <span className={!tituloWrong&&titulo.length>6&&selectedWorker!=null && (user.phone===phone&&user_phone_verified)&&user_email_verified&&checkAddressCorrect()?styles.display_element_bar:selectedTab===2?styles.display_element_bar_selected:styles.display_element_empty}/>
+                            <span className={!tituloWrong&&titulo.length>6&&selectedWorker!=null && (user.phone===phone&&user_phone_verified)&&user_email_verified&&checkAddressCorrect()&&(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedDesc:true)&&(getFieldWrong('photos')?editedPhotos:true)&&(getFieldWrong('location')?editedLocation:true)?styles.display_element_bar:selectedTab===2?styles.display_element_bar_selected:styles.display_element_empty}/>
                             <div className={styles.display_element} onClick={() => setSelectedTabTopHandler(3)}>
                                 <p className={selectedTab===3?styles.display_element_number_selected
                                                 :selectedTab>3?styles.display_element_number
@@ -738,6 +878,7 @@ const Publicar = () => {
                             selectedItem={selectedTab}>
                             <div className={styles.carousel_div}>
                                 <PublicarService 
+                                    setBackdrop={val => setBackdrop(val)}
                                     selectedWorker={selectedWorker}
                                     setSelectedWorker={setSelectedWorker}
                                     editReservation={editReservation}
@@ -748,8 +889,12 @@ const Publicar = () => {
                                     tituloWrong={tituloWrong}
                                     description={description}
                                     setDescription={setDescription}
-                                    correct={(!tituloWrong)&&selectedWorker!=null}
+                                    correct={(!tituloWrong)&&selectedWorker!=null&&(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedDesc:true)}
                                     selectedTab={selectedTab}
+                                    setEditedTitle={setEditedTitle}
+                                    setEditedDesc={setEditedDesc}
+                                    editedTitle={editedTitle}
+                                    editedDesc={editedDesc}
                                     />
                             </div>
                             <div className={styles.carousel_div}>
@@ -767,6 +912,8 @@ const Publicar = () => {
                                     deleteImageHandler={deleteImageHandler}
                                     setPhotoPrincipal={setPhotoPrincipalHandler}
                                     selectedTab={selectedTab}
+                                    editedPhotos={editedPhotos}
+                                    setEditedPhotos={setEditedPhotos}
                                     />
                             </div>
                             <div className={styles.carousel_div}>
@@ -795,8 +942,8 @@ const Publicar = () => {
                                     getFieldWrong={getFieldWrong}
                                     getFieldWrongText={getFieldWrongText}
                                     selectedTab={selectedTab}
-                                    correct_location={checkAddressCorrect()&&porta.length>0}
-                                    correct_location_online={checkAddressCorrect()}
+                                    correct_location={checkAddressCorrect()&&porta.length>0&&(getFieldWrong('location')?editedLocation:true)}
+                                    correct_location_online={checkAddressCorrect()&&(getFieldWrong('location')?editedLocation:true)}
                                     correct_phone={(user.phone===phone||validator.isMobilePhone(phone, "pt-PT"))&&phone.length>0}
                                     correct_email={user_email_verified}
                                     setVerifyPhone={val => {
@@ -815,6 +962,8 @@ const Publicar = () => {
                                     district={district}
                                     availableToGo={availableToGo}
                                     setAvailableToGo={setAvailableToGo}
+                                    editedLocation={editedLocation}
+                                    setEditedLocation={setEditedLocation}
                                     />
                             </div>
                             <div className={styles.carousel_div}>
@@ -897,9 +1046,9 @@ const Publicar = () => {
                         <div className={styles.buttons}>
                             {
                                 selectedTab===0?
-                                <div data-tooltip- data-tooltip-id={!tituloWrong&&titulo.length>6&&selectedWorker!=null?'':"publicar"} className={!tituloWrong&&titulo.length>6&&selectedWorker!=null?styles.login_button:styles.login_button_disabled}
+                                <div data-tooltip- data-tooltip-id={!tituloWrong&&titulo.length>6&&selectedWorker!=null?'':"publicar"} className={(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedDesc:true)&&!tituloWrong&&titulo.length>6&&selectedWorker!=null?styles.login_button:styles.login_button_disabled}
                                     style={{marginTop:0}}
-                                    onClick={() => {!tituloWrong&&titulo.length>6&&selectedWorker!=null&&setSelectedTab(1)}}>
+                                    onClick={() => {(getFieldWrong('titulo')?editedTitle:true)&&(getFieldWrong('description')?editedDesc:true)&&!tituloWrong&&titulo.length>6&&selectedWorker!=null&&setSelectedTab(1)}}>
                                     <p className={styles.login_text}>Continuar</p>
                                 </div>
                                 :
@@ -909,9 +1058,9 @@ const Publicar = () => {
                                         onClick={() => setSelectedTab(selectedTab-1)}>
                                     <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                     </div>
-                                    <div className={styles.login_button}
+                                    <div className={(getFieldWrong('photos')?editedPhotos:true)?styles.login_button:styles.login_button_disabled}
                                         style={{marginLeft:'10px', marginTop:0}}
-                                        onClick={() => setSelectedTab(selectedTab+1)}>
+                                        onClick={() => (getFieldWrong('photos')?editedPhotos:true)&&setSelectedTab(selectedTab+1)}>
                                         <p className={styles.login_text}>Continuar</p>
                                     </div>
                                 </div>
@@ -922,7 +1071,7 @@ const Publicar = () => {
                                         onClick={() => {setSelectedTab(selectedTab-1)}}>
                                     <KeyboardArrowLeftIcon className={styles.login_button_voltar_icon}/>
                                     </div>
-                                    <div className={(((user.phone===phone||validator.isMobilePhone(phone, "pt-PT"))&&phone.length>0)&&user_email_verified)&&checkAddressCorrect()?styles.login_button:styles.login_button_disabled}
+                                    <div className={(((user.phone===phone||validator.isMobilePhone(phone, "pt-PT"))&&phone.length>0)&&user_email_verified)&&checkAddressCorrect()&&(getFieldWrong('location')?editedLocation:true)?styles.login_button:styles.login_button_disabled}
                                         style={{marginLeft:'10px', marginTop:0}}
                                         onClick={() => {(((user.phone===phone||validator.isMobilePhone(phone, "pt-PT"))&&phone.length>0)&&user_email_verified)&&checkAddressCorrect()&&setSelectedTab(selectedTab+1)}}>
                                         <p className={styles.login_text}>Continuar</p>

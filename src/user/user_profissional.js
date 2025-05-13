@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import styles from './user.module.css'
 import Subscription from './subscription'
-import {loadStripe} from '@stripe/stripe-js';
 import Details from './details';
-import {Elements} from '@stripe/react-stripe-js';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux'
 import WorkerBannerContent from '../general/workerBannerContent';
@@ -12,9 +10,6 @@ import axios from 'axios';
 import Sessao from '../transitions/sessao';
 import {CSSTransition}  from 'react-transition-group';
 import ModeBanner from '../general/modeBanner';
-
-// const stripePromise = loadStripe('pk_test_51GttAAKC1aov6F9poPimGBQDSxjDKl0oIEmJ2qEPqWFtRDvikJEt0OojYfKZiiT0YDcfdCvDQ5O3mHs9nyBgUwZU00qt1OdcAd');
-const stripePromise = loadStripe('pk_live_ypMbNWLAJDZYOWG4JqncBktA00qBx03bOR')
 
 
 const UserProfissional = props => {
@@ -34,20 +29,20 @@ const UserProfissional = props => {
     const [subTab, setSubTab] = useState('details')
 
     useEffect(() => {
+        setLoading(true)
         let val = Object.fromEntries([...searchParams]).st
         if(val === 'subscription')
             setSubTab('subscription')
         else
             setSubTab('details')
-    }, [searchParams])
+        if(user._id) setLoading(false)
+    }, [searchParams, user])
 
     const displayCurrentArea = () => {
         if(subTab === 'subscription')
         {
             return (
-                <Elements stripe={stripePromise}>
-                    <Subscription refreshWorker={() => props.refreshWorker()}/>
-                </Elements>
+                <Subscription refreshWorker={() => props.refreshWorker()}/>
             )
         }
         else
@@ -62,10 +57,10 @@ const UserProfissional = props => {
             user_id : user._id,
         }).then(() => {
             props.refreshWorker()
-            setLoading(false)
             setModeActivated(true)
             setTimeout(() => setModeActivated(false), 4000)
             setPreMode(false)
+            setLoading(false)
         })
     }
 
@@ -90,7 +85,7 @@ const UserProfissional = props => {
                 classNames="transition"
                 unmountOnExit
                 >
-                <Sessao text={"Modo Profissional ativado com sucesso!"}/>
+                <Sessao removePopin={() => setModeActivated(false)} user_page={true} text={"Modo Profissional ativado com sucesso!"}/>
 
             </CSSTransition>
 
@@ -122,6 +117,7 @@ const UserProfissional = props => {
                 user?.worker?
                 displayCurrentArea()
                 :
+                !loading?
                 <div className={styles.worker_wrapper_wrapper}>
                     <div className={styles.worker_wrapper}>
                         <WorkerBannerContent workerPage={true}/>
@@ -131,6 +127,7 @@ const UserProfissional = props => {
                         ATIVAR MODO PROFISSIONAL
                     </span>
                 </div>
+                :null
                 
             }
             

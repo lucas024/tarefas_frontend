@@ -20,7 +20,6 @@ import { search_save, search_scroll_save } from '../store';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ConstructionIcon from '@mui/icons-material/Construction';
 
-
 require('dayjs/locale/pt')
 
 const Main = (props) => {
@@ -28,6 +27,26 @@ const Main = (props) => {
     const search_context = useSelector(state => {return state.search_context})
     const search_scroll = useSelector(state => {return state.search_scroll})
     const user = useSelector(state => {return state.user})
+
+    
+    const getWindowDimensions = () => {
+        const { innerWidth: width, innerHeight: height } = window
+        return {
+        width,
+        height
+        }
+    }
+    
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+
+    useEffect(() => {
+        function handleResize() {
+          setWindowDimensions(getWindowDimensions());
+        }
+    
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, [])
     
     const dispatch = useDispatch()
 
@@ -49,6 +68,7 @@ const Main = (props) => {
 
     const [selectedType, setSelectedType] = useState(null)
     const [visualSelected, setVisualSelected] = useState(null)
+    const [backdrop, setBackdrop] = useState(false)
 
 
     const myRef = useRef(null)
@@ -178,7 +198,7 @@ const Main = (props) => {
 
     const fetchJobsByFilter = (params_aux) => {
         setLoading(true)
-        if(searchVal===""&&!params_aux.work&&!params_aux.region)
+        if(searchVal===""&&!params_aux?.work&&!params_aux?.region)
         {
             fetchJobs()
         }
@@ -192,9 +212,10 @@ const Main = (props) => {
                     searchValFinal += `\"${el}\" `
                 }
             }
+            console.log(searchValFinal)
             axios.post(`${api_url}/reservations/get_reservations_by_filter`, {
-                region: ((params_aux.region==null) || (params_aux.region===undefined))?false:params_aux.region!=='none'?params_aux.region:false,
-                trabalho: ((params_aux.work==null) || (params_aux.work===undefined))?false:params_aux.work!=='none'?params_aux.work:false,
+                region: ((params_aux?.region==null) || (params_aux?.region===undefined))?false:params_aux?.region!=='none'?params_aux?.region:false,
+                trabalho: ((params_aux?.work==null) || (params_aux?.work===undefined))?false:params_aux?.work!=='none'?params_aux?.work:false,
                 search: searchValFinal
             }).then(res => {
                 if(res.data!=='non_existing'){
@@ -403,6 +424,10 @@ const Main = (props) => {
     return (        
         <div className={styles.servicos}>
             <Loader loading={loading}/>
+            {backdrop?
+                <span className={styles.backdrop}/>
+                :null
+            }
             <div className={styles.main}>
                 <div className={styles.search_div} ref={myRef}>
                     <div className={styles.search_left}>
@@ -427,10 +452,14 @@ const Main = (props) => {
                         </div>
                         <div className={styles.search_filter_div_wrapper}>
                             <div className={styles.search_filter_div}>
-                                <div className={styles.search_filter_div_right}>
+                                <div className={backdrop?styles.search_filter_div_right_absolute:styles.search_filter_div_right}>
                                     <SelectPublications
+                                            onMenuOpen={() => setBackdrop(true)}
+                                            onMenuClose={() => setBackdrop(false)}
+                                            smallWindow={windowDimensions.width <= 1024}
                                             type="worker"
                                             trabalho={true}
+                                            profs={true}
                                             option={params.work}
                                             selected={selectedType}
                                             valueChanged={val => {
@@ -442,6 +471,8 @@ const Main = (props) => {
                                 
                                 <div className={styles.search_filter_div_left}>
                                     <SelectPublications 
+                                        onMenuOpen={() => {}}
+                                        onMenuClose={() => {}}
                                         type="zona"
                                         regioes={true}
                                         option={params.region}
@@ -563,6 +594,10 @@ const Main = (props) => {
                 }
             </div>
             <div className={styles.num_wrapper} style={{borderTopColor:selectedType==="trabalhos"?'#0358e580':'#FF785A80'}}>
+                {backdrop?
+                    <span className={styles.backdrop}/>
+                    :null
+                }
                 <div className={styles.num}>
                     {
                         currDisplay === "solo"?

@@ -14,6 +14,7 @@ const Landing = (props) => {
 
     useEffect(() => {
         setShowWelcomeTrigger(true)
+        setShowWelcomeTrigger1000(true)
     }, [])
 
     const showWelcomeHandler = () => {
@@ -26,10 +27,9 @@ const Landing = (props) => {
             <CSSTransition
                 in={showWelcomeTrigger}
                 onEntered={() => {
-                    setShowWelcomeTrigger1000(true)
                     setTimeout(() => {
-                        setShowWelcomeTrigger2000(true)
-                    }, 3000);
+                        showWelcomeHandler()
+                    }, 2500);
                 }}
                 timeout={1000}
                 classNames="fade"

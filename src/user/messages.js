@@ -16,7 +16,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import {user_update_chats} from '../store'
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import TitleIcon from '@mui/icons-material/Title';
-
+import { render } from '@react-email/components';
+import EmailMensagem from '../email/emailMensagem';
 
 const AdminMessages = () => {
     const api_url = useSelector(state => {return state.api_url})
@@ -86,7 +87,7 @@ const AdminMessages = () => {
                 let aux = []
                 let date = new Date()
                 // if(date.getSeconds()===29 || date.getSeconds()===59)
-                if(date.getSeconds()===59 && !deletedUser)
+                if((date.getSeconds()===29 || date.getSeconds()===59) && !deletedUser)
                 {
                     axios.get(`${api_url}/chats/get_chat`, { params: {chat_id: selectedChatId, skip: 0, limit: 10} })
                     .then(res => {
@@ -140,7 +141,6 @@ const AdminMessages = () => {
             setLoadingChats(true)
             axios.get(`${api_url}/user/get_user_by_mongo_id`, { params: {_id: user._id} })
             .then(res => {
-                console.log('user')
                 if(res.data!==''){
                     setIsLoaded(true)
                     setLoadingChats(false)
@@ -203,6 +203,9 @@ const AdminMessages = () => {
 
     const sendSynchronousAndUpdateDatabaseHandler = async (new_text) => {
         const sent_timestamp = new Date().getTime()
+
+        let old_last_text = user.last_text
+
         const text = {
             origin_type : user._id,
             timestamp : sent_timestamp,
@@ -235,6 +238,14 @@ const AdminMessages = () => {
         return `${day} de ${month}, ${year}`
     }
 
+    const emailSend = async (to_name, to_email) => {
+        const emailHtml = await render(<EmailMensagem from={user?.name.split(' ')[0]} to={to_name.split(' ')[0]} />);
+
+
+        axios.post(`${api_url}/send-message-email`, {html: emailHtml, email: to_email}).then(res => {
+        })
+    }
+
     const updateReadLocal = (chat, last_text) => {
         let arr = [...chats]
         for(let el of arr)
@@ -253,7 +264,7 @@ const AdminMessages = () => {
             }
 
             if(last_text !== null)
-                el.last_text = last_text
+                el.last_text = last_text     
             break
           }
         }
@@ -279,6 +290,28 @@ const AdminMessages = () => {
         }        
     }
 
+    const sendEmailHelper = (chat) => {
+        let arr = [...chats]
+        
+        for(let el of arr)
+            {
+                if(el.chat_id===chat.chat_id)
+                {
+                    let old_last_text = el.last_text
+                    if((old_last_text.origin_type !== user?._id) 
+                        && (new Date(old_last_text.timestamp).getTime() + (5*60000)) < new Date().getTime()
+                    )
+                    {
+                        if(user._id===el.approacher_id)
+                            emailSend(el.approached_name, el.approached_email)
+                        else
+                            emailSend(el.approacher_name, el.approacher_email)
+                }
+            }
+        }
+
+    }
+
     const messageHandler = () => {
         if(currentText !== ""){
             let text = {
@@ -288,8 +321,10 @@ const AdminMessages = () => {
             }
             let updatedTexts = [...selectedChatTexts, text]
             setSelectedChatTexts(updatedTexts)
+            sendEmailHelper(selectedChat)
             updateReadLocal(selectedChat, text)
 
+            
             sendSynchronousAndUpdateDatabaseHandler(currentText)
 
             scrollToBottom()
@@ -458,7 +493,7 @@ const AdminMessages = () => {
 
 
     const updateReadDatabaseAndNavigate = async (chat) => {
-        if(user)
+        if(user && chat.chat_id)
         {
             await axios.post(`${api_url}/chats/update_text_read`, {
                 chat_id: chat.chat_id,
@@ -508,7 +543,8 @@ const AdminMessages = () => {
                         updateReadLocal(item, null)
                         setChatDisplayInformation(item)
                         setAllLoaded(false)
-                        triggerChatLoad(item.chat_id, true, false, true, 'chatsDisplay', item)
+
+                        triggerChatLoad(item.chat_id, true, false, true, item)
                     }
                     }} key={i} className={
                         selectedChatId===item.chat_id?
@@ -618,7 +654,7 @@ const AdminMessages = () => {
             axios.get(`${api_url}/chats/get_chat`, { params: {chat_id: chat_id, skip: new_load?0:skip*limit, limit: limit} })
             .then(res => {
                 //res.data?.texts!==null
-                if(false){
+                if(res.data?.texts!==null){
                     if(new_load)
                     {
                         setLastUpdated(parseInt(res.data.texts.slice(0)[0].timestamp))

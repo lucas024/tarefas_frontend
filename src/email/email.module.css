@@ -1,0 +1,32 @@
+.email{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+.email_header{
+    color: var(--job);
+    font-size: 40px;
+}
+
+.email_body{
+    color: #000000;
+    line-height: 32px;
+    font-weight: 500;
+}
+.email_button{
+    background-color: var(--job);
+    width: fit-content;
+    color: var(--neutral);
+    margin: 0 auto;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    width: 250px;
+}
+.email_button_text{
+    font-weight: 600;
+    padding: 0 10px;
+    text-transform: uppercase;
+}

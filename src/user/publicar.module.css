@@ -5,6 +5,7 @@
     border-top: 1px solid var(--brand);
     overflow: hidden;
     position: relative;
+    z-index: 2;
 }
 .backdrop{
     position: absolute;
@@ -196,6 +197,20 @@
 .left_select{
     z-index: 1;
     width: 250px;
+    position: relative;
+}
+.left_select_fake{
+    background-color: transparent;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    cursor: pointer;
+}
+.left_select_fake:hover{
+    background-color: #ffffff20;
+    transition: 150ms all;
 }
 .top_right{
     flex: 2 0 0;
@@ -415,11 +430,72 @@ input::placeholder{
 }
 .diff_right_title_wrong_div{
     margin-left: 10px;
-    background-color: var(--brand);
+    background-color: var(--action);
     padding: 4px;
     border-radius: 5px;
     color: white;
     font-size: 0.8rem;
+}
+.fieldWrapper_wrapper{
+    display: flex;
+    justify-content: center;
+}
+.fieldWrapper{
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    background-color: var(--neutral);
+    border-radius: 5px;
+    padding: 5px;
+    flex-direction: column;
+    border: 4px solid var(--job);
+    animation-name: yellow;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    /* border: 2px solid var(--action); */
+}
+@keyframes yellow {
+    0% {
+      border-color: rgb(255, 235, 235);
+    }
+    50% {
+        border-color: #FF785A;
+    }
+    100% {
+        border-color: rgb(255, 235, 235);
+    }
+}
+.editar_oi{
+    /* background-color: var(--action); */
+    text-align: center;
+    width: fit-content;
+    margin: 0 auto;
+    border-radius: 3px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--brand);
+    font-size: 0.9rem;
+    padding: 4px;
+}
+.refusal_div{
+    display: flex;
+    flex-direction: column;
+}
+.refusal_icon{
+    width: 11px !important;
+    height: 11px !important;
+    color: var(--action);
+}
+.refusal_type{
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-left: 2px;
+    color: var(--action);
+}
+.refusal_text{
+    color: var(--brand);
+    margin-left: 3px;
+    font-weight: 500;
 }
 .help_wrapper{
     margin-left: 5px;
@@ -435,9 +511,9 @@ input::placeholder{
     margin-bottom: 0px;
 }
 .editar_tit{
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
-    color: var(--red);
+    color: var(--neutral);
     font-size: 0.8rem;
 }
 .top_desc_area{
@@ -624,6 +700,15 @@ input::placeholder{
     align-self: center;
     border: 3px solid white;
 }
+.backdrop{
+    position: absolute;
+    width: 100%;
+    height: calc(100%);
+    background-color: #000000dd;
+    z-index: 1;
+    transition: all 500ms ease-in-out;
+    overflow: hidden;
+}
 .foto_img_number{
     color: white;
     text-transform: uppercase;
@@ -637,6 +722,14 @@ input::placeholder{
     bottom: 4px;
     font-size: 0.7rem;
     font-family: 'Roboto Mono', monospace;
+}
+.select_wrapper{
+    position: absolute;
+    z-index: 20;
+    width: 80%;
+    margin: auto;
+    margin-top: 150px;
+    margin-left: 10%;
 }
 .area_label_inverse{
     position: absolute;

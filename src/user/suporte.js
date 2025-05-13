@@ -65,8 +65,9 @@ const Suporte = (props) => {
         console.log(user)
         if(user)
         {
-            axios.get(`${api_url}/admin_chats/get_chat`, { params: {chat_id: user.admin_chat} })
+            axios.get(`${api_url}/admin_chats/get_chat`, { params: {user_id: user._id} })
             .then(chat => {
+                console.log(chat)
                 if(chat.data.texts?.length > messages?.length || messages === undefined || first)
                 {
                     if(chat.data != null){
@@ -229,7 +230,7 @@ const Suporte = (props) => {
 
     const editPublicationHandler = (res_id) => {
         navigate({
-            pathname: `/publicar`,
+            pathname: `/publicar/editar`,
             search: `?editar=true&res_id=${res_id}`
         })
     }
@@ -253,8 +254,8 @@ const Suporte = (props) => {
             return (
                 <div key={i} className={styles.chatbox_text_value} style={{margin:"10px 0"}}>
                     <CircleIcon className={styles.refusal_icon}/>
-                    <span className={styles.refusal_type}>{types[val.type]}:</span>
-                    <span className={styles.refusal_text}>{val.text}.</span>
+                    <span className={styles.refusal_type}>{types[val.type]}</span><br/>
+                    <span className={styles.refusal_text}> {val.text}</span>
                 </div>
             )
         })
@@ -346,25 +347,25 @@ const Suporte = (props) => {
                                                 <span className={styles.over_text}>Tarefa Editada</span>
                                                 {
                                                     findReservation(msg.reservation_id)?.type===0?
-                                                    <span className={styles.thing}>(A PROCESSAR)</span>
+                                                    <span className={styles.thing}>(EM ANÁLISE)</span>
                                                     :findReservation(msg.reservation_id)?.type===1?
                                                     <span className={styles.thing}>(COM SUCESSO)</span>
                                                     :findReservation(msg.reservation_id)?.type===2?
                                                     <span className={styles.thing}>(RECUSADO)</span>
-                                                    :<span className={styles.thing}>(PROCESSAR)</span>
+                                                    :<span className={styles.thing}>(EM ANÁLISE)</span>
                                                 }
                                                 <CheckIcon className={styles.over_img}/>
                                                 <span className={styles.ver_public} onClick={() => seePublicationHandler(msg.reservation_id)}>VER TAREFA</span>
 
                                             </div>
                                         </div>
-                                        :!findReservation(msg.reservation_id)?
-                                        <div className={styles.chatbox_text_starter_deleted}>
-                                            <div style={{display:"flex", flexDirection:"column", margin:"auto"}}>
-                                                <span className={styles.over_text}>Tarefa Removida</span>
-                                                <ClearIcon className={styles.over_img}/>
-                                            </div>
-                                        </div>
+                                        // :!findReservation(msg.reservation_id)?
+                                        // <div className={styles.chatbox_text_starter_deleted}>
+                                        //     <div style={{display:"flex", flexDirection:"column", margin:"auto"}}>
+                                        //         <span className={styles.over_text}>Edita a tua tarefa!</span>
+                                        //         <ClearIcon className={styles.over_img}/>
+                                        //     </div>
+                                        // </div>
                                         :null
                                     }
                                     <div className={styles.chatbot_template_wrapper}>
@@ -383,7 +384,7 @@ const Suporte = (props) => {
                                        
                                         :null
                                     }
-                                    <p onClick={() => editPublicationHandler(msg.reservation_id)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Carregue aqui para editar tarefa.</p>
+                                    <p onClick={() => editPublicationHandler(msg.reservation_id)} className={styles.chatbot_template_hover} style={{fontSize:"0.8rem", marginTop:"5px", cursor:"pointer"}}>Editar tarefa</p>
                                 </div>
                                 :
                                 <div className={msg.origin_type!==4?styles.chatbox_text_send:styles.chatbox_text_receive}

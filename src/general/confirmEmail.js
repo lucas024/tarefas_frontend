@@ -2,8 +2,14 @@ import React from 'react'
 import styles from './confirmEmail.module.css'
 import Lottie from 'lottie-react';
 import * as success from '../assets/lotties/success-blue.json'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom';
 
-const ConfirmEmail = (props) => {
+
+const ConfirmEmail = () => {
+
+    const user = useSelector(state => {return state.user})
+    const navigate = useNavigate()
 
     return (
         <div className={styles.email}>
@@ -27,15 +33,25 @@ const ConfirmEmail = (props) => {
                     }}
                 />
 
-                {/* <div className={styles.main_inner}>                      
+                <div className={styles.main_inner}>                      
                     <div className={styles.button} onClick={() => {
-                        window.open("", "_self")
-                        window.close()
+                        if(user?.worker&&!user?.subscription)
+                        {
+                            navigate('/user?t=profissional&st=subscription')
+                        }
+                        navigate('/')
                     }}>
-                        <span className={styles.button_text}>FECHAR PÁGINA</span>
+                        <span className={styles.button_text}>
+                            {
+                                user?.worker&&!user?.subscription?
+                                "Ir para a página de subscrição"
+                                :
+                                "Ir para a página inicial"
+                            }
+                        </span>
                     </div>
-                </div> */}
-                <p className={styles.button_text}>PODES FECHAR ESTA PÁGINA</p>
+                </div>
+                {/* <p className={styles.button_text}>PODES FECHAR ESTA PÁGINA</p> */}
             </div>
         </div>
     )

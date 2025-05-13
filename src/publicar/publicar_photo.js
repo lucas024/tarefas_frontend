@@ -56,9 +56,13 @@ const PublicarPhoto = props => {
                         <span className={styles.diff_right_title} 
                             style={{ marginBottom:0}}>Adicionar Fotografias <span className={styles.opcional}>(opcional)</span>
                         </span>
-                        <span className={styles.diff_right_title_wrong_div}>
-                        <span className={styles.editar_tit}>editar</span> {props.getFieldWrongText('photos')}
-                        </span>
+                        {
+                            !props.editedPhotos?
+                                <span className={styles.diff_right_title_wrong_div}>
+                                    <span className={styles.editar_tit}>ALTERAR</span>
+                                </span>
+                                :null
+                        }
                     </div>
                     :
                     <span className={styles.diff_right_title}>Adicionar Fotografias <span className={styles.opcional}> (opcional)</span>
@@ -91,6 +95,7 @@ const PublicarPhoto = props => {
                                 <div className={styles.options_side} onClick={() => {
                                     props.deleteImageHandler(selectedImage)
                                     setSelectedImage(null)
+                                    props.setEditedPhotos(true)
                                 }}>
                                     <HideImageIcon className={styles.options_icon}/>
                                     <span className={styles.options_text}>REMOVER</span>

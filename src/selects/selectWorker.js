@@ -6,7 +6,7 @@ const SelectWorker = (props) => {
     const stylesSelect = {
         control: (base, state) => ({
             ...base,
-            backgroundColor: props.worker?"#ffffff":props.editBottom?"#FF785A":"#FF785A90",
+            backgroundColor: props.worker?"#ffffff":props.editBottom?"#FF785A":"#FF785A80",
             borderColor: props.worker?"#FF785A":"#FF785A",
             fontSize: "0.9rem",
             textTransform: "uppercase",
@@ -49,23 +49,23 @@ const SelectWorker = (props) => {
         }),
         dropdownIndicator : base => ({
             ...base,
-            color: props.worker?"#161F28":!props.editBottom?"#71848d":"#fff",
-            transition: "0.15s all ease-in-out",
-            "&:hover": {
-                color: "#ffffff",
-            }
+            color: props.worker?"#161F28":"#fff",
+            opacity: props.details?!props.editBottom?0.7:1:1,
+            transition: "0.15s all ease-in-out"
         }),
         container: base => ({
             ...base,
         }),
         singleValue: base => ({
             ...base,
-            color: props.worker?"#161F28":!props.editBottom?"#71848d":"#fff",
+            color: props.worker?"#161F28":"#fff",
+            opacity: props.details?!props.editBottom?0.7:1:1,
             margin: "auto"
         }),
         indicatorSeparator : base => ({
             ...base,
-            backgroundColor: props.worker?"#161F28":"#161F28"
+            backgroundColor: props.details?"#ffffff":"#161F28",
+            opacity: props.details?!props.editBottom?0.7:1:1,
         }),
         valueContainer: base => ({
             ...base,
@@ -87,7 +87,8 @@ const SelectWorker = (props) => {
     return(
         <Select
             styles={stylesSelect}
-            isDisabled={!props.editBottom}
+            // isDisabled={true}
+            // isDisabled={!props.editBottom}
             options={options}
             value={options.filter(option => option.value === props.worker_type)}
             isSearchable={false}

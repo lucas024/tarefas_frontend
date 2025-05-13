@@ -134,6 +134,7 @@ const PublicarDetails = props => {
         props.setLng(addressOptions[index].lng || addressOptions[index].lon)
         setAddressOptions([])
         setAddressOptionsText([])
+        props.setEditedLocation(true)
     }
 
     return (
@@ -153,22 +154,24 @@ const PublicarDetails = props => {
                     </div>
                 </div>
                 <div className={styles.online_task_button}>
-                        <div 
+                        <div onClick={() => {
+                                    props.setTaskType(0)
+                                    props.setEditedLocation(true)
+                                }}
                             className={styles.online_task_button_side_wrapper}
                             style={{backgroundColor:props.taskType!==2?"#0358e5":"#0358e580"}}>
                             <span style={{fontWeight:props.taskType!==2?500:400}}
                                 className={styles.online_task_button_side}
-                                onClick={() => {
-                                    props.setTaskType(0)
-                                }}
+                                
                                 >tarefa presencial</span>
                         </div>
-                        <div 
+                        <div onClick={() => {
+                                props.setTaskType(2)
+                                props.setEditedLocation(true)
+                            }}
                             className={styles.online_task_button_side_wrapper}
                             style={{backgroundColor:props.taskType===2?"#0358e5":"#0358e580"}}
-                            onClick={() => {
-                                props.setTaskType(2)
-                            }}>
+                            >
                             <span style={{fontWeight:props.taskType===2?500:400}}
                                 className={styles.online_task_button_side}>tarefa online</span>
                         </div>
@@ -216,10 +219,13 @@ const PublicarDetails = props => {
                                             menuOpen={() => {}}
                                             menuClose={() => {}}
                                             publicar={true}
+                                            noOpen={true}
                                             options={regioes_no_online}
                                             option={props.district}
                                             changeOption={val => {
-                                                props.setDistrictHelper(val)}}
+                                                {
+                                                    props.setDistrictHelper(val)
+                                                    props.setEditedLocation(true)}}}
                                             placeholder={'Região...'}/>
                                         <span 
                                             style={{borderColor:props.badAddress||props.wrongAddress?"red":!props.badAddress&&!props.wrongAddress&&optionIndex!==null?"#0358e5":"", borderBottomRightRadius:'5px', zIndex:0}}
@@ -243,7 +249,9 @@ const PublicarDetails = props => {
                                         tabindex={props.selectedTab===2?'1':'-1'}
                                         style={{width:"100px", borderColor:props.porta?.length>0?"#0358e5":"", fontSize:'0.9rem',}} 
                                         maxLength={5} 
-                                        onChange={e => props.setPorta(e.target.value)}
+                                        onChange={e => {
+                                            props.setPorta(e.target.value)
+                                            props.setEditedLocation(true)}}
                                         value={props.porta} 
                                         className={styles.top_input_short}/>
                                 </div>
@@ -256,16 +264,24 @@ const PublicarDetails = props => {
                                         style={{width:"100px", marginLeft:"10px", fontSize:'0.9rem',
                                         borderColor:props.andar?.length>0?"#0358e5":""}}
                                         maxLength={11} 
-                                        onChange={e => props.setAndar(e.target.value)} 
+                                        onChange={e => {
+                                            props.setAndar(e.target.value)
+                                            props.setEditedLocation(true)}} 
                                         value={props.andar} 
                                         className={styles.top_input_short}></input>
                                 </div>
                             </div>
                             <div className={styles.address_flex}>
                                 <div style={{cursor:"pointer"}} className={styles.container}>
-                                    <input type="checkbox" readOnly checked={props.availableToGo} onClick={() => props.setAvailableToGo(!props.availableToGo)}/>
-                                    <span className={styles.checkmark} onClick={() => props.setAvailableToGo(!props.availableToGo)}></span>
-                                    <p className={styles.checkmark_text} onClick={() => props.setAvailableToGo(!props.availableToGo)}>Estou disponível para ir ao encontro do profissional</p>
+                                    <input type="checkbox" readOnly checked={props.availableToGo} onClick={() => {
+                                        props.setAvailableToGo(!props.availableToGo)
+                                        props.setEditedLocation(true)}}/>
+                                    <span className={styles.checkmark} onClick={() => {
+                                        props.setAvailableToGo(!props.availableToGo)
+                                        props.setEditedLocation(true)}}></span>
+                                    <p className={styles.checkmark_text} onClick={() => {
+                                        props.setAvailableToGo(!props.availableToGo)
+                                        props.setEditedLocation(true)}}>Estou disponível para ir ao encontro do profissional</p>
                                     <div 
                                         className={styles.help_wrapper}
                                         data-tooltip-id='help' 
@@ -335,7 +351,8 @@ const PublicarDetails = props => {
                                 tabindex={props.selectedTab===2?'1':'-1'}
                                 style={{borderColor:props.correct_phone?"#0358e5":props.phone.length===9?"#fdd835":"", width:"100%"}}
                                 maxLength={11} 
-                                onChange={e => props.setPhone(e.target.value)} 
+                                onChange={e => {
+                                    props.setPhone(e.target.value)}} 
                                 value={props.phoneVisual} 
                                 className={styles.top_input_short}/>
                         </div>

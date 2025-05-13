@@ -20,6 +20,7 @@ import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import EmailUnverified from '@mui/icons-material/UnsubscribeOutlined';
+import moment from 'moment';
 
 const UserSidebar = (props) => {
     const user_phone_verified = useSelector(state => {return state.user_phone_verified})
@@ -32,15 +33,27 @@ const UserSidebar = (props) => {
     const [selectedSidebar, setSelectedSidebar] = useState("pedidos")
     const [loading, setLoading] = useState(false)
     const [loadingSub, setLoadingSub] = useState(false)
+    const [daysTillCharge, setDaysTillCharge] = useState(0)
 
     const navigate = useNavigate()
 
     useEffect(() => {
+        setLoading(true)
+        setLoadingSub(true)
         let val = Object.fromEntries([...searchParams]).t
         if(val === "publications" || val === "support" ||  val === "conta" ||  val === "messages" || val === "profissional"){
             setSelectedSidebar(val)
         }
-    }, [searchParams])
+
+        if(user?.subscription)
+            setDaysTillCharge(moment(user.subscription.end_date).diff(moment(new Date().getTime()), 'days'))
+
+        if(user?._id){
+            setLoading(false)
+            setLoadingSub(false)
+        }
+
+    }, [searchParams, user])
     
 
     const sidebarNavigate = (val) => {
@@ -169,7 +182,7 @@ const UserSidebar = (props) => {
                 {
                     user?.worker?
                     <div className={styles.status} style={{borderColor:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
-                        <Loader loading={loadingSub}/>
+                        {/* <Loader loading={loadingSub}/> */}
                         <div className={styles.status_top}>
                             <p className={styles.status_top_val} style={{color:(user_phone_verified&&user_email_verified)&&user?.state!==2&&worker_is_subscribed&&user.regioes?.length>0&&user.trabalhos?.length>0?"#0358e5":"#fdd835"}}>
                                 {
@@ -212,7 +225,10 @@ const UserSidebar = (props) => {
                                 <span className={styles.status_div_val} style={{color:worker_is_subscribed?"#0358e5":"#fdd835"}}>
                                 {
                                     worker_is_subscribed?
-                                    "SUBSCRIÇÃO ATIVADA"
+                                    <div style={{display:'flex', flexDirection:'column'}}>
+                                        <span className={styles.status_div_val} style={{fontWeight:'', color:'#fff', fontSize:'0.9rem'}}>{daysTillCharge}</span>
+                                        <span style={{color:'#fff'}}>DIAS</span>
+                                    </div>
                                     :"SUBSCRIÇÃO DESATIVADA"
                                 }
                                 </span>

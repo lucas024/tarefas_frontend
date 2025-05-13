@@ -139,7 +139,7 @@ const Publications = (props) => {
                                                 res.type===1?"Activa":
                                                 res.type===2?"Incorreta":
                                                 res.type===3?"Concluída":
-                                                    "A Processar"
+                                                    "Em Análise"
                                             }
                                         </span>
                                     </div>

@@ -110,7 +110,7 @@ const AdminTrabalhosPA = (props) => {
                             <div className={styles.top_left_indicator_more}>
                                 <div className={styles.item_flex_indicator} style={{backgroundColor:getTypeColor(res.type)}}>
                                     <span className={styles.item_indicator}></span>
-                                    <span className={styles.item_type}>Processar</span>
+                                    <span className={styles.item_type}>Em Análise</span>
                                 </div>
                             </div>
                             <div className={styles.item_flex}>
